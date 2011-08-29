@@ -212,6 +212,12 @@ function theme_footer($data) {
 	<!-- #mainWrapper --></div>
 
 	<div id="footer">
+	
+    <p>
+      Powered by SiteSense<br />
+      Copyright &copy; 2011 Full Ambit Media, LLC. All Right Reserved<br />
+      Licensed under the Open Software License version 3.0
+    </p>
 
 ',$data->settings['footerContent'],'
 
