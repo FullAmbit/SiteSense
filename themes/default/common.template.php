@@ -213,6 +213,8 @@ function theme_footer($data) {
 
 	<div id="footer">
 	
+  <!-- This is free software, but you are NOT permitted to modify or remove
+  the following notices! -->
     <p>
       Powered by SiteSense<br />
       Copyright &copy; 2011 Full Ambit Media, LLC. All Right Reserved<br />
