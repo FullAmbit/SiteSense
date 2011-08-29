@@ -217,7 +217,7 @@ function theme_footer($data) {
   the following notices! -->
     <p>
       Powered by SiteSense<br />
-      Copyright &copy; 2011 Full Ambit Media, LLC. All Right Reserved<br />
+      Copyright &copy; 2011 Full Ambit Media, LLC. All Rights Reserved<br />
       Licensed under the Open Software License version 3.0
     </p>
 
