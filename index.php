@@ -235,6 +235,7 @@ class sitesense {
 			// Check Expiration Time
 			if(time() > $banItem['expiration'])
 			{
+				//var_dump("YOU GOOD");
 				// You served your time, let's remove your ban.
 				$statement = $this->db->prepare('removeBan','users');
 				$statement->execute(array(
@@ -250,7 +251,7 @@ class sitesense {
 					));
 				}
 			} else {
-				// You're still banned....
+				// You're still banned....GTFO
 				$this->currentPage = 'banned';
 				$this->banned = true;
 			}
@@ -297,7 +298,14 @@ class sitesense {
 		$this->smallStaticLinkRoot = (isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot = (isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot = (isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
-
+		
+		if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
+		if (
+			($url=='') ||
+			($url=='index.php') ||
+			($url=='index.html') ||
+			($url=='index.php?')
+		) {
 			if(isset($this->settings['homepage'])){
 				
 				$targetInclude = 'modules/'.$this->settings['homepage'].'.module.php';
@@ -310,8 +318,9 @@ class sitesense {
 				}
 			}else{
 				$this->action[0] = 'default';
-			}
-		
+			}	
+		}
+	
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		$sideBars = array();
 		//Does this module exist, and is it enabled?
