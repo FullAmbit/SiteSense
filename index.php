@@ -235,7 +235,6 @@ class sitesense {
 			// Check Expiration Time
 			if(time() > $banItem['expiration'])
 			{
-				//var_dump("YOU GOOD");
 				// You served your time, let's remove your ban.
 				$statement = $this->db->prepare('removeBan','users');
 				$statement->execute(array(
@@ -251,7 +250,7 @@ class sitesense {
 					));
 				}
 			} else {
-				// You're still banned....GTFO
+				// You're still banned....
 				$this->currentPage = 'banned';
 				$this->banned = true;
 			}
@@ -298,34 +297,7 @@ class sitesense {
 		$this->smallStaticLinkRoot = (isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot = (isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot = (isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
-		
-		//if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
-		//$url=trim($url,'/');
-		//$this->linkRoot=$this->linkHome;
-		
-		/*$this->action=array();
-		$url=strip_tags($_SERVER['REQUEST_URI']);
-		// prevent reverse-tree hacks 
-		$url=str_replace('../','',$url);
-		if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
-		$url=trim($url,'/');
-		$this->linkRoot=(
-			$this->settings['useModRewrite'] ?
-			$this->linkHome :
-			$_SERVER['PHP_SELF'].'?'
-		);
-		// Set Up Other CDN Variables Using Link Root //
-		$this->smallStaticLinkRoot = (isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
-		$this->largeStaticLinkRoot = (isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
-		$this->flashLinkRoot = (isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
 
-	var_dump($url); die;
-		if (
-			($url=='') ||
-			($url=='index.php') ||
-			($url=='index.html') ||
-			($url=='index.php?')
-		) {*/
 			if(isset($this->settings['homepage'])){
 				
 				$targetInclude = 'modules/'.$this->settings['homepage'].'.module.php';
@@ -339,50 +311,6 @@ class sitesense {
 			}else{
 				$this->action[0] = 'default';
 			}
-/*	
-		}
-		 
-			$actionPos=stripos($url,'?');
-			if ($actionPos) $url=substr($url,$actionPos+1);
-			$url=str_replace('#','/',$url);
-			$action = html_entity_decode($url);
-			$this->request = explode('/', $action);
-			
-			// Check to see if the URL has a Remap
-			$rewrite = $this->db->prepare('findReplacement','urlremap'); 
-			$rewrite->execute(array(':url' => $action));
-			// We Got A ReMap
-			if(FALSE !== ($row = $rewrite->fetch()))
-			{
-				$action = preg_replace('~' . $row['match'] . '~',$row['replace'],$action); // Our New URL
-			}
-			
-			if(isset($action{1}))
-			{
-				$this->action = explode('/',$action);
-			}			
-			*/	
-			/*session_start();
-			if(!isset($_SESSION['remapCount'])){
-				$_SESSION['remapCount'] = 0;
-			}else if($_SESSION['remapCount'] < 2){
-				$rewrite = $this->db->prepare('findReplacement', 'urlremap');
-				$rewrite->execute(array(':url' => $action));
-				if(false !== ($row = $rewrite->fetch())){
-					$action = preg_replace('~' . $row['match'] . '~', $row['replace'], $action);
-					$_SESSION['remapCount']++;
-					if($row['redirect'] == 1){
-						$_SESSION['POST'] = $_POST;
-						common_redirect_local($this, $action);
-					}
-				}
-			}
-			if(isset($_SESSION['POST'])){
-				$_POST = array_merge($_POST, $_SESSION['POST']);
-				unset($_SESSION['POST']);
-			}
-			$_SESSION['remapCount'] = 0; //reset remap
-			$this->action = explode('/', $action);*/
 		
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		$sideBars = array();
@@ -461,15 +389,6 @@ class sitesense {
 		}
 		
 		$this->action = array_merge($this->action,array_fill(0,10,false));
-		/*if(pathinfo($this->action[2], PATHINFO_EXTENSION)==='css') {
-			$this->httpHeaders=array(
-				'Content-Type: text/css; charset='.$this->settings['characterEncoding']
-			);
-		} else {
-			$this->httpHeaders=array(
-				'Content-Type: text/html; charset='.$this->settings['characterEncoding']
-			);
-		}*/
 		
 		$this->httpHeaders=array(
 				'Content-Type: text/html; charset='.$this->settings['characterEncoding']
