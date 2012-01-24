@@ -1,0 +1,48 @@
+/* null margins and padding to give good cross-browser baseline */
+html,body,address,blockquote,div,
+form,fieldset,caption,
+h1,h2,h3,h4,h5,h6,
+hr,ul,li,ol,ul,
+table,tr,td,th,p,img {
+	margin:0;
+	padding:0;
+}
+
+img,fieldset {
+	border:none;
+}
+
+body {
+	font:normal 85%/140% arial,helvetica,sans-serif;
+	color:#000;
+	background:#FFF;
+}
+
+p {
+	padding-bottom:1em;
+}
+
+h3 {
+	font:bold 130%/120% arial,helvetica,sans-serif;
+	padding-bottom:0.8em;
+}
+
+h4 {
+	font:bold 115%/120% arial,helvetica,sans-serif;
+	padding-bottom:0.9em;
+}
+
+h5 {
+	font:bold 100%/120% arial,helvetica,sans-serif;
+	padding-bottom:1em;
+}
+
+h6 {
+	font:normal 100%/120% arial,helvetica,sans-serif;
+	padding-bottom:1em;
+	color:#666;
+}
+
+ol, ul {
+	padding-left:2em;
+}
