@@ -204,23 +204,24 @@ class sitesense {
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']); 
 		if (strpos($url,'../')) killHacker('Uptree link in URI'); 
 		$this->linkHome=str_ireplace('index.php','',$_SERVER['PHP_SELF']); 
-		if (strpos($url,'?')>0) { 
-		   /* if using get, action based on query string */ 
-		   $queryString=$_SERVER['QUERY_STRING']; 
-		} else { 
-		   $queryString=substr($url,strlen($this->linkHome)-1); 
-		   /* be sure to ===0 since false trips ==0 */ 
-		   if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
-		} 
-		$queryString=trim($queryString,'/'); 
+		if (strpos($url,'?')>0) {
+			/* if using get, action based on query string */
+			$queryString=$_SERVER['QUERY_STRING'];
+		} else {
+			$queryString=substr($url,strlen($this->linkHome)-1);
+			/* be sure to ===0 since false trips ==0 */
+			if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9);
+		}
+		$queryString=trim($queryString,'/');
 		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);
 		/* -------- */
 		
 		$this->db=db_init($dbSettings);
-		if ($this->action[0]=='install') { 
-               require_once('admin/install.php'); 
-               die; /* technically install.php should die at end, but to be sure... */ 
-         } 
+		if ($this->action[0]=='install') {
+			$data=$this->db;
+			require_once('admin/install.php');
+			die; /* technically install.php should die at end, but to be sure... */
+		}
 		$dbSettings=null;
 		/**
 		 * Check To See If the IP Is Banned
