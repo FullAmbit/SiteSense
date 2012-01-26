@@ -27,7 +27,7 @@ require_once('dbSettings.php');
 require_once('libraries/common.php');
 require_once('libraries/defines.php');
 
-class dynamicPDO extends PDO {
+final class dynamicPDO extends PDO {
 	private $tablePrefix;
 	public $sessionPrefix;
 	private $sqlType;
@@ -37,18 +37,25 @@ class dynamicPDO extends PDO {
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
 	}
-	public function __construct($dsn,$username,$password,$tablePrefix) {
+	public function __construct() {
 		/*
-			The exceptionHandler connection details from being revealed
-			in the case of a connection failure
+			The exceptionHandler prevents connection details from being
+			revealed in the case of failure
 		*/
+		$dbSettings=dbSettings();
+		
 		set_exception_handler(array(__CLASS__,'exceptionHandler'));
-		parent::__construct($dsn,$username,$password);
+		parent::__construct(
+			$dbSettings['dsn'],
+			$dbSettings['username'],
+			$dbSettings['password']
+		);
 		restore_exception_handler();
-		$this->sqlType=strstr($dsn,':',true);
-		$this->tablePrefix=$tablePrefix;
+
+		$this->sqlType=strstr($dbSettings['dsn'],':',true);
+		$this->tablePrefix=$dbSettings['tablePrefix'];
 		/* should implement a better session prefix method */
-		$this->sessionPrefix=$tablePrefix;
+		$this->sessionPrefix=$this->tablePrefix;
 		$this->loadModuleQueries('common',true);
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) {
@@ -162,19 +169,7 @@ class dynamicPDO extends PDO {
 	
 	}
 }
-function db_init($db) {
-	try {
-		$PDO=new dynamicPDO($db['dsn'],$db['username'],$db['password'],$db['tablePrefix']);
-	} catch (PDOException $e) {
-		die('
-			SQL PDO Object Failed to Initialize<br />
-			Error reported: '.$e->getMessage().'
-		');
-	}
-	return $PDO;
-}
-// data handler
-class sitesense {
+final class sitesense {
 	public
 		$settings,$pageSettings,
 		$text,$user,
@@ -198,31 +193,30 @@ class sitesense {
 		$jsEditor;
 		
 		private $db;
-		public function __construct($dbSettings) {
+		public function __construct() {
 	
 		/* -------- */
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']); 
 		if (strpos($url,'../')) killHacker('Uptree link in URI'); 
 		$this->linkHome=str_ireplace('index.php','',$_SERVER['PHP_SELF']); 
-		if (strpos($url,'?')>0) {
-			/* if using get, action based on query string */
-			$queryString=$_SERVER['QUERY_STRING'];
-		} else {
-			$queryString=substr($url,strlen($this->linkHome)-1);
-			/* be sure to ===0 since false trips ==0 */
-			if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9);
-		}
-		$queryString=trim($queryString,'/');
+		if (strpos($url,'?')>0) { 
+			 /* if using get, action based on query string */ 
+			 $queryString=$_SERVER['QUERY_STRING']; 
+		} else { 
+			 $queryString=substr($url,strlen($this->linkHome)-1); 
+			 /* be sure to ===0 since false trips ==0 */ 
+			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
+		} 
+		$queryString=trim($queryString,'/'); 
 		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);
 		/* -------- */
 		
-		$this->db=db_init($dbSettings);
-		if ($this->action[0]=='install') {
+		$this->db=new dynamicPDO();
+		if ($this->action[0]=='install') { 
 			$data=$this->db;
-			require_once('admin/install.php');
-			die; /* technically install.php should die at end, but to be sure... */
+			require_once('admin/install.php'); 
+			die; /* technically install.php should die at end, but to be sure... */ 
 		}
-		$dbSettings=null;
 		/**
 		 * Check To See If the IP Is Banned
 		**/
@@ -236,7 +230,6 @@ class sitesense {
 			// Check Expiration Time
 			if(time() > $banItem['expiration'])
 			{
-				//var_dump("YOU GOOD");
 				// You served your time, let's remove your ban.
 				$statement = $this->db->prepare('removeBan','users');
 				$statement->execute(array(
@@ -252,7 +245,7 @@ class sitesense {
 					));
 				}
 			} else {
-				// You're still banned....GTFO
+				// You're still banned
 				$this->currentPage = 'banned';
 				$this->banned = true;
 			}
@@ -321,7 +314,6 @@ class sitesense {
 				$this->action[0] = 'default';
 			}	
 		}
-	
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		$sideBars = array();
 		//Does this module exist, and is it enabled?
@@ -756,7 +748,5 @@ class sitesense {
 		if ($this->compressionStarted) gzip_end($this);
 	}
 }
-
-new sitesense(dbSettings());
- 
+new sitesense();
 ?>
