@@ -33,7 +33,7 @@ function admin_modules_addQueries() {
 		',
 		'getModuleByShortName' => '
 			SELECT * FROM !prefix!modules
-			WHERE shortName = :shortName		
+			WHERE shortName = :shortName
 		',
 		'getModuleById' => '
 			SELECT * FROM !prefix!modules
@@ -81,23 +81,31 @@ function admin_modules_addQueries() {
 		',
 		'editModule' => '
 			UPDATE !prefix!modules
-				SET name = :name,
+				SET
+					name = :name,
 					shortName = :shortName,
 					enabled = :enabled
 				WHERE
 					id = :id
 		',
+		'updateModule' => '
+			UPDATE !prefix!modules
+				SET
+					name = :name,
+					enabled = :enabled
+				WHERE
+					shortName = :shortName
+		',
 		'enableModule' => '
 			UPDATE !prefix!modules
-				SET enabled = 1
-				WHERE
-					id = :id
+				SET
+				enabled = 1
+				WHERE shortName = :shortName
 		',
 		'disableModule' => '
 			UPDATE !prefix!modules
 				SET enabled = 0
-				WHERE
-					id = :id
+				WHERE shortName = :shortName
 		',
 		'deleteModule' => '
 			DELETE FROM !prefix!modules WHERE id = :id

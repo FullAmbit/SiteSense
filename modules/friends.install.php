@@ -50,9 +50,7 @@ function friends_install($data,$drop=false)
 	
 	return NULL;
 }
-
-function friends_postInstall($data)
-{
+function friends_uninstall($data) {
+	$data->dropTable('friends');
 }
-
 ?>

@@ -78,7 +78,7 @@ function theme_modulesListNoModules() {
 	echo '<tr><td colspan="4">No modules exist</tr></td>';
 }
 
-function theme_modulesListTableRow($data,$module,$count,$link) {
+function theme_modulesListTableRow($data,$module,$count) {
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 				<td>', $module['name'], '</td>
@@ -86,19 +86,26 @@ function theme_modulesListTableRow($data,$module,$count,$link) {
 				<td>', (($module['enabled'] == 1) ? 'yes' : 'no'), '</td> 
 				<td class="buttonList">';
 				
-				if($module['enabled'])
-					echo '<a href="', $data->linkRoot, 'admin/modules/list/disable/',$module['id'],'">Disable</a>';
-				else
-					echo '<a href="', $data->linkRoot, 'admin/modules/list/enable/',$module['id'],'">Enable</a>';
-					
-	echo'	
-					<a href="', $data->linkRoot, $link, '">Select Sidebars</a>
+	if($module['enabled'])
+		echo '<a href="', $data->linkRoot, 'admin/modules/disable/',$module['shortName'],'">Disable</a>';
+	else
+		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">Enable</a>';
+		switch($module['shortName']) {
+			case 'forms':
+				$sidebarsLink = 'admin/forms/list/';
+				break;
+			case 'page':
+				$sidebarsLink = 'admin/pages/list';
+				break;
+			default:
+				$sidebarsLink = 'admin/modules/sidebars/'.$module['id'];
+				break;
+		}
+		echo'	
+					<a href="',$data->linkRoot,$sidebarsLink,'">Select Sidebars</a>
 				</td>
-			</tr>
-		';
+			</tr>';
 }
-
-
 function theme_modulesListTableFoot() {
 	echo '
 		</table>
@@ -142,5 +149,22 @@ function theme_modulesListNewTableFoot() {
 function theme_modulesInstallSuccess() {
 	echo '<h2>Success!</h2><p>Module successfully installed!</p>';
 }
-
+function theme_disabledOfferUninstall($data) {
+	echo '<h2>Success!</h2><p>You have successfully disabled the module. 
+	The data stored by this module are still in the database, but the 
+	module is disabled from user access. If you would like to remove all 
+	of the data stored by this module from the database then click 
+	uninstall. But beware, this data will be gone forever.</p>
+	<div class="buttonList">
+		<a href="',$data->linkRoot,'admin/modules/disable/',$data->action[3],'/uninstall">
+			Uninstall Module
+		</a>
+		<a href="',$data->linkRoot,'admin/modules">
+			Return to the List of Modules
+		</a>
+	</div>';
+}
+function theme_disabled() {
+	echo '<h2>Success!</h2><p>Module successfully disabled!</p>';
+}
 ?>
