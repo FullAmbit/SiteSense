@@ -23,41 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_modulesBuild($data,$db){
-
-	if($data->action[3] == 'enable')
-	{
-		if (is_numeric($data->action[4])) {
-			$statement=$db->prepare('getModuleById','admin_modules');
-			$statement->execute(array(
-				':id' => $data->action[4]
-			));
-			if ($item=$statement->fetch()) {
-				$statement=$db->prepare('enableModule','admin_modules');
-				$statement->execute(array(
-					':id' => $item['id']
-				));
-			}
-		}
-	}	
-	else if($data->action[3] == 'disable')
-	{
-		if (is_numeric($data->action[4])) {
-			$statement=$db->prepare('getModuleById','admin_modules');
-			$statement->execute(array(
-				':id' => $data->action[4]
-			));
-			if ($item=$statement->fetch()) {
-				$statement=$db->prepare('disableModule','admin_modules');
-				$statement->execute(array(
-					':id' => $item['id']
-				));
-			}
-		}
-	}
-
-	$statement = $db->query('getAllModules', 'modules');
-	$moduleFiles = glob('modules/*.module.php');
-	$dbModules = $statement->fetchAll();
+	$statement=$db->query('getAllModules','admin_modules');
+	$moduleFiles=glob('modules/*.module.php');
+	$data->output['modules']=$statement->fetchAll();
 	$fileModules = array_map(
 		function($path){
 			$dirend = strrpos($path, '/') + 1;
@@ -66,32 +34,32 @@ function admin_modulesBuild($data,$db){
 		}, 
 		$moduleFiles
 	);
-	$delete = $db->prepare('deleteModule', 'modules');
-	foreach($dbModules as $dbModule){
-		foreach($dbModules as &$dbModule2){
-			if(
-				$dbModule['name'] == $dbModule2['name'] 
-				&&
-				$dbModule['id'] != $dbModule2['id']
-			){
+	// Remove duplicate database entries
+	$delete=$db->prepare('deleteModule','admin_modules');
+	foreach($data->output['modules'] as $dbModule){
+		foreach($data->output['modules'] as $key => $dbModule2){
+			if(isset($duplicatedModules))
+				if(in_array($dbModule2['id'],$duplicatedModules))
+					continue;
+			if($dbModule['name']==$dbModule2['name'] 
+			&& $dbModule['id']!=$dbModule2['id']) {
 				$delete->execute(array(':id' => $dbModule2['id']));
-				unset($dbModule2);
+				unset($data->output['modules'][$key]);
+				$duplicatedModules[]=$dbModule['id'];
 			}
 		}
 	}
 	//delete database entries which no longer have associated files
-	foreach($dbModules as $dbModule){
+	foreach($data->output['modules'] as $dbModule){
 		if(false === array_search($dbModule['name'], $fileModules)){
 			$delete->execute(array(':id' => $dbModule['id']));
 		}
 	}
-	
-	/*
 	//insert new modules into the database
-	$insert = $db->prepare('newModule', 'modules'); 
+	$insert = $db->prepare('newModule', 'modules');
 	foreach($fileModules as $fileModule){
 		$found = false;
-		foreach($dbModules as $dbModule){
+		foreach($data->output['modules'] as $dbModule){
 			if($dbModule['name'] == $fileModule){
 				$found = true;
 			}
@@ -106,12 +74,10 @@ function admin_modulesBuild($data,$db){
 			);
 		}
 	}
-	*/
-	
 	//--Reget All Modules--//
 	$statement->execute();
 	$data->output['modules'] = $statement->fetchAll();
-	
+	/*
 	//--Build Uninstalled Module List--//
 	$uninstalledModuleFiles = glob('modules/*.install.php');
 	foreach($uninstalledModuleFiles as $moduleInstallFile)
@@ -135,7 +101,7 @@ function admin_modulesBuild($data,$db){
 			}
 			
 		}
-	}
+	}*/
 }
 function admin_modulesShow($data){
 	/*-- Installed Modules --*/
@@ -143,9 +109,9 @@ function admin_modulesShow($data){
 	if (empty($data->output['modules'])) {
 		theme_modulesListNoModules();
 	} else {
-	$count=0;
+		$count=0;
 		foreach($data->output['modules'] as $module){
-			switch($module['shortName'])
+			/*switch($module['shortName'])
 			{
 				case 'forms':
 					$link = 'admin/forms/list/';
@@ -156,15 +122,14 @@ function admin_modulesShow($data){
 				default:
 					$link = 'admin/modules/sidebars/'.$module['id'];
 					break;
-			}
-			theme_modulesListTableRow($data,$module,$count,$link);
+			}*/
+			theme_modulesListTableRow($data,$module,$count);
 			$count++;
 		}
-	} 
+	}
 	theme_modulesListTableFoot();
-	
 	/*-- New Modules -- */
-	theme_modulesListNewTableHead();
+	/*theme_modulesListNewTableHead();
 	if (empty($data->output['uninstalledModules'])) {
 		theme_modulesListNoNewModules();
 	} else {
@@ -174,7 +139,6 @@ function admin_modulesShow($data){
 			$count++;
 		}
 	}
-	theme_modulesListNewTableFoot();
+	theme_modulesListNewTableFoot();*/
 }
-
 ?>
