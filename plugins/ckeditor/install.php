@@ -22,22 +22,16 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function ckeditor_settings($data,$db)
-{
+function ckeditor_settings() {
 	return array(
 		'isCDN' => 0,
 		'isEditor' => 1
 	);
 }
-function ckeditor_install($data,$db)
-{
-	// Required SQL Run Here
-	
+function ckeditor_install($data,$db) {
 	$data->output['installSuccess'] = TRUE;
 }
-function ckeditor_postInstall($data,$db)
-{
-	$statement = $db->prepare('setPluginToEditor','admin_plugins');
-	$statement->execute(array(':id' => $data->output['lastInsertId']));
+function ckeditor_uninstall($data,$db) {
+	$data->output['uninstallSuccess'] = TRUE;
 }
 ?>

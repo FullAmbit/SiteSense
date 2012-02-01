@@ -22,93 +22,81 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function blogs_settings($data)
-{
+function blogs_settings($data) {
 	return array(
 		'name' => 'blogs',
 		'shortName' => 'blogs'
 	);
 }
-
-function blogs_install($data,$drop=false)
-{	
-	$settings = blogs_settings($data,$data);
+function blogs_install($data,$drop=false) {
 	$structures = array(
 		'blogs' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'managingEditor' => 'varchar(256) NOT NULL',
-			'webMaster' => 'varchar(256) NOT NULL',
-			'name' => 'varchar(256) DEFAULT NULL',
-			'shortName' => 'varchar(256) DEFAULT NULL',
-			'title' => 'varchar(256) DEFAULT NULL',
-			'owner' => 'int(11) DEFAULT NULL',
-			'minPermission' => 'int(11) DEFAULT NULL',
-			'numberPerPage' => 'int(11) DEFAULT NULL',
-			'description' => 'mediumtext',
-			'allowComments' => 'tinyint(1) NOT NULL DEFAULT \'1\'',
-			'commentsRequireLogin' => 'tinyint(1) NOT NULL',
-			'topLevel' => 'tinyint(1) NOT NULL',
-			'rssOverride' => 'varchar(256) DEFAULT NULL',
-			'PRIMARY KEY (`id`)',
+			'id'										 => SQR_IDKey,
+			'managingEditor'				 => SQR_email,
+			'webMaster'							 => SQR_email,
+			'name'									 => SQR_name,
+			'shortName'							 => SQR_shortName,
+			'title'									 => SQR_title,
+			'owner'									 => SQR_ID,
+			'minPermission'					 => SQR_userLevel,
+			'numberPerPage'					 => 'TINYINT UNSIGNED NOT NULL',
+			'description'						 => 'TEXT NOT NULL',
+			'allowComments'					 => SQR_boolean.' DEFAULT \'1\'',
+			'commentsRequireLogin'	 => SQR_boolean,
+			'topLevel'							 => SQR_boolean,
+			'rssOverride'						 => SQR_URL,
 			'KEY `name` (`name`,`owner`,`minPermission`)'
 		),
 		'blog_categories' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'blogId' => 'int(11) NOT NULL',
-			'name' => 'varchar(256) NOT NULL',
-			'shortName' => 'varchar(256) NOT NULL',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'blogId'								 => SQR_ID,
+			'name'									 => SQR_title,
+			'shortName'							 => SQR_title
 		),
 		'blog_comments' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'post' => 'int(11) NOT NULL',
-			'time' => 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP',
-			'author' => 'varchar(64) NOT NULL',
-			'rawContent' => 'text NOT NULL',
-			'parsedContent' => 'text NOT NULL',
-			'email' => 'varchar(256) NOT NULL',
-			'loggedIP' => 'varchar(64) NOT NULL',
-			'approved' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'post'									 => SQR_ID,
+			'time'									 => SQR_added,
+			'author'								 => SQR_fullName,
+			'rawContent'						 => 'TEXT NOT NULL',
+			'parsedContent'					 => 'TEXT NOT NULL',
+			'email'									 => SQR_email,
+			'loggedIP'							 => SQR_IP,
+			'approved'							 => SQR_boolean.' DEFAULT \'0\''
 		),
 		'blog_posts' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'blogId' => 'int(11) DEFAULT NULL',
-			'categoryId' => 'int(11) NOT NULL DEFAULT \'0\'',
-			'title' => 'varchar(256) DEFAULT NULL',
-			'name' => 'varchar(256) DEFAULT NULL',
-			'shortName' => 'varchar(256) DEFAULT NULL',
-			'user' => 'int(11) DEFAULT NULL',
-			'postTime' => 'int(11) DEFAULT NULL',
-			'modifiedTime' => 'int(11) DEFAULT NULL',
-			'live' => 'tinyint(1) DEFAULT NULL',
-			'rawSummary' => 'text NOT NULL',
-			'parsedSummary' => 'text NOT NULL',
-			'rawContent' => 'text NOT NULL',
-			'parsedContent' => 'mediumtext',
-			'description' => 'varchar(500) NOT NULL',
-			'allowComments' => 'tinyint(1) NOT NULL',
-			'repliesWaiting' => 'int(11) NOT NULL',
-			'tags' => 'text NOT NULL',
-			'PRIMARY KEY (`id`)',
+			'id'										 => SQR_IDKey,
+			'blogId'								 => SQR_ID,
+			'categoryId'						 => SQR_ID.' DEFAULT \'0\'',
+			'title'									 => SQR_title,
+			'name'									 => SQR_title,
+			'shortName'							 => SQR_title,
+			'user'									 => SQR_ID,
+			'postTime'							 => SQR_time,
+			'modifiedTime'					 => SQR_lastModified,
+			'live'									 => SQR_boolean,
+			'rawSummary'						 => 'TEXT NOT NULL',
+			'parsedSummary'					 => 'TEXT NOT NULL',
+			'rawContent'						 => 'TEXT NOT NULL',
+			'parsedContent'					 => 'MEDIUMTEXT NOT NULL',
+			'description'						 => 'TEXT NOT NULL',
+			'allowComments'					 => SQR_boolean,
+			'repliesWaiting'				 => SQR_boolean,
+			'tags'									 => 'TINYTEXT NOT NULL',
 			'KEY `blogId` (`blogId`)'
 		)
 	);
-		
 	if($drop) {
 		$data->dropTable('blogs');
 		$data->dropTable('blog_posts');
 		$data->dropTable('blog_comments');
 		$data->dropTable('blog_categories');
 	}
-	
 	$data->createTable('blogs',$structures['blogs'],true);
 	$data->createTable('blog_posts',$structures['blog_posts'],true);
 	$data->createTable('blog_comments',$structures['blog_comments'],true);
 	$data->createTable('blog_categories',$structures['blog_categories'],true);
-
-	$count=$data->countRows('blogs');
-	if ($count==0) {
+	if ($data->countRows('blogs')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -133,7 +121,7 @@ function blogs_install($data,$drop=false)
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';
 			$statement=$data->prepare('makeWelcomePost','installer');
-			$statement->execute(array(':time' => time()));
+			$statement->execute(array(':time' => gmdate("Y-m-d H:i:s")));
 			echo '
 				<div>
 					Home Page Welcome Post Generated!<br />
@@ -146,12 +134,5 @@ function blogs_install($data,$drop=false)
 			';
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
-	
-	return NULL;
 }
-
-function blogs_postInstall($data)
-{
-}
-
 ?>

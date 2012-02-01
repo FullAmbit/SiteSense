@@ -26,15 +26,18 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function plugins_addQueries()
-{
-	
+function plugins_addQueries(){
 	return array(
 		'getEnabledPlugins' => '
-			SELECT * FROM !prefix!plugins WHERE enabled = 1 AND isCDN = 0 AND isEditor = 0
+			SELECT *
+				FROM !prefix!plugins 
+				JOIN plugins_modules
+				ON plugins.id = plugins_modules.plugin
 		',
 		'getPluginByName' => '
-			SELECT * FROM !prefix!plugins WHERE name = :name
+			SELECT * 
+				FROM !prefix!plugins 
+				WHERE name = :name
 		'
 	);
 }

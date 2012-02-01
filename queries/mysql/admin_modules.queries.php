@@ -151,3 +151,4 @@ function admin_modules_addQueries() {
 		'
 	);
 }
+?>

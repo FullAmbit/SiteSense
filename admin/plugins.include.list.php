@@ -22,54 +22,67 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_pluginsBuild($data,$db)
-{
-	// Get Plugins That Have Yet To Be Installed
-	$data->output['newPlugins'] = array();
-	$dirHandle = scandir('plugins');
-	foreach($dirHandle as $pluginDir)
-	{
-		if($dirHandle == '..' || $dirHandle == '.') continue;
-		
-		// Check For Install File
-		if(file_exists('plugins/'.$pluginDir.'/install.php'))
-		{
-			$data->output['newPlugins'][] = $pluginDir;
+function admin_pluginsBuild($data,$db) {
+	$statement=$db->query('getAllPlugins','admin_plugins');
+	$data->output['plugins']=$statement->fetchAll();
+	// Build an array of the names of the plugins in the filesystem
+	$dirs=scandir('plugins');
+	foreach($dirs as $dir) {
+		if($dir==='.' || $dir==='..') continue;
+		if(file_exists('plugins/'.$dir.'/plugin.php')) {
+			$filePlugins[]=$dir;
 		}
 	}
-	// Get All Installed Plugins
-	$statement = $db->prepare('getAllPlugins','admin_plugins');
-	$statement->execute();
-	$data->output['pluginList'] = $pluginList = $statement->fetchAll();
+	// Remove duplicate database entries
+	$delete=$db->prepare('deletePlugin','admin_plugins');
+	foreach($data->output['plugins'] as $plugin) {
+		foreach($data->output['plugins'] as $key => $plugin2) {
+			if(isset($duplicatedPlugins))
+				if(in_array($plugin2['id'],$duplicatedPlugins)) continue;
+			if($plugin['name']==$plugin2['name']
+			&& $plugin['id']!=$plugin2['id']) {
+				$delete->execute(array(':id' => $plugin2['id']));
+				unset($data->output['plugins'][$key]);
+				$duplicatedPlugins[]=$plugin['id'];
+			}
+		}
+	}
+	// Delete database entries which no longer have associated files
+	foreach($data->output['plugins'] as $key =>$plugin) {
+		if(false===array_search($plugin['name'],$filePlugins)) {
+			$delete->execute(array(':id' => $plugin['id']));
+			unset($data->output['plugins'][$key]);
+		}
+	}
+	// Insert new plugins into the database
+	$insert=$db->prepare('newPlugin','plugins');
+	foreach($filePlugins as $filePlugin) {
+		$found=false;
+		foreach($data->output['plugins'] as $dbPlugin) {
+			if($dbPlugin['name']==$filePlugin) {
+				$found=true;
+			}
+		}
+		if(!$found) {
+			$insert->execute(
+				array(
+					':name' => $filePlugin,
+					':shortName' => $filePlugin,
+					':enabled' => 0
+				)
+			);
+		}
+	}
 }
-
-function admin_pluginsShow($data)
-{
-	// Plugins Already In The Database
-	theme_pluginsListTableHead('Installed Plugins');
-	if(empty($data->output['pluginList']))
-	{
-		theme_pluginsListNoneInstalled('No installed plugins found');
+function admin_pluginsShow($data) {
+	theme_pluginsListTableHead('Plugins');
+	if(empty($data->output['plugins'])) {
+		theme_pluginsListNoneInstalled('No plugins found');
 	} else {
-			
-		foreach($data->output['pluginList'] as $pluginItem)
-		{
-			theme_pluginsListInstalledTableRow($pluginItem['name'],$pluginItem['id'],$data->linkRoot);
+		foreach($data->output['plugins'] as $plugin) {
+			theme_pluginsListInstalledTableRow($plugin,$data);
 		}
 	}
 	theme_pluginsListTableFoot();
-	// Uninstalled Plugins
-	theme_pluginsListTableHead('New Plugins');
-	if(empty($data->output['newPlugins']))
-	{
-		theme_pluginsListNoneInstalled('No new plugins to install');
-	} else {
-		foreach($data->output['newPlugins'] as $index => $pluginDir)
-		{
-			theme_pluginsListUninstalledTableRow($pluginDir,$data->linkRoot);
-		}
-	}
-	theme_pluginsListTableFoot();
 }
-
 ?>

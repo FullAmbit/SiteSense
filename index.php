@@ -58,6 +58,15 @@ final class dynamicPDO extends PDO {
 		$this->sessionPrefix=$this->tablePrefix;
 		$this->loadModuleQueries('common',true);
 	}
+	public function loadCommonQueryDefines($dieOnError=false) {
+		$target='queries/'.$this->sqlType.'/common.query.defines.php';
+		if (file_exists($target)) {
+			require_once($target);
+			return true;
+		} else if ($dieOnError) {
+			die('Fatal Error - Common Query Defines Library File not found!<br>'.$target);
+		} else return false;
+	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) {
 		$target='queries/'.$this->sqlType.'/'.$moduleName.'.queries.php';
 		if (file_exists($target)) {
@@ -158,7 +167,6 @@ final class dynamicPDO extends PDO {
 		}
 	}
 	public function dropTable($tableName,$verbose=false) {
-	
 		if($verbose) echo '<p>Dropping ',$tableName,' table</p>';
 		
 		if($this->tableExists($tableName)) {
@@ -472,6 +480,7 @@ final class sitesense {
 							$this->user['sessions']=$session;
 							/* push expiration ahead! */
 							$expires=time()+$this->settings['userSessionTimeOut'];
+							$session['expires']=strtotime($session['expires']);
 							if ($expires<$session['expires']) {
 								/*
 									if the current experiation is ahead of our calculated one,
@@ -482,6 +491,7 @@ final class sitesense {
 							}
 							/* update and sync cookie to server values */
 							setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
+							$expires=gmdate("Y-m-d H:i:s",$expires);
 							$statement=$this->db->prepare('updateSessionExpiration');
 							$statement->execute(array(
 								':expires' => $expires,
@@ -550,6 +560,7 @@ final class sitesense {
 					}
 					/* update and sync cookie to server values */
 					setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
+					$expires=gmdate("Y-m-d H:i:s",$expires);
 					$statement=$this->db->prepare('updateUserSession');
 					$statement->execute(array(
 						':sessionId' => $userCookieValue,
@@ -562,6 +573,7 @@ final class sitesense {
 				}
 			}
 		}
+		
 		$moduleQuery = $this->db->query('getEnabledModules', 'modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
@@ -616,45 +628,19 @@ final class sitesense {
 		}
 		$this->loadModuleLanguage('common');
 		$this->loadModuleLanguage($this->currentPage);
-		//---Get Plugins--//
-		$statement = $this->db->prepare('getEnabledPlugins','plugins');
-		$statement->execute();
-		$pluginList = $statement->fetchAll();
-		foreach($pluginList as $pluginItem)
-		{
-			
-			$appliedModules = unserialize($pluginItem['modules']);
-			if(!is_array($appliedModules)) $appliedModules = array();
-			
-			if(in_array($this->module['id'],$appliedModules))
-			{
-				
-				//Its enabled on this module!
-				
-				$this->pluginList[] = $pluginItem;
-				
-				common_include('plugins/'.$pluginItem['name'].'/plugin.php');
-				
-				$objectName = 'plugin_'.$pluginItem['name'];
-				
-				$this->plugins[$pluginItem['name']] = new $objectName;
-								 
-				$functionName = 'beforeBuildContent';
-				 
-				if(method_exists($this->plugins[$pluginItem['name']],$functionName))
-				{
-					call_user_func_array(array($this->plugins[$pluginItem['name']],$functionName),array($data,$db));
-				}
-			}
+		// Get the plugins for this module
+		$statement=$this->db->query('getEnabledPlugins','plugins');
+		$plugins=$statement->fetchAll();
+		foreach($plugins as $plugin) {
+			common_include('plugins/'.$plugin['name'].'/plugin.php');
+			$objectName='plugin_'.$plugin['name'];
+			$this->plugins[$plugin['name']]=new $objectName;
 		}
-		
-		//----------------//
-		// -----Seperate for AJAX--------------
-		if($this->action[0] == 'ajax')
-		{
+		// Is this an AJAX request?
+		if($this->action[0]=='ajax') {
 			ajax_buildContent($this,$this->db);
 		} else {
-		//-------------------------------------
+		// Nope, this is a normal page request
 			if (function_exists('page_buildContent')) {
 				page_buildContent($this,$this->db);
 			}
@@ -685,15 +671,15 @@ final class sitesense {
 				);
 			}
 		}
-    theme_header($this);
-    page_content($this);
-    if(function_exists('theme_leftSideBar')) {
-      theme_leftSideBar($this);
-    }
-    if (function_exists('theme_rightSideBar')) {
-      theme_rightSideBar($this);
-    }
-    theme_footer($this);
+		theme_header($this);
+		page_content($this);
+		if(function_exists('theme_leftSideBar')) {
+			theme_leftSideBar($this);
+		}
+		if (function_exists('theme_rightSideBar')) {
+			theme_rightSideBar($this);
+		}
+		theme_footer($this);
 	} /* __construct */
 	public function activateSidebar($name){
 		if(isset($this->sideBarList[$name])){
@@ -748,5 +734,6 @@ final class sitesense {
 		if ($this->compressionStarted) gzip_end($this);
 	}
 }
+// Initialize and run the application
 new sitesense();
 ?>

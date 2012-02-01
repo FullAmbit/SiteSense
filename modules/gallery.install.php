@@ -22,61 +22,50 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function gallery_settings($data)
-{
+function gallery_settings($data) {
 	return array(
 		'name' => 'gallery',
 		'shortName' => 'gallery'
 	);
 }
-
-function gallery_install($data,$drop=false)
-{	
-	$settings = gallery_settings($data);
+function gallery_install($data,$drop=false) {
 	$structures = array(
 		'gallery_albums' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'name' => 'varchar(64) NOT NULL',
-			'shortName' => 'varchar(32) NOT NULL',
-			'user' => 'int(11) NOT NULL',
-			'allowComments' => 'tinyint(1) NOT NULL',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'name'									 => SQR_name,
+			'shortName'							 => SQR_shortName,
+			'user'									 => SQR_ID,
+			'allowComments'					 => SQR_boolean
 		),
 		'gallery_comments' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'image' => 'int(11) NOT NULL',
-			'user' => 'int(11) NOT NULL',
-			'content' => 'text NOT NULL',
-			'time' => 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'image'									 => SQR_ID,
+			'user'									 => SQR_ID,
+			'content'								 => 'TEXT NOT NULL',
+			'time'									 => SQR_lastModified
 		),
 		'gallery_images' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'album' => 'int(11) NOT NULL',
-			'name' => 'varchar(128) NOT NULL',
-			'shortName' => 'varchar(32) NOT NULL',
-			'image' => 'varchar(64) NOT NULL',
-			'thumb' => 'varchar(64) NOT NULL',
-			'time' => 'timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'album'									 => SQR_ID,
+			'name'									 => SQR_name,
+			'shortName'							 => SQR_shortName,
+			'image'									 => 'VARCHAR(63) NOT NULL',
+			'thumb'									 => 'VARCHAR(63) NOT NULL',
+			'time'									 => SQR_lastModified
 		)
 	);
-	
 	if($drop) {
 		$data->dropTable('gallery_albums');
 		$data->dropTable('gallery_images');
-		$data->dropTable('friends');
+		$data->dropTable('gallery_comments');
 	}
-	
 	$data->createTable('gallery_albums',$structures['gallery_albums'],true);
 	$data->createTable('gallery_images',$structures['gallery_images'],true);
 	$data->createTable('gallery_comments',$structures['gallery_comments'],true);
-	
-	return NULL;
 }
-
-function gallery_postInstall($data)
-{
+function gallery_uninstall($data) {
+	$data->dropTable('gallery_albums');
+	$data->dropTable('gallery_images');
+	$data->dropTable('gallery_comments');
 }
-
 ?>

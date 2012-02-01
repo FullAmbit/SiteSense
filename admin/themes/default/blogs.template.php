@@ -384,13 +384,13 @@ function theme_blogsListPostsTableRow($item,$aRoot,$count) {
 				</a>
 			</td>
 			<td class="date">
-				<span>',date('d M Y',$item['postTime']),'</span>
-				<span>',date('H:i T',$item['postTime']),'</span>
+				<span>',date('d M Y',strtotime($item['postTime'])),'</span>
+				<span>',date('H:i T',strtotime($item['postTime'])),'</span>
 			</td>
 			<td class="date">',(
 				empty($item['modifiedTime']) ? '' : '
-				<span>'.date('d M Y',$item['modifiedTime']).'</span>
-				<span>'.date('H:i T',$item['modifiedTime']).'</span>
+				<span>'.date('d M Y',strtotime($item['modifiedTime'])).'</span>
+				<span>'.date('H:i T',strtotime($item['modifiedTime'])).'</span>
 			'),'</td>
 			<td class="buttonList">
 				<a href="'.$aRoot.'listComments/',$item['id'],'">Edit Comments</a>

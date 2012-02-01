@@ -22,74 +22,64 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function forms_settings($data)
-{
+function forms_settings($data) {
 	return array(
 		'name' => 'forms',
 		'shortName' => 'forms'
 	);
 }
-
-function forms_install($data,$drop=false)
-{	
-	$settings = forms_settings($data);
+function forms_install($data,$drop=false) {
 	$structures = array(
 		'forms' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'enabled' => 'tinyint(1) NOT NULL COMMENT \'0 = false 1 = true\'',
-			'shortName' => 'varchar(32) NOT NULL',
-			'name' => 'varchar(64) NOT NULL',
-			'title' => 'varchar(256) NOT NULL',
-			'rawContentBefore' => 'text NOT NULL',
-			'parsedContentBefore' => 'text NOT NULL',
-			'rawContentAfter' => 'text NOT NULL',
-			'parsedContentAfter' => 'text NOT NULL',
-			'rawSuccessMessage' => 'text NOT NULL',
-			'parsedSuccessMessage' => 'text NOT NULL',
-			'requireLogin'=> ' tinyint(1) NOT NULL',
-			'topLevel' => 'tinyint(1) NOT NULL',
-			'eMail' => 'varchar(256) NOT NULL',
-			'submitTitle' => 'varchar(128) NOT NULL',
-			'api' => 'varchar(256) DEFAULT NULL',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'enabled'								 => SQR_boolean,
+			'shortName'							 => SQR_shortName,
+			'name'									 => SQR_name,
+			'title'									 => SQR_title,
+			'rawContentBefore'			 => 'TEXT NOT NULL',
+			'parsedContentBefore'		 => 'TEXT NOT NULL',
+			'rawContentAfter'				 => 'TEXT NOT NULL',
+			'parsedContentAfter'		 => 'TEXT NOT NULL',
+			'rawSuccessMessage'			 => 'TEXT NOT NULL',
+			'parsedSuccessMessage'	 => 'TEXT NOT NULL',
+			'requireLogin'					 => SQR_boolean,
+			'topLevel'							 => SQR_boolean,
+			'eMail'									 => SQR_email,
+			'submitTitle'						 => 'VARCHAR(63) NOT NULL',
+			'api'										 => 'VARCHAR(255) DEFAULT NULL'
 		),
 		'form_fields' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'form' => 'int(11) NOT NULL',
-			'name' => 'varchar(32) NOT NULL',
-			'type' => 'varchar(16) NOT NULL',
-			'description' => 'varchar(256) NOT NULL',
-			'options' => 'text',
-			'required' => 'tinyint(1) NOT NULL DEFAULT \'0\' COMMENT \'0 = false 1 = true\'',
-			'enabled' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
-			'apiFieldToMapTo' => 'varchar(256) DEFAULT NULL',
-			'sortOrder' => 'int(11) NOT NULL DEFAULT \'1\'',
-			'isEmail' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'form'									 => SQR_ID,
+			'name'									 => 'VARCHAR(31) NOT NULL',
+			'type'									 => 'VARCHAR(15) NOT NULL',
+			'description'						 => 'VARCHAR(255) NOT NULL',
+			'options'								 => 'TEXT',
+			'required'							 => SQR_boolean.' DEFAULT \'0\'',
+			'enabled'								 => SQR_boolean.' DEFAULT \'0\'',
+			'apiFieldToMapTo'				 => 'VARCHAR(255) DEFAULT NULL',
+			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
+			'isEmail'								 => SQR_boolean.' DEFAULT \'0\''
 		),
 		'form_sidebars' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'form' => 'int(11) NOT NULL',
-			'sidebar' => 'int(11) NOT NULL',
-			'enabled' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
-			'sortOrder' => 'int(11) NOT NULL DEFAULT \'1\'',
-			'PRIMARY KEY (`id`)',
+			'id'										 => SQR_IDKey,
+			'form'									 => SQR_ID,
+			'sidebar'								 => SQR_ID,
+			'enabled'								 => SQR_boolean.' DEFAULT \'0\'',
+			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
 			'UNIQUE KEY `form` (`form`,`sidebar`)'
 		),
 		'form_rows' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'form' => 'int(11) NOT NULL',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'form'									 => SQR_ID
 		),
 		'form_values' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'row' => 'int(11) NOT NULL',
-			'field' => 'int(11) NOT NULL',
-			'value' => 'text NOT NULL',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'row'										 => SQR_ID,
+			'field'									 => SQR_ID,
+			'value'									 => 'TEXT NOT NULL'
 		)
 	);
-	
 	if($drop) {
 		$data->dropTable('forms');
 		$data->dropTable('form_fields');
@@ -97,18 +87,10 @@ function forms_install($data,$drop=false)
 		$data->dropTable('form_values');
 		$data->dropTable('form_sidebars');
 	}
-	
 	$data->createTable('forms',$structures['forms'],true);
 	$data->createTable('form_fields',$structures['form_fields'],true);
 	$data->createTable('form_rows',$structures['form_rows'],true);
 	$data->createTable('form_values',$structures['form_values'],true);
 	$data->createTable('form_sidebars',$structures['form_sidebars'],true);
-	
-	return NULL;
 }
-
-function forms_postInstall($data)
-{
-}
-
 ?>

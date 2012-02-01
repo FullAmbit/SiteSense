@@ -41,7 +41,7 @@ function admin_modulesBuild($data,$db){
 				$data->output['rejectText']='The module settings function could not be found within the module installation file.';
 			} else {
 				$moduleSettings=$targetFunction($db);
-				// Insert module into the database
+				// Update this module in the database
 				$statement=$db->prepare('updateModule','admin_modules');
 				$statement->execute(
 					array(
@@ -51,6 +51,7 @@ function admin_modulesBuild($data,$db){
 					)
 				);
 				// Run the module installation procedure
+				$db->loadCommonQueryDefines(true);
 				$targetFunction=$data->action[3].'_install';
 				if(!function_exists($targetFunction)) {
 					$data->output['rejectError']='Improper installation file';

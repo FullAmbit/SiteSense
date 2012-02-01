@@ -22,41 +22,33 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function user_settings($data)
-{
+function user_settings($data) {
 	return array(
 		'name' => 'user',
 		'shortName' => 'user'
 	);
 }
-
-function user_install($data,$drop=false)
-{	
-	$settings = user_settings($data);
+function user_install($data,$drop=false) {
 	$structures = array(
 		'users' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'name' => 'varchar(64) DEFAULT NULL',
-			'password' => 'varchar(64) DEFAULT NULL',
-			'fullName' => 'varchar(128) DEFAULT NULL',
-			'userLevel' => 'int(11) DEFAULT NULL',
-			'registeredDate' => 'int(11) DEFAULT NULL',
-			'registeredIP' => 'varchar(64) DEFAULT NULL',
-			'lastAccess' => 'int(11) DEFAULT NULL',
-			'contactEMail' => 'varchar(255) DEFAULT NULL',
-			'publicEMail' => 'varchar(255) DEFAULT NULL',
-			'emailVerified' => 'tinyint(1) DEFAULT \'0\'',
-			'PRIMARY KEY (`id`)'
+			'id'										 => SQR_IDKey,
+			'name'									 => SQR_username,
+			'password'							 => SQR_password,
+			'fullName'							 => SQR_fullName,
+			'userLevel'							 => SQR_userLevel,
+			'registeredDate'				 => SQR_added,
+			'registeredIP'					 => SQR_IP,
+			'lastAccess'						 => SQR_time,
+			'contactEMail'					 => SQR_email,
+			'publicEMail'						 => SQR_email,
+			'emailVerified'					 => SQR_boolean.' DEFAULT \'0\''
 		)
 	);
-	
 	if($drop)
 		$data->dropTable('users');
-	
 	$data->createTable('users',$structures['users'],true);
-	
-	$count=$data->countRows('users');
-	if ($count==0) {
+	// Generate an admin account if this is a fresh installation
+	if($data->countRows('users')==0) {
 		try {
 			$newPassword=common_randomPassword();
 			echo '
@@ -78,12 +70,6 @@ function user_install($data,$drop=false)
 				<pre>',$e->getMessage(),'</pre><br />';
 		}
 	} else echo '<p class="exists">"users database" already contains records</p>';
-	
 	return $newPassword;
 }
-
-function user_postInstall($data)
-{
-}
-
 ?>

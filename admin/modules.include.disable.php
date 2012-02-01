@@ -38,7 +38,7 @@ function admin_modulesBuild($data,$db){
 			$targetInclude='modules/'.$data->action[3].'.install.php';
 			if(!file_exists($targetInclude)) {
 				$data->output['rejectError']='Module installation file does not exist';
-				$data->output['rejectText']='The module installation could not be found.';
+				$data->output['rejectText']='The module installation file could not be found.';
 			} else {
 				common_include($targetInclude);
 				// Run the module uninstall procedure
@@ -52,7 +52,7 @@ function admin_modulesBuild($data,$db){
 	}
 }
 function admin_modulesShow($data) {
-	if (empty($data->output['rejectError'])) {
+	if(empty($data->output['rejectError'])) {
 		$targetInclude='modules/'.$data->action[3].'.install.php';
 		if(file_exists($targetInclude)
 		&& !$data->action[4]) {
