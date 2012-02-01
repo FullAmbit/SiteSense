@@ -26,21 +26,36 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_plugins_addQueries()
-{
-	
+function admin_plugins_addQueries() {
 	return array(
 		'getAllPlugins' => '
 			SELECT * FROM !prefix!plugins ORDER BY name ASC
 		',
-		'addPlugin' => '
+		'newPlugin' => '
 			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
 		',
 		'getPluginById' => '
 			SELECT * FROM !prefix!plugins WHERE id = :pluginId LIMIT 1
 		',
-		'updatePlugin' => '
+		'getPluginByName' => '
+			SELECT * FROM !prefix!plugins WHERE name = :name
+		',
+		'getModulesEnabledForPlugin' => '
+			SELECT !prefix!plugins_modules.module
+				FROM !prefix!plugins_modules
+				WHERE plugin = :plugin
+		',
+		'updatePluginModules' => '
 			UPDATE !prefix!plugins SET modules = :modules WHERE id = :pluginId
+		',
+		'enableAndUpdate' => '
+			UPDATE !prefix!plugins
+				SET
+					enabled = 1,
+					isCDN = :isCDN,
+					isEditor = :isEditor
+				WHERE
+					name = :name
 		',
 		'setPluginToCDN' => '
 			UPDATE !prefix!plugins SET isCDN = 1 WHERE id = :id LIMIT 1
@@ -55,7 +70,31 @@ function admin_plugins_addQueries()
 			SELECT * FROM !prefix!plugins WHERE isEditor = 1 AND enabled = 1
 		',
 		'insertCMSSetting' => '
-			INSERT INTO !prefix!settings (name,category,value) (:name,"cms",:value)
+			INSERT INTO !prefix!settings (name,category,value) VALUES (:name,"cms",:value)
+		',
+		'deletePlugin' => '
+			DELETE FROM !prefix!plugins WHERE id = :id
+		',
+		'enablePluginForModule' => '
+			INSERT INTO !prefix!plugins_modules
+				(plugin,module)
+			VALUES
+				(:plugin,:module)
+		',
+		'disablePluginForModule' => '
+			DELETE FROM !prefix!plugins_modules
+			WHERE plugin = :plugin
+			AND module = :module
+		',
+		'disable' => '
+			UPDATE !prefix!plugins
+			SET enabled = 0
+			WHERE name = :name
+		',
+		'enable' => '
+			UPDATE !prefix!plugins
+			SET enabled = 1
+			WHERE name = :name
 		'
 	);
 }

@@ -22,33 +22,24 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function friends_settings($data)
-{
+function friends_settings($data) {
 	return array(
 		'name' => 'friends',
 		'shortName' => 'friends'
 	);
 }
-
-function friends_install($data,$drop=false)
-{	
-	$settings = friends_settings($data);
-	$structures = array(
-			'friends' => array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'user1' => 'int(10) unsigned NOT NULL',
-				'user2' => 'int(10) unsigned NOT NULL',
-				'confirmed' => 'tinyint(1) NOT NULL',
-				'PRIMARY KEY (`id`)'
-			)
-		);
-	
+function friends_install($data,$drop=false) {	
+	$structures=array(
+		'friends' => array(
+			'id'										 => SQR_IDKey,
+			'user1'									 => SQR_ID,
+			'user2'									 => SQR_ID,
+			'confirmed'							 => SQR_boolean
+		)
+	);
 	if($drop)
 		$data->dropTable('friends');
-	
 	$data->createTable('friends',$structures['friends'],true);
-	
-	return NULL;
 }
 function friends_uninstall($data) {
 	$data->dropTable('friends');

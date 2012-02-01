@@ -69,24 +69,42 @@ function theme_pluginsListNoneInstalled($msg) {
 			</tr>';
 }
 
-function theme_pluginsListInstalledTableRow($pItemName,$pItemId,$linkRoot) {
+function theme_pluginsListInstalledTableRow($plugin,$data) {
 	echo '
 			<tr>
-				<td>',$pItemName,'</td>
-				<td class="buttonList">
-					<a href="',$linkRoot,'admin/plugins/modify/',$pItemId,'">Modify</a>
+				<td>',$plugin['name'],'</td>
+				<td class="buttonList">';
+	if($plugin['enabled'])
+		echo '<a href="',$data->linkRoot,'admin/plugins/disable/',$plugin['name'],'">Disable</a>';
+	else
+		echo '<a href="',$data->linkRoot,'admin/plugins/enable/',$plugin['name'],'">Enable</a>';
+					echo '
+					<a href="',$data->linkRoot,'admin/plugins/modify/',$plugin['name'],'">Modify</a>
 				</td>
 			</tr>';
 }
-
-function theme_pluginsListUninstalledTableRow($pluginDir,$linkRoot) {
-	echo '
-		<tr>
-			<td>',$pluginDir,'</td>
-			<td class="buttonList">
-				<a href="',$linkRoot,'admin/plugins/install/',$pluginDir,'">Install</a>
-			</td>
-		</tr>';
+function theme_pluginEnabledSuccess() {
+	echo '<h2>Success!</h2><p>Plugin successfully enabled!</p>';
 }
-
+function theme_disabledOfferUninstall($data) {
+	echo '<h2>Success!</h2><p>You have successfully disabled the plugin. 
+	The data stored by this plugin are still in the database, but the 
+	plugin is disabled from user access. If you would like to remove all 
+	of the data stored by this plugin from the database then click 
+	uninstall. But beware, this data will be gone forever.</p>
+	<div class="buttonList">
+		<a href="',$data->linkRoot,'admin/plugins/disable/',$data->action[3],'/uninstall">
+			Uninstall Module
+		</a>
+		<a href="',$data->linkRoot,'admin/plugins">
+			Return to the List of Plugins
+		</a>
+	</div>';
+}
+function theme_uninstalled() {
+	echo '<h2>Success!</h2><p>Plugin successfully uninstalled!</p>';
+}
+function theme_disabled() {
+	echo '<h2>Success!</h2><p>Plugin successfully disabled!</p>';
+}
 ?>

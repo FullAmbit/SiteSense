@@ -72,7 +72,7 @@ function theme_footer($data) {
 	echo '
 	<!-- #pageWrapper --></div>
 <script type="text/javascript"
-	src="',$data->linkRoot,'admin/admin.js"
+	src="',$data->linkRoot,'admin/',$data->themeDir,'admin.js"
 ></script>
 </body></html>';
 }

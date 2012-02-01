@@ -88,8 +88,7 @@ function admin_blogsBuild($data,$db)
 			$data->output['blogForm']->sendArray[':tags'] = strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
 			$data->output['blogForm']->sendArray[':blogId']=$data->action[3];
 			$data->output['blogForm']->sendArray[':user']=$data->user['id'];
-			$data->output['blogForm']->sendArray[':postTime']=time();
-			$data->output['blogForm']->sendArray[':modifiedTime']=0;
+			$data->output['blogForm']->sendArray[':modifiedTime']=gmdate("Y-m-d H:i:s");
 			//--Save To DB--//
 			$statement=$db->prepare('insertBlogPost','admin_blogs');
 			$result = $statement->execute($data->output['blogForm']->sendArray);

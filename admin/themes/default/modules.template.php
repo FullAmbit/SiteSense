@@ -23,11 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function theme_modulesSidebarsTableHead($data) {
-
 	/*echo '<pre>';
 	var_dump($data);
 	echo '</pre>';*/
-
 	echo '
 		<table class="sidebarList">
 			<caption>Manage Sidebars on the "',ucfirst($data->output['module']['name']),'" Module</caption>
@@ -39,7 +37,6 @@ function theme_modulesSidebarsTableHead($data) {
 				</tr>
 			</thead><tbody>';
 }
-
 function theme_modulesSidebarsTableRow($data,$sideBar,$action,$count) {
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
@@ -54,13 +51,11 @@ function theme_modulesSidebarsTableRow($data,$sideBar,$action,$count) {
 				</td>
 			</tr>';
 }
-
 function theme_modulesSidebarsTableFoot() {
 	echo '
 			</tbody>
 		</table>';
 }
-
 function theme_modulesListTableHead() {
 	echo '
 		<table class="modulesList">
@@ -73,11 +68,9 @@ function theme_modulesListTableHead() {
 			</tr>
 			';
 }
-
 function theme_modulesListNoModules() {
 	echo '<tr><td colspan="4">No modules exist</tr></td>';
 }
-
 function theme_modulesListTableRow($data,$module,$count) {
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
@@ -111,41 +104,6 @@ function theme_modulesListTableFoot() {
 		</table>
 	';
 }
-
-function theme_modulesListNewTableHead() {
-	echo '
-		<table class="modulesList">
-			<caption>New Modules</caption>
-			<tr>
-				<th>Name</th>
-				<th>Short Name</th>
-				<th>Controls</th>
-			</tr>
-			';
-}
-
-function theme_modulesListNoNewModules() {
-	echo '<tr><td colspan="3">No new modules exist</tr></td>';
-}
-
-function theme_modulesListNewTableRow($data,$module,$count,$link) {
-	echo '
-			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
-				<td>', $module['name'], '</td>
-				<td>', $module['shortName'], '</td>
-				<td class="buttonList">
-					<a href="',$link,'admin/modules/install/',$module['shortName'],'">Install</a>
-				</td>
-			</tr>
-		';
-}
-
-function theme_modulesListNewTableFoot() {
-	echo '
-		</table>
-	';
-}
-
 function theme_modulesInstallSuccess() {
 	echo '<h2>Success!</h2><p>Module successfully installed!</p>';
 }

@@ -29,45 +29,36 @@ function pages_settings($data)
 		'shortName' => 'pages'
 	);
 }
-
-function pages_install($data,$drop=false)
-{	
-	$settings = pages_settings($data);
+function pages_install($data,$drop=false) {
 	$structures = array(
 		'pages' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'shortName' => 'varchar(128) DEFAULT NULL',
-			'name' => 'varchar(128) NOT NULL',
-			'title' => 'varchar(256) DEFAULT NULL',
-			'rawContent' => 'mediumtext',
-			'parsedContent' => 'mediumtext NOT NULL',
-			'parent' => 'int(11) DEFAULT NULL',
-			'sortOrder' => 'int(11) DEFAULT \'1\'',
-			'live' => 'tinyint(1) DEFAULT NULL',
-			'PRIMARY KEY (`id`)',
+			'id'										 => SQR_IDKey,
+			'shortName'							 => SQR_shortName,
+			'name'									 => SQR_name,
+			'title'									 => SQR_title,
+			'rawContent'						 => 'MEDIUMTEXT NOT NULL',
+			'parsedContent'					 => 'MEDIUMTEXT NOT NULL',
+			'parent'								 => SQR_ID,
+			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
+			'live'									 => SQR_boolean,
 			'KEY `shortName` (`shortName`,`parent`,`sortOrder`)'
 		),
 		'pages_sidebars' => array(
-			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
-			'page' => 'int(11) NOT NULL',
-			'sidebar' => 'int(11) NOT NULL',
-			'enabled' => 'tinyint(1) NOT NULL',
-			'sortOrder' => 'int(11) NOT NULL DEFAULT \'1\'',
-			'PRIMARY KEY (`id`)',
+			'id'										 => SQR_IDKey,
+			'page'									 => SQR_ID,
+			'sidebar'								 => SQR_ID,
+			'enabled'								 => SQR_boolean,
+			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
 			'UNIQUE KEY `module` (`page`,`sidebar`)'
 		)
 	);
-	
 	if($drop) {
 		$data->dropTable('pages');
 		$data->dropTable('pages_sidebars');
-	} 
-	
+	}
 	$data->createTable('pages',$structures['pages'],true);
 	$data->createTable('pages_sidebars',$structures['pages_sidebars'],true);
-	
-	$count=$data->countRows('pages');
-	if ($count==0) {
+	if($data->countRows('pages')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -101,12 +92,5 @@ function pages_install($data,$drop=false)
 			';
 		}
 	} else echo '<p class="exists">"pages database" already contains records</p>';
-	
-	return NULL;
 }
-
-function pages_postInstall($data)
-{
-}
-
 ?>
