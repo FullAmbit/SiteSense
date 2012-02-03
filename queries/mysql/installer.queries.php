@@ -49,14 +49,14 @@ function installer_addQueries() {
 		',
 		'makeWelcomePost' => '
 			INSERT INTO !prefix!blog_posts
-			(blogId,title,name,shortName,user,modifiedTime,rawSummary,parsedSummary,rawContent,parsedContent,live)
+			(blogId,title,name,shortName,user,postTime,rawSummary,parsedSummary,rawContent,parsedContent,live)
 			VALUES (
 				1,
 				\'Welcome to SiteSense\',
 				\'Welcome\',
 				\'welcome\',
 				1,
-				:time,
+				CURRENT_TIMESTAMP,
 				\'<p>SiteSense installation successful</p>\',
 				\'&lt;p&gt;SiteSense installation successful&lt;/p&gt;\',
 				\'<p>You have sucessfully completed your SiteSense Installation</p>\',

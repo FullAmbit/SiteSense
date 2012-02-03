@@ -149,9 +149,14 @@ function theme_formsListTableFoot() {
 	';
 }
 
-function theme_formsListFieldsTableHead() {
+function theme_formsListFieldsTableHead($data) {
 	echo '
-		<table>
+		<div class="panel buttonList">
+			<a href="',$data->linkRoot,'admin/forms/newfield/',$data->output['form']['id'],'">
+				New Field
+			</a>
+		</div>
+		<table class="formsList">
 			<tr>
 				<th>Name</th>
 				<th>Type</th>
@@ -160,9 +165,9 @@ function theme_formsListFieldsTableHead() {
 			';
 }
 
-function theme_formsListFieldsTableRow($data,$field) {
+function theme_formsListFieldsTableRow($data,$field,$count) {
 	echo '
-		<tr>
+		<tr class="',($count%2 == 0 ? 'even' : 'odd'),'">
 			<td>', $field['name'], '</td>
 			<td>', $field['type'], '</td>
 			<td class="buttonList">';
@@ -181,16 +186,13 @@ function theme_formsListFieldsTableRow($data,$field) {
 	';
 }
 
-function theme_formsListFieldsTableFoot($data) {
+function theme_formsListFieldsTableFoot() {
 	echo '
-			<tr>
-				<td><a href="', $data->linkRoot, 'admin/forms/newfield/', $data->output['form']['id'], '">New Field</a></td>
-			</tr>
 		</table>
 	';
 }
 
-function theme_formsListOptionsButtons() {
+function theme_formsListOptionsButtons($data) {
 	echo 
 	'<div class="panel buttonList">
 		<a href="'.$data->linkRoot.'admin/forms/listfields/'.$data->output['fieldItem']['form'].'" title="Back To Fields">Back To Fields</a>
@@ -200,7 +202,7 @@ function theme_formsListOptionsButtons() {
 
 function theme_formsListOptionsTableHead() {
 	echo '
-		<table class="pagesList">
+		<table class="formsList">
 			<tr>
 				<th>Text</th>
 				<th>Value</th>
@@ -219,7 +221,7 @@ function theme_formsListOptionsNoOptions() {
 
 function theme_formsListOptionsTableRow($data,$option,$optionIndex,$i) {
 	echo '
-		<tr class="'.($i%2 == 0 ? 'even' : 'odd').'">';
+		<tr class="',($i%2 == 0 ? 'even' : 'odd'),'">';
 	echo '
 			<td>', $option['text'], '</td>
 			<td>', $option['value'], '</td>
@@ -275,7 +277,7 @@ function theme_formsSidebarsTableFoot() {
 
 function theme_viewdataTableHead() {
 	echo '
-		<table>
+		<table class="formsList">
 			<tr>
 		';
 }

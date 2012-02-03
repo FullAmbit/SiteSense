@@ -120,8 +120,7 @@ function blogs_install($data,$drop=false) {
 		try {
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';
-			$statement=$data->prepare('makeWelcomePost','installer');
-			$statement->execute(array(':time' => gmdate("Y-m-d H:i:s")));
+			$statement=$data->query('makeWelcomePost','installer');
 			echo '
 				<div>
 					Home Page Welcome Post Generated!<br />

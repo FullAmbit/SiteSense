@@ -90,7 +90,7 @@ function sortCmp($a,$b)
 }
 
 function admin_formsShow($data){
-	theme_formsListOptionsButtons();
+	theme_formsListOptionsButtons($data);
 	
 	theme_formsListOptionsTableHead();
 			

@@ -112,7 +112,6 @@ function admin_blogs_addQueries() {
 				title        = :title,
 				name		 = :name,
 				shortName    = :shortName,
-				modifiedTime = :modifiedTime,
 				rawSummary      = :rawSummary,
 				parsedSummary	= :parsedSummary,
 				rawContent      = :rawContent,
@@ -130,7 +129,7 @@ function admin_blogs_addQueries() {
 				name,
 				shortName,
 				user,
-				modifiedTime,
+				postTime,
 				rawSummary,
 				parsedSummary,
 				rawContent,
@@ -145,7 +144,7 @@ function admin_blogs_addQueries() {
 				:name,
 				:shortName,
 				:user,
-				:modifiedTime,
+				CURRENT_TIMESTAMP,
 				:rawSummary,
 				:parsedSummary,
 				:rawContent,
@@ -176,16 +175,22 @@ function admin_blogs_addQueries() {
 			WHERE blogID = :id
 		',
 		'getBlogPostsByBlogIdLimited' => '
-			SELECT * FROM !prefix!blog_posts
-			WHERE blogId = :blogId
-			ORDER BY postTime DESC
-			LIMIT :blogStart, :blogLimit
+			SELECT *
+				FROM !prefix!blog_posts
+				WHERE blogId = :blogId
+				ORDER BY postTime DESC
+				LIMIT :blogStart, :blogLimit
 		',
 		'getAllCategories' => '
-			SELECT * FROM !prefix!blog_categories ORDER BY name ASC
+			SELECT * 
+				FROM !prefix!blog_categories
+				ORDER BY name ASC
 		',
 		'getAllCategoriesByBlog' => '
-			SELECT * FROM !prefix!blog_categories WHERE blogId = :blogId ORDER BY name ASC
+			SELECT *
+				FROM !prefix!blog_categories
+				WHERE blogId = :blogId
+				ORDER BY name ASC
 		',
 		'getCategoryById' => '
 			SELECT * FROM !prefix!blog_categories WHERE id = :id

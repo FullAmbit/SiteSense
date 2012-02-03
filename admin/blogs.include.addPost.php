@@ -48,7 +48,18 @@ function admin_blogsBuild($data,$db)
 	}
 	// Load Form //		
 	$data->output['blogForm']=new formHandler('blogsEditPosts',$data,true);
-	
+	// Get Blog Categories //
+	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
+	$statement->execute(array(
+		':blogId' => $data->action[3]
+	));
+	$data->output['categoryList']=$statement->fetchAll();
+	$x=1;
+	foreach($data->output['categoryList'] as $categoryItem) {
+		$data->output['blogForm']->fields['categoryId']['options'][$x]['value'] = $categoryItem['id'];
+		$data->output['blogForm']->fields['categoryId']['options'][$x]['text'] = $categoryItem['name'];
+		$x++;
+	}
 	// Handle Post Request
 	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
 	{
@@ -88,7 +99,6 @@ function admin_blogsBuild($data,$db)
 			$data->output['blogForm']->sendArray[':tags'] = strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
 			$data->output['blogForm']->sendArray[':blogId']=$data->action[3];
 			$data->output['blogForm']->sendArray[':user']=$data->user['id'];
-			$data->output['blogForm']->sendArray[':modifiedTime']=gmdate("Y-m-d H:i:s");
 			//--Save To DB--//
 			$statement=$db->prepare('insertBlogPost','admin_blogs');
 			$result = $statement->execute($data->output['blogForm']->sendArray);

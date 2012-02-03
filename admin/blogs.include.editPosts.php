@@ -89,12 +89,13 @@ function admin_blogsBuild($data,$db)
 	}
 	
 	// Get Blog Categories //
-	$statement = $db->prepare('getAllCategories','admin_blogs');
-	$statement->execute();
-	$data->output['categoryList'] = $statement->fetchAll();
-	$x = 1;
-	foreach($data->output['categoryList'] as $categoryItem)
-	{
+	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
+	$statement->execute(array(
+		':blogId' => $data->action[3]
+	));
+	$data->output['categoryList']=$statement->fetchAll();
+	$x=1;
+	foreach($data->output['categoryList'] as $categoryItem) {
 		$data->output['blogForm']->fields['categoryId']['options'][$x]['value'] = $categoryItem['id'];
 		$data->output['blogForm']->fields['categoryId']['options'][$x]['text'] = $categoryItem['name'];
 		$x++;
@@ -128,7 +129,6 @@ function admin_blogsBuild($data,$db)
 			
 			$statement=$db->prepare('updateBlogPostsById','admin_blogs');
 			$data->output['blogForm']->sendArray[':id']=$data->action[4];
-			$data->output['blogForm']->sendArray[':modifiedTime']=time();
 			
 			// HTML Special Chars
 			$data->output['blogForm']->sendArray[':title'] = htmlspecialchars($data->output['blogForm']->sendArray[':title']);

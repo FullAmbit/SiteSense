@@ -125,4 +125,5 @@ function admin_formsShow($data)
 		}
 		theme_formsSidebarsTableFoot();
 }
+}
 ?>

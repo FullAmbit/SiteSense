@@ -24,7 +24,7 @@
 */
 class plugin_ckeditor
 {
-	var $theme = 'paladin';
+	var $theme = 'sitesense';
 	
 	function __construct()
 	{
@@ -32,7 +32,7 @@ class plugin_ckeditor
 	
 	function theme_header($data)
 	{
-		$basePath = $data->smallStaticLinkRoot;
+		$basePath = $data->linkRoot;
 		echo '
 		<script type="text/javascript">
 			var CMSBasePath="',$basePath,'";
