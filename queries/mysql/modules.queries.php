@@ -59,7 +59,12 @@ function modules_addQueries() {
 			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
 		'getEnabledSideBarsByModule' => '
-				SELECT a.enabled,a.sortOrder,b.* FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
+				SELECT a.enabled,a.sortOrder,b.* 
+					FROM !prefix!module_sidebars a, !prefix!sidebars b 
+					WHERE a.module = :module 
+					AND a.sidebar = b.id 
+					AND a.enabled = 1 
+					ORDER BY a.sortOrder ASC
 		',
 		'enableSideBar' => '
 			UPDATE !prefix!module_sidebars

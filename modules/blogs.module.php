@@ -139,7 +139,7 @@ function page_buildContent($data,$db) {
 				$data->output['blogItem']['userList'][$userItem['id']] = $userItem;
 			}
 		}
-	}
+	} else {
 	// If No Page Set, Then Start At 0
 	if ($data->action[2] === false) $data->action[2]=0;
 	// Show Posts In A Specific Blog (Action[2] would be the page number
@@ -261,6 +261,7 @@ function page_buildContent($data,$db) {
 		$statement->execute(array('post' => $item['id']));
 		$result = $statement->fetch();
 		$item['commentsWaiting'] = intval($result[0]);
+	}
 	}
 }
 function page_content($data) 

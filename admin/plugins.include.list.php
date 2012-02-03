@@ -79,8 +79,10 @@ function admin_pluginsShow($data) {
 	if(empty($data->output['plugins'])) {
 		theme_pluginsListNoneInstalled('No plugins found');
 	} else {
+		$count=0;
 		foreach($data->output['plugins'] as $plugin) {
-			theme_pluginsListInstalledTableRow($plugin,$data);
+			theme_pluginsListInstalledTableRow($plugin,$data,$count);
+			$count++;
 		}
 	}
 	theme_pluginsListTableFoot();

@@ -82,9 +82,11 @@ function admin_formsBuild($data,$db){
 	$data->output['fields'] = $statement->fetchAll();
 }
 function admin_formsShow($data){
-	theme_formsListFieldsTableHead();
+	theme_formsListFieldsTableHead($data);
+	$count=0;
 	foreach($data->output['fields'] as $field){
-		 theme_formsListFieldsTableRow($data,$field);
+		theme_formsListFieldsTableRow($data,$field,$count);
+		$count++;
 	}
-	theme_formsListFieldsTableFoot($data);
+	theme_formsListFieldsTableFoot();
 }

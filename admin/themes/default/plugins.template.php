@@ -44,7 +44,7 @@ function theme_pluginsModifySuccess($linkRoot) {
 
 function theme_pluginsListTableHead($title) {
 	echo '
-	<table class="pagesList">
+	<table class="modulesList">
 		<caption>',$title,'</caption>
 		<thead>
 			<tr>
@@ -69,9 +69,9 @@ function theme_pluginsListNoneInstalled($msg) {
 			</tr>';
 }
 
-function theme_pluginsListInstalledTableRow($plugin,$data) {
+function theme_pluginsListInstalledTableRow($plugin,$data,$count) {
 	echo '
-			<tr>
+			<tr class="',($count%2 == 0 ? 'even' : 'odd'),'">
 				<td>',$plugin['name'],'</td>
 				<td class="buttonList">';
 	if($plugin['enabled'])

@@ -71,7 +71,7 @@ function theme_sideBarsListNoSidebars() {
 
 function theme_sideBarsListTableHead() {
 	echo '
-			<table class="sidebarsList">
+			<table class="sidebarList">
 				<caption>Manage Sidebars</caption>
 				<thead>
 					<tr>

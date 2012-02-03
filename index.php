@@ -297,30 +297,19 @@ final class sitesense {
 		
 		$this->linkRoot=$this->linkHome;
 		// Set Up Other CDN Variables Using Link Root //
-		$this->smallStaticLinkRoot = (isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
-		$this->largeStaticLinkRoot = (isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
-		$this->flashLinkRoot = (isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
-		
+		$this->smallStaticLinkRoot=(isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
+		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
+		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
 		if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
-		if (
-			($url=='') ||
-			($url=='index.php') ||
-			($url=='index.html') ||
-			($url=='index.php?')
-		) {
-			if(isset($this->settings['homepage'])){
-				
-				$targetInclude = 'modules/'.$this->settings['homepage'].'.module.php';
-				if(file_exists($targetInclude))
-				{
-					$this->action[0] = $this->settings['homepage'];
-				} else {
-					$this->action[0] = 'pages';
-					$this->action[1] = $this->settings['homepage'];
-				}
-			}else{
-				$this->action[0] = 'default';
-			}	
+		if(isset($this->settings['homepage'])
+		&& $this->action[0]=='default') {
+			$targetInclude='modules/'.$this->settings['homepage'].'.module.php';
+			if(file_exists($targetInclude)) {
+				$this->action[0]=$this->settings['homepage'];
+			} else {
+				$this->action[0]='pages';
+				$this->action[1]=$this->settings['homepage'];
+			}
 		}
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		$sideBars = array();
@@ -438,10 +427,7 @@ final class sitesense {
 		} else if (!$this->banned && !empty($_COOKIE[$userCookieName])) {
 			$userCookieValue=$_COOKIE[$userCookieName];
 			/* purge expired sessions */
-			$statement=$this->db->prepare('purgeExpiredSessions');
-			$statement->execute(array(
-				':currentTime' => time()
-			));
+			$this->db->query('purgeExpiredSessions');
 			/* pull session record if still present after purge */
 			$statement=$this->db->prepare('getSessionById');
 			$statement->execute(array(
@@ -468,7 +454,7 @@ final class sitesense {
 							));
 							if($this->output['banItem'] = $banItem = $statement->fetch())
 							{
-								if(time() < $banItem['expiration'])
+								if(time() < strtotime($banItem['expiration']))
 								{
 									$this->banned = true;
 									$this->loginResult = false;

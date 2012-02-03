@@ -41,7 +41,7 @@ function common_addQueries() {
 		',
 		'purgeExpiredSessions' => '
 			DELETE FROM !prefix!sessions
-			WHERE expires < :currentTime
+			WHERE expires < CURRENT_TIMESTAMP
 		',
 		'getSessionById' => '
 			SELECT * FROM !prefix!sessions
