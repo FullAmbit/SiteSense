@@ -106,20 +106,29 @@ function admin_buildContent($data,$db) {
 			$data->output['secondSideBar']='
 				<h2>Settings Saved</h2>
 				<ul class="updateList">';
-				
 			// Parse The Footer //
-			if($data->settings['useBBCode'] == '1')
-			{
-				common_loadPlugin($data,'bbcode');
-				$data->output['settingsForm']->fields['parsedFooterContent']['newValue'] = @$data->plugins['bbcode']->parse($data->output['settingsForm']->fields['rawFooterContent'][$data->output['settingsForm']->fields['rawFooterContent']['updated']]);
+			if($data->settings['useBBCode']=='1') {
+				if(!empty(
+					$data->output['settingsForm']->fields['rawFooterContent']['updated']
+				)) {
+					common_loadPlugin($data,'bbcode');
+					$data->output['settingsForm']->fields['parsedFooterContent']['newValue']=
+					$data->plugins['bbcode']->parse(
+						$data->output['settingsForm']->fields['rawFooterContent'][
+							$data->output['settingsForm']->fields['rawFooterContent']['updated']
+						]
+						);
+				}
 			} else {
-				$data->output['settingsForm']->fields['parsedFooterContent']['newValue'] = @htmlspecialchars($data->output['settingsForm']->fields['rawFooterContent']);
+				$data->output['settingsForm']->fields['parsedFooterContent']['newValue']=
+				htmlspecialchars(
+					$data->output['settingsForm']->fields['rawFooterContent']
+				);
 			}
-			
-			$data->output['settingsForm']->fields['parsedFooterContent']['updated'] = 'newValue';
-			
-			$statement=$db->prepare('updateSettings','admin_settings');
+			if(isset($data->output['settingsForm']->fields['parsedFooterContent']['newValue']))
+				$data->output['settingsForm']->fields['parsedFooterContent']['updated']='newValue';
 			// Loop Through Form Fields //
+			$statement=$db->prepare('updateSettings','admin_settings');
 			foreach ($data->output['settingsForm']->fields as $fieldKey => $fieldData) {
 				if (!empty($fieldData['updated'])) {
 					$data->output['secondSideBar'].='

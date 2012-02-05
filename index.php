@@ -485,7 +485,6 @@ final class sitesense {
 							)) or die('Session Database failed updating expiration');
 							$statement=$this->db->prepare('updateLastAccess');
 							$statement->execute(array(
-								':lastAccess' => time(),
 								':id' => $user['id']
 							)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
 							//Load Profile Pictures

@@ -89,9 +89,7 @@ function admin_usersBuild($data,$db)
 			unset($data->output['userForm']->sendArray[':password2']);
 			unset($data->output['userForm']->sendArray[':id']);
 			
-			$data->output['userForm']->sendArray[':registeredDate']=time();
 			$data->output['userForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
-			$data->output['userForm']->sendArray[':lastAccess']=0;
 			$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
 			$statement=$db->prepare('insertUser','admin_users');
 			

@@ -62,7 +62,7 @@ function common_addQueries() {
 		',
 		'updateLastAccess' => '
 			UPDATE !prefix!users
-			SET lastAccess = :lastAccess
+			SET lastAccess = CURRENT_TIMESTAMP
 			WHERE id = :id
 		',
 		'checkPassword' => '
