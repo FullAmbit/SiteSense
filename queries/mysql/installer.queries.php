@@ -37,9 +37,9 @@ function installer_addQueries() {
 		',
 		'addUser' => '
 			INSERT INTO !prefix!users
-			(name,password,userLevel,registeredDate,registeredIP)
+			(name,password,userLevel,registeredIP)
 			VALUES
-			(:name,:passphrase,:userLevel,:registeredDate,:registeredIP)
+			(:name,:passphrase,:userLevel,:registeredIP)
 		',
 		'makeNewsBlog' => '
 			INSERT INTO !prefix!blogs

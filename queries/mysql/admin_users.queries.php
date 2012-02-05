@@ -87,9 +87,9 @@ function admin_users_addQueries() {
 		',
 		'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,fullName,password,registeredDate,registeredIP,lastAccess,userLevel,contactEMail,publicEMail)
+			(name,fullName,password,registeredIP,userLevel,contactEMail,publicEMail)
 			VALUES
-			(:name,:fullName,:password,:registeredDate,:registeredIP,:lastAccess,:userLevel,:contactEMail,:publicEMail)
+			(:name,:fullName,:password,:registeredIP,:userLevel,:contactEMail,:publicEMail)
 		',
 		'checkUserName' => '
 			SELECT id FROM !prefix!users

@@ -69,9 +69,9 @@ function admin_usersBuild($data,$db) {
 					$data->output['userForm']->fields[$key]['value']=(
 						($item[$key]==0) ?
 						'never' :
-						date(
-							'd F Y - G:i:s O',
-							$item[$key]
+						gmdate(
+							'd F Y - G:i:s',
+							strtotime($item[$key])
 						)
 					);
 				break;

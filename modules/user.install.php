@@ -58,7 +58,6 @@ function user_install($data,$drop=false) {
 				':name' => 'admin',
 				':passphrase' => hash('sha256',$newPassword),
 				':userLevel' => 255,
-				':registeredDate' => time(),
 				':registeredIP' => $_SERVER['REMOTE_ADDR']
 			));
 			echo '

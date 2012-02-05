@@ -24,7 +24,7 @@
 */
 define("INSTALLER", true);
 $settings=array(
-	'setupPassword'=> 'startitup',
+	'setupPassword'=> 'i{QwV;R{UyG2fqMn(Yd;Q=&[hM3:fI/!',
 	'saveToDb' => array(
 		'siteTitle' => 'SiteSense',
 		'homepage' => 'default',
