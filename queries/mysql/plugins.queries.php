@@ -27,18 +27,24 @@
 	!prefix! = dynamicPDO::tablePrefix
 */
 function plugins_addQueries(){
-	return array(
-		'getEnabledPlugins' => '
-			SELECT *
-				FROM !prefix!plugins 
-				JOIN plugins_modules
-				ON plugins.id = plugins_modules.plugin
-		',
-		'getPluginByName' => '
-			SELECT * 
-				FROM !prefix!plugins 
-				WHERE name = :name
-		'
-	);
+ return array(
+  'getEnabledPlugins' => '
+   SELECT *
+    FROM !prefix!plugins 
+    JOIN !prefix!plugins_modules
+    ON !prefix!plugins.id = !prefix!plugins_modules.plugin
+  ',
+  'getPluginByName' => '
+   SELECT * 
+    FROM !prefix!plugins 
+    WHERE name = :name
+  ',
+  'newPlugin' => '
+   INSERT INTO !prefix!plugins
+   (name,enabled)
+   VALUES
+   (:name,:enabled)
+  '
+ );
 }
 ?>

@@ -42,12 +42,14 @@ function admin_pagesBuild($data,$db)
 		
 		$statement = $db->prepare('getExistingShortNames','admin_pages');
 		$statement->execute();
-		$pageShortNameList = $statement->fetchAll();
-		foreach($pageShortNameList as $item)
-		{
-			$cannotEqual[] = $item['shortName'];
-		}
-		$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
+		//if(count($pageShortNameList = $statement->fetchAll())){
+		//	echo 'test';
+		//}
+		//foreach($pageShortNameList as $item)
+		//{
+		//	$cannotEqual[] = $item['shortName'];
+		//}
+		$data->output['pageForm']->fields['name']['cannotEqual'] = NULL;
 		// Apply ShortName Convention To Name For Use In Comparison //
 		$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
 		
@@ -99,7 +101,8 @@ function admin_pagesBuild($data,$db)
 			
 			
 			// Save To DB
-			$statement = $db->prepare('insertPage','admin_pages');
+			var_dump($statement = $db->prepare('insertPage','admin_pages'));
+			var_dump($data->output['pageForm']->sendArray);
 			if($statement->execute($data->output['pageForm']->sendArray))
 			{
 				

@@ -614,6 +614,7 @@ final class sitesense {
 		$this->loadModuleLanguage('common');
 		$this->loadModuleLanguage($this->currentPage);
 		// Get the plugins for this module
+		
 		$statement=$this->db->query('getEnabledPlugins','plugins');
 		$plugins=$statement->fetchAll();
 		foreach($plugins as $plugin) {
