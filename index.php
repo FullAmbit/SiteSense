@@ -301,16 +301,24 @@ final class sitesense {
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
 		if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
-		if(isset($this->settings['homepage'])
-		&& $this->action[0]=='default') {
-			$targetInclude='modules/'.$this->settings['homepage'].'.module.php';
-			if(file_exists($targetInclude)) {
-				$this->action[0]=$this->settings['homepage'];
-			} else {
-				$this->action[0]='pages';
-				$this->action[1]=$this->settings['homepage'];
-			}
-		}
+        if (
+           ($url=='') ||
+           ($url=='index.php') ||
+           ($url=='index.html') ||
+           ($url=='index.php?')
+        ) {
+            if(isset($this->settings['homepage']) && $this->action[0]=='default') {
+			    $targetInclude='modules/'.$this->settings['homepage'].'.module.php';
+			    if(file_exists($targetInclude)) {
+				    $this->action[0]=$this->settings['homepage'];
+			    } else {
+				    $this->action[0]='pages';
+				    $this->action[1]=$this->settings['homepage'];
+			    }
+            } else {
+                $this->action[0] = 'default';
+            }
+        }
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		$sideBars = array();
 		//Does this module exist, and is it enabled?
@@ -624,7 +632,7 @@ final class sitesense {
 		}
 		// Is this an AJAX request?
 		if($this->action[0]=='ajax') {
-			ajax_buildContent($this,$this->db);
+            ajax_buildContent($this,$this->db);
 		} else {
 		// Nope, this is a normal page request
 			if (function_exists('page_buildContent')) {

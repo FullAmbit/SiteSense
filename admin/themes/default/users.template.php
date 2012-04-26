@@ -29,7 +29,7 @@ function theme_usersUnbanConfirm($userId,$userName,$linkRoot) {
 				  <legend><span>Are you sure you want to unban <i>',$userName,'</i></span></legend>
 				  <input type="submit" name="delete" value="Yes" />
 				  <input type="submit" name="cancel" value="No" />
-				  <input type="hidden" name="formForm" value="',$userId,'" />
+				  <input type="hidden" name="fromForm" value="',$userId,'" />
 			  </fieldset>
 		  </form>';
 }
@@ -151,7 +151,7 @@ function theme_usersDeleteDefault($action3,$linkRoot) {
 				<p class="warning">*** WARNING *** This action cannot be undone</p>
 				<input type="submit" name="delete" value="Yes, Delete it" />
 				<input type="submit" name="cancel" value="Cancel" />
-				<input type="hidden" name="formForm" value="',$action3,'" />
+				<input type="hidden" name="fromForm" value="',$action3,'" />
 			</fieldset>
 		</form>';
 }

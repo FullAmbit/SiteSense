@@ -37,7 +37,7 @@ function admin_sideBarsBuild($data,$db) {
 				$data->output['rejectError']='Locked SideBar Element';
 				$data->output['rejectText']='That sideBar element cannot be deleted from the admin panel. Either disable it, or delete it\'s associated module files.';
 			} else if ($data->user['userLevel']>=USERLEVEL_WRITER) {
-				if (isset($_POST['formForm']) && $_POST['formForm']==$data->action[3]) {
+				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
 						$qHandle=$db->prepare('deleteById','admin_sideBars');
 						$qHandle->execute(array(

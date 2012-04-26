@@ -40,7 +40,7 @@ function admin_formsBuild($data,$db) {
 		return;
 	}
 	$data->output['form'] = $dbform;
-	$form = $data->output['formForm'] = new formHandler('formfields',$data,true);
+	$form = $data->output['fromForm'] = new formHandler('formfields',$data,true);
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
 	{
 		$form->caption = 'New Form Field';
@@ -94,7 +94,7 @@ function admin_formsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['formForm']);
+		theme_buildForm($data->output['fromForm']);
 	}
 }
 ?>

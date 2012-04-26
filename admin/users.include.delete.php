@@ -29,7 +29,7 @@ function admin_usersBuild($data,$db) {
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
 		if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
-			if (@$_POST['formForm']==$data->action[3]) {
+			if (@$_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					$qHandle=$db->prepare('deleteUserById','admin_users');
 					$qHandle->execute(array(
