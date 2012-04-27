@@ -261,7 +261,7 @@ final class sitesense {
 		}
 		
 		$statement=$this->db->query('getSettings');
-		while ($row=$statement->fetch()) {
+        while ($row=$statement->fetch()) {
 			if ($row['category']=='cms') {
 				$this->settings[$row['name']]=$row['value'];
 			} else {
@@ -683,11 +683,16 @@ final class sitesense {
 			return false;
 		}
 	}
+
+    //Anonymous Function Fix - adds support below 5.3
+    public function arrayInterrater($item){
+        return $item['display'];
+    }
 	public function getActivatedSidebars(){
 		return array_filter(
 			$this->sideBarList,
 			function($item){
-				return $item['display'];
+                return arrayInterrater($item);
 			}
 		);
 	}
