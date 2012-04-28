@@ -165,7 +165,7 @@ if (
 		'forms',
 		'default',
 		'blogs',
-		'page',
+		'pages',
 		'login',
 		'logout',
 		'register',

@@ -40,7 +40,7 @@ function admin_formsBuild($data,$db) {
 		return;
 	}
 
-	$form = $data->output['formForm'] = new formHandler('formoptions',$data,true);
+	$form = $data->output['fromForm'] = new formHandler('formoptions',$data,true);
 	if (
 		(!empty($_POST['fromForm'])) &&
 		($_POST['fromForm']==$form->fromForm)
@@ -90,7 +90,7 @@ function admin_formsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['formForm']);
+		theme_buildForm($data->output['fromForm']);
 	}
 }
 

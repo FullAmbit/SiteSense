@@ -64,7 +64,7 @@ function admin_usersBuild($data,$db)
 	}
 	
 	// Post?
-	if(isset($_POST['formForm']) && $_POST['formForm'] == $userItem['id'])
+	if(isset($_POST['fromForm']) && $_POST['fromForm'] == $userItem['id'])
 	{
 		// If Cancel, Display The Return Form
 		if(isset($_POST['cancel']))

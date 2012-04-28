@@ -41,7 +41,7 @@ function admin_pagesBuild($data,$db) {
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
 		if ($data->user['userLevel']>=USERLEVEL_WRITER) {
-			if ($_POST['formForm']==$data->action[3]) {
+			if ($_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					
 					// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
@@ -85,7 +85,7 @@ function admin_pagesShow($data) {
 				theme_pagesDeleteDeteled($data);
 			break;
 			case 'cancelled':
-				theme_pagesDeleteCancelled($data)
+				theme_pagesDeleteCancelled($data);
 			break;
 			default:
 				theme_pagesDeleteDefault($data);

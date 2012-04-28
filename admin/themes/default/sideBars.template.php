@@ -50,7 +50,7 @@ function theme_sideBarsDeleteDefault($data,$aRoot) {
 					<legend><span>Are you sure you want to delete sidebar #',$data->action[3],'?</span></legend>
 					<input type="submit" name="delete" value="Yes, Delete it" />
 					<input type="submit" name="cancel" value="Cancel" />
-					<input type="hidden" name="formForm" value="',$data->action[3],'" />
+					<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 				</fieldset>
 			</form>';
 }

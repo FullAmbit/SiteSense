@@ -22,29 +22,17 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-/*
-	!table! = $tableName
-	!prefix! = dynamicPDO::tablePrefix
-*/
-function plugins_addQueries(){
- return array(
-  'getEnabledPlugins' => '
-   SELECT *
-    FROM !prefix!plugins 
-    JOIN !prefix!plugins_modules
-    ON !prefix!plugins.id = !prefix!plugins_modules.plugin
-  ',
-  'getPluginByName' => '
-   SELECT * 
-    FROM !prefix!plugins 
-    WHERE name = :name
-  ',
-  'newPlugin' => '
-   INSERT INTO !prefix!plugins
-   (name,enabled)
-   VALUES
-   (:name,:enabled)
-  '
- );
+function ajax_settings($data)
+{
+    return array(
+        'name' => 'ajax',
+        'shortName' => 'ajax'
+    );
 }
+
+function ajax_install($data,$drop=false)
+{
+    return NULL;
+}
+
 ?>

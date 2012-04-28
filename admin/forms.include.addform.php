@@ -25,7 +25,7 @@
 common_include('libraries/forms.php');
 function admin_formsBuild($data,$db)
 {
-	$data->output['formForm'] = new formHandler('forms',$data,true);
+	$data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
 	$statement = $db->prepare('getEnabledPlugins','plugins');
 	$statement->execute();
@@ -36,18 +36,18 @@ function admin_formsBuild($data,$db)
 		$option['text'] = $pluginItem['name'];
 		$option['value'] = $pluginItem['name'];
 			
-		$data->output['formForm']->fields['api']['options'][] = $option;
+		$data->output['fromForm']->fields['api']['options'][] = $option;
 	}
 	// Handle Post Request
-	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['formForm']->fromForm))
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['fromForm']->fromForm))
 	{
-		$data->output['formForm']->populateFromPostData();
+		$data->output['fromForm']->populateFromPostData();
 		/**
 		 * Set up Short Name Check
 		**/
-		$shortName = common_generateShortName($_POST[$data->output['formForm']->formPrefix.'name']);
+		$shortName = common_generateShortName($_POST[$data->output['fromForm']->formPrefix.'name']);
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-		$data->output['formForm']->sendArray[':shortName'] = $_POST[$data->output['formForm']->formPrefix.'name'] = $shortName;
+		$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing SideBar ShortNames For Comparison
 		$statement = $db->prepare('getExistingShortNames','form');
 		$statement->execute();
@@ -57,19 +57,19 @@ function admin_formsBuild($data,$db)
 		{
 			$existingShortNames[] = $formItem['shortName'];
 		}
-		$data->output['formForm']->fields['name']['cannotEqual'] = $existingShortNames;
+		$data->output['fromForm']->fields['name']['cannotEqual'] = $existingShortNames;
 		/*----------------*/
 		// Run And Validate All Fields //
-		if($data->output['formForm']->validateFromPost())
+		if($data->output['fromForm']->validateFromPost())
 		{
 			/**
 			 *	Are We Saving A Menu Item?
 			 *	--------------------------
 			**/
-			if($data->output['formForm']->sendArray[':showOnMenu'])
+			if($data->output['fromForm']->sendArray[':showOnMenu'])
 			{
 				//----Build The Menu Item----//
-				$title = (isset($data->output['formForm']->sendArray[':menuText']{1})) ? $data->output['formForm']->sendArray[':menuText'] : $data->output['formForm']->sendArray[':name'];
+				$title = (isset($data->output['fromForm']->sendArray[':menuText']{1})) ? $data->output['fromForm']->sendArray[':menuText'] : $data->output['fromForm']->sendArray[':name'];
 				// Sort Order
 				$rowCount = $db->countRows('main_menu');
 				$sortOrder = $rowCount + 1;
@@ -78,7 +78,7 @@ function admin_formsBuild($data,$db)
 				$statement->execute(array(
 					':text' => $title,
 					':title' => $title,
-					':url' => 'forms/'.$data->output['formForm']->sendArray[':shortName'].'/',
+					':url' => 'forms/'.$data->output['fromForm']->sendArray[':shortName'].'/',
 					':enabled' => '1',
 					':parent' => '0',
 					':sortOrder' => $sortOrder
@@ -86,25 +86,25 @@ function admin_formsBuild($data,$db)
 				
 				$menuId = $db->lastInsertId();
 			}
-			unset($data->output['formForm']->sendArray[':menuText'],$data->output['formForm']->sendArray[':showOnMenu']);
+			unset($data->output['fromForm']->sendArray[':menuText'],$data->output['fromForm']->sendArray[':showOnMenu']);
 			//----------------------------//
 			//----Parse---//
 			if($data->settings['useBBCode'] == '1')
 			{
 				common_loadPlugin($data,'bbcode');
 				
-				$data->output['formForm']->sendArray[':parsedContentBefore'] = $data->plugins['bbcode']->parse($data->output['formForm']->sendArray[':rawContentBefore']);
-				$data->output['formForm']->sendArray[':parsedContentAfter'] = $data->plugins['bbcode']->parse($data->output['formForm']->sendArray[':rawContentAfter']);
-				$data->output['formForm']->sendArray[':parsedSuccessMessage'] = $data->plugins['bbcode']->parse($data->output['formForm']->sendArray[':rawSuccessMessage']);
+				$data->output['fromForm']->sendArray[':parsedContentBefore'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawContentBefore']);
+				$data->output['fromForm']->sendArray[':parsedContentAfter'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawContentAfter']);
+				$data->output['fromForm']->sendArray[':parsedSuccessMessage'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawSuccessMessage']);
 			} else {
-				$data->output['formForm']->sendArray[':parsedContentBefore'] = htmlspecialchars($data->output['formForm']->sendArray[':rawContentBefore']);
-				$data->output['formForm']->sendArray[':parsedContentAfter'] = htmlspecialchars($data->output['formForm']->sendArray[':rawContentAfter']);
-				$data->output['formForm']->sendArray[':parsedSuccessMessage'] = htmlspecialchars($data->output['formForm']->sendArray[':rawSuccessMessage']);
+				$data->output['fromForm']->sendArray[':parsedContentBefore'] = htmlspecialchars($data->output['fromForm']->sendArray[':rawContentBefore']);
+				$data->output['fromForm']->sendArray[':parsedContentAfter'] = htmlspecialchars($data->output['fromForm']->sendArray[':rawContentAfter']);
+				$data->output['fromForm']->sendArray[':parsedSuccessMessage'] = htmlspecialchars($data->output['fromForm']->sendArray[':rawSuccessMessage']);
 			}
 			//------------//
 			// Save to DB //
 			$statement = $db->prepare('newForm','form');
-			$result = $statement->execute($data->output['formForm']->sendArray);
+			$result = $statement->execute($data->output['fromForm']->sendArray);
 			if($result)
 			{
 				$data->output['savedOkMessage']='
@@ -143,7 +143,7 @@ function admin_formsShow($data)
 	{
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['formForm']);
+		theme_buildForm($data->output['fromForm']);
 	}
 }
 

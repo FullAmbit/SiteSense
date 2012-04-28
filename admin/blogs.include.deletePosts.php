@@ -53,7 +53,7 @@ function admin_blogsBuild($data,$db) {
 				return;
 			}
 				
-			if(isset($_POST['formForm']) && $_POST['formForm']==$data->action[3]) {	
+			if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					$statement=$db->prepare('deleteBlogPostById','admin_blogs');
 					$statement->execute(array(

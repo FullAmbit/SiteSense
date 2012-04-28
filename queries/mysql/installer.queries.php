@@ -33,7 +33,8 @@ function installer_addQueries() {
 		',
 		'addSetting' => '
 			INSERT INTO !prefix!settings
-			(name,category,value) VALUES (:name, :category, :value)
+			(name,category,value)
+			VALUES (:name, :category, :value)
 		',
 		'addUser' => '
 			INSERT INTO !prefix!users

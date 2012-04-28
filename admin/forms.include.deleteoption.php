@@ -100,13 +100,13 @@ function admin_formsShow($data)
 		switch($data->output['delete'])
 		{
 			case 'cancelled':
-					theme_formsDeleteOptionCancelled($data,$aRoot)
+					theme_formsDeleteOptionCancelled($data,$aRoot);
 				break;
 			case 'deleted':
-					theme_formsDeleteOptionDeleted($aRoot)
+					theme_formsDeleteOptionDeleted($aRoot);
 				break;
 			default:
-					theme_formsDeleteOptionDefault($data,$aRoot)
+					theme_formsDeleteOptionDefault($data,$aRoot);
 				break;
 		}
 	} else {

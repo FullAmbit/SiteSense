@@ -51,7 +51,7 @@ function theme_pagesDeleteDefault($data) {
 				<p class="warning">*** WARNING *** This will also delete any child pages</p>
 				<input type="submit" name="delete" value="Yes, Delete it" />
 				<input type="submit" name="cancel" value="Cancel" />
-				<input type="hidden" name="formForm" value="',$data->action[3],'" />
+				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
 }

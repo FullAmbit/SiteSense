@@ -50,7 +50,7 @@ function theme_blogsDeleteDefault($data,$aRoot) {
 				<legend><span>Are you sure you want to delete blog #',$data->action[3],' "',$data->output['thisBlog']['name'],'"?</span></legend>
 				<input type="submit" name="delete" value="Yes, Delete it" />
 				<input type="submit" name="cancel" value="Cancel" />
-				<input type="hidden" name="formForm" value="',$data->action[3],'" />
+				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
 }
@@ -123,7 +123,7 @@ function theme_blogsDeletePostsDefault($data,$aRoot) {
 				<legend><span>Are you sure you want to delete blog post id#',$data->action[3],'?</span></legend>
 				<input type="submit" name="delete" value="Yes, Delete it" />
 				<input type="submit" name="cancel" value="Cancel" />
-				<input type="hidden" name="formForm" value="',$data->action[3],'" />
+				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
 }
