@@ -76,7 +76,7 @@ function page_content($data) {
     if (function_exists('admin_content')) {
       admin_content($data);
     } else {
-	  theme_fatalError('The requested adming.php module is not installed.');
+	  theme_fatalError('The requested admin.php module is not installed.');
     }
   }
 }
