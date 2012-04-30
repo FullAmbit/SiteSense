@@ -154,7 +154,7 @@ function theme_contentBoxHeader($heading,$headingURL='',$date=0) {
 						<h2',(empty($headingURL) ? '' : ' class="link"'),'>
 							',(
 								($date!=0) ?
-								'<span>'.date('d F Y H:i T',$date).'<span> - </span></span>' :
+								'<span>'.date('d F Y H:i T',strtotime($date)).'<span> - </span></span>' :
 								''
 							),(
 								empty($headingURL) ?

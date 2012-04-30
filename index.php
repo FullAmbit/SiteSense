@@ -28,12 +28,12 @@ require_once('libraries/common.php');
 require_once('libraries/defines.php');
 
 final class dynamicPDO extends PDO {
-	private $tablePrefix;
-	public $sessionPrefix;
+    public  $sessionPrefix;
+    private $tablePrefix;
 	private $sqlType;
 	private $queries;
 	private $qSearch=array('!prefix!','!table!');
-	private $forbiddenStructureChars=array(',',';');
+
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
 	}
@@ -79,6 +79,7 @@ final class dynamicPDO extends PDO {
 		} else return false;
 	}
 	private function prepQuery($queryName,$module,$tableName) {
+    // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
 			$this->loadModuleQueries($module);
 		}
@@ -113,30 +114,28 @@ final class dynamicPDO extends PDO {
 	public function tableExists($tableName) {
 		try {
 			$statement=$this->query('tableExists','common',$tableName);
-	  	$result=$statement->fetchAll();
-  		return (count($result)>0);
+	    	$result=$statement->fetchAll();
+  		    return (count($result)>0);
 		} catch (PDOException $e) {
-  		return false;
-  	}
+  		    return false;
+  	    }
 	}
 	public function countRows($tableName) {
 		$result=$this->query('countRows','common',$tableName);
 		return $result->fetchColumn();
 	}
-	public function lastInsertId()
-	{
+	public function lastInsertId() {
 		return parent::lastInsertId();
 	}
-	/*
-		structure is an array of field names and definitions
-	*/
 	public function createTable($tableName,$structure,$verbose=false) {
-	
+    /*
+        structure is an array of field names and definitions
+    */
 		if ($this->tableExists($tableName)) {
 			if($verbose) echo '<p>Table ',$tableName,' already exists</p>';
 			return false;
 		} else {
-		
+
 			$query='CREATE TABLE `'.$this->tablePrefix.$tableName.'` (';
 			$qList=array();
 			foreach ($structure as $field => $struct) {
@@ -156,7 +155,7 @@ final class dynamicPDO extends PDO {
 			} catch(PDOException $e) {
 				if($verbose) {
 					echo '
-						<p class="error">Failed to create '.$name.' table!</p>
+						<p class="error">Failed to create '.$tableName.' table!</p>
 						<pre>'.$e->getMessage().'</pre>';
 				}
 				return false;
@@ -184,7 +183,7 @@ final class sitesense {
 		$siteRoot,$domainName,$linkHome,$linkRoot,
 		$action,$currentPage,$module,$request,
 		$httpHeaders,
-		$metaList,$menuList,$sideBarList,
+		$metaList,$menuList,$sideBarList,$sideBars = array(),
 		$menuSource,
 		$admin,
 		$compressionType,
@@ -192,49 +191,45 @@ final class sitesense {
 		$output=array(),
 		$loginResult=false,
 		$plugins = array(),
-		$cdn,
-		$smallStaticLinkRoot,
-		$largeStaticLinkRoot,
-		$flashLinkRoot,
-		$cdnLinks = array(),
+		$cdn,$smallStaticLinkRoot,$largeStaticLinkRoot,$flashLinkRoot,$cdnLinks = array(),
 		$banned = false,
 		$jsEditor;
-		
-		private $db;
-		public function __construct() {
-	
-		/* -------- */
-		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']); 
-		if (strpos($url,'../')) killHacker('Uptree link in URI'); 
+
+	private $db;
+	public function __construct() {
+
+		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
+		if (strpos($url,'../')) killHacker('Uptree link in URI');
 		$this->linkHome=str_ireplace('index.php','',$_SERVER['PHP_SELF']); 
 		if (strpos($url,'?')>0) { 
-			 /* if using get, action based on query string */ 
+			 // if using get, action based on query string
 			 $queryString=$_SERVER['QUERY_STRING']; 
 		} else { 
 			 $queryString=substr($url,strlen($this->linkHome)-1); 
-			 /* be sure to ===0 since false trips ==0 */ 
+			// be sure to ===0 since false trips ==0
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		} 
 		$queryString=trim($queryString,'/'); 
-		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);
-		/* -------- */
-		
-		$this->db=new dynamicPDO();
-		if ($this->action[0]=='install') { 
+		// Break URL up into action array
+        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);
+
+        // Database connection
+    	$this->db=new dynamicPDO();
+
+        // Install
+        if ($this->action[0]=='install') {
 			$data=$this->db;
-			require_once('admin/install.php'); 
-			die; /* technically install.php should die at end, but to be sure... */ 
+			require_once('admin/install.php');
+			die; // technically install.php should die at end, but to be sure...
 		}
-		/**
-		 * Check To See If the IP Is Banned
-		**/
-		$clientIp = $_SERVER['REMOTE_ADDR'];
-		$statement = $this->db->prepare('checkIpBan','users');
+
+        // Check to see if the IP is banned
+        $clientIp=$_SERVER['REMOTE_ADDR'];
+		$statement=$this->db->prepare('checkIpBan','users');
 		$statement->execute(array(
 			':ip' => $clientIp,
 		));		
-		if($banItem = $statement->fetch())
-		{
+		if($banItem=$statement->fetch()) {
 			// Check Expiration Time
 			if(time() > $banItem['expiration'])
 			{
@@ -257,10 +252,10 @@ final class sitesense {
 				$this->currentPage = 'banned';
 				$this->banned = true;
 			}
-		} else {
 		}
-		
-		$statement=$this->db->query('getSettings');
+
+		// Load settings
+        $statement=$this->db->query('getSettings');
         while ($row=$statement->fetch()) {
 			if ($row['category']=='cms') {
 				$this->settings[$row['name']]=$row['value'];
@@ -269,21 +264,25 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-		// Append Attributions //
+
+		// Append attributions
 		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? '|attribution|' : '';
-		// Do We Need To Load A CDN Plugin??? 
-		if($this->settings['useCDN'] == '1')
-		{
+
+		// Check to see if CDN plugin should be loaded
+		if($this->settings['useCDN']=='1') {
 			common_loadPlugin($this,$this->settings['cdnPlugin']);
 			$this->cdn =& $this->plugins[$this->settings['cdnPlugin']];
 		}
-		// Load The WYISWYG Editor Plugin //
+
+		// Load the WYISWYG editor plugin
 		common_loadPlugin($this,$this->settings['jsEditor']);
 		$this->jsEditor =& $this->plugins[$this->settings['jsEditor']];
 
-		/* when registration gets it's own settings panel, remove this! */
+        // When registration gets it's own settings panel, remove this!
 		$this->settings['register']['sender']='noreply@'.$_SERVER['SERVER_NAME'];
-	 	$this->compressionType=false;
+
+	 	// Check to see if compression is enabled
+        $this->compressionType=false;
 		if ($this->settings['compressionEnabled']) {
 			if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'],'x-gzip')!==false) {
 				$this->compressionType='x-gzip';
@@ -291,37 +290,42 @@ final class sitesense {
 				$this->compressionType='gzip';
 			}
 		}
-		$this->domainName = $this->hostName = 'http://'.$_SERVER["HTTP_HOST"];
+
+        // Define server paths
+        $this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->siteRoot=$_SERVER['PHP_SELF'];
 		$this->themeDir='themes/'.$this->settings['theme'].'/';
-		
 		$this->linkRoot=$this->linkHome;
-		// Set Up Other CDN Variables Using Link Root //
+
+		// Set up other CDN variables using linkRoot
 		$this->smallStaticLinkRoot=(isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
-		if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
-        if (
-           ($url=='') ||
-           ($url=='index.php') ||
-           ($url=='index.html') ||
-           ($url=='index.php?')
-        ) {
-            if(isset($this->settings['homepage']) && $this->action[0]=='default') {
-			    $targetInclude='modules/'.$this->settings['homepage'].'.module.php';
-			    if(file_exists($targetInclude)) {
-				    $this->action[0]=$this->settings['homepage'];
-			    } else {
-				    $this->action[0]='pages';
-				    $this->action[1]=$this->settings['homepage'];
-			    }
-            } else {
-                $this->action[0] = 'default';
-            }
+
+        // Direct to Homepage
+        if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
+        if (($url=='') ||
+            ($url=='index.php') ||
+            ($url=='index.html') ||
+            ($url=='index.php?')) {
+                // On default, go to homepage
+                if(isset($this->settings['homepage']) && $this->action[0]=='default') {
+                    $targetInclude='modules/'.$this->settings['homepage'].'.module.php';
+                    if(file_exists($targetInclude)) {
+                        $this->action[0]=$this->settings['homepage'];
+                    } else {
+                        $this->action[0]='pages';
+                        $this->action[1]=$this->settings['homepage'];
+                    }
+                } else {
+                    $this->action[0] = 'default';
+                }
         }
-		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
-		$sideBars = array();
-		//Does this module exist, and is it enabled?
+
+        // Direct banned users to page 'banned'
+        $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
+
+		// Does this module exist, and is it enabled?
 		if($this->currentPage != 'admin' && !$this->banned){ //The admin NEEDS to be able to access the admin panel - nothing else.
 			$moduleQuery = $this->db->prepare('getModuleByShortName', 'modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));

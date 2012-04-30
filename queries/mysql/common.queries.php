@@ -84,13 +84,11 @@ function common_addQueries() {
 			SELECT * FROM !prefix!settings
 		',
 		'getNewsId' => "
-			SELECT id
-			FROM !prefix!blogs
+			SELECT id FROM !prefix!blogs
 			WHERE name='news'
 		",
 		'getAllNews' => "
-			SELECT *
-			FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs
 			WHERE name='news'
 		",
 		'getMainMenuOrder' => '
@@ -135,7 +133,8 @@ function common_addQueries() {
 			DELETE FROM !prefix!sidebars
 			WHERE id = :id
 		',
-		'getHomePagePages' => "
+		//No column "showOnParent" in table !prefix!pages
+        'getHomePagePages' => "
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4096
@@ -156,7 +155,8 @@ function common_addQueries() {
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		"
-	);
+	    //^^^
+    );
 }
 
 ?>
