@@ -325,15 +325,16 @@ final class sitesense {
         // Direct banned users to page 'banned'
         $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 
-		// Does this module exist, and is it enabled?
-		if($this->currentPage != 'admin' && !$this->banned){ //The admin NEEDS to be able to access the admin panel - nothing else.
+		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
+		if($this->currentPage != 'admin' && !$this->banned){
 			$moduleQuery = $this->db->prepare('getModuleByShortName', 'modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
-			if($this->module === false || $this->module['enabled'] == 0){
-				if($this->module !== false){ //it could be there, just disabled
+            // Does this module exist, and is it enabled?
+            if($this->module === false || $this->module['enabled'] == 0){ // Module does not exist or is disabled.
+				if($this->module !== false){ // Exists, but is disabled.
 					$this->currentPage = 'pageNotFound';
-				}else if(file_exists('modules/' . $this->module['name'] . '.module.php')){ //exists in the file system, but not in the db.
+				}else if(file_exists('modules/' . $this->module['name'] . '.module.php')){ // Exists in the file system, but not in the db.
 					$statement = $this->db->prepare('newModule', 'modules');
 					$statement->execute(
 						array(
@@ -342,24 +343,26 @@ final class sitesense {
 							':enabled' => 0
 						)
 					);
-					//if it was added to the database, this should fetch it:
+					// If it was added to the database, this should fetch it:
 					$moduleQuery->execute(array(':shortName' => $this->currentPage));
-					$this->currentPage = 'pageNotFound'; //Still show a page-not-found because it will be disabled by default.
+					$this->currentPage = 'pageNotFound'; // Still show a page-not-found because it will be disabled by default.
 					$this->module = $moduleQuery->fetch();
-				}else{ //could it be a form, blog or a page?
-					$formStatement = $this->db->prepare('getTopLevelFormByShortName', 'form'); //Form
+				}else{ // Not a module, but could it be a form, blog or a page.
+					// Check to see if it is a form:
+                    $formStatement = $this->db->prepare('getTopLevelFormByShortName', 'form'); //Form
 					$formStatement->execute(
 						array(
 							':shortName' => $this->currentPage,
 						)
 					);
-					if($formStatement->fetch() !== false){
+					if($formStatement->fetch() !== false){ // It's a Form
 						$this->currentPage = 'forms';
 						array_unshift($this->action, 'page');
 						$moduleQuery->execute(array(':shortName' => $this->currentPage));
 						$this->module = $moduleQuery->fetch();
-					}else{ //Blog?
-						$blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
+					}else{ // It's a Blog
+                        // Check to see if it is a blog:
+                        $blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
 						$blogStatement->execute(
 							array(
 								':shortName' => $this->currentPage,
@@ -370,7 +373,8 @@ final class sitesense {
 							array_unshift($this->action, 'blogs');
 							$moduleQuery->execute(array(':shortName' => $this->currentPage));
 							$this->module = $moduleQuery->fetch();
-						}else{ //page?
+						}else{
+                            // Check to see if it is a page:
 							$statement = $this->db->prepare('getPageByShortNameAndParent', 'page');
 							$statement->execute(
 								array(
@@ -378,7 +382,7 @@ final class sitesense {
 									':parent' => 0
 								)
 							);
-							if($statement->fetch() !== false){
+							if($statement->fetch() !== false){// It's a Page
 								$this->currentPage = 'page';
 								array_unshift($this->action, 'page');
 								$moduleQuery->execute(array(':shortName' => $this->currentPage));
@@ -388,7 +392,8 @@ final class sitesense {
 					}
 				}
 			}
-			if($this->currentPage != 'pageNotFound'){
+			// If we didn't set the currentPage above, the page was not found.
+            if($this->currentPage != 'pageNotFound'){
 				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'modules');
 				$sideBarQuery->execute(
 					array(
@@ -398,7 +403,7 @@ final class sitesense {
 				$sideBars = $sideBarQuery->fetchAll();
 			}
 		}
-		
+
 		$this->action = array_merge($this->action,array_fill(0,10,false));
 		
 		$this->httpHeaders=array(
@@ -414,80 +419,82 @@ final class sitesense {
 				'content' => $this->settings['language']
 			)
 		);
-		$statement=$this->db->query('getEnabledMainMenuOrderLeft');
+
+		// Get Left and Right Main Menu Order
+        $statement=$this->db->query('getEnabledMainMenuOrderLeft');
 		$this->menuList['left']=$statement->fetchAll();
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
-		$getSideBar = $this->db->prepare('getSidebarById');
-		$delete=$this->db->prepare('deleteFromSidebarsById');
-		foreach($sideBars as $sideBar)
-		{
+		// Get Sidebars
+        $sideBars = $this->db->query('getSidebars');
+		foreach($sideBars as $sideBar) {
 			$this->sideBarList[$sideBar['side']][]=$sideBar;
 		}
-		/* login session */
+
+		// Cookies and Sessions
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
-		if (!$this->banned &&
+		// If a logged in user who is not banned is trying to logout...
+        if (!$this->banned &&
 			($this->currentPage=='logout') &&
 			(!empty($_COOKIE[$userCookieName]))
-		) {
-			setCookie($userCookieName,'',0,$this->linkHome);
+		) {	// Logout
+            setCookie($userCookieName,'',0,$this->linkHome);
 			$statement=$this->db->prepare('logoutSession');
 			$statement->execute(array(
 				':sessionID' => $_COOKIE[$userCookieName]
 			));
-		} else if (!$this->banned && !empty($_COOKIE[$userCookieName])) {
-			$userCookieValue=$_COOKIE[$userCookieName];
-			/* purge expired sessions */
+		} else if (!$this->banned && !empty($_COOKIE[$userCookieName])) { // User doing anything else besides trying to logout
+            // Check to see if the user's session is expired
+            $userCookieValue=$_COOKIE[$userCookieName];
+			// Purge expired sessions
 			$this->db->query('purgeExpiredSessions');
-			/* pull session record if still present after purge */
+			// Pull session record if still present after purge
 			$statement=$this->db->prepare('getSessionById');
 			$statement->execute(array(
 				':sessionId' => $userCookieValue
 			));
-			if ($session=$statement->fetch(PDO::FETCH_ASSOC)) {
+			if ($session=$statement->fetch(PDO::FETCH_ASSOC)) { // User's session has not expired
 				if (
 					($session['ipAddress']==$_SERVER['REMOTE_ADDR']) &&
 					($session['userAgent']==$_SERVER['HTTP_USER_AGENT'])
-				) {
-					/* pull user info if session found */
+				) { // Session IP and userAgent match user's IP and userAgent
+					// Pull user info
 					$statement=$this->db->prepare('pullUserInfoById');
 					$statement->execute(array(
 						':userId' => $session['userId']
 					));
 					if ($user=$statement->fetch()) {
 						// Check Banned
-						if($user['userLevel'] <= USERLEVEL_BANNED)
-						{
-							// Get The Expiration Time of Your ban
+						if($user['userLevel'] <= USERLEVEL_BANNED) { // User is banned
+							// Get the expiration time of your ban
 							$statement = $this->db->prepare('getBanByUserId','users');
 							$statement->execute(array(
 								':userId' => $session['userId']
 							));
-							if($this->output['banItem'] = $banItem = $statement->fetch())
-							{
-								if(time() < strtotime($banItem['expiration']))
-								{
+							if($this->output['banItem'] = $banItem = $statement->fetch()) {
+								if(time() < strtotime($banItem['expiration'])) { // User still banned and not allow to log in
 									$this->banned = true;
 									$this->loginResult = false;
 									$this->currentPage = 'banned';
 								}
 							}
-						} else {
+						} else { // User is NOT banned
 							$this->user=$user;
 							$this->user['sessions']=$session;
-							/* push expiration ahead! */
+							// Push expiration ahead
 							$expires=time()+$this->settings['userSessionTimeOut'];
 							$session['expires']=strtotime($session['expires']);
 							if ($expires<$session['expires']) {
 								/*
-									if the current experiation is ahead of our calculated one,
+									If the current expiration is ahead of our calculated one,
 									they must have hit 'keep me logged in' - so let's tack on
 									a week.
 								*/
 								$expires+=604800;
 							}
-							/* update and sync cookie to server values */
+
+							// Update and sync cookie to server values
 							setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
 							$expires=gmdate("Y-m-d H:i:s",$expires);
 							$statement=$this->db->prepare('updateSessionExpiration');
@@ -495,14 +502,18 @@ final class sitesense {
 								':expires' => $expires,
 								':sessionId' => $session['sessionId']
 							)) or die('Session Database failed updating expiration');
-							$statement=$this->db->prepare('updateLastAccess');
+
+							// Update last access
+                            $statement=$this->db->prepare('updateLastAccess');
 							$statement->execute(array(
 								':id' => $user['id']
 							)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-							//Load Profile Pictures
+
+							//Load profile pictures
 							$profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
 							$profilePictures->execute(array(':user' => $this->user['id']));
 							$this->user['profilePictures'] = $profilePictures->fetchAll();
+
 							//Load albums
 							$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
 							$albums->execute(array(':user' => $this->user['id']));
@@ -514,8 +525,8 @@ final class sitesense {
 			}
 		}
 		/*
-			if it drops through to here, they're not logged in...
-			are they trying to?
+			If it drops through to here, user is not logged in...
+			Are they trying to?
 		*/
 		if (!$this->banned && isset($_POST['login']) && $_POST['login']==$_SERVER['REMOTE_ADDR']) {
 			$statement=$this->db->prepare('checkPassword');
