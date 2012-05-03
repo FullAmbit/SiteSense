@@ -131,7 +131,7 @@ final class dynamicPDO extends PDO {
     /*
         structure is an array of field names and definitions
     */
-		if ($this->tableExists($tableName)) {
+        if ($this->tableExists($tableName)) {
 			if($verbose) echo '<p>Table ',$tableName,' already exists</p>';
 			return false;
 		} else {
@@ -400,7 +400,7 @@ final class sitesense {
 						':module' => $this->module['id']
 					)
 				);
-				$sideBars = $sideBarQuery->fetchAll();
+				$this->sideBars = $sideBarQuery->fetchAll();
 			}
 		}
 
@@ -518,7 +518,7 @@ final class sitesense {
 							$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
 							$albums->execute(array(':user' => $this->user['id']));
 							$this->user['albums'] = $albums->fetchAll();
-							$loginResult=true;
+                            $this->loginResult=true;
 						}
 					}
 				}
@@ -537,43 +537,41 @@ final class sitesense {
 			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
 				$this->user=$user;
 				if($this->user['userLevel'] <= USERLEVEL_BANNED)
-				{
+				{ // User is banned
 					// Get The Expiration Time of Your ban
 					$statement = $this->db->prepare('getBanByUserId','users');
 					$statement->execute(array(
 						':userId' => $session['userId']
 					));
-					if($this->output['banItem'] = $banItem = $statement->fetch())
-					{
-						if(time() < $banItem['expiration'])
-						{
+					if($this->output['banItem']=$banItem = $statement->fetch()) {
+						if(time()<$banItem['expiration']) {
 							$this->banned = true;
 							$this->loginResult = false;
 							$this->currentPage = 'banned';
 						}
 					}
 				} else {
-					/* purge existing user ID instances in sessions */
+					// Purge existing sessions containing user ID
 					$statement=$this->db->prepare('purgeSessionByUserId');
 					$statement->execute(array(
 						'userId' => $user['id']
 					));
-					/* then make a new one */
-					$userCookieValue=hash('sha256',
-						$user['id'].'|'.time().'|'.common_randomPassword(32,64)
+					// Create new session
+					$userCookieValue = hash('sha256',
+                        $user['id'].'|'.time().'|'.common_randomPassword(32,64)
 					);
 					$expires=time()+$this->settings['userSessionTimeOut'];
 					if (isset($_POST['keepLogged']) && $_POST['keepLogged']=='on') {
-						$expires+=+604800; /* 1 week */
+						$expires+=+604800; // 1 week
 					}
-					/* update and sync cookie to server values */
+					// Update and sync cookie to server values
 					setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
 					$expires=gmdate("Y-m-d H:i:s",$expires);
 					$statement=$this->db->prepare('updateUserSession');
 					$statement->execute(array(
 						':sessionId' => $userCookieValue,
-						':userId' => $user['id'],
-						':expires' => $expires,
+						':userId'    => $user['id'],
+						':expires'   => $expires,
 						':ipAddress' => $_SERVER['REMOTE_ADDR'],
 						':userAgent' => $_SERVER['HTTP_USER_AGENT']
 					));
@@ -582,7 +580,7 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules', 'modules');
+		$moduleQuery = $this->db->query('getEnabledModules','modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
 			$filename = 'modules/' . $module['name'] . '.startup.php';

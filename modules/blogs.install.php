@@ -22,67 +22,67 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function blogs_settings($data) {
+function blogs_settings() {
 	return array(
-		'name' => 'blogs',
+		'name'      => 'blogs',
 		'shortName' => 'blogs'
 	);
 }
 function blogs_install($data,$drop=false) {
 	$structures = array(
 		'blogs' => array(
-			'id'										 => SQR_IDKey,
-			'managingEditor'				 => SQR_email,
-			'webMaster'							 => SQR_email,
-			'name'									 => SQR_name,
-			'shortName'							 => SQR_shortName,
-			'title'									 => SQR_title,
-			'owner'									 => SQR_ID,
-			'minPermission'					 => SQR_userLevel,
-			'numberPerPage'					 => 'TINYINT UNSIGNED NOT NULL',
-			'description'						 => 'TEXT NOT NULL',
-			'allowComments'					 => SQR_boolean.' DEFAULT \'1\'',
-			'commentsRequireLogin'	 => SQR_boolean,
-			'topLevel'							 => SQR_boolean,
-			'rssOverride'						 => SQR_URL,
+			'id'                   => SQR_IDKey,
+			'managingEditor'       => SQR_email,
+			'webMaster'            => SQR_email,
+			'name'                 => SQR_name,
+			'shortName'            => SQR_shortName,
+			'title'                => SQR_title,
+			'owner'                => SQR_ID,
+			'minPermission'        => SQR_userLevel,
+			'numberPerPage'        => 'TINYINT UNSIGNED NOT NULL',
+			'description'          => 'TEXT NOT NULL',
+			'allowComments'        => SQR_boolean.' DEFAULT \'1\'',
+			'commentsRequireLogin' => SQR_boolean,
+			'topLevel'             => SQR_boolean,
+			'rssOverride'          => SQR_URL,
 			'KEY `name` (`name`,`owner`,`minPermission`)'
 		),
 		'blog_categories' => array(
-			'id'										 => SQR_IDKey,
-			'blogId'								 => SQR_ID,
-			'name'									 => SQR_title,
-			'shortName'							 => SQR_title
+			'id'                   => SQR_IDKey,
+			'blogId'               => SQR_ID,
+			'name'                 => SQR_title,
+			'shortName'            => SQR_title
 		),
 		'blog_comments' => array(
-			'id'										 => SQR_IDKey,
-			'post'									 => SQR_ID,
-			'time'									 => SQR_added,
-			'author'								 => SQR_fullName,
-			'rawContent'						 => 'TEXT NOT NULL',
-			'parsedContent'					 => 'TEXT NOT NULL',
-			'email'									 => SQR_email,
-			'loggedIP'							 => SQR_IP,
-			'approved'							 => SQR_boolean.' DEFAULT \'0\''
+			'id'                   => SQR_IDKey,
+			'post'                 => SQR_ID,
+			'time'                 => SQR_added,
+			'author'               => SQR_fullName,
+			'rawContent'           => 'TEXT NOT NULL',
+			'parsedContent'        => 'TEXT NOT NULL',
+			'email'                => SQR_email,
+			'loggedIP'             => SQR_IP,
+			'approved'             => SQR_boolean.' DEFAULT \'0\''
 		),
 		'blog_posts' => array(
-			'id'										 => SQR_IDKey,
-			'blogId'								 => SQR_ID,
-			'categoryId'						 => SQR_ID.' DEFAULT \'0\'',
-			'title'									 => SQR_title,
-			'name'									 => SQR_title,
-			'shortName'							 => SQR_title,
-			'user'									 => SQR_ID,
-			'postTime'							 => SQR_time,
-			'modifiedTime'					 => SQR_lastModified,
-			'live'									 => SQR_boolean,
-			'rawSummary'						 => 'TEXT NOT NULL',
-			'parsedSummary'					 => 'TEXT NOT NULL',
-			'rawContent'						 => 'TEXT NOT NULL',
-			'parsedContent'					 => 'MEDIUMTEXT NOT NULL',
-			'description'						 => 'TEXT NOT NULL',
-			'allowComments'					 => SQR_boolean,
-			'repliesWaiting'				 => SQR_boolean,
-			'tags'									 => 'TINYTEXT NOT NULL',
+			'id'                   => SQR_IDKey,
+			'blogId'               => SQR_ID,
+			'categoryId'           => SQR_ID.' DEFAULT \'0\'',
+			'title'                => SQR_title,
+			'name'                 => SQR_title,
+			'shortName'            => SQR_title,
+			'user'                 => SQR_ID,
+			'postTime'             => SQR_time,
+			'modifiedTime'         => SQR_lastModified,
+			'live'                 => SQR_boolean,
+			'rawSummary'           => 'TEXT NOT NULL',
+			'parsedSummary'	       => 'TEXT NOT NULL',
+			'rawContent'           => 'TEXT NOT NULL',
+			'parsedContent'	       => 'MEDIUMTEXT NOT NULL',
+			'description'          => 'TEXT NOT NULL',
+			'allowComments'	       => SQR_boolean,
+			'repliesWaiting'       => SQR_boolean,
+			'tags'                 => 'TINYTEXT NOT NULL',
 			'KEY `blogId` (`blogId`)'
 		)
 	);
@@ -92,10 +92,10 @@ function blogs_install($data,$drop=false) {
 		$data->dropTable('blog_comments');
 		$data->dropTable('blog_categories');
 	}
-	$data->createTable('blogs',$structures['blogs'],true);
-	$data->createTable('blog_posts',$structures['blog_posts'],true);
-	$data->createTable('blog_comments',$structures['blog_comments'],true);
-	$data->createTable('blog_categories',$structures['blog_categories'],true);
+	$data->createTable('blogs',$structures['blogs'],false);
+	$data->createTable('blog_posts',$structures['blog_posts'],false);
+	$data->createTable('blog_comments',$structures['blog_comments'],false);
+	$data->createTable('blog_categories',$structures['blog_categories'],false);
 	if ($data->countRows('blogs')==0) {
 		try {
 			echo '

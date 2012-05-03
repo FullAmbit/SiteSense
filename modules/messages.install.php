@@ -22,27 +22,26 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function messages_settings($data) {
+function messages_settings() {
 	return array(
-		'name' => 'messages',
+		'name'      => 'messages',
 		'shortName' => 'messages'
 	);
 }
 function messages_install($data,$drop=false) {
 	$structures = array(
-			'user_pms' => array(
-			'id'										 => SQR_IDKey,
-			'from'									 => SQR_ID,
-			'to'										 => SQR_ID,
-			'message'								 => 'TEXT NOT NULL',
-			'read'									 => SQR_boolean.' DEFAULT \'0\'',
-			'deleted'								 => SQR_boolean.' DEFAULT \'0\'',
-			'sent'									 => SQR_added
+			'user_pms'  => array(
+			'id'        => SQR_IDKey,
+			'from'      => SQR_ID,
+			'to'        => SQR_ID,
+			'message'   => 'TEXT NOT NULL',
+			'read'      => SQR_boolean.' DEFAULT \'0\'',
+			'deleted'   => SQR_boolean.' DEFAULT \'0\'',
+			'sent'      => SQR_added
 		)
 	);
-	if($drop)
-		$data->dropTable('user_pms');
-	$data->createTable('user_pms',$structures['user_pms'],true);
+	if($drop) $data->dropTable('user_pms');
+	$data->createTable('user_pms',$structures['user_pms'],false);
 }
 function messages_uninstall($data) {
 	$data->dropTable('user_pms');

@@ -25,35 +25,37 @@
 function users_config($data,$db) {
   if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
     $data->admin['menu'][]=array(
-      'category'  => 'User Management',
-      'command'   => 'users/list',
-      'name'      => 'Browse Users',
-      'sortOrder' => 2
+        'category'  => 'User Management',
+        'command'   => 'users/add',
+        'name'      => 'Add New User',
+        'sortOrder' => 1
     );
     $data->admin['menu'][]=array(
-      'category'  => 'User Management',
-      'command'   => 'users/list/staff',
-      'name'      => 'Staff Members',
-      'sortOrder' => 6
+        'category'  => 'User Management',
+        'command'   => 'users/list',
+        'name'      => 'Browse Users',
+        'sortOrder' => 2
     );
     $data->admin['menu'][]=array(
-      'category'  => 'User Management',
-      'command'   => 'users/search',
-      'name'      => 'Search Users',
-      'sortOrder' => 3
+        'category'  => 'User Management',
+        'command'   => 'users/search',
+        'name'      => 'Search Users',
+        'sortOrder' => 3
     );
     $data->admin['menu'][]=array(
-      'category'  => 'User Management',
-      'command'   => 'users/add',
-      'name'      => 'Add New User',
-      'sortOrder' => 1
+        'category'  => 'User Management',
+        'command'   => 'users/activation',
+        'name'      => 'Activate Users',
+        'sortOrder' => 4
     );
     $data->admin['menu'][]=array(
-      'category'  => 'User Management',
-      'command'   => 'users/activation',
-      'name'      => 'Activate Users',
-      'sortOrder' => 4
+        'category'  => 'User Management',
+        'command'   => 'users/list/staff',
+        'name'      => 'Staff Members',
+        'sortOrder' => 5
     );
+
+
   }
 }
 ?>

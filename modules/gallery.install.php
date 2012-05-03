@@ -22,17 +22,16 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function gallery_settings($data)
+function gallery_settings()
 {
 	return array(
-		'name' => 'gallery',
+		'name'      => 'gallery',
 		'shortName' => 'gallery'
 	);
 }
 
 function gallery_install($data,$drop=false)
 {	
-	$settings = gallery_settings($data);
 	$structures = array(
 		'gallery_albums' => array(
 			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
@@ -68,9 +67,9 @@ function gallery_install($data,$drop=false)
 		$data->dropTable('gallery_comments');
 	}
 	
-	$data->createTable('gallery_albums',$structures['gallery_albums'],true);
-	$data->createTable('gallery_images',$structures['gallery_images'],true);
-	$data->createTable('gallery_comments',$structures['gallery_comments'],true);
+	$data->createTable('gallery_albums',$structures['gallery_albums'],false);
+	$data->createTable('gallery_images',$structures['gallery_images'],false);
+	$data->createTable('gallery_comments',$structures['gallery_comments'],false);
 	
 	return NULL;
 }

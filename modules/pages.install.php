@@ -22,33 +22,33 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function pages_settings($data)
+function pages_settings()
 {
 	return array(
-		'name' => 'pages',
+		'name'      => 'pages',
 		'shortName' => 'pages'
 	);
 }
 function pages_install($data,$drop=false) {
-	$structures = array(
+	$structures=array(
 		'pages' => array(
-			'id'										 => SQR_IDKey,
-			'shortName'							 => SQR_shortName,
-			'name'									 => SQR_name,
-			'title'									 => SQR_title,
-			'rawContent'						 => 'MEDIUMTEXT NOT NULL',
-			'parsedContent'					 => 'MEDIUMTEXT NOT NULL',
-			'parent'								 => SQR_ID,
-			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
-			'live'									 => SQR_boolean,
+			'id'              => SQR_IDKey,
+			'shortName'       => SQR_shortName,
+			'name'            => SQR_name,
+			'title'           => SQR_title,
+			'rawContent'      => 'MEDIUMTEXT NOT NULL',
+			'parsedContent'   => 'MEDIUMTEXT NOT NULL',
+			'parent'	      => SQR_ID,
+			'sortOrder'	      => SQR_sortOrder.' DEFAULT \'1\'',
+			'live'			  => SQR_boolean,
 			'KEY `shortName` (`shortName`,`parent`,`sortOrder`)'
 		),
 		'pages_sidebars' => array(
-			'id'										 => SQR_IDKey,
-			'page'									 => SQR_ID,
-			'sidebar'								 => SQR_ID,
-			'enabled'								 => SQR_boolean,
-			'sortOrder'							 => SQR_sortOrder.' DEFAULT \'1\'',
+			'id'              => SQR_IDKey,
+			'page'            => SQR_ID,
+			'sidebar'         => SQR_ID,
+			'enabled'         => SQR_boolean,
+			'sortOrder'       => SQR_sortOrder.' DEFAULT \'1\'',
 			'UNIQUE KEY `module` (`page`,`sidebar`)'
 		)
 	);
@@ -56,8 +56,8 @@ function pages_install($data,$drop=false) {
 		$data->dropTable('pages');
 		$data->dropTable('pages_sidebars');
 	}
-	$data->createTable('pages',$structures['pages'],true);
-	$data->createTable('pages_sidebars',$structures['pages_sidebars'],true);
+	$data->createTable('pages',$structures['pages'],false);
+	$data->createTable('pages_sidebars',$structures['pages_sidebars'],false);
 	if($data->countRows('pages')==0) {
 		try {
 			echo '
