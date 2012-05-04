@@ -275,4 +275,24 @@ function page_content($data)
 		blog_pageContent($data,false,$pagination, $data->output['summarize']);
 	}
 }
+
+function loadPermissions($data) {
+    $data->perisssions['blogs']=array(
+      'admin' => 'User can see blog',
+      'canSeeBlogOwners' => 'User can see blog owners',
+      'canAddPost' => 'User can add blog post',
+      'canSeeOthersBlogs' => 'User can view others blogs',
+      'canAddCategory' => 'User can add a category to a blog',
+      'canAddBlogOwner' => 'User can add others as owenr of a blog',
+      'canApproveComments' => 'User can approve blogs comments',
+      'canDeleteBlogOwners' => 'User can remove blog owners',
+      'canDeleteBlogCategory' => 'User can remove categories from blogs',
+      'canDeleteBlogComment' => 'User can remove blog comments',
+
+
+
+
+
+    );
+}
 ?>
