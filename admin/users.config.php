@@ -54,6 +54,18 @@ function users_config($data,$db) {
         'name'      => 'Staff Members',
         'sortOrder' => 5
     );
+    $data->admin['menu'][]=array(
+        'category'  => 'User Permissions',
+        'command'   => 'users/permissions/addGroup',
+        'name'      => 'Add Group',
+        'sortOrder' => 1
+    );
+    $data->admin['menu'][]=array(
+        'category'  => 'User Permissions',
+        'command'   => 'users/permissions/manageGroups',
+        'name'      => 'Manage Groups',
+        'sortOrder' => 2
+    );
 
 
   }
