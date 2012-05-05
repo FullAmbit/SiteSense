@@ -27,7 +27,7 @@ function admin_usersBuild($data,$db)
 	$userId = $data->action[3];
 	
 	// Check If You're An Admin //
-	if($data->user['userLevel'] < USERLEVEL_ADMIN)
+	if(!in_array('canUnBanUsers',$data->user['permissions']['users']))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient Permissions</h2>You do not have the permissions to access this area';

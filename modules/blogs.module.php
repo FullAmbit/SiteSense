@@ -280,7 +280,18 @@ function loadPermissions($data) {
     $data->permissions['blogs']=array(
         'canSeeOtherBlogs' => 'User can see other users blogs',
         'canRemoveBlogComments' => 'User can delete comments from a blog',
-
+        'canManageBlog' => 'User can manage this blog',
+        'canDisaproveComments' => 'User can disaprove of comments on this blog',
+        'canSeeBlogOwners' => 'User can see all owners of a blog',
+        'canEditBlog' => 'User can view this speicifc blog',
+        'canEditBlogCategory' => 'User can modify the blog category',
+        'canEditBlogComments' => 'User can edit the comments of a blog',
+        'canEditBlogPost' => 'User can edit blog posts',
+        'canListBlogPosts' => 'User can list their own blog posts',
+        'canListOthersBlogPosts' => 'User can list others blog posts along with their own',
+        'canListBlogCategory' => 'User can list a blogs categories',
+        'canListBlogComments' => 'User can list a blogs comments',
+        'canListBlogPosts' => 'User can list blogs posts'
     );
 }
 
