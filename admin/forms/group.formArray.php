@@ -22,28 +22,83 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->caption='Editing Group';
+global $languageText;
+
+$this->formPrefix='viewUser_';
+$this->caption='Editing Group: '.(
+	empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']
+);
 $this->submitTitle='Save Changes';
+$this->fromForm='viewUser';
+$levelOptions = array();
+foreach($languageText['userLevels'] as $value => $text){
+	$levelOptions[] = array('value' => $value, 'text' => $text);
+}
 $this->fields=array(
-	'groupName' => array(
-		'label' => 'Group Name',
+	'id' => array(
+		'label' => 'ID #',
+		'tag' => 'span',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['id'])
+	),
+	'fullName' => array(
+		'label' => 'Full Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => $data->user['groupName'],
+		'value' => (empty($data->output['viewUser']['fullName']{0}) ? '' : $data->output['viewUser']['fullName']),
+		'params' => array(
+			'type' => 'text',
+			'size' => 128,
+		),
+		'description' => '
+			<p>
+				<b>Full Name</b> - The full name of the user.
+			</p>
+		'
+	),
+	'name' => array(
+		'label' => 'Username',
+		'required' => true,
+		'tag' => 'input',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
 		),
 		'description' => '
 			<p>
-				<b>Group Name</b>
+				<b>Username</b> - The name the user logs in with. This is different from displayName.
 			</p>
 		'
+	),
+	'userLevel' => array(
+		'label' => 'User Access Level',
+		'tag' => 'select',
+		'options' => $levelOptions,
+		'description' => '
+			<p>
+				<b>User Level</b> - Determines what the user can/cannot do on the system.
+			</p>
+		',
+	),
+	'registeredDate' => array(
+		'label' => 'Registered on',
+		'tag' => 'span',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredDate']),
+	),
+	'registeredIP' => array(
+		'label' => 'Registered From',
+		'tag' => 'span',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredIP']),
+	),
+	'lastAccess' => array(
+		'label' => 'Last Access',
+		'tag' => 'span',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastAccess']),
 	),
 	'contactEMail' => array(
 		'label' => 'Contact E-Mail',
 		'tag' => 'input',
-		'value' => $data->user['contactEMail'],
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['contactEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -57,19 +112,19 @@ $this->fields=array(
 	'publicEMail' => array(
 		'label' => 'Public E-Mail',
 		'tag' => 'input',
-		'value' => $data->user['publicEMail'],
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
 		),
 		'description' => '
 			<p>
-				<b>Public E-Mail</b> - E-mail shown to the public on your profile.
+				<b>Public E-Mail</b> - E-mail shown to the public on the user\'s profile.
 			</p>
 		'
 	),
 	'password' => array(
-		'label' => 'Change Password',
+		'label' => 'Password',
 		'tag' => 'input',
 		'value' => '',
 		'params' => array(
@@ -80,7 +135,7 @@ $this->fields=array(
 			<p>
 				<b>Password</b> - What the user logs in with for a password
 			</p>
-		'
+		',
 	),
 	'password2' => array(
 		'label' => 'Retype Password',

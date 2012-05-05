@@ -55,19 +55,11 @@ function users_config($data,$db) {
         'sortOrder' => 5
     );
     $data->admin['menu'][]=array(
-        'category'  => 'User Permissions',
-        'command'   => 'users/permissions/addGroup',
-        'name'      => 'Add Group',
-        'sortOrder' => 1
+        'category'  => 'User Management',
+        'command'   => 'users/permissions',
+        'name'      => 'Permissions',
+        'sortOrder' => 6
     );
-    $data->admin['menu'][]=array(
-        'category'  => 'User Permissions',
-        'command'   => 'users/permissions/manageGroups',
-        'name'      => 'Manage Groups',
-        'sortOrder' => 2
-    );
-
-
   }
 }
 ?>

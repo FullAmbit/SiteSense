@@ -248,6 +248,15 @@ function getUserPermissions(&$db,&$user) {
             }
         }
     }
+    // Organize array by module (Ex. $user['permissions']['blogs'])
+    foreach($user['permissions'] as $key => $permission) {
+        unset($user['permissions'][$key]);
+        $separator = strpos($permission,'_');
+        $prefix = substr($permission,0,$separator);
+        $suffix = substr($permission,-$separator-1);
+        $user['permissions'][$prefix][] = $suffix;
+    }
+
     // Clean up
     asort($user['permissions']);
     $user['permissions'] = array_values($user['permissions']);
