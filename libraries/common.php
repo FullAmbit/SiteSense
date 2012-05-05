@@ -210,4 +210,47 @@ function common_generateShortName($string)
 function common_include($includeName) {
 	require_once($includeName);
 }
+function getUserPermissions(&$db,&$user) {
+    // Group Permissions
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $groups=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all groups a user is a member of
+    foreach($groups as $group) {
+        $statement=$db->prepare('getPermissionsByGroupName');
+        $statement->execute(array(
+            ':groupName' =>  $group['groupName']
+        ));
+        $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all permissions in each group
+        foreach($permissions as $permission) {
+           $user['permissions'][] = $permission['permissionName'];
+        }
+    }
+    // User permissions
+    $statement=$db->prepare('getUserPermissionsByUserID');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
+    foreach($permissions as $permission) {
+        // Check to see if the user has already been granted the permission
+        if(!in_array($permission['permissionName'],$user['permissions'])){ // User doesn't have permission
+            // Allow/Forbit?
+            if($permission['allow']==1) { // Allow; add permission
+                $user['permissions'][] = $permission['permissionName'];
+            }
+        } else { // User has permission
+            // Allow/Forbit?
+            if($permission['allow']==0) { //Forbit; delete permission
+                $key = array_search($permission['permissionName'],$user['permissions']);
+                unset($user['permissions'][$key]);
+            }
+        }
+    }
+    // Clean up
+    asort($user['permissions']);
+    $user['permissions'] = array_values($user['permissions']);
+
+}
 ?>

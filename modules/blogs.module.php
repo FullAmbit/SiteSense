@@ -275,4 +275,5 @@ function page_content($data)
 		blog_pageContent($data,false,$pagination, $data->output['summarize']);
 	}
 }
+
 ?>
