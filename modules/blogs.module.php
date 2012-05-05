@@ -276,4 +276,12 @@ function page_content($data)
 	}
 }
 
+function loadPermissions($data) {
+    $data->permissions['blogs']=array(
+        'canSeeOtherBlogs' => 'User can see other users blogs',
+        'canRemoveBlogComments' => 'User can delete comments from a blog',
+
+    );
+}
+
 ?>

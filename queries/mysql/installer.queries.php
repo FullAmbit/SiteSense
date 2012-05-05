@@ -211,11 +211,11 @@ function installer_tableStructures() {
             'groupName'      => SQR_name
         ),
         'group_permissions' => array(
-            'groupName       => SQR_ID,
-            'match'          => SQR_name
+            'groupName'             => SQR_name,
+            'permissionName'        => SQR_name
         ),
         'user_permissions' => array(
-            'id'             => SQR_ID,
+            'userId'         => SQR_ID,
             'permissionName' => SQR_name,
             'allow'          => SQR_boolean
         )
