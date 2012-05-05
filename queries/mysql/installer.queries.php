@@ -206,19 +206,19 @@ function installer_tableStructures() {
 			'match'						 => 'VARCHAR(127) NOT NULL',
 			'replace'					 => 'VARCHAR(127) NOT NULL'
 		),
-        'user_permission_group' => array(
+        'user_permission_groups' => array(
             'userID'         => SQR_ID,
             'groupName'      => SQR_name
         ),
         'group_permissions' => array(
-            'id'             => SQR_ID,
-            'match'          => SQR_name
+            'groupName'             => SQR_name,
+            'permissionName'        => SQR_name
         ),
         'user_permissions' => array(
-            'id'             => SQR_ID,
+            'userId'         => SQR_ID,
             'permissionName' => SQR_name,
-            'allow'          => 'TINYINT(1) NOT NULL'
-        ),
+            'allow'          => SQR_boolean
+        )
 	);
 }
 ?>
