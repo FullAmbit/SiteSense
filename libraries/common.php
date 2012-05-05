@@ -210,6 +210,11 @@ function common_generateShortName($string)
 function common_include($includeName) {
 	require_once($includeName);
 }
+
+function loadPermissions($data) {
+
+}
+
 function getUserPermissions(&$db,&$user) {
     // Group Permissions
     $statement=$db->prepare('getGroupsByUserID');
