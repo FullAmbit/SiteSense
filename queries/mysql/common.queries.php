@@ -169,6 +169,10 @@ function common_addQueries() {
 			SELECT * FROM !prefix!user_permissions
 			WHERE userID = :userID
 		',
+        'purgeExpiredGroups' => '
+			DELETE FROM !prefix!user_permission_groups
+			WHERE expires < CURRENT_TIMESTAMP
+		'
     );
 }
 

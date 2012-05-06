@@ -46,7 +46,7 @@ function user_install($data,$drop=false) {
 	);
 	if($drop)
 		$data->dropTable('users');
-	$data->createTable('users',$structures['users'],true);
+	$data->createTable('users',$structures['users'],false);
 	// Generate an admin account if this is a fresh installation
 	if($data->countRows('users')==0) {
 		try {
