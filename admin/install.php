@@ -212,7 +212,8 @@ if (
 			}
 		}
 	}
-	$moduleFiles=glob('modules/*.module.php');
+
+    $moduleFiles=glob('modules/*.module.php');
 	// Build an array of the names of the modules in the filesystem
 	$fileModules=array_map(
 		function($path) {
@@ -234,6 +235,7 @@ if (
 				)
 			);
 		}
+
 	// Install plugins
 	if($drop) {
 		$data->dropTable('plugins');
@@ -266,7 +268,46 @@ if (
 			}
 		}
 	}
-  if ($data->installErrors==0) {
+
+    // Set default admin permissions
+    $adminPermissions=array(
+        'core_canAccessAdminPanel',
+        'core_canAccessMainMenu',
+        'core_canAccessMainMenuConfig',
+        'core_canDeleteMainMenuItems',
+        'core_canAccessMessagesAdminPanel',
+        'core_canAccessMessageConfig',
+        'core_canAccessModulesAdminPanel',
+        'core_canAccessModulesConfig',
+        'core_canAccessPluginsAdminPanel',
+        'core_canAccessPluginsConfig',
+        'core_canAccessSettingsAdminPanel',
+        'core_canAccessSettingsConfig',
+        'core_canAccessSideBarAdminPanel',
+        'core_canAccessSideBarConfig',
+        'core_canDeleteSideBarItem',
+        'core_canAccessUrlRemapAdminPanel',
+        'core_canAccessUrlRemapConfig',
+        'core_canEnableModules',
+        'core_canSeeLeftSideBar',
+        'blogs_admin',
+        'forms_admin',
+        'users_admin'
+    );
+
+
+    foreach ($adminPermissions as $permission) {
+        $insert=$data->prepare('addPermissionsByUserId','common');
+        $insert->execute(
+            array(
+                ':id' => '1',
+                ':permission' => $permission,
+                ':allow' => '1'
+            )
+        );
+    }
+
+    if ($data->installErrors==0) {
     echo '
       <h2 id="done">Complete</h2>
       <p class="success">
