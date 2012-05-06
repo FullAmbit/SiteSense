@@ -27,7 +27,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='account';
 }
 function build_accountSettings($data, $db){
-	if(!isset($data->user) || $data->user['userLevel'] == 0){
+	if(!isset($data->user['id'])){
 		common_redirect_local($data, 'login');
 	} else {
 		$data->output['userForm'] = new formHandler('user', $data);

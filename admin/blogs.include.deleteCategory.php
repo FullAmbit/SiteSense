@@ -36,7 +36,7 @@ function admin_blogsBuild($data,$db)
 	}
 	
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(in_array('canSeeBlogOwners',$data->user['permissions']['blogs']))
+	if(checkPermission('canSeeBlogOwners','blogs',$data))
 	{
 		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
@@ -58,7 +58,7 @@ function admin_blogsBuild($data,$db)
 	}
 	
 	// Check for User Permissions
-	if (in_array('canDeleteBlogCategory',$data->user['permissions']['blogs']))
+	if (checkPermission('canDeleteBlogCategory','blogs',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';

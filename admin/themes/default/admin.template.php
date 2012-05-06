@@ -57,7 +57,7 @@ echo '
 </head><body>
 <div id="pageWrapper">
 	<h1>Control Panel - <a href="',$data->domainName,$data->linkRoot,'">',$data->settings['siteTitle'],'</a></h1>';
-	if ($data->user['userLevel']>0) {
+	if (isset($data->user['id'])) {
 		echo '
 	<div id="loggedBar" class="buttonList">
 		<a href="',$data->linkRoot,'logout">Logout</a>
@@ -79,7 +79,7 @@ function theme_footer($data) {
 function theme_leftSideBar($data) {
 	echo '
 	<!-- #content,#contentWrapper --></div></div>';
-	if ($data->user['userLevel']>=USERLEVEL_BLOGGER) {
+	if (checkPermission('canViewLeftSideBar','core',$data)) {
 		if (!empty($data->output['forceMenu'])) {
 			$currentCompare=$data->output['forceMenu'];
 		} else if (empty($data->action[1])) {

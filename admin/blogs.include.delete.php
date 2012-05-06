@@ -28,12 +28,12 @@ function admin_blogsBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (in_array('canDeleteBlogOwners',$data->user['permissions']['blogs'])) {
+		if (checkPermission('canDeleteBlogOwners','blogs',$data)) {
 			/*	Permissions
 			 *	Anything less than a moderator only have individual access to blogs,
 			 *	Thus, check to see if the user owns this blog.
 			*/
-			if(in_array('canSeeOthersBlogs',$data->user['permissions']['blogs']))
+			if(checkPermission('canSeeOthersBlogs','blogs',$data))
 			{
 				$qHandle=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 				$qHandle->execute(array(

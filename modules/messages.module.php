@@ -26,7 +26,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='Personal Messages';
 }
 function page_buildContent($data,$db) {
-	if(!isset($data->user) || $data->user['userLevel'] == 0){
+	if(!isset($data->user['id'])){
 		common_redirect_local($data, 'login');
 	}else{
 		switch($data->action[1]){

@@ -33,7 +33,7 @@ function page_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-  if (in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
+  if (checkPermission('canAccessAdminPanel','core',$data)) {
     if (empty($data->action[1])) {
       common_include('admin/dashboard.admin.php');
 	  common_include('admin/themes/default/dashboard.template.php');
@@ -65,8 +65,8 @@ function page_buildContent($data,$db) {
   }
 }
 function page_content($data) {
-  if (in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
-    if (!in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
+  if (checkPermission('canAccessAdminPanel','core',$data)) {
+    if (!checkPermission('canAccessAdminPanel','core',$data)) {
       theme_accessDenied();
     } else {
       theme_accessDenied(true);

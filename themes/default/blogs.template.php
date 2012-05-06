@@ -148,20 +148,18 @@ function theme_blogListItem($blogPost,$localRoot) {
 }
 function theme_blogPostControls($data,$blogItem) {
 	$controls=array();
-	if ($data->user['userLevel']>=USERLEVEL_USER) {
+	if (checkPermission('canSeeOthersBlogs','blogs',$data)) {
 		if (
 			$blogItem['allowComments']==true
 		) $controls[]='<a href="#">Reply</a>';
 		if (
-			($data->user['userLevel']>=USERLEVEL_MODERATOR) || (
-				($data->user['userLevel']>=USERLEVEL_BLOGGER) &&
+			checkPermission('canManageBlog','blogs',$data) &&
 				($data->output['blog']['owner']==$data->user['id'])
-			)
+
 		) {
 			if ($blogItem['repliesWaiting']>0) $controls[]='<a href="#">Approve Replies</a>';
 			if (
-				($data->user['userLevel']>=USERLEVEL_WRITER) ||
-				($data->user['userLevel']>=USERLEVEL_BLOGGER)
+				checkPermission('canEditBlogPost','blogs',$data)
 			) $controls[]='<a href="'.$data->linkRoot.'/admin/blogs/editPosts/'.$blogItem['blogId'].'/'.$blogItem['id'].'">Edit</a>';
 		}
 	}

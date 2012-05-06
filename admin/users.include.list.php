@@ -88,7 +88,7 @@ global $languageText;
 			$banControl = '';
 		}
 		
-		theme_usersListTableRow($user['id'],$user['name'],$data->user['userLevel'],$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
+		theme_usersListTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

@@ -218,13 +218,21 @@ function loadPermissions($data) {
         'canAccessMainMenuConfig' => 'Can access main menu configuration',
         'canDeleteMainMenuItems' => 'User has access to remove main menu items',
         'canAccessMessagesAdminPanel' => 'User has access to messages admin panel',
-        'canAccessMessageConfig' => 'User has access to messages configureation',
-        ''
+        'canAccessMessageConfig' => 'User has access to messages configuration',
+        'canAccessModulesAdminPanel' => 'User has access to the modules admin panel',
+        'canAccessModulesConfig' => 'User has access to the modules configuration',
+        'canAccessPluginsAdminPanel' => 'User has access to plugins admin panel',
+        'canAccessPluginsConfig' => 'User has access to plugin configuration',
+        'canAccessSettingsAdminPanel' => 'User has access to settings admin panel',
+        'canAccessSettingsConfig' => 'User has access to settings configuration',
+        'canAccessSideBarAdminPanel' => 'User has access to sidebar admin panel',
+        'canAccessSideBarConfig' => 'User has access to side bar configuration',
+        'canDeleteSideBarItem' => 'User can remove/delete side bar items',
+        'canAccessUrlRemapAdminPanel' => 'User can access the URL Remap admin panel',
+        'canAccessUrlRemapConfig' => 'User can access remap configuration',
+        'canEnableModules' => 'User has access enable/disable modules',
+        'canSeeLeftSideBar' => 'User can view the left side bar'
     );
-}
-
-function checkPermission($module, $permission) {
-
 }
 
 function getUserPermissions(&$db,&$user) {

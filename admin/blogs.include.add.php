@@ -33,7 +33,7 @@ function admin_blogsBuild($data,$db)
 	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
 	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
 	**/
-	if(in_array('canAddBlogOwner',$data->user['permissions']['blogs']))
+	if(checkPermission('canAddBlogOwner','blogs',$data))
 	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
@@ -43,7 +43,7 @@ function admin_blogsBuild($data,$db)
 			'value' => $data->user['id']
 		);
 		
-	} elseif (in_array('canSeeBlogOwners',$data->user['permissions']['blogs'])) {
+	} elseif (checkPermission('canSeeBlogOwners','blogs',$data)) {
 		$statement = $db->query('getBloggersByUserLevel','admin_blogs');
 		$statement->execute();
 		while ($item=$statement->fetch()) {

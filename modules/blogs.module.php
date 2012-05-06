@@ -277,7 +277,7 @@ function page_content($data)
 }
 
 function loadPermissions($data) {
-    $data->perisssions['blogs']=array(
+    $data->permissions['blogs']=array(
       'admin' => 'User can see blog',
       'canSeeBlogOwners' => 'User can see blog owners',
       'canAddPost' => 'User can add blog post',

@@ -34,7 +34,7 @@ function admin_blogsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if (in_array('canSeeOtherBlogs',$data->user['permissions']['blogs']))
+	if (checkPermission('canSeeOtherBlogs','blogs',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';
@@ -52,7 +52,7 @@ function admin_blogsBuild($data,$db)
 	 * is under.
 	 * ---------------------------------------
 	**/
-	if(in_array('canRemoveBlogComments',$data->user['permissions']['blogs']))
+	if(checkPermission('canRemoveBlogComments','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
