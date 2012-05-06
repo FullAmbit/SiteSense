@@ -212,7 +212,13 @@ function common_include($includeName) {
 }
 
 function loadPermissions($data) {
+    $data->permissions['core']=array(
+        'canAccessAdminPanel' => 'User can access admin panel',
+        'canAccessMainMenu' => 'User has access to main menu',
+        'canAccessMainMenuConfig' => 'Can access main menu configuration',
+        'canDeleteMainMenuItems' => 'User has access to remove main menu items',
 
+    );
 }
 
 function getUserPermissions(&$db,&$user) {
