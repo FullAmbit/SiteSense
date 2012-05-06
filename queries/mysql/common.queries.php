@@ -157,6 +157,12 @@ function common_addQueries() {
 		",
 	    //^^^
         // Permissions
+        'addPermissionsByUserId' => '
+            INSERT INTO !prefix!user_permissions
+            (userId,permissionName,allow)
+            VALUES
+            (:id,:permission,:allow)
+        ',
         'getGroupsByUserID' => '
 			SELECT * FROM !prefix!user_permission_groups
 			WHERE userID = :userID

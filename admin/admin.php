@@ -64,19 +64,16 @@ function page_buildContent($data,$db) {
     }
   }
 }
+
 function page_content($data) {
-  if (checkPermission('canAccessAdminPanel','core',$data)) {
     if (!checkPermission('canAccessAdminPanel','core',$data)) {
-      theme_accessDenied();
-    } else {
       theme_accessDenied(true);
       theme_loginForm($data);
-    }
-  } else {
-    if (function_exists('admin_content')) {
-      admin_content($data);
     } else {
-	  theme_fatalError('The requested admin.php module is not installed.');
+        if (function_exists('admin_content')) {
+          admin_content($data);
+        } else {
+          theme_fatalError('The requested admin.php module is not installed.');
+        }
     }
-  }
 }
