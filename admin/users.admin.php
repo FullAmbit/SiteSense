@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if(!in_array('admin',$data->user['permissions']['users']))
+	if(!checkPermission('admin','users',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

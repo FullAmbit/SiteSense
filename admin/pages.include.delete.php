@@ -40,7 +40,7 @@ function admin_pagesBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (in_array('canDeletePage',$data->user['permissions']['pages'])) {
+		if (checkPermission('canDeletePage','pages',$data)) {
 			if ($_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					

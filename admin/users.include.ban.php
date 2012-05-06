@@ -26,7 +26,7 @@ common_include('libraries/forms.php');
 function admin_usersBuild($data,$db)
 {
 	// Anyone without admin rights should not have access
-	if(!in_array('canBanUsers',$data->user['permissions']['users']))
+	if(!checkPermission('canBanUsers','users',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient Permissions</h2>You do not have the permissions to access this area';

@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if(!in_array('canAccessMainMenu',$data->user['permissions']['core']))
+	if(!checkPermission('canAccessMainMenu','core',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
