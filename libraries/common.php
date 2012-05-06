@@ -219,7 +219,7 @@ function loadPermissions($data) {
         'canDeleteMainMenuItems' => 'User has access to remove main menu items',
         'canAccessMessagesAdminPanel' => 'User has access to messages admin panel',
         'canAccessMessageConfig' => 'User has access to messages configureation',
-
+        ''
     );
 }
 
