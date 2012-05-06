@@ -236,6 +236,7 @@ function loadPermissions($data) {
 }
 
 function getUserPermissions(&$db,&$user) {
+    $user['permissions']=array();
     // Group Permissions
     // Purge expired Groups
     $db->query('purgeExpiredGroups');
@@ -275,28 +276,25 @@ function getUserPermissions(&$db,&$user) {
             }
         }
     }
-    if(in_array('permissions',$user)) {
+    if(isset($user['permissions'])) {
         // Organize array by module (Ex. $user['permissions']['blogs'])
         foreach($user['permissions'] as $key => $permission) {
             unset($user['permissions'][$key]);
             $separator = strpos($permission,'_');
             $prefix = substr($permission,0,$separator);
-            $suffix = substr($permission,-$separator-1);
+            $suffix = substr($permission,$separator+1);
             $user['permissions'][$prefix][] = $suffix;
         }
 
         // Clean up
         asort($user['permissions']);
-        $user['permissions'] = array_values($user['permissions']);
     }
 }
 
-function checkPermission($permission,$category,$data) {
+function checkPermission($permission,$module,$data) {
     $hasPermission = false;
-    if(is_array($data->user['permissions'][$category])) {
-        if(in_array($permission,$data->user['permissions'][$category])) {
+    if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
             $hasPermission = true;
-        }
     }
     return $hasPermission;
 }
