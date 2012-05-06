@@ -184,7 +184,7 @@ function admin_usersBuild($data,$db) {
 	}
 }
 function admin_usersShow($data) {
-	if (in_array('admin',$data->user['permissions']['users'])) {
+	if (checkPermission('admin','users',$data)) {
 		if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
 			admin_unknown();
 		} else if (isset($data->output['savedOkMessage'])) {

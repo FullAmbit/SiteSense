@@ -291,13 +291,11 @@ function getUserPermissions(&$db,&$user) {
     }
 }
 
-function checkPermission($permission,$module,$data) {
+function checkPermission($permission,$category,$data) {
     $hasPermission = false;
-    if(is_array($data->user['permissions'])) {
-        if(in_array($module,$data->user['permissions'])) {
-            if(in_array($permission,$data->user['permissions'][$module])) {
-                    $hasPermission = true;
-            }
+    if(is_array($data->user['permissions'][$category])) {
+        if(in_array($permission,$data->user['permissions'][$category])) {
+            $hasPermission = true;
         }
     }
     return $hasPermission;

@@ -42,7 +42,7 @@ function admin_formsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if (!in_array('canDeleteFormOption',$data->user['permissions']['forms']))
+	if (!checkPermission('canDeleteFormOption','forms',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';

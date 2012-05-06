@@ -24,13 +24,47 @@
 */
 common_include('libraries/forms.php');
 
+function getPermissions($data,$db) {
+    $targetFunction='loadPermissions';
+    // Get core permissions
+    common_include('libraries/common.php');
+    if (function_exists($targetFunction)) {
+        $targetFunction($data);
+    }
+    // Get enabled modules
+    $statement=$db->query('getEnabledModules','admin_modules');
+    $modules=$statement->fetchAll();
+    foreach($modules as $module) {
+        // Check to see if loadPermission() function exists
+        $filename = 'modules/' . $module['name'] . '.php';
+        if(file_exists($filename)){
+            common_include($filename);
+            if (function_exists($targetFunction)) {
+                $targetFunction($data);
+            }
+        }
+    }
+    // Get enabled plugins
+    $statement=$db->query('getEnabledPlugins','plugins');
+    $plugins=$statement->fetchAll();
+    foreach($plugins as $plugin) {
+        $filename = 'plugins/'.$plugin['name'].'/plugin.php';
+        if(file_exists($filename)){
+            common_include('plugins/'.$plugin['name'].'/plugin.php');
+            if (function_exists($targetFunction)) {
+                $targetFunction($data);
+            }
+        }
+    }
+}
+
 function admin_usersBuild($data,$db)
 {
 	if(empty($data->action[3])){ // Display List of Groups
         $statement=$db->query('getAllGroups','admin_users');
         $data->output['groupList']=$statement->fetchAll();
     } elseif($data->action[3]=='add') { //Add a new Group
-
+        getPermissions($data,$db);
     }
 }
 

@@ -33,14 +33,14 @@ function admin_blogsBuild($data,$db) {
 		$data->output['blogLimit']=ADMIN_SHOWPERPAGE;
 		$data->output['blogsCount']=$count['count'];
 		//---If Less Then Moderator, Load Only OWN Blog Posts
-		if(in_array('canListBlogPosts',$data->user['permissions']['blogs']))
+		if(checkPermission('canListBlogPosts','blogs',$data))
 		{
 			$statement = $db->prepare('getBlogsByUser','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
 			$statement->bindParam(':owner',$data->user['id'],PDO::PARAM_INT);
 			$statement->execute();
-		} elseif (in_array('canListOthersBlogPosts',$data->user['permissions']['blogs'])) {
+		} elseif (checkPermission('canListOthersBlogPosts','blogs',$data)) {
 			$statement=$db->prepare('getBlogsByOwner','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
