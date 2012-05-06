@@ -154,8 +154,21 @@ function common_addQueries() {
 			WHERE parent=-4098
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
-		"
+		",
 	    //^^^
+        // Permissions
+        'getGroupsByUserID' => '
+			SELECT * FROM !prefix!user_permission_groups
+			WHERE userID = :userID
+		',
+        'getPermissionsByGroupName' => '
+			SELECT * FROM !prefix!group_permissions
+			WHERE groupName = :groupName
+		',
+        'getUserPermissionsByUserID' => '
+			SELECT * FROM !prefix!user_permissions
+			WHERE userID = :userID
+		',
     );
 }
 

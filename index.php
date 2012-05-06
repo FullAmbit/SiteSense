@@ -196,7 +196,8 @@ final class sitesense {
 		$jsEditor;
 
 	private $db;
-	public function __construct() {
+
+    public function __construct() {
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -227,7 +228,7 @@ final class sitesense {
         $clientIp=$_SERVER['REMOTE_ADDR'];
 		$statement=$this->db->prepare('checkIpBan','users');
 		$statement->execute(array(
-			':ip' => $clientIp,
+			':ip' => $clientIp
 		));		
 		if($banItem=$statement->fetch()) {
 			// Check Expiration Time
@@ -481,6 +482,8 @@ final class sitesense {
 							}
 						} else { // User is NOT banned
 							$this->user=$user;
+                            // Load permissions
+                            getUserPermissions($this->db,$this->user);
 							$this->user['sessions']=$session;
 							// Push expiration ahead
 							$expires=time()+$this->settings['userSessionTimeOut'];
@@ -519,7 +522,8 @@ final class sitesense {
 							$albums->execute(array(':user' => $this->user['id']));
 							$this->user['albums'] = $albums->fetchAll();
                             $this->loginResult=true;
-						}
+
+                        }
 					}
 				}
 			}
@@ -536,6 +540,8 @@ final class sitesense {
 			));
 			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
 				$this->user=$user;
+                // Load permissions
+                getUserPermissions($this->db,$this->user);
 				if($this->user['userLevel'] <= USERLEVEL_BANNED)
 				{ // User is banned
 					// Get The Expiration Time of Your ban

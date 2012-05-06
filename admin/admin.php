@@ -33,7 +33,7 @@ function page_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-  if ($data->user['userLevel']>=USERLEVEL_BLOGGER) {
+  if (in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
     if (empty($data->action[1])) {
       common_include('admin/dashboard.admin.php');
 	  common_include('admin/themes/default/dashboard.template.php');
@@ -65,8 +65,8 @@ function page_buildContent($data,$db) {
   }
 }
 function page_content($data) {
-  if ($data->user['userLevel']<USERLEVEL_BLOGGER) {
-    if ($data->user['userLevel']>USERLEVEL_GUEST) {
+  if (in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
+    if (!in_array('canAccessAdminPanel',$data->user['permissions']['core'])) {
       theme_accessDenied();
     } else {
       theme_accessDenied(true);

@@ -22,14 +22,28 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function mainMenu_config($data) {
-	if (in_array('canAccessMainMenuConfig',$data->user['permissions']['core'])) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => 'mainMenu/list',
-			'name'      => 'Main Menu',
-			'sortOrder' => 2
-		);
-	}
+common_include('libraries/forms.php');
+
+function admin_usersBuild($data,$db)
+{
+	if(empty($data->action[3])){ // Display List of Groups
+        $statement=$db->query('getAllGroups','admin_users');
+        $data->output['groupList']=$statement->fetchAll();
+    } elseif($data->action[3]=='add') { //Add a new Group
+
+    }
+}
+
+function admin_usersShow($data) {
+    if(empty($data->action[3])){ // Display List of Groups
+
+        theme_GroupsListTableHead();
+        foreach($data->output['groupList'] as $key => $group) {
+            theme_GroupsListTableRow($group['groupName'],$data->linkRoot,$key);
+        }
+        theme_GroupsListTableFoot($data->linkRoot);
+    } elseif($data->action[3]=='add') { //Add a new Group
+
+    }
 }
 ?>

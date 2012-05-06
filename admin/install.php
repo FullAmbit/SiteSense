@@ -121,9 +121,13 @@ if (
 	$data->dropTable('url_remap');
 	$data->dropTable('modules');
 	$data->dropTable('module_sidebars');
+    // Dynamic User Permissions
+    $data->dropTable('user_permission_groups');
+    $data->dropTable('group_permissions');
+    $data->dropTable('user_permissions');
 }
 	// Create the settings table
-	if ($data->createTable('settings',$structures['settings'],true)) {
+	if ($data->createTable('settings',$structures['settings'],false)) {
 		try {
 			$statement=$data->prepare('addSetting','installer');
 			echo '
@@ -148,19 +152,25 @@ if (
 		}
 	}
 	
-	$data->createTable('banned',$structures['banned'],true);
-	$data->createTable('sessions',$structures['sessions'],true);
-	$data->createTable('sidebars',$structures['sidebars'],true);
-	$data->createTable('main_menu',$structures['main_menu'],true);
-	$data->createTable('activations',$structures['activations'],true);
+	$data->createTable('banned',$structures['banned'],false);
+	$data->createTable('sessions',$structures['sessions'],false);
+	$data->createTable('sidebars',$structures['sidebars'],false);
+	$data->createTable('main_menu',$structures['main_menu'],false);
+	$data->createTable('activations',$structures['activations'],false);
 	
 	// Create url_remap Table
-	$data->createTable('url_remap',$structures['url_remap'],true);
+	$data->createTable('url_remap',$structures['url_remap'],false);
 	
 	// Create Module Related Tables
-	$data->createTable('modules',$structures['modules'],true);
-	$data->createTable('module_sidebars',$structures['module_sidebars'],true);
-	// Install modules
+	$data->createTable('modules',$structures['modules'],false);
+	$data->createTable('module_sidebars',$structures['module_sidebars'],false);
+
+    // Create Permissions
+    $data->createTable('user_permission_groups',$structures['user_permission_groups'],false);
+    $data->createTable('group_permissions',$structures['group_permissions'],false);
+    $data->createTable('user_permissions',$structures['user_permissions'],false);
+
+    // Install modules
 	$coreModules = array(
 		'forms',
 		'default',
@@ -229,8 +239,8 @@ if (
 		$data->dropTable('plugins');
 		$data->dropTable('plugins_modules');
 	}
-	$data->createTable('plugins',$structures['plugins'],true);
-	$data->createTable('plugins_modules',$structures['plugins_modules'],true);
+	$data->createTable('plugins',$structures['plugins'],false);
+	$data->createTable('plugins_modules',$structures['plugins_modules'],false);
 	// Get Plugins That Have Yet To Be Installed
 	$dirs=scandir('plugins');
 	foreach($dirs as $dir) {

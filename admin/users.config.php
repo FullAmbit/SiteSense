@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function users_config($data,$db) {
-  if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
+  if (in_array('admin',$data->user['permissions']['users'])) {
     $data->admin['menu'][]=array(
         'category'  => 'User Management',
         'command'   => 'users/add',
@@ -54,8 +54,12 @@ function users_config($data,$db) {
         'name'      => 'Staff Members',
         'sortOrder' => 5
     );
-
-
+    $data->admin['menu'][]=array(
+        'category'  => 'User Management',
+        'command'   => 'users/permissions',
+        'name'      => 'Permissions',
+        'sortOrder' => 6
+    );
   }
 }
 ?>

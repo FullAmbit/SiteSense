@@ -25,7 +25,7 @@
 function admin_blogsBuild($data,$db) {
 	if (is_numeric($data->action[3])) {
 		//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-		if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+		if(in_array('canListBlogPosts',$data->user['permissions']['blogs']))
 		{
 			$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$check->execute(array(
