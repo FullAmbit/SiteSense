@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Moderators + Writers + Admin Only
 	**/
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+	if(in_array('canAccessMessagesAdminPanel',$data->user['permissions']['core']))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

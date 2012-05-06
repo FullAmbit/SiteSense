@@ -217,8 +217,14 @@ function loadPermissions($data) {
         'canAccessMainMenu' => 'User has access to main menu',
         'canAccessMainMenuConfig' => 'Can access main menu configuration',
         'canDeleteMainMenuItems' => 'User has access to remove main menu items',
+        'canAccessMessagesAdminPanel' => 'User has access to messages admin panel',
+        'canAccessMessageConfig' => 'User has access to messages configureation',
 
     );
+}
+
+function checkPermission($module, $permission) {
+
 }
 
 function getUserPermissions(&$db,&$user) {
