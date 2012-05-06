@@ -65,6 +65,34 @@ function admin_usersBuild($data,$db)
         $data->output['groupList']=$statement->fetchAll();
     } elseif($data->action[3]=='add') { //Add a new Group
         getPermissions($data,$db);
+    } elseif($data->action[3]=='edit') { // Edit Group
+        getPermissions($data,$db);
+        $data->output['permissionGroup'] = $form = new formHandler('permissionGroup',$data,true);
+        // Edit Group Form Submitted
+        if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)) {
+            $data->output['permissionGroup']->populateFromPostData();
+            // Check if groupName exists already
+            $existing = false;
+            if($form->sendArray[':name'] !== $item['name'])
+            {
+                $existing = checkUserName($form->sendArray[':name'],$db);
+            }
+
+            if($existing)
+            {
+                $data->output['secondSideBar']='
+				  <h2>Error in Data</h2>
+				  <p>
+					  There were one or more errors. Please correct the fields with the red X next to them and try again.
+				  </p><p>
+					  <strong>That username is already taken!</strong>
+				  </p>';
+
+                $data->output['userForm']->fields['name']['error'] = true;
+
+                return;
+            }
+        }
     }
 }
 
@@ -78,6 +106,8 @@ function admin_usersShow($data) {
         theme_GroupsListTableFoot($data->linkRoot);
     } elseif($data->action[3]=='add') { //Add a new Group
 
+    } elseif($data->action[3]=='edit') { //Edit Group
+        theme_buildTable($data->output['permissionGroup']);
     }
 }
 ?>
