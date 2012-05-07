@@ -123,7 +123,7 @@ if (
 	$data->dropTable('module_sidebars');
     // Dynamic User Permissions
     $data->dropTable('user_permission_groups');
-    $data->dropTable('group_permissions');
+    $data->dropTable('user_group_permissions');
     $data->dropTable('user_permissions');
 }
 	// Create the settings table
@@ -167,7 +167,7 @@ if (
 
     // Create Permissions
     $data->createTable('user_permission_groups',$structures['user_permission_groups'],false);
-    $data->createTable('group_permissions',$structures['group_permissions'],false);
+    $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
     $data->createTable('user_permissions',$structures['user_permissions'],false);
 
     // Install modules
@@ -269,44 +269,59 @@ if (
 		}
 	}
 
-    // Set default admin permissions
-    $adminPermissions=array(
-        'core_canAccessAdminPanel',
-        'core_canAccessMainMenu',
-        'core_canAccessMainMenuConfig',
-        'core_canDeleteMainMenuItems',
-        'core_canAccessMessagesAdminPanel',
-        'core_canAccessMessageConfig',
-        'core_canAccessModulesAdminPanel',
-        'core_canAccessModulesConfig',
-        'core_canAccessPluginsAdminPanel',
-        'core_canAccessPluginsConfig',
-        'core_canAccessSettingsAdminPanel',
-        'core_canAccessSettingsConfig',
-        'core_canAccessSideBarAdminPanel',
-        'core_canAccessSideBarConfig',
-        'core_canDeleteSideBarItem',
-        'core_canAccessUrlRemapAdminPanel',
-        'core_canAccessUrlRemapConfig',
-        'core_canEnableModules',
-        'core_canSeeLeftSideBar',
-        'blogs_admin',
-        'forms_admin',
-        'users_admin'
-    );
-
-
-    foreach ($adminPermissions as $permission) {
-        $insert=$data->prepare('addPermissionsByUserId','common');
-        $insert->execute(
-            array(
-                ':id' => '1',
-                ':permission' => $permission,
-                ':allow' => '1'
-            )
-        );
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Administrators' => array(
+            'core_canAccessAdminPanel',
+            'core_canAccessMainMenu',
+            'core_canAccessMainMenuConfig',
+            'core_canDeleteMainMenuItems',
+            'core_canAccessMessagesAdminPanel',
+            'core_canAccessMessageConfig',
+            'core_canAccessModulesAdminPanel',
+            'core_canAccessModulesConfig',
+            'core_canAccessPluginsAdminPanel',
+            'core_canAccessPluginsConfig',
+            'core_canAccessSettingsAdminPanel',
+            'core_canAccessSettingsConfig',
+            'core_canAccessSideBarAdminPanel',
+            'core_canAccessSideBarConfig',
+            'core_canDeleteSideBarItem',
+            'core_canAccessUrlRemapAdminPanel',
+            'core_canAccessUrlRemapConfig',
+            'core_canEnableModules',
+            'core_canViewLeftSideBar',
+            'blogs_admin',
+            'forms_admin',
+            'users_admin'
+    ));
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        $statement=$data->prepare('addPermissionGroup','common');
+        if($groupName=='Administrators') {
+            $statement->execute(
+                array(
+                    ':userID' => '1',
+                    ':groupName' => $groupName
+                )
+            );
+        } else {
+            $statement->execute(
+                array(
+                    ':userID' => '0',
+                    ':groupName' => $groupName
+                )
+            );
+        }
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
     }
-
     if ($data->installErrors==0) {
     echo '
       <h2 id="done">Complete</h2>

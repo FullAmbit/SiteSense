@@ -163,12 +163,24 @@ function common_addQueries() {
             VALUES
             (:id,:permission,:allow)
         ',
+        'addPermissionByGroupName' => '
+            INSERT INTO !prefix!user_group_permissions
+            (groupName,permissionName)
+            VALUES
+            (:groupName,:permissionName)
+        ',
+        'addPermissionGroup' => '
+            INSERT INTO !prefix!user_permission_groups
+            (userId,groupName)
+            VALUES
+            (:userID,:groupName)
+        ',
         'getGroupsByUserID' => '
 			SELECT * FROM !prefix!user_permission_groups
 			WHERE userID = :userID
 		',
         'getPermissionsByGroupName' => '
-			SELECT * FROM !prefix!group_permissions
+			SELECT permissionName FROM !prefix!user_group_permissions
 			WHERE groupName = :groupName
 		',
         'getUserPermissionsByUserID' => '
@@ -177,7 +189,7 @@ function common_addQueries() {
 		',
         'purgeExpiredGroups' => '
 			DELETE FROM !prefix!user_permission_groups
-			WHERE expires < CURRENT_TIMESTAMP
+			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
 		'
     );
 }

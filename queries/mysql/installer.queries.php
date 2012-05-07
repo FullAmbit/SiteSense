@@ -211,7 +211,7 @@ function installer_tableStructures() {
             'groupName'      => SQR_name,
             'expires'      => SQR_time
         ),
-        'group_permissions' => array(
+        'user_group_permissions' => array(
             'groupName'             => SQR_name,
             'permissionName'        => SQR_name
         ),

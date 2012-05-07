@@ -27,8 +27,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permission: Accessible by administrator only
 	**/
-	if(chekcPermission('canAccessSettingsAdminPanel','core',$data))
-	{
+	if(!checkPermission('canAccessSettingsAdminPanel','core',$data)) {
 		$data->output['rejectError'] = 'Insufficient Permissions';
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;

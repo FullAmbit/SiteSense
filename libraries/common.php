@@ -213,11 +213,11 @@ function common_include($includeName) {
 
 function loadPermissions($data) {
     $data->permissions['core']=array(
-        'canAccessAdminPanel' => 'User can access admin panel',
-        'canAccessMainMenu' => 'User has access to main menu',
-        'canAccessMainMenuConfig' => 'Can access main menu configuration',
-        'canDeleteMainMenuItems' => 'User has access to remove main menu items',
-        'canAccessMessagesAdminPanel' => 'User has access to messages admin panel',
+        'canAccessAdminPanel' => 'Control panel access',
+        'canAccessMainMenu' => 'User has access to main menu', // Why do we need this?  Can't all users with canAccessAdminPanel see the main menu at least to some degree?
+        'canAccessMainMenuConfig' => 'Main menu configuration',
+        'canDeleteMainMenuItems' => 'Remove main menu items',
+        'canAccessMessagesAdminPanel' => 'User has access to messages admin panel', // Why are these core permissions?  Don't these belong in messages_ using the messages module?
         'canAccessMessageConfig' => 'User has access to messages configuration',
         'canAccessModulesAdminPanel' => 'User has access to the modules admin panel',
         'canAccessModulesConfig' => 'User has access to the modules configuration',
@@ -231,7 +231,7 @@ function loadPermissions($data) {
         'canAccessUrlRemapAdminPanel' => 'User can access the URL Remap admin panel',
         'canAccessUrlRemapConfig' => 'User can access remap configuration',
         'canEnableModules' => 'User has access enable/disable modules',
-        'canSeeLeftSideBar' => 'User can view the left side bar'
+        'canViewLeftSideBar' => 'User can view the left side bar'
     );
 }
 

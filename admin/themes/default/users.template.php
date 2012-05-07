@@ -139,12 +139,12 @@ function theme_GroupsListTableRow($groupName,$linkRoot,$key) {
     echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
 			<td class="userName">
-				<a href="',$linkRoot,'admin/user/permissions/group/edit/',$groupName,'">
+				<a href="',$linkRoot,'admin/users/permissions/group/edit/',$groupName,'">
 					',$groupName,'
 				</a>
 			</td>
 			<td class="buttonList">
-			    <a href="',$linkRoot,'admin/user/permissions/group/delete/',$groupName,'">Delete</a>
+			    <a href="',$linkRoot,'admin/users/permissions/group/delete/',$groupName,'">Delete</a>
 			</td>
 		</tr>';
 }
@@ -154,7 +154,7 @@ function theme_GroupsListTableFoot($linkRoot) {
 			</tbody>
 		</table>
 		<div class="panel buttonList">
-			<a href="'.$linkRoot.'admin/user/permissions/group/add/">Add New Group</a>
+			<a href="'.$linkRoot.'admin/users/permissions/group/add/">Add New Group</a>
 		</div>';
 }
 

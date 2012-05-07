@@ -23,7 +23,6 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions
@@ -36,8 +35,8 @@ function getPermissions($data,$db) {
     $modules=$statement->fetchAll();
     foreach($modules as $module) {
         // Check to see if loadPermission() function exists
-        $filename = 'modules/' . $module['name'] . '.php';
-        if(file_exists($filename)){
+        $filename='modules/'.$module['name'].'.php';
+        if(file_exists($filename)) {
             common_include($filename);
             if (function_exists($targetFunction)) {
                 $targetFunction($data);
@@ -48,8 +47,8 @@ function getPermissions($data,$db) {
     $statement=$db->query('getEnabledPlugins','plugins');
     $plugins=$statement->fetchAll();
     foreach($plugins as $plugin) {
-        $filename = 'plugins/'.$plugin['name'].'/plugin.php';
-        if(file_exists($filename)){
+        $filename='plugins/'.$plugin['name'].'/plugin.php';
+        if(file_exists($filename)) {
             common_include('plugins/'.$plugin['name'].'/plugin.php');
             if (function_exists($targetFunction)) {
                 $targetFunction($data);
@@ -57,45 +56,66 @@ function getPermissions($data,$db) {
         }
     }
 }
-
-function admin_usersBuild($data,$db)
-{
+function admin_usersBuild($data,$db) {
 	if(empty($data->action[3])){ // Display List of Groups
         $statement=$db->query('getAllGroups','admin_users');
         $data->output['groupList']=$statement->fetchAll();
-    } elseif($data->action[3]=='add') { //Add a new Group
-        getPermissions($data,$db);
-    } elseif($data->action[3]=='edit') { // Edit Group
-        getPermissions($data,$db);
-        $data->output['permissionGroup'] = $form = new formHandler('permissionGroup',$data,true);
-        // Edit Group Form Submitted
-        if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)) {
-            $data->output['permissionGroup']->populateFromPostData();
-            // Check if groupName exists already
-            $existing = false;
-            if($form->sendArray[':name'] !== $item['name'])
-            {
-                $existing = checkUserName($form->sendArray[':name'],$db);
-            }
+    } elseif($data->action[3]=='group') {
+        if($data->action[4]=='add') { //Add a new Group
+            getPermissions($data,$db);
+            $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
+        } elseif($data->action[4]=='edit') { // Edit Group
+            getPermissions($data,$db);
+            // Get Group Permissions
 
-            if($existing)
-            {
-                $data->output['secondSideBar']='
-				  <h2>Error in Data</h2>
-				  <p>
-					  There were one or more errors. Please correct the fields with the red X next to them and try again.
-				  </p><p>
-					  <strong>That username is already taken!</strong>
-				  </p>';
-
-                $data->output['userForm']->fields['name']['error'] = true;
-
+            $statement=$db->prepare('getPermissionsByGroupName');
+            $statement->execute(array(
+                ':groupName' =>  $data->action[5]
+            ));
+            if(!$permissions=$statement->fetchAll(PDO::FETCH_ASSOC)) {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = 'The group you specified could not be found';
                 return;
+            }
+            foreach($permissions as $permission) {
+                $data->output['permissionGroup']['permissions'][] = $permission['permissionName'];
+            }
+            if(isset($data->output['permissionGroup']['permissions'])) {
+                // Organize array by module (Ex. $user['permissions']['blogs'])
+                foreach($data->output['permissionGroup']['permissions'] as $key => $permission) {
+                    unset($data->output['permissionGroup']['permissions'][$key]);
+                    $separator=strpos($permission,'_');
+                    $prefix=substr($permission,0,$separator);
+                    $suffix=substr($permission,$separator+1);
+                    $data->output['permissionGroup']['permissions'][$prefix][] = $suffix;
+                }
+                // Clean up
+                //asort($user['permissions']);
+            }
+            $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
+            // Edit Group Form Submitted
+            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['userForm']->fromForm)) {
+                $data->output['permissionGroup']->populateFromPostData();
+                // Check if groupName exists already
+                $existing=false;
+                if($data->output['permissionGroup']->sendArray[':name']!==$item['name']) {
+                    $existing=checkUserName($data->output['permissionGroup']->sendArray[':name'],$db);
+                }
+                if($existing) {
+                    $data->output['secondSideBar']='
+                      <h2>Error in Data</h2>
+                      <p>
+                          There were one or more errors. Please correct the fields with the red X next to them and try again.
+                      </p><p>
+                          <strong>That username is already taken!</strong>
+                      </p>';
+                    $data->output['userForm']->fields['name']['error']=true;
+                    return;
+                }
             }
         }
     }
 }
-
 function admin_usersShow($data) {
     if(empty($data->action[3])){ // Display List of Groups
 
@@ -104,10 +124,12 @@ function admin_usersShow($data) {
             theme_GroupsListTableRow($group['groupName'],$data->linkRoot,$key);
         }
         theme_GroupsListTableFoot($data->linkRoot);
-    } elseif($data->action[3]=='add') { //Add a new Group
-
-    } elseif($data->action[3]=='edit') { //Edit Group
-        theme_buildTable($data->output['permissionGroup']);
+    } elseif($data->action[3]=='group') {
+        if($data->action[4]=='add') { //Add a new Group
+            theme_buildForm($data->output['permissionGroup']);
+        } elseif($data->action[4]=='edit') { //Edit Group
+            theme_buildForm($data->output['permissionGroup']);
+        }
     }
 }
 ?>
