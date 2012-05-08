@@ -83,40 +83,40 @@ function common_addQueries() {
 		'getSettings' => '
 			SELECT * FROM !prefix!settings
 		',
-		'getNewsId' => "
+		'getNewsId' => '
 			SELECT id FROM !prefix!blogs
-			WHERE name='news'
-		",
-		'getAllNews' => "
+			WHERE name="news"
+		',
+		'getAllNews' => '
 			SELECT * FROM !prefix!blogs
-			WHERE name='news'
-		",
+			WHERE name="news"
+		',
 		'getMainMenuOrder' => '
 			SELECT * FROM !prefix!main_menu
 			ORDER BY sortOrder ASC
 		',
-		'getMainMenuOrderLeft' => "
+		'getMainMenuOrderLeft' => '
 			SELECT * FROM !prefix!main_menu
-			WHERE side = 'left'
+			WHERE side = "left"
 			ORDER BY sortOrder ASC
-		",
-		'getMainMenuOrderRight' => "
+		',
+		'getMainMenuOrderRight' => '
 			SELECT * FROM !prefix!main_menu
-			WHERE side = 'right'
+			WHERE side = "right"
 			ORDER BY sortOrder ASC
-		",
-		'getEnabledMainMenuOrderLeft' => "
+		',
+		'getEnabledMainMenuOrderLeft' => '
 			SELECT * FROM !prefix!main_menu
-			WHERE side = 'left'
+			WHERE side = "left"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
-		",
-		'getEnabledMainMenuOrderRight' => "
+		',
+		'getEnabledMainMenuOrderRight' => '
 			SELECT * FROM !prefix!main_menu
-			WHERE side = 'right'
+			WHERE side = "right"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
-		",
+		',
 		'getSidebars' => '
 			SELECT *
 			FROM !prefix!sidebars
@@ -130,31 +130,32 @@ function common_addQueries() {
 			ORDER BY sortOrder ASC
 		',
 		'deleteFromSidebarsById' => '
-			DELETE FROM !prefix!sidebars
+			DELETE
+			FROM !prefix!sidebars
 			WHERE id = :id
 		',
 		//No column "showOnParent" in table !prefix!pages
-        'getHomePagePages' => "
+        'getHomePagePages' => '
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4096
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
-		",
-		'getHomePageSideBarPages' => "
+		',
+		'getHomePageSideBarPages' => '
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4097
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
-		",
-		'getSideBarPages' => "
+		',
+		'getSideBarPages' => '
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4098
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
-		",
+		',
 	    //^^^
         // Permissions
         'addPermissionsByUserId' => '
@@ -176,19 +177,28 @@ function common_addQueries() {
             (:userID,:groupName)
         ',
         'getGroupsByUserID' => '
-			SELECT * FROM !prefix!user_permission_groups
+			SELECT *
+			FROM !prefix!user_permission_groups
 			WHERE userID = :userID
 		',
+        'getGroupsByGroupID' => '
+			SELECT groupName
+			FROM !prefix!user_permission_groups
+			WHERE groupName = :groupName
+		',
         'getPermissionsByGroupName' => '
-			SELECT permissionName FROM !prefix!user_group_permissions
+			SELECT permissionName
+			FROM !prefix!user_group_permissions
 			WHERE groupName = :groupName
 		',
         'getUserPermissionsByUserID' => '
-			SELECT * FROM !prefix!user_permissions
+			SELECT *
+			FROM !prefix!user_permissions
 			WHERE userID = :userID
 		',
         'purgeExpiredGroups' => '
-			DELETE FROM !prefix!user_permission_groups
+			DELETE
+			FROM !prefix!user_permission_groups
 			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
 		'
     );

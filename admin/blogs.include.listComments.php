@@ -30,7 +30,7 @@ function admin_blogsBuild($data,$db)
 		 * is under.
 		 * ---------------------------------------
 		**/
-		if(checkPermission('canListBlogComments','blogs',$data))
+		if(checkPermission('commentsList','blogs',$data))
 		{
 			$statement = $db->prepare('getBlogByPost','admin_blogs');
 			$statement->execute(array(

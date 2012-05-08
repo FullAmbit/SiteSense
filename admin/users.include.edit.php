@@ -148,7 +148,7 @@ function admin_usersBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/users/edit/new">
+						<a href="'.$data->linkRoot.'admin/users/add">
 							Add New User
 						</a>
 						<a href="'.$data->linkRoot.'admin/users/list/">

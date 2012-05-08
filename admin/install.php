@@ -276,8 +276,6 @@ if (
             'core_canAccessMainMenu',
             'core_canAccessMainMenuConfig',
             'core_canDeleteMainMenuItems',
-            'core_canAccessMessagesAdminPanel',
-            'core_canAccessMessageConfig',
             'core_canAccessModulesAdminPanel',
             'core_canAccessModulesConfig',
             'core_canAccessPluginsAdminPanel',
@@ -290,11 +288,12 @@ if (
             'core_canAccessUrlRemapAdminPanel',
             'core_canAccessUrlRemapConfig',
             'core_canEnableModules',
-            'core_canViewLeftSideBar',
-            'blogs_admin',
-            'forms_admin',
-            'users_admin'
-    ));
+            'core_canViewLeftSideBar'
+        ),
+        'User' => array(
+            'core_canAccessAdminPanel',
+        )
+    );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addPermissionGroup','common');
         if($groupName=='Administrators') {

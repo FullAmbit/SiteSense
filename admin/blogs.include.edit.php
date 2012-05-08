@@ -43,7 +43,7 @@ function admin_blogsBuild($data,$db) {
 		return;
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('canEditBlog','blogs',$data))
+	if(checkPermission('blogsEdit','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
@@ -71,7 +71,7 @@ function admin_blogsBuild($data,$db) {
 	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
 	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
 	**/
-	if(checkPermission('canSeeBlogOwners','blogs',$data))
+	if(checkPermission('ownerView','blogs',$data))
 	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',

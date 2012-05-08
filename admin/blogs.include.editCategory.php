@@ -27,7 +27,7 @@ function admin_blogsBuild($data,$db)
 {
 	
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('canEditBlogCategory','blogs',$data))
+	if(checkPermission('blogsEdit','blogs',$data))
 	{
 		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(

@@ -40,7 +40,7 @@ function admin_blogsBuild($data,$db)
 	
 	if (is_numeric($data->action[3])) {
 		//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
-		if(checkPermission('canEditBlogPost','blogs',$data))
+		if(checkPermission('postEdit','blogs',$data))
 		{
 			$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$statement->execute(array(

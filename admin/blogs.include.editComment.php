@@ -43,7 +43,7 @@ function admin_blogsBuild($data,$db)
 		 * is under.
 		 * ---------------------------------------
 		**/
-		if(checkPermission('canEditBlogComments','blogs',$data))
+		if(checkPermission('commentsEdit','blogs',$data))
 		{
 			$statement = $db->prepare('getBlogByPost','admin_blogs');
 			$statement->execute(array(

@@ -47,7 +47,11 @@ foreach($data->permissions as $category => $permissions) {
                 'tag'     => 'input',
                 'group'   => ucfirst($category).' Permissions',
                 'value'   => '1',
-                'checked' => (in_array($permissionName,$data->output['permissionGroup']['permissions'][$category])) ? 'checked' : '',
+                'checked' => (
+                    isset($data->output['permissionGroup']['permissions'][$category])
+                    && in_array($permissionName,$data->output['permissionGroup']['permissions'][$category]))
+                    ? 'checked'
+                    : '',
                 'params' => array(
                     'type' => 'checkbox'
                 )
