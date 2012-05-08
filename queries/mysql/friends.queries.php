@@ -81,18 +81,37 @@ function friends_addQueries() {
 					f.user2 = :user 
 				ORDER BY
 					name ASC
-			',
+		',
 		'findFriends' => '
-			SELECT * FROM !prefix!users WHERE name LIKE :name
+			SELECT *
+			FROM !prefix!users
+			WHERE name
+			LIKE :name
+		',
+        'findFriendsByAllFields' => '
+			SELECT *
+			FROM !prefix!users
+			WHERE name LIKE :name
+			OR
+			fullName LIKE :fullName
+			OR
+			publicEmail LIKE :publicEmail
 		',
 		'makeRequest' => '
-			INSERT INTO !prefix!friends SET user1 = :user1, user2 = :user2
+			INSERT INTO !prefix!friends
+			SET user1 = :user1,
+			    user2 = :user2
 		',
 		'acceptRequest' => '
-			UPDATE !prefix!friends SET confirmed = 1 WHERE user1 = :user1 AND user2 = :user2
+			UPDATE !prefix!friends
+			SET confirmed = 1
+			WHERE user1 = :user1
+			AND user2 = :user2
 		',
 		'ignoreRequest' => '
-			DELETE FROM !prefix!friends WHERE user1 = :user1 AND user2 = :user2
+			DELETE FROM !prefix!friends
+			WHERE user1 = :user1
+			AND user2 = :user2
 		',
 		'isFriend' => '
 			SELECT

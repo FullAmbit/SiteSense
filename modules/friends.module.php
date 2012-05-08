@@ -80,12 +80,19 @@ function page_buildContent($data,$db) {
 			$data->output['friends'] = $friendList->fetchAll();
 			$form = $data->output['friendsearch'] = new formHandler('friendSearch', $data);
 			if (!empty($_POST['fromForm']) && $_POST['fromForm'] == $form->fromForm){
+                // need add check here to see what fields were submited and run quiries based on the input
 				if ($form->validateFromPost()) {
 					$form->populateFromPostData();
-					$data->output['search'] = $form->sendArray[':name'];
+                    if (isset($form->sendArray[':userName']) && isset($form->sendArray[':fullName']) && isset($form->sendArray[':publicEmail'])) {
+                        $find = $db->prepare('findFriendsByAllFields','friends');
+                        $find->execute(array('name' => '%'.$form->sendArray[':userName'].'%',
+                                             'fullName' => '%'.$form->sendArray[':fullName'].'%',
+                                             'publicEmail' => '%'.$));
+                    }
+					$data->output['search']=$form->sendArray[':userName'];
 					$find = $db->prepare('findFriends', 'friends');
-					$find->execute(array('name' => '%' . $data->output['search'] . '%'));
-					$data->output['results'] = $find->fetchAll();
+					$find->execute(array('name' => '%'.$data->output['search'].'%'));
+					$data->output['results']=$find->fetchAll();
 					$pageType = 'results';
 				}
 			}
