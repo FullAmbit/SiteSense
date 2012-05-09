@@ -97,6 +97,32 @@ function friends_addQueries() {
 			OR
 			publicEmail LIKE :publicEmail
 		',
+        'findFriendsByUserNameAndFullName' => '
+			SELECT *
+			FROM !prefix!users
+			WHERE name LIKE :name
+			OR
+			fullName LIKE :fullName
+		',
+        'findFriendsByPublicEmailAndFullName' => '
+			SELECT *
+			FROM !prefix!users
+			WHERE publicEmail LIKE :publicEmail
+			OR
+			fullName LIKE :fullName
+		',
+        'findFriendsByFullName' => '
+			SELECT *
+			FROM !prefix!users
+			WHERE fullName
+			LIKE :fullName
+		',
+        'findFriendsByPublicEmail' => '
+			SELECT *
+			FROM !prefix!users
+			WHERE publicEmail
+			LIKE :publicEmail
+		',
 		'makeRequest' => '
 			INSERT INTO !prefix!friends
 			SET user1 = :user1,
