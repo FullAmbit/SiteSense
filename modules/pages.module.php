@@ -125,12 +125,12 @@ function page_content($data) {
 
 function loadPermissions($data) {
     $data->permissions['pages']=array(
-      'access'               => 'Pages access',
-      'add'                  => 'Add pages',
-      'edit'                 => 'Edit pages',
-      'editSpecific'         => 'Edit specific page(s)',
-      'delete'               => 'Delete pages',
-      'publish'              => 'Publish pages'
+    	'access'               => 'Pages access',
+    	'add'                  => 'Add pages',
+    	'edit'                 => 'Edit pages',
+    	'editSpecific'         => 'Edit specific page(s)',
+    	'delete'               => 'Delete pages',
+    	'publish'              => 'Publish pages'
     );
 }
 ?>
