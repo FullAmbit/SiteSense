@@ -33,8 +33,7 @@ function admin_blogsBuild($data,$db)
 	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
 	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
 	**/
-	if(checkPermission('ownerAdd','blogs',$data))
-	{
+	if(!checkPermission('accessOthers','blogs',$data))	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
 			'params' => array(
@@ -43,13 +42,36 @@ function admin_blogsBuild($data,$db)
 			'value' => $data->user['id']
 		);
 		
-	} elseif (checkPermission('ownerView','blogs',$data)) {
-		$statement = $db->query('getBloggersByUserLevel','admin_blogs');
+	} else {
+		// Get all users with 'Blog access'
+        // Start by purging expired groups
+        $statement = $db->query('purgeExpiredGroups');
+        $statement->execute();
+        $statement = $db->prepare('getUserByPermissionNameGroupOnlyScope');
+        $statement->execute(array(
+            ':permissionName' => 'blogs_access'
+        ));
+        $usersFromGroupPermissionCheck=$statement->fetchAll();
+        $statement = $db->prepare('getUserByPermissionNameUserOnlyScope');
+        $statement->execute(array(
+            ':permissionName' => 'blogs_access'
+        ));
+        $usersFromUserPermissionCheck=$statement->fetchAll();
+        $usersWithBlogAccess = array();
+        foreach($usersFromGroupPermissionCheck as $user){
+            if(is_set($usersWithBlogAccess)) {
+                // Run Checks
+            } else {
+                // Empty, add the first user
+                $usersWithBlogAccess[] = $user['userID'];
+            }
+        }
+        $statement = $db->query('getBloggersByUserLevel','admin_blogs');
 		$statement->execute();
 		while ($item=$statement->fetch()) {
 			$data->output['blogForm']->fields['owner']['options'][]=array(
 				'value' => $item['id'],
-				'text' => $item['name'].' - '.$languageText['userLevels'][$item['userLevel']]
+				'text' => $item['name']
 			);
 		}
 	}

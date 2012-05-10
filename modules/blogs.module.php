@@ -278,7 +278,32 @@ function page_content($data)
 
 function loadPermissions($data) {
     $data->permissions['blogs']=array(
-      'access'               => 'Blog access',
+      'access'              => 'Blog access',
+      'accessOthers'        => 'Manage content of others',
+
+      'blogAdd'             => 'Add blogs',
+      'blogEdit'            => 'Edit blogs',
+      'blogDelete'          => 'Delete blogs',
+      'blogList'            => 'View blogs',
+
+      'categoryAdd'         => 'Add categories',
+      'categoryEdit'        => 'Edit categories',
+      'categoryDelete'      => 'Delete categories',
+      'categoryView'        => 'View categories',
+
+      'commentAdd'          => 'Add comments',
+      'commentEdit'         => 'Edit comments',
+      'commentDelete'       => 'Delete comments',
+      'commentApprove'      => 'Approve comments',
+      'commentDisapprove'   => 'Disapprove comments',
+      'commentList'         => 'List comments',
+
+      'postAdd'             => 'Add posts',
+      'postEdit'            => 'Edit posts',
+      'postDelete'          => 'Delete posts',
+      'postView'            => 'View posts',
+
+      //----
       'blogsManage'          => 'Manage blogs',
       'blogsViewOthers'      => 'View other user\'s blogs',
       'categoryAdd'          => 'Add blog category',

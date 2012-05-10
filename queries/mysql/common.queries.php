@@ -200,7 +200,18 @@ function common_addQueries() {
 			DELETE
 			FROM !prefix!user_permission_groups
 			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
-		'
+		',
+        'getUserByPermissionNameGroupOnlyScope' => '
+            SELECT !prefix!user_permission_groups.userID
+            FROM !prefix!user_group_permissions
+            INNER JOIN !prefix!user_permission_groups ON !prefix!user_permission_groups.groupName = !prefix!user_group_permissions.groupName
+            WHERE !prefix!user_group_permissions.permissionName =  :permissionName
+        ',
+        'getUserByPermissionNameUserOnlyScope' => '
+            SELECT userID, allow
+            FROM !prefix!user_permissions
+            WHERE permissionName = :permissionName
+        '
     );
 }
 

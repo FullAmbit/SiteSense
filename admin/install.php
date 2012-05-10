@@ -181,6 +181,7 @@ if (
 		'register',
 		'user'
 	);
+
 	$uninstalledModuleFiles = glob('modules/*.install.php');
 	foreach($uninstalledModuleFiles as $moduleInstallFile) {
 		// Include the install file for this module
@@ -268,7 +269,6 @@ if (
 			}
 		}
 	}
-
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Administrators' => array(
@@ -288,12 +288,55 @@ if (
             'core_canAccessUrlRemapAdminPanel',
             'core_canAccessUrlRemapConfig',
             'core_canEnableModules',
-            'core_canViewLeftSideBar'
+            'core_canViewLeftSideBar',
+            'users_admin'
         ),
         'User' => array(
             'core_canAccessAdminPanel',
         )
     );
+    /*
+    // --- Start new part
+    $permissionList->permissions = array();
+    // Get all enabled permissions
+    $targetFunction='loadPermissions';
+    // Get core permissions
+    if (function_exists($targetFunction)) {
+        $targetFunction($permissionList);
+    }
+    // Get enabled modules
+    $statement=$data->query('getEnabledModules','admin_modules');
+    $modules=$statement->fetchAll();
+    foreach($modules as $module) {
+        // Check to see if loadPermission() function exists
+        $filename='./modules/'.$module['name'].'.php';
+        if(file_exists($filename)) {
+            common_include($filename);
+            if (function_exists($targetFunction)) {
+                $targetFunction($permissionList);
+            }
+        }
+    }
+    // Get enabled plugins
+    $statement=$data->query('getEnabledPlugins','plugins');
+    $plugins=$statement->fetchAll();
+    foreach($plugins as $plugin) {
+        $filename='plugins/'.$plugin['name'].'/plugin.php';
+        if(file_exists($filename)) {
+            common_include('plugins/'.$plugin['name'].'/plugin.php');
+            if (function_exists($targetFunction)) {
+                $targetFunction($permissionList);
+            }
+        }
+    }
+
+    foreach($permissionList->permissions as $category) {
+        foreach($permissionList->permissions[$category] as $permission) {
+            $defaultPermissionGroups['Administrators'][]=$permission;
+        }
+    }
+    // --- end new part
+    */
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addPermissionGroup','common');
         if($groupName=='Administrators') {

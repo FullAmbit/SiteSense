@@ -23,10 +23,10 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions
-    common_include('libraries/common.php');
     if (function_exists($targetFunction)) {
         $targetFunction($data);
     }
@@ -56,6 +56,7 @@ function getPermissions($data,$db) {
         }
     }
 }
+
 function admin_usersBuild($data,$db) {
 	if(empty($data->action[3])){ // Display List of Groups
         $statement=$db->query('getAllGroups','admin_users');
@@ -65,7 +66,7 @@ function admin_usersBuild($data,$db) {
             getPermissions($data,$db);
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             // Add Group Form Submitted
-            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
+            if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
                 $existing=false;
@@ -110,6 +111,7 @@ function admin_usersBuild($data,$db) {
                         return;
                     }
                 }
+                // Remove!
                 $statement=$db->prepare('addPermissionGroup');
                 $result = $statement->execute(array(
                     ':groupName'  => $data->output['permissionGroup']->sendArray[':groupName'],
@@ -190,6 +192,7 @@ function admin_usersBuild($data,$db) {
                 } else {
 
                 }
+                // Insert into DB table
             }
         }
     }

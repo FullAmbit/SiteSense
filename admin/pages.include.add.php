@@ -103,8 +103,7 @@ function admin_pagesBuild($data,$db)
 			// Save To DB
 			var_dump($statement = $db->prepare('insertPage','admin_pages'));
 			var_dump($data->output['pageForm']->sendArray);
-			if($statement->execute($data->output['pageForm']->sendArray))
-			{
+			if($statement->execute($data->output['pageForm']->sendArray)) {
 				
 				
 				$data->output['savedOkMessage']='
@@ -122,13 +121,13 @@ function admin_pagesBuild($data,$db)
 					(isset($menuId) ? '<a href="'.$data->linkRoot.'admin/mainMenu/edit/'.$menuId.'/">Edit Menu Item</a>' : NULL)
 				.
 				'</div>';
-			} else {
-				$data->output['secondSideBar']='
+            } else {
+                $data->output['secondSideBar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
 				</p>';
-			}
+            }
 		}
 	}
 }

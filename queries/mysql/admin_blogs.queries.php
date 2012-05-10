@@ -79,6 +79,11 @@ function admin_blogs_addQueries() {
 			WHERE userLevel >= '.USERLEVEL_BLOGGER.'
 			ORDER BY userLevel DESC,id ASC
 		',
+        'getUsersWithBlogAccess' => '
+			SELECT id,name FROM !prefix!users
+			WHERE userLevel >= '.USERLEVEL_BLOGGER.'
+			ORDER BY userLevel DESC,id ASC
+		',
 		'updateBlogById' => '
 			UPDATE !prefix!blogs
 			SET
