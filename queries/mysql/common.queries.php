@@ -27,114 +27,114 @@
 	!prefix! = dynamicPDO::tablePrefix
 */
 function common_addQueries() {
-	return array(
-		'tableExists' => '
+    return array(
+        'tableExists' => '
 			SHOW TABLES LIKE \'!prefix!!table!\'
 		',
-		'countRows' => '
+        'countRows' => '
 			SELECT COUNT(*) AS COUNT
 			FROM !prefix!!table!
 		',
-		'logoutSession' => '
+        'logoutSession' => '
 			DELETE FROM !prefix!sessions
 			WHERE sessionID = :sessionID
 		',
-		'purgeExpiredSessions' => '
+        'purgeExpiredSessions' => '
 			DELETE FROM !prefix!sessions
 			WHERE expires < CURRENT_TIMESTAMP
 		',
-		'getSessionById' => '
+        'getSessionById' => '
 			SELECT * FROM !prefix!sessions
 			WHERE sessionId = :sessionId
 		',
-		'pullUserInfoById' => '
+        'pullUserInfoById' => '
 			SELECT * FROM !prefix!users
 			WHERE id = :userId
 		',
-		'getUserIdByName' => '
+        'getUserIdByName' => '
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
-		'updateSessionExpiration' => '
+        'updateSessionExpiration' => '
 			UPDATE !prefix!sessions
 			SET expires = :expires
 			WHERE sessionId = :sessionId
 		',
-		'updateLastAccess' => '
+        'updateLastAccess' => '
 			UPDATE !prefix!users
 			SET lastAccess = CURRENT_TIMESTAMP
 			WHERE id = :id
 		',
-		'checkPassword' => '
+        'checkPassword' => '
 			SELECT * FROM !prefix!users
 			WHERE name = :name
 			AND password = :passphrase
 		',
-		'purgeSessionByUserId' => '
+        'purgeSessionByUserId' => '
 			DELETE FROM !prefix!sessions
 			WHERE userId = :userId
 		',
-		'updateUserSession' => '
+        'updateUserSession' => '
 			INSERT INTO !prefix!sessions
 			(sessionId,userId,expires,ipAddress,userAgent)
 			VALUES
 			(:sessionId,:userId,:expires,:ipAddress,:userAgent)
 		',
-		'getSettings' => '
+        'getSettings' => '
 			SELECT * FROM !prefix!settings
 		',
-		'getNewsId' => '
+        'getNewsId' => '
 			SELECT id FROM !prefix!blogs
 			WHERE name="news"
 		',
-		'getAllNews' => '
+        'getAllNews' => '
 			SELECT * FROM !prefix!blogs
 			WHERE name="news"
 		',
-		'getMainMenuOrder' => '
+        'getMainMenuOrder' => '
 			SELECT * FROM !prefix!main_menu
 			ORDER BY sortOrder ASC
 		',
-		'getMainMenuOrderLeft' => '
+        'getMainMenuOrderLeft' => '
 			SELECT * FROM !prefix!main_menu
 			WHERE side = "left"
 			ORDER BY sortOrder ASC
 		',
-		'getMainMenuOrderRight' => '
+        'getMainMenuOrderRight' => '
 			SELECT * FROM !prefix!main_menu
 			WHERE side = "right"
 			ORDER BY sortOrder ASC
 		',
-		'getEnabledMainMenuOrderLeft' => '
+        'getEnabledMainMenuOrderLeft' => '
 			SELECT * FROM !prefix!main_menu
 			WHERE side = "left"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
-		'getEnabledMainMenuOrderRight' => '
+        'getEnabledMainMenuOrderRight' => '
 			SELECT * FROM !prefix!main_menu
 			WHERE side = "right"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
-		'getSidebars' => '
+        'getSidebars' => '
 			SELECT *
 			FROM !prefix!sidebars
 			WHERE enabled = TRUE
 			ORDER BY sortOrder ASC
 		',
-		'getSidebarById' => '
+        'getSidebarById' => '
 			SELECT *
 			FROM !prefix!sidebars
 			WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
-		'deleteFromSidebarsById' => '
+        'deleteFromSidebarsById' => '
 			DELETE
 			FROM !prefix!sidebars
 			WHERE id = :id
 		',
-		//No column "showOnParent" in table !prefix!pages
+        //No column "showOnParent" in table !prefix!pages
         'getHomePagePages' => '
 			SELECT *
 			FROM !prefix!pages
@@ -142,21 +142,20 @@ function common_addQueries() {
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
-		'getHomePageSideBarPages' => '
+        'getHomePageSideBarPages' => '
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4097
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
-		'getSideBarPages' => '
+        'getSideBarPages' => '
 			SELECT *
 			FROM !prefix!pages
 			WHERE parent=-4098
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
-	    //^^^
         // Permissions
         'addPermissionsByUserId' => '
             INSERT INTO !prefix!user_permissions
@@ -197,8 +196,7 @@ function common_addQueries() {
 			WHERE userID = :userID
 		',
         'purgeExpiredGroups' => '
-			DELETE
-			FROM !prefix!user_permission_groups
+			DELETE FROM !prefix!user_permission_groups
 			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
 		',
         'getUserByPermissionNameGroupOnlyScope' => '
@@ -211,8 +209,17 @@ function common_addQueries() {
             SELECT userID, allow
             FROM !prefix!user_permissions
             WHERE permissionName = :permissionName
+		',
+        'updateGroupName' => '
+            UPDATE !prefix!user_permission_groups
+            SET groupName = :groupName
+            WHERE groupName = :currentGroupName
+        ',
+        'purgePermissionByGroupName' => '
+            DELETE FROM !prefix!user_group_permissions
+            WHERE permissionName = :permissionName
+            AND groupName = :groupName
         '
     );
 }
-
 ?>
