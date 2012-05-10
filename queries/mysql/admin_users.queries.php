@@ -127,7 +127,11 @@ function admin_users_addQueries() {
         'getPermissionsByGroupName' => '
 			SELECT * FROM !prefix!user_permission_groups
 			WHERE groupName = :groupName
-		'
+		',
+        'getGroupName' => '
+            SELECT groupName FROM !prefix!user_permission_groups
+            WHERE groupName = :groupName
+        '
 	);
 }
 ?>

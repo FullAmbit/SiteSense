@@ -64,21 +64,87 @@ function admin_usersBuild($data,$db) {
         if($data->action[4]=='add') { //Add a new Group
             getPermissions($data,$db);
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
+            // Add Group Form Submitted
+            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
+                $data->output['permissionGroup']->populateFromPostData();
+                // Check if groupName exists already
+                $existing=false;
+                $statement=$db->prepare('getGroupsByGroupID');
+                $statement->execute(array(
+                    ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
+                ));
+                if ($statement->fetchColumn()) {
+                    // Returned result, groupName already exists
+                    $existing=true;
+                }
+
+                if($existing) {
+                    $data->output['secondSideBar']='
+                      <h2>Error in Data</h2>
+                      <p>
+                          There were one or more errors. Please correct the fields with the red X next to them and try again.
+                      </p><p>
+                          <strong>That group name is already taken!</strong>
+                      </p>';
+                    $data->output['permissionGroup']->fields['name']['error']=true;
+                    return;
+                }
+                foreach($data->output['permissionGroup']->sendArray as $fieldName => $value) {
+                    if($fieldName!==':groupName' && $fieldName!==':expiration') {
+                        // Check to see if it is checked or not
+                        if($value) {
+                            $permissions[]=substr($fieldName,1);
+                        }
+                    }
+                }
+                foreach($permissions as $permission) {
+                    $statement=$db->prepare('addPermissionByGroupName');
+                    $result = $statement->execute(array(
+                        ':groupName'      => $data->output['permissionGroup']->sendArray[':groupName'],
+                        ':permissionName' => $permission
+
+                    ));
+                    if($result==FALSE) {
+                        $data->output['savedOkMessage'] = 'There was an error in saving to the database';
+                        return;
+                    }
+                }
+                $statement=$db->prepare('addPermissionGroup');
+                $result = $statement->execute(array(
+                    ':groupName'  => $data->output['permissionGroup']->sendArray[':groupName'],
+                    ':userID'     => '0'
+
+                ));
+                if($result==FALSE) {
+                    $data->output['savedOkMessage'] = 'There was an error in saving to the database';
+                    return;
+                }
+
+                $data->output['savedOkMessage']='
+					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
+					<div class="panel buttonList">
+						<a href="'.$data->linkRoot.'admin/users/permissions/group/add">
+							Add New Group
+						</a>
+						<a href="'.$data->linkRoot.'admin/users/permissions/">
+							Return to Group List
+						</a>
+					</div>';
+            }
         } elseif($data->action[4]=='edit') { // Edit Group
             getPermissions($data,$db);
             // Get Group Permissions
-
-            $statement=$db->prepare('getPermissionsByGroupName');
+            /* $statement=$db->prepare('getPermissionsByGroupName');
             $statement->execute(array(
                 ':groupName' =>  $data->action[5]
             ));
             if(!$permissions=$statement->fetchAll(PDO::FETCH_ASSOC)) {
                 $data->output['abort'] = true;
-                $data->output['abortMessage'] = 'The group you specified could not be found';
+                $data->output['abortMessage']='The group you specified could not be found';
                 return;
             }
             foreach($permissions as $permission) {
-                $data->output['permissionGroup']['permissions'][] = $permission['permissionName'];
+                $data->output['permissionGroup']['permissions'][]=$permission['permissionName'];
             }
             if(isset($data->output['permissionGroup']['permissions'])) {
                 // Organize array by module (Ex. $user['permissions']['blogs'])
@@ -87,30 +153,61 @@ function admin_usersBuild($data,$db) {
                     $separator=strpos($permission,'_');
                     $prefix=substr($permission,0,$separator);
                     $suffix=substr($permission,$separator+1);
-                    $data->output['permissionGroup']['permissions'][$prefix][] = $suffix;
+                    $data->output['permissionGroup']['permissions'][$prefix][]=$suffix;
                 }
                 // Clean up
-                //asort($user['permissions']);
-            }
+                var_dump(asort($data->output['permissionGroup']['permissions']));
+            }*/
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             // Edit Group Form Submitted
-            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['userForm']->fromForm)) {
+            if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
-                $existing=false;
-                if($data->output['permissionGroup']->sendArray[':name']!==$item['name']) {
-                    $existing=checkUserName($data->output['permissionGroup']->sendArray[':name'],$db);
-                }
-                if($existing) {
-                    $data->output['secondSideBar']='
+                if($data->output['permissionGroup']->sendArray[':groupName']!==$data->action[5]) {
+                    $statement=$db->prepare('getGroupName');
+                    $statement->execute(array(
+                        ':groupName' => $data->action[5]
+                    ));
+                    if($statement->fetchColumn()) {
+                        // Returned result, groupName already exists
+                        $data->output['secondSideBar']='
                       <h2>Error in Data</h2>
                       <p>
                           There were one or more errors. Please correct the fields with the red X next to them and try again.
                       </p><p>
-                          <strong>That username is already taken!</strong>
+                          <strong>That group name is already taken!</strong>
                       </p>';
-                    $data->output['userForm']->fields['name']['error']=true;
-                    return;
+                        $data->output['permissionGroup']->fields['name']['error']=true;
+                        return;
+                    }
+                    $statement=$db->prepare('updateGroupName');
+                    $statement->execute(array(
+                        ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+                        ':currentGroupName' => $data->action[5]
+                    ));
+                }
+                $statement=$db->prepare('getPermissionsByGroupName');
+                $statement->execute(array(
+                    ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+                ));
+                $currentGroupPermissions=$statement->fetchAll();
+                foreach($data->output['permissionGroup']->sendArray as $key => $value) {
+                    if($value) {
+                         if(!in_array($value,$currentGroupPermissions)) {
+                             $statement=$db->prepare('addPermissionByGroupName');
+                             $statement->execute(array(
+                                 ':permissionName' => $value,
+                                 ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
+                             ));
+                         }
+                    } else {
+                        if($key=='groupName') continue;
+                        $statement=$db->prepare('purgePermissionByGroupName');
+                        $statement->execute(array(
+                            ':permissionName' => $value,
+                            ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
+                        ));
+                    }
                 }
             }
         }
@@ -126,7 +223,13 @@ function admin_usersShow($data) {
         theme_GroupsListTableFoot($data->linkRoot);
     } elseif($data->action[3]=='group') {
         if($data->action[4]=='add') { //Add a new Group
-            theme_buildForm($data->output['permissionGroup']);
+            if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
+                admin_unknown();
+            } else if (isset($data->output['savedOkMessage'])) {
+                echo $data->output['savedOkMessage'];
+            } else {
+                theme_buildForm($data->output['permissionGroup']);
+            }
         } elseif($data->action[4]=='edit') { //Edit Group
             theme_buildForm($data->output['permissionGroup']);
         }

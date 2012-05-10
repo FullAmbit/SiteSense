@@ -96,6 +96,45 @@ function blogs_install($data,$drop=false) {
 	$data->createTable('blog_posts',$structures['blog_posts'],false);
 	$data->createTable('blog_comments',$structures['blog_comments'],false);
 	$data->createTable('blog_categories',$structures['blog_categories'],false);
+
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Writer' => array(
+        ),
+        'Moderator' => array(
+        ),
+        'Blogger' => array(
+        ),
+
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        $statement=$data->prepare('addPermissionGroup','common');
+        if($groupName=='Administrators') {
+            $statement->execute(
+                array(
+                    ':userID' => '1',
+                    ':groupName' => $groupName
+                )
+            );
+        } else {
+            $statement->execute(
+                array(
+                    ':userID' => '0',
+                    ':groupName' => $groupName
+                )
+            );
+        }
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+    // ---
 	if ($data->countRows('blogs')==0) {
 		try {
 			echo '

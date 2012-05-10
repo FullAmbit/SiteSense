@@ -148,7 +148,7 @@ function theme_blogListItem($blogPost,$localRoot) {
 }
 function theme_blogPostControls($data,$blogItem) {
 	$controls=array();
-	if (checkPermission('canSeeOthersBlogs','blogs',$data)) {
+	if (checkPermission('blogsViewOthers','blogs',$data)) {
 		if (
 			$blogItem['allowComments']==true
 		) $controls[]='<a href="#">Reply</a>';
@@ -159,7 +159,7 @@ function theme_blogPostControls($data,$blogItem) {
 		) {
 			if ($blogItem['repliesWaiting']>0) $controls[]='<a href="#">Approve Replies</a>';
 			if (
-				checkPermission('canEditBlogPost','blogs',$data)
+				checkPermission('postEdit','blogs',$data)
 			) $controls[]='<a href="'.$data->linkRoot.'/admin/blogs/editPosts/'.$blogItem['blogId'].'/'.$blogItem['id'].'">Edit</a>';
 		}
 	}

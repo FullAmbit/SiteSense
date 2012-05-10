@@ -125,8 +125,12 @@ function page_content($data) {
 
 function loadPermissions($data) {
     $data->permissions['pages']=array(
-        'admin' => 'Can access pages admin panel',
-        'canDeletePage' => 'User can delete pages'
+      'access'               => 'Pages access',
+      'add'                  => 'Add pages',
+      'edit'                 => 'Edit pages',
+      'editSpecific'         => 'Edit specific page(s)',
+      'delete'               => 'Delete pages',
+      'publish'              => 'Publish pages'
     );
 }
 ?>

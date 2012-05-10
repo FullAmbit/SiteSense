@@ -42,7 +42,7 @@ function admin_blogsBuild($data,$db)
 	 * is under.
 	 * ---------------------------------------
 	**/
-	if(checkPermisison('canDisaproveComments','blogs',$data))
+	if(checkPermisison('commentsDisapprove','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(

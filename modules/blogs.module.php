@@ -278,27 +278,30 @@ function page_content($data)
 
 function loadPermissions($data) {
     $data->permissions['blogs']=array(
-      'admin' => 'User can see blog',
-      'canSeeBlogOwners' => 'User can see blog owners',
-      'canAddPost' => 'User can add blog post',
-      'canSeeOthersBlogs' => 'User can view others blogs',
-      'canAddCategory' => 'User can add a category to a blog',
-      'canAddBlogOwner' => 'User can add others as owenr of a blog',
-      'canApproveComments' => 'User can approve blogs comments',
-      'canDeleteBlogOwners' => 'User can remove blog owners',
-      'canDeleteBlogCategory' => 'User can remove categories from blogs',
-      'canDeleteBlogComment' => 'User can remove blog comments',
-      'canManageBlog' => 'User can manage this blog',
-      'canDisaproveComments' => 'User can disaprove of comments on this blog',
-      'canSeeBlogOwners' => 'User can see all owners of a blog',
-      'canEditBlog' => 'User can view this speicifc blog',
+      'access'               => 'Blog access',
+      'blogsManage'          => 'Manage blogs',
+      'blogsViewOthers'      => 'View other user\'s blogs',
+      'categoryAdd'          => 'Add blog category',
+      'categoryDelete'       => 'Delete categories',
+      'commentsApprove'      => 'Approve comments',
+      'commentsDisapprove'   => 'Disapprove comments',
+      'commentsList'         => 'List comments',
+      'commentsEdit'         => 'Edit comments',
+      'commentsDelete'       => 'Remove comments',
+      'ownerAdd'             => 'Add blog owner',
+      'ownerDelete'          => 'Remove blog owners',
+      'ownerView'            => 'View blog owners',
+      'postAdd'              => 'Add blog post',
+      'postEdit'             => 'Edit blog posts',
+
+      'blogsEdit' => 'User can view this speicifc blog',
       'canEditBlogCategory' => 'User can modify the blog category',
-      'canEditBlogComments' => 'User can edit the comments of a blog',
-      'canEditBlogPost' => 'User can edit blog posts',
+
+
       'canListBlogPosts' => 'User can list their own blog posts',
       'canListOthersBlogPosts' => 'User can list others blog posts along with their own',
       'canListBlogCategory' => 'User can list a blogs categories',
-      'canListBlogComments' => 'User can list a blogs comments',
+
       'canListBlogPosts' => 'User can list blogs posts'
     );
 }

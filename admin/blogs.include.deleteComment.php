@@ -52,7 +52,7 @@ function admin_blogsBuild($data,$db)
 	 * is under.
 	 * ---------------------------------------
 	**/
-	if(checkPermission('canRemoveBlogComments','blogs',$data))
+	if(checkPermission('commentsDelete','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
