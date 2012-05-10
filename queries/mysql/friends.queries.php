@@ -78,7 +78,7 @@ function friends_addQueries() {
 				WHERE
 					f.confirmed = 0
 				AND
-					f.user2 = :user 
+					f.user2 = :user
 				ORDER BY
 					name ASC
 		',
@@ -95,7 +95,7 @@ function friends_addQueries() {
 			OR
 			fullName LIKE :fullName
 			OR
-			publicEmail LIKE :publicEmail
+			publicEMail LIKE :publicEmail
 		',
         'findFriendsByUserNameAndFullName' => '
 			SELECT *
@@ -107,7 +107,7 @@ function friends_addQueries() {
         'findFriendsByPublicEmailAndFullName' => '
 			SELECT *
 			FROM !prefix!users
-			WHERE publicEmail LIKE :publicEmail
+			WHERE publicEMail LIKE :publicEmail
 			OR
 			fullName LIKE :fullName
 		',
@@ -120,7 +120,7 @@ function friends_addQueries() {
         'findFriendsByPublicEmail' => '
 			SELECT *
 			FROM !prefix!users
-			WHERE publicEmail
+			WHERE publicEMail
 			LIKE :publicEmail
 		',
 		'makeRequest' => '

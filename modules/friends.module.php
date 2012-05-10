@@ -59,7 +59,7 @@ function page_buildContent($data,$db) {
 			if(!isset($data->user['id'])){
 				$pageType = 'accessDenied';
 				return;
-			}else if($data->action[2] === false){
+			}elseif($data->action[2] === false){
 				$pageType = 'noUserSpecified';
 				return;
 			}
@@ -90,32 +90,27 @@ function page_buildContent($data,$db) {
                                              'fullName' => '%'.$form->sendArray[':fullName'].'%',
                                              'publicEmail' => '%'.$form->sendArray[':publicEmail'].'%'));
                         $data->output['results']=$find->fetchAll();
-                    } elseif((!empty($form->sendArray[':userName']) && !empty($form->sendArray[':fullName'])) ||
-                        (!empty($form->sendArray[':publicEmail']) && !empty($form->sendArray[':fullName'])) ||
-                        (!empty($form->sendArray[':userName']) && !empty($form->sendArray[':publicEmail']))) {
-                        // 2 fields were filled out check which two and run corresponding query
-                        if(!empty($form->sendArray[':userName']) && !empty($form->sendArray[':fullName'])) {
-                            // :userName and :fullName were filled out, send search by userName and fullName
-                            $data->output['search']=$form->sendArray;
-                            $find = $db->prepare('findFriendsByUserNameAndFullName','friends');
-                            $find->execute(array('name' => '%'.$form->sendArray[':userName'].'%',
-                                                 'fullName' => '%'.$form->sendArray[':fullName'].'%'));
-                            $data->output['results']=$find->fetchAll();
-                        } elseif(!empty($form->sendArray[':publicEmail']) && !empty($form->sendArray[':fullName'])) {
-                            // :publicEmail and :fullName were filled out, send search by publicEmail and fullName
-                            $data->output['search']=$form->sendArray;
-                            $find = $db->prepare('findFriendsByPublicEmailAndFullName','friends');
-                            $find->execute(array('publicEmail' => '%'.$form->sendArray[':publicEmail'].'%',
-                                                 'fullName' => '%'.$form->sendArray[':fullName'].'%'));
-                            $data->output['results']=$find->fetchAll();
-                        } else {
-                            // :userName and :publicEmail were filled out, send search by userName and publicEmail
-                            $data->output['search']=$form->sendArray;
-                            $find = $db->prepare('findFriendsByUserNameAndPublicEmail','friends');
-                            $find->execute(array('userName' => '%'.$form->sendArray[':userName'].'%',
-                                                 'publicEmail' => '%'.$form->sendArray[':publicEmail'].'%'));
-                            $data->output['results']=$find->fetchAll();
-                        }
+                    } elseif(!empty($form->sendArray[':userName']) && !empty($form->sendArray[':fullName'])) {
+                        // :userName and :fullName were filled out, send search by userName and fullName
+                        $data->output['search']=$form->sendArray;
+                        $find = $db->prepare('findFriendsByUserNameAndFullName','friends');
+                        $find->execute(array('name' => '%'.$form->sendArray[':userName'].'%',
+                            'fullName' => '%'.$form->sendArray[':fullName'].'%'));
+                        $data->output['results']=$find->fetchAll();
+                    } elseif(!empty($form->sendArray[':publicEmail']) && !empty($form->sendArray[':fullName'])) {
+                        // :publicEmail and :fullName were filled out, send search by publicEmail and fullName
+                        $data->output['search']=$form->sendArray;
+                        $find = $db->prepare('findFriendsByPublicEmailAndFullName','friends');
+                        $find->execute(array('publicEmail' => '%'.$form->sendArray[':publicEmail'].'%',
+                            'fullName' => '%'.$form->sendArray[':fullName'].'%'));
+                        $data->output['results']=$find->fetchAll();
+                    } elseif(!empty($form->sendArray[':userName']) && !empty($form->sendArray[':publicEmail'])) {
+                        // :userName and :publicEmail were filled out, send search by userName and publicEmail
+                        $data->output['search']=$form->sendArray;
+                        $find = $db->prepare('findFriendsByUserNameAndPublicEmail','friends');
+                        $find->execute(array('name' => '%'.$form->sendArray[':userName'].'%',
+                            'publicEmail' => '%'.$form->sendArray[':publicEmail'].'%'));
+                        $data->output['results']=$find->fetchAll();
                     } else {
                         // one field submitted check which one and set correct data
                         if(!empty($form->sendArray[':userName'])) {
@@ -130,7 +125,7 @@ function page_buildContent($data,$db) {
                             $find = $db->prepare('findFriendsByFullName','friends');
                             $find->execute(array('fullName' => '%'.$data->output['search'].'%'));
                             $data->output['results']=$find->fetchAll();
-                        } elseif(!empty($form->sendArray[':fullName'])) {
+                        } elseif(!empty($form->sendArray[':publicEmail'])) {
                             // :publicEmail was filled out, send search by publicEmail
                             $data->output['search']=$form->sendArray[':publicEmail'];
                             $find = $db->prepare('findFriendsByPublicEmail','friends');
@@ -138,12 +133,14 @@ function page_buildContent($data,$db) {
                             $data->output['results']=$find->fetchAll();
                         }
                     }
-					//$data->output['search']=$form->sendArray[':userName'];
-					//$find = $db->prepare('findFriends', 'friends');
-					//$find->execute(array('name' => '%'.$data->output['search'].'%'));
-					//$data->output['results']=$find->fetchAll();
 					$pageType = 'results';
-				}
+				} else {
+                    $data->ouput['secondSideBar']='
+                    <h2>Error in Data</h2>
+                    <p>
+                    There were one or more errors. Please correct the fields with the red X next to them and try again.
+                    </p>';
+                }
 			}
 			break;
 	}

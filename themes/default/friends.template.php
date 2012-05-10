@@ -46,14 +46,28 @@ function theme_friendList($data){
 }
 function theme_searchResults($data){
 	theme_buildForm($data->output['friendsearch']);
-    if(count($data->output['search']) == 3) {
-        $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
-        theme_contentBoxHeader('Search Results For "'.$header.'"');
-    } elseif(count($data->output['search']) == 2) {
-        // check which combination the two search terms are and modify the header
-        theme_contentBoxHeader('Search Results For "'.$data->output['search'].'"');
+    $x=empty($data->output['search'][':userName']);
+    $y=empty($data->output['search'][':fullName']);
+    $z=empty($data->output['search'][':publicEmail']);
+    if(count($data->output['search']) > 1) {
+        if(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
+            $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
+            theme_contentBoxHeader('Search Results For "'.$header.'"');
+        } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName'])) {
+            $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'];
+            theme_contentBoxHeader('Search Results For "'.$header.'"');
+        } elseif(!empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
+            $header = 'Full Name: '.$data->output['search'][':fullName'].', Public Email: '.$data->output['search'][':publicEmail'];
+            theme_contentBoxHeader('Search Results For "'.$header.'"');
+        } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':publicEmail'])) {
+            $header = 'User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
+            theme_contentBoxHeader('Search Results For "'.$header.'"');
+        }
+
     } elseif(count($data->output['search']) == 1) {
         theme_contentBoxHeader('Search Results For "'.$data->output['search'].'"');
+    } else {
+        theme_contentBoxHeader('Please fill in at least one of the fields');
     }
 	$results = $data->output['results'];
 	if(count($results) == 0){
