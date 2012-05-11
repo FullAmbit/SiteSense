@@ -128,7 +128,7 @@ function loadPermissions($data) {
     	'access'               => 'Pages access',
     	'add'                  => 'Add pages',
     	'edit'                 => 'Edit pages',
-    	'editSpecific'         => 'Edit specific page(s)',
+    	'editSpecific'         => 'Edit specific page',
     	'delete'               => 'Delete pages',
     	'publish'              => 'Publish pages'
     );
