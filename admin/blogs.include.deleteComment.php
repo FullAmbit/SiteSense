@@ -34,7 +34,7 @@ function admin_blogsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if ($data->user['userLevel'] < USERLEVEL_BLOGGER)
+	if (checkPermission('canSeeOtherBlogs','blogs',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';
@@ -52,7 +52,7 @@ function admin_blogsBuild($data,$db)
 	 * is under.
 	 * ---------------------------------------
 	**/
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+	if(checkPermission('commentsDelete','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(

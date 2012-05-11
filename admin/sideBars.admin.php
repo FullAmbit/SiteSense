@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if($data->user['userLevel'] < USERLEVEL_WRITER)
+	if(!checkPermission('canAccessSideBarAdminPanel','core',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

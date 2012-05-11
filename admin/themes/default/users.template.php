@@ -95,7 +95,7 @@ function theme_usersListTableHead($userList,$userListStart) {
 }
 
 function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$userLevelText,$banControl,$linkRoot,$key) {
-	echo '	
+	echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
 			<td class="id">',$userId,'</td>
 			<td class="userName">
@@ -104,8 +104,7 @@ function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$u
 				</a>
 			</td>
 			<td class="userLevel ',$userLevelClass,'">',$userLevelText,'</td>
-			<td class="buttonList">',(
-					$userLevel==USERLEVEL_ADMIN ? '
+			<td class="buttonList">',($userLevel==USERLEVEL_ADMIN ? '
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
 				'.$banControl :	''
 				),'
@@ -118,7 +117,44 @@ function theme_usersListTableFoot($linkRoot) {
 			</tbody>
 		</table>
 		<div class="panel buttonList">
-			<a href="'.$linkRoot.'admin/users/add">Add New User</a>
+			<a href="',$linkRoot,'admin/users/add">Add New User</a>
+		</div>';
+}
+
+function theme_GroupsListTableHead() {
+    echo '
+		<table class="userList">
+			<caption>
+				Groups
+			</caption>
+			<thead>
+				<tr>
+					<th class="userName">Groups</th>
+					<th class="controls">Controls</th>
+				</tr>
+			</thead><tbody>';
+}
+
+function theme_GroupsListTableRow($groupName,$linkRoot,$key) {
+    echo '
+		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
+			<td class="userName">
+				<a href="',$linkRoot,'admin/users/permissions/group/edit/',$groupName,'">
+					',$groupName,'
+				</a>
+			</td>
+			<td class="buttonList">
+			    <a href="',$linkRoot,'admin/users/permissions/group/delete/',$groupName,'">Delete</a>
+			</td>
+		</tr>';
+}
+
+function theme_GroupsListTableFoot($linkRoot) {
+    echo '
+			</tbody>
+		</table>
+		<div class="panel buttonList">
+			<a href="'.$linkRoot.'admin/users/permissions/group/add/">Add New Group</a>
 		</div>';
 }
 

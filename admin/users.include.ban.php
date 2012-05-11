@@ -25,8 +25,8 @@
 common_include('libraries/forms.php');
 function admin_usersBuild($data,$db)
 {
-	// Anything less than admin GTFO
-	if($data->user['userLevel'] < USERLEVEL_ADMIN)
+	// Anyone without admin rights should not have access
+	if(!checkPermission('canBanUsers','users',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient Permissions</h2>You do not have the permissions to access this area';

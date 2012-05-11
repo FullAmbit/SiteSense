@@ -32,7 +32,7 @@ function admin_mainMenuBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if ($data->user['userLevel']<USERLEVEL_WRITER)
+	if (!checkPermission('canDeleteMainMenuItems','core',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';

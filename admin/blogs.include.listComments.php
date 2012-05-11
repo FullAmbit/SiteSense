@@ -30,7 +30,7 @@ function admin_blogsBuild($data,$db)
 		 * is under.
 		 * ---------------------------------------
 		**/
-		if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+		if(checkPermission('commentsList','blogs',$data))
 		{
 			$statement = $db->prepare('getBlogByPost','admin_blogs');
 			$statement->execute(array(

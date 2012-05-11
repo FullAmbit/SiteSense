@@ -57,7 +57,7 @@ function admin_usersShow($data) {
 		foreach($data->output['userList'] as $key => $user) {
 			$userLevelText=$languageText['userLevels'][$user['userLevel']];
 			$userLevelClass='userLevel_'.common_camelBack($userLevelText);
-			theme_usersSearchTableRow($user['id'],$user['name'],$data->user['userLevel'],$userLevelClass,$userLevelText,$ldata->inkRoot,$key);
+			theme_usersSearchTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$ldata->inkRoot,$key);
 		}
 		theme_usersSearchTableFoot();
 	}

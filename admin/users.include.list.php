@@ -71,8 +71,15 @@ global $languageText;
 	foreach($data->output['userList'] as $key => $user) {
 		$userLevelText=$languageText['userLevels'][$user['userLevel']];
 		$userLevelClass='userLevel_'.common_camelBack($userLevelText);
-		
-		if($user['userLevel'] == USERLEVEL_BANNED)
+
+        /*
+         * For new permissioning system
+         * Three states:
+         * banned <0
+         * bannable <= 0
+         * un-bannable > 0
+         */
+		if($user['userLevel'] < 0)
 		{
 			$banControl = '<a href="'.$data->linkRoot.'admin/users/unban/'.$user['id'].'">UnBan</a>';
 		} else if($user['userLevel'] < USERLEVEL_ADMIN){
@@ -81,7 +88,7 @@ global $languageText;
 			$banControl = '';
 		}
 		
-		theme_usersListTableRow($user['id'],$user['name'],$data->user['userLevel'],$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
+		theme_usersListTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

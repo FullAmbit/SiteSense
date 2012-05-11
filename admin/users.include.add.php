@@ -24,8 +24,7 @@
 */
 common_include('libraries/forms.php');
 
-function checkUserName($name,$db)
-{
+function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
 		':name' => $name
@@ -33,8 +32,7 @@ function checkUserName($name,$db)
 	return $statement->fetchColumn();
 }
 
-function admin_usersBuild($data,$db)
-{
+function admin_usersBuild($data,$db) {
 	global $languageText;
 	
 	$data->output['userForm'] = $form = new formHandler('users',$data,true);
@@ -122,7 +120,7 @@ function admin_usersBuild($data,$db)
 
 function admin_usersShow($data)
 {
-	if ($data->user['userLevel']==USERLEVEL_ADMIN) {
+	if (checkPermission('admin','users',$data)) {
 		if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
 			admin_unknown();
 		} else if (isset($data->output['savedOkMessage'])) {

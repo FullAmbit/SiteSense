@@ -31,22 +31,22 @@ function user_settings($data) {
 function user_install($data,$drop=false) {
 	$structures = array(
 		'users' => array(
-			'id'										 => SQR_IDKey,
-			'name'									 => SQR_username,
-			'password'							 => SQR_password,
-			'fullName'							 => SQR_fullName,
-			'userLevel'							 => SQR_userLevel,
-			'registeredDate'				 => SQR_added,
-			'registeredIP'					 => SQR_IP,
-			'lastAccess'						 => SQR_time,
-			'contactEMail'					 => SQR_email,
-			'publicEMail'						 => SQR_email,
-			'emailVerified'					 => SQR_boolean.' DEFAULT \'0\''
+			'id'                  => SQR_IDKey,
+			'name'                => SQR_username,
+			'password'            => SQR_password,
+			'fullName'            => SQR_fullName,
+			'userLevel'           => SQR_userLevel,
+			'registeredDate'      => SQR_added,
+			'registeredIP'        => SQR_IP,
+			'lastAccess'          => SQR_time,
+			'contactEMail'        => SQR_email,
+			'publicEMail'         => SQR_email,
+			'emailVerified'       => SQR_boolean.' DEFAULT \'0\''
 		)
 	);
 	if($drop)
 		$data->dropTable('users');
-	$data->createTable('users',$structures['users'],true);
+	$data->createTable('users',$structures['users'],false);
 	// Generate an admin account if this is a fresh installation
 	if($data->countRows('users')==0) {
 		try {

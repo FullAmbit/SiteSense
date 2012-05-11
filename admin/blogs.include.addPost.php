@@ -27,7 +27,7 @@ common_include('libraries/forms.php');
 function admin_blogsBuild($data,$db)
 {
 	//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+	if(checkPermission('postAdd','blogs',$data))
 	{
 		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(

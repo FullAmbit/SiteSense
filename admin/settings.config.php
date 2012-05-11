@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function settings_config($data) {
-	if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
+	if (checkPermission('canAccessSettingsConfig','core',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => 'Site Management',
 			'command'   => 'settings',

@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function pages_config($data,$db) {
-	if ($data->user['userLevel']>=USERLEVEL_WRITER) {
+	if (checkPermission('admin','pages',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
 			'command' 	=> 'pages/list',

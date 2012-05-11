@@ -120,7 +120,18 @@ function admin_users_addQueries() {
 		',
 		'getBanByUserId' => '
 			SELECT * FROM !prefix!banned WHERE userId = :userId LIMIT 1
-		'
+		',
+        'getAllGroups' => '
+			SELECT * FROM !prefix!user_permission_groups
+		',
+        'getPermissionsByGroupName' => '
+			SELECT * FROM !prefix!user_permission_groups
+			WHERE groupName = :groupName
+		',
+        'getGroupName' => '
+            SELECT groupName FROM !prefix!user_permission_groups
+            WHERE groupName = :groupName
+        '
 	);
 }
 ?>

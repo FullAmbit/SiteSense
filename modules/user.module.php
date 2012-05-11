@@ -138,4 +138,15 @@ function page_content($data){
 			theme_buildForm($data->output['userForm']);
 			theme_contentBoxFooter();
 		break;
-	}}?>
+	}
+}
+
+function loadPermissions($data) {
+    $data->permissions['users']=array(
+        'admin' => 'User can access user admin panel',
+        'canBanUsers' => 'User can set bans on others',
+        'canDeleteUsers' => 'User can remove other users',
+        'canUnBanUsers' => 'User can remove a ban from another user'
+    );
+}
+?>

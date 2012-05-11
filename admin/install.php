@@ -121,9 +121,13 @@ if (
 	$data->dropTable('url_remap');
 	$data->dropTable('modules');
 	$data->dropTable('module_sidebars');
+    // Dynamic User Permissions
+    $data->dropTable('user_permission_groups');
+    $data->dropTable('user_group_permissions');
+    $data->dropTable('user_permissions');
 }
 	// Create the settings table
-	if ($data->createTable('settings',$structures['settings'],true)) {
+	if ($data->createTable('settings',$structures['settings'],false)) {
 		try {
 			$statement=$data->prepare('addSetting','installer');
 			echo '
@@ -148,19 +152,25 @@ if (
 		}
 	}
 	
-	$data->createTable('banned',$structures['banned'],true);
-	$data->createTable('sessions',$structures['sessions'],true);
-	$data->createTable('sidebars',$structures['sidebars'],true);
-	$data->createTable('main_menu',$structures['main_menu'],true);
-	$data->createTable('activations',$structures['activations'],true);
+	$data->createTable('banned',$structures['banned'],false);
+	$data->createTable('sessions',$structures['sessions'],false);
+	$data->createTable('sidebars',$structures['sidebars'],false);
+	$data->createTable('main_menu',$structures['main_menu'],false);
+	$data->createTable('activations',$structures['activations'],false);
 	
 	// Create url_remap Table
-	$data->createTable('url_remap',$structures['url_remap'],true);
+	$data->createTable('url_remap',$structures['url_remap'],false);
 	
 	// Create Module Related Tables
-	$data->createTable('modules',$structures['modules'],true);
-	$data->createTable('module_sidebars',$structures['module_sidebars'],true);
-	// Install modules
+	$data->createTable('modules',$structures['modules'],false);
+	$data->createTable('module_sidebars',$structures['module_sidebars'],false);
+
+    // Create Permissions
+    $data->createTable('user_permission_groups',$structures['user_permission_groups'],false);
+    $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
+    $data->createTable('user_permissions',$structures['user_permissions'],false);
+
+    // Install modules
 	$coreModules = array(
 		'forms',
 		'default',
@@ -202,7 +212,8 @@ if (
 			}
 		}
 	}
-	$moduleFiles=glob('modules/*.module.php');
+
+    $moduleFiles=glob('modules/*.module.php');
 	// Build an array of the names of the modules in the filesystem
 	$fileModules=array_map(
 		function($path) {
@@ -224,13 +235,14 @@ if (
 				)
 			);
 		}
+
 	// Install plugins
 	if($drop) {
 		$data->dropTable('plugins');
 		$data->dropTable('plugins_modules');
 	}
-	$data->createTable('plugins',$structures['plugins'],true);
-	$data->createTable('plugins_modules',$structures['plugins_modules'],true);
+	$data->createTable('plugins',$structures['plugins'],false);
+	$data->createTable('plugins_modules',$structures['plugins_modules'],false);
 	// Get Plugins That Have Yet To Be Installed
 	$dirs=scandir('plugins');
 	foreach($dirs as $dir) {
@@ -256,7 +268,60 @@ if (
 			}
 		}
 	}
-  if ($data->installErrors==0) {
+
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Administrators' => array(
+            'core_canAccessAdminPanel',
+            'core_canAccessMainMenu',
+            'core_canAccessMainMenuConfig',
+            'core_canDeleteMainMenuItems',
+            'core_canAccessModulesAdminPanel',
+            'core_canAccessModulesConfig',
+            'core_canAccessPluginsAdminPanel',
+            'core_canAccessPluginsConfig',
+            'core_canAccessSettingsAdminPanel',
+            'core_canAccessSettingsConfig',
+            'core_canAccessSideBarAdminPanel',
+            'core_canAccessSideBarConfig',
+            'core_canDeleteSideBarItem',
+            'core_canAccessUrlRemapAdminPanel',
+            'core_canAccessUrlRemapConfig',
+            'core_canEnableModules',
+            'core_canViewLeftSideBar'
+        ),
+        'User' => array(
+            'core_canAccessAdminPanel',
+        )
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        $statement=$data->prepare('addPermissionGroup','common');
+        if($groupName=='Administrators') {
+            $statement->execute(
+                array(
+                    ':userID' => '1',
+                    ':groupName' => $groupName
+                )
+            );
+        } else {
+            $statement->execute(
+                array(
+                    ':userID' => '0',
+                    ':groupName' => $groupName
+                )
+            );
+        }
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+    if ($data->installErrors==0) {
     echo '
       <h2 id="done">Complete</h2>
       <p class="success">

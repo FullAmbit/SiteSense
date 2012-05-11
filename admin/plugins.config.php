@@ -24,7 +24,7 @@
 */
 function plugins_config($data,$db)
 {
-	if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
+	if (checkPermission('canAccessPluginsConfig','core',$data)) {
 		$data->admin['menu'][] = array(
 			'category' => 'Site Management',
 			'command' => 'plugins/list',
