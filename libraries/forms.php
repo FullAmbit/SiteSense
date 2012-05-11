@@ -509,6 +509,17 @@ class formHandler {
 							$this->fields[$formField['compareTo']]['error'] = true;
 						}
 					}
+                    if(isset($formField['minLength'])) {
+                        // if $value >= minLength throw error
+                        if(strlen($value) >= (int) $formField['minLength'] || strlen($value) <= 0) {
+                            $validData = true;
+                        } else {
+                            $validData=false;
+                            $formField['errorList'][] = $formField['lengthFailMessage'];
+                            $formField['error'] = true;
+                            $this->field[$formField['error']] = true;
+                        }
+                    }
 				}
 			}
 		}

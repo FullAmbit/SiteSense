@@ -82,7 +82,7 @@ function page_buildContent($data,$db) {
 			if(!empty($_POST['fromForm']) && $_POST['fromForm'] == $form->fromForm){
                 // need add check here to see what fields were submited and run quiries based on the input
 				if($form->validateFromPost()) {
-					$form->populateFromPostData();
+                    $form->populateFromPostData();
                     if(!empty($form->sendArray[':userName']) && !empty($form->sendArray[':fullName']) && !empty($form->sendArray[':publicEmail'])) {
                         $find = $db->prepare('findFriendsByAllFields','friends');
                         $data->output['search']=$form->sendArray;

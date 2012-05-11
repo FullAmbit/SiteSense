@@ -29,6 +29,7 @@ $this->fields=array(
         'label' => 'Full Name',
         'required' => false,
         'tag' => 'input',
+        'minLength' => '3',
         'params' => array(
             'type' => 'text',
             'size' => 128
@@ -37,12 +38,14 @@ $this->fields=array(
 			<p>
 				<b>Full Name</b>
 			</p>
-		'
+		',
+        'lengthFailMessage' => 'Minimum length for a search term is 3 characters'
     ),
     'userName' => array(
         'label' => 'User Name',
         'required' => false,
         'tag' => 'input',
+        'minLength' => '3',
         'params' => array(
             'type' => 'text',
             'size' => 128
@@ -51,12 +54,14 @@ $this->fields=array(
 			<p>
 				<b>User Name</b>
 			</p>
-		'
+		',
+        'lengthFailMessage' => 'Minimum length for a search term is 3 characters'
     ),
     'publicEmail' => array(
         'label' => 'Public Email',
         'required' => false,
         'tag' => 'input',
+        'minLength' => '3',
         'params' => array(
             'type' => 'text',
             'size' => 128
@@ -65,7 +70,8 @@ $this->fields=array(
 			<p>
 				<b>Public Email</b>
 			</p>
-		'
+		',
+        'lengthFailMessage' => 'Minimum length for a search term is 3 characters'
     )
 );
 ?>
