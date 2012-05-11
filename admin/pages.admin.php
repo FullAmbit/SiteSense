@@ -42,10 +42,9 @@ function admin_pagesResort($db) {
 	}
 }
 function admin_buildContent($data,$db) {
-	/**
-	 *	Permissions: Writers + Admin Only
-	**/
-	if(!checkPermission('admin','pages',$data))
+	// Permissions: Check for pages access.
+//	if(!checkPermission('access','pages',$data) && (!checkPermission('editSpecific','pages',$data) == ***PAGE ID***)) //more complicated logic for editSpecific override, may require function modification for checkPermission
+	if(!checkPermission('access','pages',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
@@ -54,7 +53,7 @@ function admin_buildContent($data,$db) {
 			
 			return;
 	}
-	
+	//default for page view is the list of pages
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
