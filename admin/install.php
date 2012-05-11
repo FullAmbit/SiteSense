@@ -288,11 +288,12 @@ if (
             'core_canAccessUrlRemapAdminPanel',
             'core_canAccessUrlRemapConfig',
             'core_canEnableModules',
-            'core_canViewLeftSideBar'
+            'core_canViewLeftSideBar',
             'core_canAccessAdminPanel',
+            'users_admin'
         ),
         'User' => array(
-            'core_canAccessAdminPanel',
+            'core_canAccessAdminPanel'
         )
     );
     /*

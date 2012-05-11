@@ -132,10 +132,8 @@ function admin_usersBuild($data,$db) {
 						</a>
 					</div>';
             }
-					</div>';
-            }
         } elseif($data->action[4]=='edit') { // Edit Group
-            getPermissions($data,$db);
+            var_dump(getPermissions($data,$db));
             // Get Group Permissions
             /* $statement=$db->prepare('getPermissionsByGroupName');
             $statement->execute(array(
@@ -167,39 +165,35 @@ function admin_usersBuild($data,$db) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
                 if($data->output['permissionGroup']->sendArray[':groupName']!==$data->action[5]) {
-                    $statement=$db->prepare('getGroupName');
+                    var_dump($statement=$db->prepare('getGroupName'));
                     $statement->execute(array(
                         ':groupName' => $data->action[5]
                     ));
                     if($statement->fetchColumn()) {
                         // Returned result, groupName already exists
-                        // Returned result, groupName already exists
-                        $existing=true;
-                    }
-                    //$existing=checkGroupName($data->output['permissionGroup']->sendArray[':groupName'],$db);
                         $data->output['secondSideBar']='
-                      <h2>Error in Data</h2>
-                      <p>
-                          There were one or more errors. Please correct the fields with the red X next to them and try again.
-                      </p><p>
-                          <strong>That group name is already taken!</strong>
-                      </p>';
-                        $data->output['permissionGroup']->fields['name']['error']=true;
-                        return;
-                } else {
-
+                        <h2>Error in Data</h2>
+                        <p>
+                            There were one or more errors. Please correct the fields with the red X next to them and try again.
+                        </p><p>
+                            <strong>That group name is already taken!</strong>
+                        </p>';
+                          $data->output['permissionGroup']->fields['name']['error']=true;
+                          return;
                     }
+
                     $statement=$db->prepare('updateGroupName');
                     $statement->execute(array(
                         ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
                         ':currentGroupName' => $data->action[5]
                     ));
                 }
+
                 $statement=$db->prepare('getPermissionsByGroupName');
                 $statement->execute(array(
                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
                 ));
-                $currentGroupPermissions=$statement->fetchAll();
+                var_dump($currentGroupPermissions=$statement->fetchAll());
                 foreach($data->output['permissionGroup']->sendArray as $key => $value) {
                     if($value) {
                          if(!in_array($value,$currentGroupPermissions)) {
