@@ -131,11 +131,12 @@ function admin_usersBuild($data,$db) {
 							Return to Group List
 						</a>
 					</div>';
+                return;
             }
         } elseif($data->action[4]=='edit') { // Edit Group
-            var_dump(getPermissions($data,$db));
+            getPermissions($data,$db);
             // Get Group Permissions
-            /* $statement=$db->prepare('getPermissionsByGroupName');
+            $statement=$db->prepare('getPermissionsByGroupName');
             $statement->execute(array(
                 ':groupName' =>  $data->action[5]
             ));
@@ -158,14 +159,14 @@ function admin_usersBuild($data,$db) {
                 }
                 // Clean up
                 asort($data->output['permissionGroup']['permissions']);
-            }*/
+            }
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             // Edit Group Form Submitted
             if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
                 if($data->output['permissionGroup']->sendArray[':groupName']!==$data->action[5]) {
-                    var_dump($statement=$db->prepare('getGroupName'));
+                    $statement=$db->prepare('getGroupName');
                     $statement->execute(array(
                         ':groupName' => $data->action[5]
                     ));
@@ -193,13 +194,13 @@ function admin_usersBuild($data,$db) {
                 $statement->execute(array(
                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
                 ));
-                var_dump($currentGroupPermissions=$statement->fetchAll());
+                $currentGroupPermissions=$statement->fetchAll();
                 foreach($data->output['permissionGroup']->sendArray as $key => $value) {
                     if($value) {
-                         if(!in_array($value,$currentGroupPermissions)) {
+                         if(!in_array(substr($key,1),$currentGroupPermissions)) {
                              $statement=$db->prepare('addPermissionByGroupName');
                              $statement->execute(array(
-                                 ':permissionName' => $value,
+                                 ':permissionName' => substr($key,1),
                                  ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
                              ));
                          }
@@ -207,11 +208,22 @@ function admin_usersBuild($data,$db) {
                         if($key=='groupName') continue;
                         $statement=$db->prepare('purgePermissionByGroupName');
                         $statement->execute(array(
-                            ':permissionName' => $value,
+                            ':permissionName' => substr($key,1),
                             ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
                         ));
                     }
                 }
+                $data->output['savedOkMessage']='
+					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
+					<div class="panel buttonList">
+						<a href="'.$data->linkRoot.'admin/users/permissions/group/add">
+							Add New Group
+						</a>
+						<a href="'.$data->linkRoot.'admin/users/permissions/">
+							Return to Group List
+						</a>
+					</div>';
+                return;
             }
         }
     }
@@ -234,7 +246,13 @@ function admin_usersShow($data) {
                 theme_buildForm($data->output['permissionGroup']);
             }
         } elseif($data->action[4]=='edit') { //Edit Group
-            theme_buildForm($data->output['permissionGroup']);
+            if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
+                admin_unknown();
+            } else if (isset($data->output['savedOkMessage'])) {
+                echo $data->output['savedOkMessage'];
+            } else {
+                theme_buildForm($data->output['permissionGroup']);
+            }
         }
     }
 }
