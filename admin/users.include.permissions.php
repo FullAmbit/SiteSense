@@ -57,6 +57,12 @@ function getPermissions($data,$db) {
     }
 }
 function admin_usersBuild($data,$db) {
+	//permission check for users permissions
+	if(!checkPermission('permissions','users',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	if(empty($data->action[3])){ // Display List of Groups
         $statement=$db->query('getAllGroups','admin_users');
         $data->output['groupList']=$statement->fetchAll();
