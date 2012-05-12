@@ -23,6 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_messagesBuild($data,$db) {
+	//permission check for messages access
+	if(!checkPermission('access','messages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	$staff=false;
 	if (empty($data->action[3])) {
 		$data->output['abort'] = true;
