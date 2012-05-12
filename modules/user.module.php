@@ -143,10 +143,13 @@ function page_content($data){
 
 function loadPermissions($data) {
     $data->permissions['users']=array(
-        'admin' => 'User can access user admin panel',
-        'canBanUsers' => 'User can set bans on others',
-        'canDeleteUsers' => 'User can remove other users',
-        'canUnBanUsers' => 'User can remove a ban from another user'
+    	'access'               => 'Users Access',
+    	'activate'             => 'Activate Users',
+    	'ban'                  => 'Ban Users',
+    	'add'                  => 'Add Users',
+    	'edit'                 => 'Edit Users',
+    	'delete'               => 'Delete Users',
+    	'permissions'          => 'Manage User Groups'
     );
 }
 ?>
