@@ -24,8 +24,8 @@
 */
 function messages_startup($data,$db) {
 	$link=array(
-		'text'        => 'Messages',
-		'title'       => 'Personal Messages',
+		'text'        		=> 'Messages',
+		'title'       		=> 'Personal Messages',
 		'url' 				=> 'messages',
 		'module'			=> 'messages'
 	);

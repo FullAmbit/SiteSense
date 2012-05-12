@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_messagesBuild($data,$db) {
+	//permission check for messages access
+	if(!checkPermission('access','messages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	if (empty($data->action[3])) {
 		$data->output['messageListStart'] = 0;
 	} else {
@@ -35,8 +42,9 @@ function admin_messagesBuild($data,$db) {
 	$messages->execute();
 	$data->output['messageList'] = $messages->fetchAll();
 }
+
 function admin_messagesShow($data) {
-global $languageText;
+	global $languageText;
 	theme_messageListShow($data);
 	foreach($data->output['messageList'] as $key => $message) {
 		theme_messageListRow($message,$data,$key);
