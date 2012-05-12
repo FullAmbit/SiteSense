@@ -27,6 +27,13 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='gallery';
 }
 function page_buildContent($data,$db) {
+	//permission check for friends access
+	if(!checkPermission('access','friends',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	$friendsHome = $data->currentPage;
 	if($data->request[0] != $data->action[0]){
 		$friendsHome = $data->request[0];
@@ -107,4 +114,11 @@ function page_content(&$data) {
 	}
 	//var_dump($data->output['links']);
 }
+
+function loadPermissions($data) {
+    $data->permissions['friends']=array(
+    	'access'               => 'Friends access'
+    );
+}
+
 ?>
