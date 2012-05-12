@@ -24,6 +24,13 @@
 */
 function admin_pagesBuild($data,$db)
 {
+	//permission check for pages edit
+	if(!checkPermission('edit','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	$pageId = (int)$data->action[3];
 	
 	$statement = $db->prepare('getPageById','admin_pages');

@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_pagesBuild($data,$db) {
+	//permission check for pages delete
+	if(!checkPermission('delete','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	$data->output['delete']='';
 	
 	// Check To See If The Menu Item Exists
@@ -40,41 +47,36 @@ function admin_pagesBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (checkPermission('canDeletePage','pages',$data)) {
-			if ($_POST['fromForm']==$data->action[3]) {
-				if (!empty($_POST['delete'])) {
-					
-					// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-					$statement = $db->prepare('fixSortOrderGap','admin_pages');
-					$statement->execute(array(  
-						':sortOrder' => $data->output['pageItem']['sortOrder'],
-						':parent' => $data->output['pageItem']['parent']
-					));
-					
-					$qHandle=$db->prepare('deletePageById','admin_pages');
-					$qHandle->execute(array(
-						':id' => $data->action[3]
-					));
-					$data->output['deleteCount']=$qHandle->rowCount();
-					$qHandle=$db->prepare('deletePageByParent','admin_pages');
-					$qHandle->execute(array(
-						':id' => $data->action[3]
-					));
-					$data->output['deleteCount']+=$qHandle->rowCount();
-					if ($data->output['deleteCount']>0) {
-						$data->output['delete']='deleted';
-					} else {
-						$data->output['rejectError']='Database Error';
-						$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
-					}
+		if ($_POST['fromForm']==$data->action[3]) {
+			if (!empty($_POST['delete'])) {
+				
+				// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
+				$statement = $db->prepare('fixSortOrderGap','admin_pages');
+				$statement->execute(array(  
+					':sortOrder' => $data->output['pageItem']['sortOrder'],
+					':parent' => $data->output['pageItem']['parent']
+				));
+				
+				$qHandle=$db->prepare('deletePageById','admin_pages');
+				$qHandle->execute(array(
+					':id' => $data->action[3]
+				));
+				$data->output['deleteCount']=$qHandle->rowCount();
+				$qHandle=$db->prepare('deletePageByParent','admin_pages');
+				$qHandle->execute(array(
+					':id' => $data->action[3]
+				));
+				$data->output['deleteCount']+=$qHandle->rowCount();
+				if ($data->output['deleteCount']>0) {
+					$data->output['delete']='deleted';
 				} else {
-					/* from form plus not deleted must == cancelled. */
-					$data->output['delete']='cancelled';
+					$data->output['rejectError']='Database Error';
+					$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
 				}
+			} else {
+				/* from form plus not deleted must == cancelled. */
+				$data->output['delete']='cancelled';
 			}
-		} else {
-			$data->output['rejectError']='Insufficient User Permissions';
-			$data->output['rejectText']='You do not have sufficient access to perform this action.';
 		}
 	}
 }

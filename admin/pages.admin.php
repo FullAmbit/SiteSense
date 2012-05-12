@@ -42,16 +42,11 @@ function admin_pagesResort($db) {
 	}
 }
 function admin_buildContent($data,$db) {
-	// Permissions: Check for pages access.
-//	if(!checkPermission('access','pages',$data) && (!checkPermission('editSpecific','pages',$data) == ***PAGE ID***)) //more complicated logic for editSpecific override, may require function modification for checkPermission
-	if(!checkPermission('access','pages',$data))
-	{
+	//permission check for pages access
+	if(!checkPermission('access','pages',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient Permissions</h2>
-			You do not have the permissions to access this area';
-			
-			return;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
 	}
 	//default for page view is the list of pages
 	if (empty($data->action[2])) {
