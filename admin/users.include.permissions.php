@@ -87,7 +87,7 @@ function admin_usersBuild($data,$db) {
                       </p><p>
                           <strong>That group name is already taken!</strong>
                       </p>';
-                    $data->output['permissionGroup']->fields['name']['error']=true;
+                    $data->output['permissionGroup']->fields['groupName']['error']=true;
                     return;
                 }
                 foreach($data->output['permissionGroup']->sendArray as $fieldName => $value) {
@@ -140,11 +140,22 @@ function admin_usersBuild($data,$db) {
             $statement->execute(array(
                 ':groupName' =>  $data->action[5]
             ));
-            if(!$permissions=$statement->fetchAll(PDO::FETCH_ASSOC)) {
+            $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
+
+            $statement=$db->query('getAllGroupNames','admin_users');
+            $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
+            $existing=false;
+            foreach($groupList as $key => $value) {
+                if($groupList[$key]['groupName']==$data->action[5]) {
+                    $existing=true;
+                }
+            }
+            if(!$existing) {
                 $data->output['abort'] = true;
                 $data->output['abortMessage']='The group you specified could not be found';
                 return;
             }
+
             foreach($permissions as $permission) {
                 $data->output['permissionGroup']['permissions'][]=$permission['permissionName'];
             }
@@ -179,7 +190,7 @@ function admin_usersBuild($data,$db) {
                         </p><p>
                             <strong>That group name is already taken!</strong>
                         </p>';
-                          $data->output['permissionGroup']->fields['name']['error']=true;
+                        $data->output['permissionGroup']->fields['groupName']['error']=true;
                           return;
                     }
 
@@ -194,18 +205,28 @@ function admin_usersBuild($data,$db) {
                 $statement->execute(array(
                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
                 ));
-                $currentGroupPermissions=$statement->fetchAll();
+                $currentGroupPermissions=$statement->fetchAll(PDO::FETCH_ASSOC);
                 foreach($data->output['permissionGroup']->sendArray as $key => $value) {
                     if($value) {
-                         if(!in_array(substr($key,1),$currentGroupPermissions)) {
+                        if($key==':groupName') continue;
+                        if($key==':expiration') continue;
+                        $existing=false;
+                        foreach($currentGroupPermissions as $subKey => $subValue) {
+                            if($currentGroupPermissions[$subKey]['permissionName']==$data->action[5]) {
+                                $existing=true;
+                            }
+                        }
+
+                        if(!$existing) {
                              $statement=$db->prepare('addPermissionByGroupName');
                              $statement->execute(array(
                                  ':permissionName' => substr($key,1),
                                  ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
                              ));
-                         }
+                        }
                     } else {
-                        if($key=='groupName') continue;
+                        if($key==':groupName') continue;
+                        if($key==':expiration') continue;
                         $statement=$db->prepare('purgePermissionByGroupName');
                         $statement->execute(array(
                             ':permissionName' => substr($key,1),
