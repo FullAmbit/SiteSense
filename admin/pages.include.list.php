@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_pagesBuild($data,$db) {
+	//permission check for pages access
+	if(!checkPermission('access','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	if ((($data->action[3]=='moveUp') || ($data->action[3]=='moveDown')) && is_numeric($data->action[4]))
 	{
 		$qHandle=$db->prepare('getPageById','admin_pages');
