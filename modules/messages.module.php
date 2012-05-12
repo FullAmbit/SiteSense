@@ -108,11 +108,4 @@ function page_content($data) {
 	}
 	theme_contentBoxFooter();
 }
-
-function loadPermissions($data) {
-    $data->permissions['messages']=array(
-    	'access'               => 'Messages access',
-    	'delete'               => 'Delete pages'
-    );
-}
 ?>

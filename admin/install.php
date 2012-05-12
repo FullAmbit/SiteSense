@@ -290,7 +290,14 @@ if (
             'core_canEnableModules',
             'core_canViewLeftSideBar',
             'core_canAccessAdminPanel',
-            'users_admin'
+            'users_access',
+            'users_access',
+            'users_activate',
+            'users_ban',
+            'users_add',
+            'users_edit',
+            'users_delete',
+            'users_permissions'
         ),
         'User' => array(
             'core_canAccessAdminPanel'

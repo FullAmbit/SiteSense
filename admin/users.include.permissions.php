@@ -22,7 +22,9 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-common_include('libraries/forms.php');
+//common_include('libraries/forms.php');
+common_include('modules/blogs.module.php');
+echo 'Included';
 
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
@@ -35,10 +37,10 @@ function getPermissions($data,$db) {
     $modules=$statement->fetchAll();
     foreach($modules as $module) {
         // Check to see if loadPermission() function exists
-        $filename='modules/'.$module['name'].'.php';
+        $filename='modules/'.$module['name'].'.module.php';
         if(file_exists($filename)) {
-            common_include($filename);
-            if (function_exists($targetFunction)) {
+            //common_include($filename);
+            if(function_exists($targetFunction)) {
                 $targetFunction($data);
             }
         }
@@ -218,7 +220,7 @@ function admin_usersBuild($data,$db) {
                         if($key==':expiration') continue;
                         $existing=false;
                         foreach($currentGroupPermissions as $subKey => $subValue) {
-                            if($currentGroupPermissions[$subKey]['permissionName']==$data->action[5]) {
+                            if($currentGroupPermissions[$subKey]['permissionName']==substr($key,1)) {
                                 $existing=true;
                             }
                         }
