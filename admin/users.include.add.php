@@ -33,6 +33,12 @@ function checkUserName($name,$db) {
 }
 
 function admin_usersBuild($data,$db) {
+	//permission check for users add
+	if(!checkPermission('add','users',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	global $languageText;
 	
 	$data->output['userForm'] = $form = new formHandler('users',$data,true);
@@ -120,16 +126,12 @@ function admin_usersBuild($data,$db) {
 
 function admin_usersShow($data)
 {
-	if (checkPermission('admin','users',$data)) {
-		if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
-			admin_unknown();
-		} else if (isset($data->output['savedOkMessage'])) {
-			echo $data->output['savedOkMessage'];
-		} else {
-			theme_buildForm($data->output['userForm']);
-		}
+	if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
+		admin_unknown();
+	} else if (isset($data->output['savedOkMessage'])) {
+		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildTable($data->output['userForm']);
+		theme_buildForm($data->output['userForm']);
 	}
 }
 ?>

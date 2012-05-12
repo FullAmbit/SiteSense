@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function users_config($data,$db) {
-  if (checkPermission('admin','users',$data)) {
+  if (checkPermission('access','users',$data)) {
     $data->admin['menu'][]=array(
         'category'  => 'User Management',
         'command'   => 'users/add',
