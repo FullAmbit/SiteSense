@@ -26,9 +26,7 @@ function admin_pagesBuild($data,$db) {
 	//permission check for pages access
 	if(!checkPermission('access','pages',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient User Permissions</h2>
-			You do not have the permissions to access this area.';	
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
 
