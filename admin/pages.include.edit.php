@@ -52,7 +52,15 @@ function admin_pageOptions($db, $Parent = -1, $Level = 0){ // Using a function i
 	return $options;
 }
 function admin_pagesBuild($data,$db) {
-	
+	//permission check for pages edit
+	if(!checkPermission('edit','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '
+			<h2>Insufficient User Permissions</h2>
+			You do not have the permissions to access this area.';	
+		return;
+	}
+
 	/* editing an existing from the database */
 	$data->output['pageForm']->caption='Editing Page '.$data->action[3];
 	$statement=$db->prepare('getPageById','admin_pages');

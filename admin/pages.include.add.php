@@ -26,6 +26,14 @@ common_include('libraries/forms.php');
 
 function admin_pagesBuild($data,$db)
 {
+	//permission check for pages add
+	if(!checkPermission('add','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '
+			<h2>Insufficient User Permissions</h2>
+			You do not have the permissions to access this area.';	
+		return;
+	}
 	$data->output['pageForm']=new formHandler('pagesEdit',$data,true);
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	
