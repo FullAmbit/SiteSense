@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function blogs_loadPermissions($data) {
+function blogs_startup($data) {
     $data->permissions['blogs']=array(
         'access'              => 'Blog access',
         'accessOthers'        => 'Manage content of others',

@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function pages_loadPermissions($data) {
+function pages_startup($data,$db) {
     $data->permissions['pages']=array(
         'access'               => 'Pages access',
         'add'                  => 'Add pages',
