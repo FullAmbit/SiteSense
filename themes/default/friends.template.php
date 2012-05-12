@@ -46,45 +46,59 @@ function theme_friendList($data){
 }
 function theme_searchResults($data){
 	theme_buildForm($data->output['friendsearch']);
-    $x=empty($data->output['search'][':userName']);
-    $y=empty($data->output['search'][':fullName']);
-    $z=empty($data->output['search'][':publicEmail']);
-    if(count($data->output['search']) > 1) {
-        if(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
-            $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
-            theme_contentBoxHeader('Search Results For "'.$header.'"');
-        } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName'])) {
-            $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'];
-            theme_contentBoxHeader('Search Results For "'.$header.'"');
-        } elseif(!empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
-            $header = 'Full Name: '.$data->output['search'][':fullName'].', Public Email: '.$data->output['search'][':publicEmail'];
-            theme_contentBoxHeader('Search Results For "'.$header.'"');
-        } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':publicEmail'])) {
-            $header = 'User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
-            theme_contentBoxHeader('Search Results For "'.$header.'"');
+    if(isset($data->output['search'])) {
+        if(count($data->output['search']) > 1) {
+            if(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
+                $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
+                theme_contentBoxHeader('Search Results For "'.$header.'"');
+            } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':fullName'])) {
+                $header = 'Full Name: '.$data->output['search'][':fullName'].', User Name: '.$data->output['search'][':userName'];
+                theme_contentBoxHeader('Search Results For "'.$header.'"');
+            } elseif(!empty($data->output['search'][':fullName']) && !empty($data->output['search'][':publicEmail'])) {
+                $header = 'Full Name: '.$data->output['search'][':fullName'].', Public Email: '.$data->output['search'][':publicEmail'];
+                theme_contentBoxHeader('Search Results For "'.$header.'"');
+            } elseif(!empty($data->output['search'][':userName']) && !empty($data->output['search'][':publicEmail'])) {
+                $header = 'User Name: '.$data->output['search'][':userName'].', Public Email: '.$data->output['search'][':publicEmail'];
+                theme_contentBoxHeader('Search Results For "'.$header.'"');
+            }
+        } elseif(count($data->output['search']) == 1) {
+            theme_contentBoxHeader('Search Results For "'.$data->output['search'].'"');
         }
 
-    } elseif(count($data->output['search']) == 1) {
-        theme_contentBoxHeader('Search Results For "'.$data->output['search'].'"');
+        $results = $data->output['results'];
+        $friends = array($data->user['name']);
+        foreach($data->output['friends'] as $friend) {
+            array_push($friends,$friend['name']);
+        }
+        if(count($results) == 0){
+            echo '<p>No results found</p>';
+        }else{
+            echo '<ol>';
+            foreach($data->output['results'] as $result){
+                if(!in_array($result['name'],$friends)) {
+                    echo '
+                        <li>
+                            ', empty($result['icon']) ? '' : ('<img src="' . $data->linkRoot . 'gallery/icons/' . $result['icon'] . '" />'), '
+                            <a href="', $data->linkRoot, 'users/', $result['name'], '">', $result['name'], '</a>
+                            <a href="',$data->output['friendsHome'],'makeRequest/',$result['name'], '">Send Friend Request</a>','
+                        </li>
+                    ';
+                } else {
+                    echo '
+                        <li>
+                            ', empty($result['icon']) ? '' : ('<img src="' . $data->linkRoot . 'gallery/icons/' . $result['icon'] . '" />'), '
+                            <a href="', $data->linkRoot, 'users/', $result['name'], '">', $result['name'], '</a> is already your friend.
+                        </li>
+                    ';
+                }
+            }
+            echo '</ol>';
+        }
+        theme_contentBoxFooter();
     } else {
         theme_contentBoxHeader('Please fill in at least one of the fields');
+        echo '<p>No results found</p>';
     }
-	$results = $data->output['results'];
-	if(count($results) == 0){
-		echo '<p>No results found</p>';
-	}else{
-		echo '<ol>';
-		foreach($data->output['results'] as $result){
-			echo '
-				<li>
-					', empty($result['icon']) ? '' : ('<img src="' . $data->linkRoot . 'gallery/icons/' . $result['icon'] . '" />'), '
-					<a href="', $data->linkRoot, 'users/', $result['name'], '">', $result['name'], '</a>
-				</li>
-			';
-		}
-		echo '</ol>';
-	}
-	theme_contentBoxFooter();
 }
 function theme_viewRequests($data){
 	theme_contentBoxHeader('Friend Requests');

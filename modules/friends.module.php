@@ -31,7 +31,7 @@ function page_buildContent($data,$db) {
 	if($data->request[0] != $data->action[0]){
 		$friendsHome = $data->request[0];
 	}
-	$data->output['friendsHome'] = $data->linkRoot . $friendsHome . '/';
+	$data->output['friendsHome']=$data->linkRoot.$friendsHome.$data->output['pageShortName'].'/';
 	$pageType = 'default';
 	$data->output['pageType'] = &$pageType;
 	switch($data->action[1]){
