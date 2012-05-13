@@ -126,11 +126,11 @@ function admin_users_addQueries() {
 			FROM !prefix!user_group_permissions
 		',
         'getPermissionsByGroupName' => '
-			SELECT * FROM !prefix!user_permission_groups
+			SELECT * FROM !prefix!user_groups
 			WHERE groupName = :groupName
 		',
         'getGroupName' => '
-            SELECT groupName FROM !prefix!user_permission_groups
+            SELECT groupName FROM !prefix!user_groups
             WHERE groupName = :groupName
         ',
         'removeGroupFromGroup_permissions' => '
@@ -138,7 +138,7 @@ function admin_users_addQueries() {
 			WHERE groupName = :groupName
 		',
         'removeGroupFromUsersPermission_groups' => '
-			DELETE FROM !prefix!user_permission_groups
+			DELETE FROM !prefix!user_groups
 			WHERE groupName = :groupName
 		'
 	);

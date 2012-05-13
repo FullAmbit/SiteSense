@@ -122,7 +122,7 @@ if (
 	$data->dropTable('modules');
 	$data->dropTable('module_sidebars');
     // Dynamic User Permissions
-    $data->dropTable('user_permission_groups');
+    $data->dropTable('user_groups');
     $data->dropTable('user_group_permissions');
     $data->dropTable('user_permissions');
 }
@@ -166,7 +166,7 @@ if (
 	$data->createTable('module_sidebars',$structures['module_sidebars'],false);
 
     // Create Permissions
-    $data->createTable('user_permission_groups',$structures['user_permission_groups'],false);
+    $data->createTable('user_groups',$structures['user_groups'],false);
     $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
     $data->createTable('user_permissions',$structures['user_permissions'],false);
 

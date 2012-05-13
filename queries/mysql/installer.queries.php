@@ -206,7 +206,7 @@ function installer_tableStructures() {
 			'match'						 => 'VARCHAR(127) NOT NULL',
 			'replace'					 => 'VARCHAR(127) NOT NULL'
 		),
-        'user_permission_groups' => array(
+        'user_groups' => array(
             'userID'         => SQR_ID,
             'groupName'      => SQR_name,
             'expires'      => SQR_time

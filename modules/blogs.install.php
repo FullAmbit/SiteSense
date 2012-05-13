@@ -176,6 +176,7 @@ function blogs_install($data,$drop=false) {
             'blogs_postEdit',
             'blogs_postDelete',
             'blogs_postList'
+
         ),
         'Blogger' => array(
             'blogs_access',

@@ -170,19 +170,19 @@ function common_addQueries() {
             (:groupName,:permissionName)
         ',
         'addPermissionGroup' => '
-            INSERT INTO !prefix!user_permission_groups
+            INSERT INTO !prefix!user_groups
             (userId,groupName)
             VALUES
             (:userID,:groupName)
         ',
         'getGroupsByUserID' => '
 			SELECT *
-			FROM !prefix!user_permission_groups
+			FROM !prefix!user_groups
 			WHERE userID = :userID
 		',
         'getGroupsByGroupID' => '
 			SELECT groupName
-			FROM !prefix!user_permission_groups
+			FROM !prefix!user_groups
 			WHERE groupName = :groupName
 		',
         'getPermissionsByGroupName' => '
@@ -196,13 +196,13 @@ function common_addQueries() {
 			WHERE userID = :userID
 		',
         'purgeExpiredGroups' => '
-			DELETE FROM !prefix!user_permission_groups
+			DELETE FROM !prefix!user_groups
 			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
 		',
         'getUserByPermissionNameGroupOnlyScope' => '
-            SELECT !prefix!user_permission_groups.userID
+            SELECT !prefix!user_groups.userID
             FROM !prefix!user_group_permissions
-            INNER JOIN !prefix!user_permission_groups ON !prefix!user_permission_groups.groupName = !prefix!user_group_permissions.groupName
+            INNER JOIN !prefix!user_groups ON !prefix!user_groups.groupName = !prefix!user_group_permissions.groupName
             WHERE !prefix!user_group_permissions.permissionName =  :permissionName
         ',
         'getUserByPermissionNameUserOnlyScope' => '
@@ -211,7 +211,7 @@ function common_addQueries() {
             WHERE permissionName = :permissionName
 		',
         'updateGroupName' => '
-            UPDATE !prefix!user_permission_groups
+            UPDATE !prefix!user_groups
             SET groupName = :groupName
             WHERE groupName = :currentGroupName
         ',
