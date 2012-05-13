@@ -47,6 +47,33 @@ function user_install($data,$drop=false) {
 	if($drop)
 		$data->dropTable('users');
 	$data->createTable('users',$structures['users'],false);
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Administrators' => array(
+            'users_access',
+            'users_activate',
+            'users_ban',
+            'users_add',
+            'users_edit',
+            'users_delete',
+            'users_permissions'
+        ),
+        'User' => array(
+            'core_canAccessAdminPanel'
+        )
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+    // ---
 	// Generate an admin account if this is a fresh installation
 	if($data->countRows('users')==0) {
 		try {

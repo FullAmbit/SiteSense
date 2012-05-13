@@ -122,12 +122,8 @@ function admin_users_addQueries() {
 			SELECT * FROM !prefix!banned WHERE userId = :userId LIMIT 1
 		',
         'getAllGroups' => '
-			SELECT * FROM !prefix!user_permission_groups
-		',
-        'getAllGroupNames' => '
 			SELECT DISTINCT groupName
-			FROM !prefix!user_permission_groups
-
+			FROM !prefix!user_group_permissions
 		',
         'getPermissionsByGroupName' => '
 			SELECT * FROM !prefix!user_permission_groups
@@ -136,7 +132,15 @@ function admin_users_addQueries() {
         'getGroupName' => '
             SELECT groupName FROM !prefix!user_permission_groups
             WHERE groupName = :groupName
-        '
+        ',
+        'removeGroupFromGroup_permissions' => '
+			DELETE FROM !prefix!user_group_permissions
+			WHERE groupName = :groupName
+		',
+        'removeGroupFromUsersPermission_groups' => '
+			DELETE FROM !prefix!user_permission_groups
+			WHERE groupName = :groupName
+		'
 	);
 }
 ?>

@@ -99,6 +99,32 @@ function blogs_install($data,$drop=false) {
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
+        'Administrators' => array(
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
+        ),
         'Writer' => array(
         ),
         'Moderator' => array(
@@ -108,22 +134,6 @@ function blogs_install($data,$drop=false) {
 
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
-        $statement=$data->prepare('addPermissionGroup','common');
-        if($groupName=='Administrators') {
-            $statement->execute(
-                array(
-                    ':userID' => '1',
-                    ':groupName' => $groupName
-                )
-            );
-        } else {
-            $statement->execute(
-                array(
-                    ':userID' => '0',
-                    ':groupName' => $groupName
-                )
-            );
-        }
         foreach($permissions as $permissionName) {
             $statement=$data->prepare('addPermissionByGroupName','common');
             $statement->execute(

@@ -91,17 +91,6 @@ function admin_usersBuild($data,$db) {
                         return;
                     }
                 }
-                $statement=$db->prepare('addPermissionGroup');
-                $result = $statement->execute(array(
-                    ':groupName'  => $data->output['permissionGroup']->sendArray[':groupName'],
-                    ':userID'     => '0'
-
-                ));
-                if($result==FALSE) {
-                    $data->output['savedOkMessage'] = 'There was an error in saving to the database';
-                    return;
-                }
-
                 $data->output['savedOkMessage']='
 					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -123,7 +112,7 @@ function admin_usersBuild($data,$db) {
             ));
             $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $statement=$db->query('getAllGroupNames','admin_users');
+            $statement=$db->query('getAllGroups','admin_users');
             $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
             $existing=false;
             foreach($groupList as $key => $value) {
@@ -227,6 +216,41 @@ function admin_usersBuild($data,$db) {
 					</div>';
                 return;
             }
+        } elseif($data->action[4]=='delete') { // Delete Group
+            $data->output['delete']='';
+            if(empty($data->action[5])) {
+                $data->output['rejectError']='insufficient parameters';
+                $data->output['rejectText']='No group name was entered to be deleted';
+            } else {
+                if (@$_POST['fromForm']==$data->action[5]) {
+                    if (!empty($_POST['delete'])) {
+                        $success=false;
+                        $statement=$db->prepare('removeGroupFromGroup_permissions','admin_users');
+                        $statement->execute(array(
+                            ':groupName' => $data->action[5]
+                        ));
+                        if($statement->rowCount()>0) {
+                            $success = true;
+                        }
+                        $statement=$db->prepare('removeGroupFromUsersPermission_groups','admin_users');
+                        $statement->execute(array(
+                            ':groupName' => $data->action[5]
+                        ));
+                        if($statement->rowCount()>0) {
+                            $success=true;
+                        }
+                        if($success) {
+                            $data->output['delete']='deleted';
+                        } else {
+                            $data->output['rejectError']='Database Error';
+                            $data->output['rejectText']='You attempted to delete a group, are you sure that group exists?';
+                        }
+                    } else {
+                        /* from form plus not deleted must == cancelled. */
+                        $data->output['delete']='cancelled';
+                    }
+                }
+            }
         }
     }
 }
@@ -254,6 +278,18 @@ function admin_usersShow($data) {
                 echo $data->output['savedOkMessage'];
             } else {
                 theme_buildForm($data->output['permissionGroup']);
+            }
+        } elseif($data->action[4]=='delete') { //Delete Group
+            switch ($data->output['delete']) {
+                case 'deleted':
+                    theme_groupDeleteDeleted($data->action[5],$data->linkRoot);
+                    break;
+                case 'cancelled':
+                    theme_groupDeleteCancelled($data->linkRoot);
+                    break;
+                default:
+                    theme_groupDeleteDefault($data->action[5],$data->linkRoot);
+                    break;
             }
         }
     }

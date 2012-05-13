@@ -290,100 +290,15 @@ if (
             'core_canAccessUrlRemapConfig',
             'core_canEnableModules',
             'core_canViewLeftSideBar',
-            'core_canAccessAdminPanel',
-            // Users
-            'users_access',
-            'users_activate',
-            'users_ban',
-            'users_add',
-            'users_edit',
-            'users_delete',
-            'users_permissions',
-            // Blogs
-            'blogs_access',
-            'blogs_accessOthers',
-
-            'blogs_blogAdd',
-            'blogs_blogEdit',
-            'blogs_blogDelete',
-            'blogs_blogList',
-
-            'blogs_categoryAdd',
-            'blogs_categoryEdit',
-            'blogs_categoryDelete',
-            'blogs_categoryView',
-
-            'blogs_commentAdd',
-            'blogs_commentEdit',
-            'blogs_commentDelete',
-            'blogs_commentApprove',
-            'blogs_commentDisapprove',
-            'blogs_commentList',
-
-            'blogs_postAdd',
-            'blogs_postEdit',
-            'blogs_postDelete',
-            'blogs_postList'
-        ),
-        'User' => array(
             'core_canAccessAdminPanel'
         )
     );
-
-    // --- Start new part
-    $permissionList->permissions = array();
-    // Get all enabled permissions
-    $targetFunction='loadPermissions';
-    // Get core permissions
-    if (function_exists($targetFunction)) {
-        $targetFunction($permissionList);
-    }
-    // Get enabled modules
-    $statement=$data->query('getEnabledModules','admin_modules');
-    $modules=$statement->fetchAll();
-    foreach($modules as $module) {
-        // Check to see if loadPermission() function exists
-        $filename='./modules/'.$module['name'].'.php';
-        if(file_exists($filename)) {
-            common_include($filename);
-            if (function_exists($targetFunction)) {
-                $targetFunction($permissionList);
-            }
-        }
-    }
-    // Get enabled plugins
-    $statement=$data->query('getEnabledPlugins','plugins');
-    $plugins=$statement->fetchAll();
-    foreach($plugins as $plugin) {
-        $filename='plugins/'.$plugin['name'].'/plugin.php';
-        if(file_exists($filename)) {
-            common_include('plugins/'.$plugin['name'].'/plugin.php');
-            if (function_exists($targetFunction)) {
-                $targetFunction($permissionList);
-            }
-        }
-    }
-
-    foreach($permissionList->permissions as $category) {
-        foreach($permissionList->permissions[$category] as $permission) {
-            $defaultPermissionGroups['Administrators'][]=$permission;
-        }
-    }
-    // --- end new part
-
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addPermissionGroup','common');
         if($groupName=='Administrators') {
             $statement->execute(
                 array(
                     ':userID' => '1',
-                    ':groupName' => $groupName
-                )
-            );
-        } else {
-            $statement->execute(
-                array(
-                    ':userID' => '0',
                     ':groupName' => $groupName
                 )
             );

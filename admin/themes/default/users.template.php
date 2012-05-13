@@ -191,7 +191,39 @@ function theme_usersDeleteDefault($action3,$linkRoot) {
 			</fieldset>
 		</form>';
 }
+function theme_groupDeleteDeleted($action5,$linkRoot) {
+    echo '
+		<h2>Group: ',$action5,' Deleted</h2>
+		<p>
+			Group ',$action5,' has successfully deleted!
+		</p>
+		<div class="buttonList">
+			<a href="',$linkRoot,'admin/users/permissions">Return to List</a>
+		</div>
+		';
+}
 
+function theme_groupDeleteCancelled($linkRoot) {
+    echo '
+		<h2>Deletion Cancelled</h2>
+		<p>
+			You should be auto redirected to the page list in three seconds.
+			<a href="',$linkRoot,'admin/users/permissions/">Click Here if you don not wish to wait.</a>
+		</p>';
+}
+
+function theme_groupDeleteDefault($action5,$linkRoot) {
+    echo '
+		<form action="',$linkRoot,'admin/users/permissions/group/delete/',$action5,'" method="post" class="verifyForm">
+			<fieldset>
+				<legend><span>Are you sure you want to delete group ',$action5,'?</span></legend>
+				<p class="warning">*** WARNING *** This action cannot be undone</p>
+				<input type="submit" name="delete" value="Yes, Delete it" />
+				<input type="submit" name="cancel" value="Cancel" />
+				<input type="hidden" name="fromForm" value="',$action5,'" />
+			</fieldset>
+		</form>';
+}
 function theme_usersActivationNone() {
 	echo '<p>There are no users awaiting activation</p>';
 }
