@@ -114,11 +114,4 @@ function page_content(&$data) {
 	}
 	//var_dump($data->output['links']);
 }
-
-function loadPermissions($data) {
-    $data->permissions['friends']=array(
-    	'access'               => 'Friends access'
-    );
-}
-
 ?>

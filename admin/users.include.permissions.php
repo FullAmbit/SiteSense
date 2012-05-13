@@ -23,39 +23,15 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions
-    common_include('libraries/common.php');
     if (function_exists($targetFunction)) {
         $targetFunction($data);
     }
-    // Get enabled modules
-    $statement=$db->query('getEnabledModules','admin_modules');
-    $modules=$statement->fetchAll();
-    foreach($modules as $module) {
-        // Check to see if loadPermission() function exists
-        $filename='modules/'.$module['name'].'.php';
-        if(file_exists($filename)) {
-            common_include($filename);
-            if (function_exists($targetFunction)) {
-                $targetFunction($data);
-            }
-        }
-    }
-    // Get enabled plugins
-    $statement=$db->query('getEnabledPlugins','plugins');
-    $plugins=$statement->fetchAll();
-    foreach($plugins as $plugin) {
-        $filename='plugins/'.$plugin['name'].'/plugin.php';
-        if(file_exists($filename)) {
-            common_include('plugins/'.$plugin['name'].'/plugin.php');
-            if (function_exists($targetFunction)) {
-                $targetFunction($data);
-            }
-        }
-    }
 }
+
 function admin_usersBuild($data,$db) {
 	//permission check for users permissions
 	if(!checkPermission('permissions','users',$data)) {
@@ -71,7 +47,7 @@ function admin_usersBuild($data,$db) {
             getPermissions($data,$db);
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             // Add Group Form Submitted
-            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
+            if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
                 $existing=false;
@@ -92,10 +68,9 @@ function admin_usersBuild($data,$db) {
                       </p><p>
                           <strong>That group name is already taken!</strong>
                       </p>';
-                    $data->output['permissionGroup']->fields['name']['error']=true;
+                    $data->output['permissionGroup']->fields['groupName']['error']=true;
                     return;
                 }
-                $permissions = array();
                 foreach($data->output['permissionGroup']->sendArray as $fieldName => $value) {
                     if($fieldName!==':groupName' && $fieldName!==':expiration') {
                         // Check to see if it is checked or not
@@ -137,20 +112,31 @@ function admin_usersBuild($data,$db) {
 							Return to Group List
 						</a>
 					</div>';
+                return;
             }
         } elseif($data->action[4]=='edit') { // Edit Group
             getPermissions($data,$db);
             // Get Group Permissions
-
             $statement=$db->prepare('getPermissionsByGroupName');
             $statement->execute(array(
                 ':groupName' =>  $data->action[5]
             ));
-            if(!$permissions=$statement->fetchAll(PDO::FETCH_ASSOC)) {
+            $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
+
+            $statement=$db->query('getAllGroupNames','admin_users');
+            $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
+            $existing=false;
+            foreach($groupList as $key => $value) {
+                if($groupList[$key]['groupName']==$data->action[5]) {
+                    $existing=true;
+                }
+            }
+            if(!$existing) {
                 $data->output['abort'] = true;
                 $data->output['abortMessage']='The group you specified could not be found';
                 return;
             }
+
             foreach($permissions as $permission) {
                 $data->output['permissionGroup']['permissions'][]=$permission['permissionName'];
             }
@@ -168,34 +154,78 @@ function admin_usersBuild($data,$db) {
             }
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             // Edit Group Form Submitted
-            if ((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
+            if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
                 // Check if groupName exists already
-                $existing=false;
                 if($data->output['permissionGroup']->sendArray[':groupName']!==$data->action[5]) {
-                    $statement->$db=prepare('getGroupName');
+                    $statement=$db->prepare('getGroupName');
                     $statement->execute(array(
                         ':groupName' => $data->action[5]
                     ));
-                    if ($statement->fetchColumn()) {
+                    if($statement->fetchColumn()) {
                         // Returned result, groupName already exists
-                        $existing=true;
+                        $data->output['secondSideBar']='
+                        <h2>Error in Data</h2>
+                        <p>
+                            There were one or more errors. Please correct the fields with the red X next to them and try again.
+                        </p><p>
+                            <strong>That group name is already taken!</strong>
+                        </p>';
+                        $data->output['permissionGroup']->fields['groupName']['error']=true;
+                          return;
                     }
-                    //$existing=checkGroupName($data->output['permissionGroup']->sendArray[':groupName'],$db);
-                }
-                if($existing) {
-                    $data->output['secondSideBar']='
-                      <h2>Error in Data</h2>
-                      <p>
-                          There were one or more errors. Please correct the fields with the red X next to them and try again.
-                      </p><p>
-                          <strong>That group name is already taken!</strong>
-                      </p>';
-                    $data->output['permissionGroup']->fields['name']['error']=true;
-                    return;
-                } else {
 
+                    $statement=$db->prepare('updateGroupName');
+                    $statement->execute(array(
+                        ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+                        ':currentGroupName' => $data->action[5]
+                    ));
                 }
+
+                $statement=$db->prepare('getPermissionsByGroupName');
+                $statement->execute(array(
+                    ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+                ));
+                $currentGroupPermissions=$statement->fetchAll(PDO::FETCH_ASSOC);
+                foreach($data->output['permissionGroup']->sendArray as $key => $value) {
+                    if($value) {
+                        if($key==':groupName') continue;
+                        if($key==':expiration') continue;
+                        $existing=false;
+                        foreach($currentGroupPermissions as $subKey => $subValue) {
+                            if($currentGroupPermissions[$subKey]['permissionName']==substr($key,1)) {
+                                $existing=true;
+                            }
+                        }
+
+                        if(!$existing) {
+                             $statement=$db->prepare('addPermissionByGroupName');
+                             $statement->execute(array(
+                                 ':permissionName' => substr($key,1),
+                                 ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
+                             ));
+                        }
+                    } else {
+                        if($key==':groupName') continue;
+                        if($key==':expiration') continue;
+                        $statement=$db->prepare('purgePermissionByGroupName');
+                        $statement->execute(array(
+                            ':permissionName' => substr($key,1),
+                            ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
+                        ));
+                    }
+                }
+                $data->output['savedOkMessage']='
+					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
+					<div class="panel buttonList">
+						<a href="'.$data->linkRoot.'admin/users/permissions/group/add">
+							Add New Group
+						</a>
+						<a href="'.$data->linkRoot.'admin/users/permissions/">
+							Return to Group List
+						</a>
+					</div>';
+                return;
             }
         }
     }
@@ -218,7 +248,13 @@ function admin_usersShow($data) {
                 theme_buildForm($data->output['permissionGroup']);
             }
         } elseif($data->action[4]=='edit') { //Edit Group
-            theme_buildForm($data->output['permissionGroup']);
+            if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
+                admin_unknown();
+            } else if (isset($data->output['savedOkMessage'])) {
+                echo $data->output['savedOkMessage'];
+            } else {
+                theme_buildForm($data->output['permissionGroup']);
+            }
         }
     }
 }

@@ -24,7 +24,7 @@
 */
 
 function blogs_config($data,$db) {
-	if (checkPermission('admin','blogs',$data)) {
+	if (checkPermission('access','blogs',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
 			'command' 	=> 'blogs/list',

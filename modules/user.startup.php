@@ -22,15 +22,15 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function gallery_startup($data,$db) {
-	$data->menuSource[]=array(
-		'text'      => 'Gallery',
-		'title'     => 'Your pictures and photos',
-		'url' 		=> 'gallery',
-		'module'	=> 'gallery'
-	);
-    $data->permissions['friends']=array(
-        'access'   => 'Gallery access'
+function user_startup($data,$db) {
+    $data->permissions['users']=array(
+        'access'               => 'Users Access',
+        'activate'             => 'Activate Users',
+        'ban'                  => 'Ban Users',
+        'add'                  => 'Add Users',
+        'edit'                 => 'Edit Users',
+        'delete'               => 'Delete Users',
+        'permissions'          => 'Manage User Groups'
     );
 }
 ?>

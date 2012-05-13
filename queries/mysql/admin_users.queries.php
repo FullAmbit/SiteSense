@@ -124,6 +124,11 @@ function admin_users_addQueries() {
         'getAllGroups' => '
 			SELECT * FROM !prefix!user_permission_groups
 		',
+        'getAllGroupNames' => '
+			SELECT DISTINCT groupName
+			FROM !prefix!user_permission_groups
+
+		',
         'getPermissionsByGroupName' => '
 			SELECT * FROM !prefix!user_permission_groups
 			WHERE groupName = :groupName

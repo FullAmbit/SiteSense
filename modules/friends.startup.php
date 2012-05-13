@@ -29,4 +29,8 @@ function friends_startup($data,$db) {
 		'url' 		=> 'friends',
 		'module'	=> 'friends'
 	);
+    $data->permissions['friends']=array(
+        'access'               => 'Friends access'
+    );
 }
+?>

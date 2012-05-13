@@ -140,16 +140,4 @@ function page_content($data){
 		break;
 	}
 }
-
-function loadPermissions($data) {
-    $data->permissions['users']=array(
-    	'access'               => 'Users Access',
-    	'activate'             => 'Activate Users',
-    	'ban'                  => 'Ban Users',
-    	'add'                  => 'Add Users',
-    	'edit'                 => 'Edit Users',
-    	'delete'               => 'Delete Users',
-    	'permissions'          => 'Manage User Groups'
-    );
-}
 ?>

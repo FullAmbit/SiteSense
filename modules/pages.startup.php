@@ -22,15 +22,17 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function gallery_startup($data,$db) {
-	$data->menuSource[]=array(
-		'text'      => 'Gallery',
-		'title'     => 'Your pictures and photos',
-		'url' 		=> 'gallery',
-		'module'	=> 'gallery'
-	);
-    $data->permissions['friends']=array(
-        'access'   => 'Gallery access'
+function pages_startup($data,$db) {
+    $data->permissions['pages']=array(
+        'access'               => 'Pages access',
+        'add'                  => 'Add pages',
+        'edit'                 => 'Edit pages',
+        'editSpecific'         => 'Edit specific page', //not being used for now while this comment exists. Requires checkPermissions module update
+        //this is the statement that should replace the current ones. This accounts for editSpecific
+        //if(!checkPermission('access','pages',$data) && (!checkPermission('editSpecific','pages',$data) == ***PAGE ID***))
+        //more complicated logic for editSpecific override, may require function modification for checkPermission
+        'delete'               => 'Delete pages',
+        'publish'              => 'Publish pages'
     );
 }
 ?>
