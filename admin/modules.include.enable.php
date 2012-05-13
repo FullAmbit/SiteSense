@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_modulesBuild($data,$db){
-	if(!$data->action[3]) {
+    if(!checkPermission('modules_enable','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    if(!$data->action[3]) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No module name was entered to be enabled';
 	} else {

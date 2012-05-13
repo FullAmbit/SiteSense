@@ -24,7 +24,7 @@
 */
 function admin_usersBuild($data,$db) {
 	//permission check for users activation
-	if(!checkPermission('activation','users',$data)) {
+	if(!checkPermission('activate','users',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;

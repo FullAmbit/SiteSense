@@ -25,7 +25,11 @@
 common_include('libraries/forms.php');
 
 function admin_sideBarsBuild($data,$db) {
-	
+    if(!checkPermission('sidebars_edit','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	$aRoot=$data->linkRoot.'admin/sideBars/';
 	
 	// Check To See If SideBar Exists

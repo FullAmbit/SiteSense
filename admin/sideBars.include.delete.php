@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_sideBarsBuild($data,$db) {
-	$data->output['delete']='';
+    if(!checkPermission('sidebars_delete','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';

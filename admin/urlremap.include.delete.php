@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_urlremapsBuild($data,$db) {
-	$staff=false;
+    if(!checkPermission('urlRemap_delete','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $staff=false;
 	if (empty($data->action[3])) {
 		$data->output['abort'] = true;
 		$data->output['abortremap'] = '<h2>No ID Given</h2>';

@@ -24,7 +24,12 @@
 */
 common_include('libraries/forms.php');
 function admin_modulesBuild($data,$db) {
-	if($data->action[3] === false){
+    if(!checkPermission('modules_edit','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    if($data->action[3] === false){
 		$existing = false;
 	}else{
 		$existing = (int)$data->action[3];

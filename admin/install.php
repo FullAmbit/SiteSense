@@ -273,24 +273,43 @@ if (
     $defaultPermissionGroups=array(
         'Administrators' => array(
             // Core
-            'core_canAccessAdminPanel',
-            'core_canAccessMainMenu',
-            'core_canAccessMainMenuConfig',
-            'core_canDeleteMainMenuItems',
-            'core_canAccessModulesAdminPanel',
-            'core_canAccessModulesConfig',
-            'core_canAccessPluginsAdminPanel',
-            'core_canAccessPluginsConfig',
-            'core_canAccessSettingsAdminPanel',
-            'core_canAccessSettingsConfig',
-            'core_canAccessSideBarAdminPanel',
-            'core_canAccessSideBarConfig',
-            'core_canDeleteSideBarItem',
-            'core_canAccessUrlRemapAdminPanel',
-            'core_canAccessUrlRemapConfig',
-            'core_canEnableModules',
-            'core_canViewLeftSideBar',
-            'core_canAccessAdminPanel'
+            'core_access',
+
+            'core_dashboard_access',
+
+            'core_mainMenu_access',
+            'core_mainMenu_add',
+            'core_mainMenu_delete',
+            'core_mainMenu_disable',
+            'core_mainMenu_edit',
+            'core_mainMenu_enable',
+            'core_mainMenu_list',
+
+            'core_modules_access',
+            'core_modules_disable',
+            'core_modules_edit',
+            'core_modules_enable',
+            'core_modules_list',
+
+            'core_plugins_access',
+            'core_plugins_edit',
+            'core_plugins_disable',
+            'core_plugins_enable',
+            'core_plugins_list',
+
+            'core_settings_access',
+
+            'core_sidebars_access',
+            'core_sidebars_add',
+            'core_sidebars_delete',
+            'core_sidebars_edit',
+            'core_sidebars_list',
+
+            'core_urlRemap_access',
+            'core_urlRemap_add',
+            'core_urlRemap_delete',
+            'core_urlRemap_edit',
+            'core_urlRemap_list'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

@@ -30,13 +30,11 @@ function killHacker($reason) {
 } 
 function common_loadPlugin(&$data,$name)
 {
-	if(isset($data->plugins[$name]))
-	{
+	if(isset($data->plugins[$name])) {
 		return true;
 	}
 	
-	if(file_exists('plugins/'.$name.'/plugin.php'))
-	{
+	if(file_exists('plugins/'.$name.'/plugin.php'))	{
 		common_include('plugins/'.$name.'/plugin.php');
 		$objectName = 'plugin_'.$name;		
 		$data->plugins[$name] = new $objectName;
@@ -46,16 +44,14 @@ function common_loadPlugin(&$data,$name)
 	}
 }
 
-function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE)
-{
+function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
 	$data->output['links'][] = array(
 		'link' => $link,
 		'rel' => ($rel) ? $rel : $id,
 		'id' => $id
 	);
 	
-	if(!$return)
-	{
+	if(!$return) {
 		echo '<a href="',$link,'" rel="',$rel,'" id="',$id,'" class="',$class,'">',$text,'</a>';
 	} else {
 		return '<a href="'.$link.'" rel="'.$rel.'" id="'.$id.'" class="'.$class.'">'.$text.'</a>';
@@ -80,10 +76,10 @@ function common_isValidEmail($address) {
 		)
 	);
 }
-function common_redirect_local($data, $where){
+function common_redirect_local($data, $where) {
 	common_redirect($data->linkHome . $where);
 }
-function common_redirect($where){
+function common_redirect($where) {
 	ob_end_clean();
 	header('location: ' . $where);
 	exit;
@@ -126,10 +122,10 @@ function common_hasUrlPrefix($url) {
 	}
 	return false;
 }
-function common_timedRedirect($URL, $seconds = 5){
+function common_timedRedirect($URL, $seconds = 5) {
 	echo _common_timedRedirect($URL);
 }
-function _common_timedRedirect($URL, $seconds = 5){
+function _common_timedRedirect($URL, $seconds = 5) {
 	return '
 		<p>Click <a href="'. $URL . '">here</a> if you are not redirected in ' . $seconds . ' seconds</p>
 		<script type="text/javascript">
@@ -213,25 +209,43 @@ function common_include($includeName) {
 
 function loadPermissions($data) {
     $data->permissions['core']=array(
-        'canAccessAdminPanel' => 'Control panel access',
-        'canAccessMainMenu' => 'User has access to main menu', // Why do we need this?  Can't all users with canAccessAdminPanel see the main menu at least to some degree?
-        'canAccessMainMenuConfig' => 'Main menu configuration',
-        'canDeleteMainMenuItems' => 'Remove main menu items',
-        'canAccessMessagesAdminPanel' => 'User has access to messages admin panel', // Why are these core permissions?  Don't these belong in messages_ using the messages module?
-        'canAccessMessageConfig' => 'User has access to messages configuration',
-        'canAccessModulesAdminPanel' => 'User has access to the modules admin panel',
-        'canAccessModulesConfig' => 'User has access to the modules configuration',
-        'canAccessPluginsAdminPanel' => 'User has access to plugins admin panel',
-        'canAccessPluginsConfig' => 'User has access to plugin configuration',
-        'canAccessSettingsAdminPanel' => 'User has access to settings admin panel',
-        'canAccessSettingsConfig' => 'User has access to settings configuration',
-        'canAccessSideBarAdminPanel' => 'User has access to sidebar admin panel',
-        'canAccessSideBarConfig' => 'User has access to side bar configuration',
-        'canDeleteSideBarItem' => 'User can remove/delete side bar items',
-        'canAccessUrlRemapAdminPanel' => 'User can access the URL Remap admin panel',
-        'canAccessUrlRemapConfig' => 'User can access remap configuration',
-        'canEnableModules' => 'User has access enable/disable modules',
-        'canViewLeftSideBar' => 'User can view the left side bar'
+        'access'            => 'Control panel access',
+
+        'dashboard_access'  => 'Dashboard access',
+
+        'mainMenu_access'   => 'Main menu access',
+        'mainMenu_add'      => 'Add main menu items',
+        'mainMenu_delete'   => 'Delete main menu items',
+        'mainMenu_disable'  => 'Disable main menu items',
+        'mainMenu_edit'     => 'Edit main menu items',
+        'mainMenu_enable'   => 'Enable main menu items',
+        'mainMenu_list'     => 'List main menu items',
+
+        'modules_access'    => 'Modules access',
+        'modules_disable'   => 'Disable modules',
+        'modules_edit'      => 'Edit modules',
+        'modules_enable'    => 'Enable modules',
+        'modules_list'      => 'List modules',
+
+        'plugins_access'    => 'Plugins access',
+        'plugins_edit'      => 'Edit plugins',
+        'plugins_disable'   => 'Disable plugins',
+        'plugins_enable'    => 'Enable plugins',
+        'plugins_list'      => 'List plugins',
+
+        'settings_access'   => 'Settings access',
+
+        'sidebars_access'   => 'Sidebar access',
+        'sidebars_add'      => 'Add sidebars',
+        'sidebars_delete'   => 'Delete sidebars',
+        'sidebars_edit'     => 'Edit sidebars',
+        'sidebars_list'     => 'List sidebars',
+
+        'urlRemap_access'   => 'URL Remap Access',
+        'urlRemap_add'      => 'Add URL Remaps',
+        'urlRemap_delete'   => 'Delete URL Remaps',
+        'urlRemap_edit'     => 'Edit URL Remaps',
+        'urlRemap_list'     => 'List URL Remaps'
     );
 }
 

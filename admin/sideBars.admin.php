@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if(!checkPermission('canAccessSideBarAdminPanel','core',$data))
+	if(!checkPermission('sidebars_access','core',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

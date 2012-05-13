@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_sideBarsBuild($data,$db) {
-	if (is_numeric($data->action[4])) {
+    if(!checkPermission('sidebars_list','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    if (is_numeric($data->action[4])) {
 		/*if (
 			($data->action[3]=='moveUp') ||
 			($data->action[3]=='moveDown')

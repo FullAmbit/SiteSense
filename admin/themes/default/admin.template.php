@@ -79,7 +79,7 @@ function theme_footer($data) {
 function theme_leftSideBar($data) {
 	echo '
 	<!-- #content,#contentWrapper --></div></div>';
-	if (checkPermission('canViewLeftSideBar','core',$data)) {
+	if (checkPermission('access','core',$data)) {
 		if (!empty($data->output['forceMenu'])) {
 			$currentCompare=$data->output['forceMenu'];
 		} else if (empty($data->action[1])) {

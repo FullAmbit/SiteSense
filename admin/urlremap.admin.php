@@ -27,7 +27,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if(!checkPermission('canAccessUrlRemapAdminPanel','core',$data))
+	if(!checkPermission('urlRemap_access','core',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

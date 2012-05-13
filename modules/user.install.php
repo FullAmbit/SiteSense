@@ -58,8 +58,8 @@ function user_install($data,$drop=false) {
             'users_delete',
             'users_permissions'
         ),
-        'User' => array(
-            'core_canAccessAdminPanel'
+        'Users' => array(
+            'core_access'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

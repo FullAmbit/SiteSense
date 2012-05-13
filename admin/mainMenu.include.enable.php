@@ -22,8 +22,12 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_mainMenuBuild($data,$db)
-{
+function admin_mainMenuBuild($data,$db) {
+    if(!checkPermission('mainMenu_enable','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	// Check To See If The Project Exists
 	$check = $db->prepare('getMenuItemById','admin_mainMenu');
 	$check->execute(array(':id' => $data->action[3]));

@@ -126,10 +126,81 @@ function blogs_install($data,$drop=false) {
             'blogs_postList'
         ),
         'Writer' => array(
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
         ),
         'Moderator' => array(
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
         ),
         'Blogger' => array(
+            'blogs_access',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
         ),
 
     );
