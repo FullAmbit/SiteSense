@@ -128,7 +128,7 @@ function loadPermissions($data) {
     	'access'               => 'Pages access',
     	'add'                  => 'Add pages',
     	'edit'                 => 'Edit pages',
-    	'editSpecific'         => 'Edit specific page', //not being used for now while this comment exists. Requires checkPermissions module update
+//    	'editSpecific'         => 'Edit specific page', //not being used for now while this comment exists. Requires checkPermissions module update
 														//this is the statement that should replace the current ones. This accounts for editSpecific	
 														//if(!checkPermission('access','pages',$data) && (!checkPermission('editSpecific','pages',$data) == ***PAGE ID***)) 
 														//more complicated logic for editSpecific override, may require function modification for checkPermission
