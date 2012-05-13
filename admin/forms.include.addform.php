@@ -25,6 +25,12 @@
 common_include('libraries/forms.php');
 function admin_formsBuild($data,$db)
 {
+	//permission check for forms add
+	if(!checkPermission('add','forms',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}	
 	$data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
 	$statement = $db->prepare('getEnabledPlugins','plugins');

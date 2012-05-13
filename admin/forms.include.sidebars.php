@@ -24,6 +24,12 @@
 */
 function admin_formsBuild($data,$db)
 {
+	//permission check for forms edit
+	if(!checkPermission('edit','forms',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}	
 	$formId = (int)$data->action[3];
 	// Check if Form Exists
 	$statement = $db->prepare('getFormById','form');
