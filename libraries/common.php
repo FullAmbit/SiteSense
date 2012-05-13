@@ -273,14 +273,11 @@ function getUserPermissions(&$db,&$user) {
 	// Finds out if user is Admin with universal access
     $statement=$db->prepare('isUserAdmin');
     $statement->execute(array(
-        ':userID' => $user['id']
+        ':userID' => $user['id'],
     ));
-    $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
-    foreach($userAdmin as $userAdmin) {
-		if(($userAdmin['groupName'] == "Administrators") && (($userAdmin['expires'] == 0) || ($userAdmin['expires'] > date("Y-m-d H:i:s")))) {
-			$user['isAdmin'] = 1;
-		}
-	}
+    $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
+	if($userAdmin[0])
+		$user['isAdmin'] = 1;
 
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
