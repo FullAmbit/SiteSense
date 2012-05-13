@@ -23,10 +23,14 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_blogsBuild($data,$db) {
-	if (is_numeric($data->action[3])) {
+    if(!checkPermission('postList','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    if (is_numeric($data->action[3])) {
 		//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-		if(checkPermission('canListBlogPosts','blogs',$data))
-		{
+		if(!checkPermission('accessOthers','blogs',$data)) {
 			$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$check->execute(array(
 				':id' => $data->action[3],
@@ -37,8 +41,7 @@ function admin_blogsBuild($data,$db) {
 			$check->execute(array(':id' => $data->action[3]));
 		}
 		// Check For Results
-		if(($data->output['parentBlog'] = $check->fetch()) === FALSE)
-		{
+		if(($data->output['parentBlog'] = $check->fetch()) === FALSE) {
 			$data->output['abort'] = true;
 			$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 			return;

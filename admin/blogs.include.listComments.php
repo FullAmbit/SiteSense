@@ -24,35 +24,32 @@
 */
 function admin_blogsBuild($data,$db)
 {
-		/* Permission Check-----------------------
-		 * If the user is anything less than a moderator,
-		 * check to see if the user owns the blog this
-		 * is under.
-		 * ---------------------------------------
-		**/
-		if(checkPermission('commentsList','blogs',$data))
-		{
-			$statement = $db->prepare('getBlogByPost','admin_blogs');
-			$statement->execute(array(
-				':postId' => $data->action[3]
-			));
-			
-			$blogItem = $statement->fetch();
-			if($data->user['id'] !== $blogItem['owner'])
-			{
-				$data->output['abort'] = true;
-				$data->output['abortMessage'] = '<h2>You do not have the permissions to moodify comments in this blog</h2>';
-				return;
-			}
-		}
-		
+    if(checkPermission('commentList','blogs',$data)) {
+    	$statement = $db->prepare('getBlogByPost','admin_blogs');
+    	$statement->execute(array(
+    		':postId' => $data->action[3]
+    	));
+
+    	$blogItem = $statement->fetch();
+    	if($data->user['id'] !== $blogItem['owner']) {
+            if(!checkPermission('accessOthers','blogs',$data)) {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                return;
+            }
+    	}
+    } else {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+
 	// Retrieve List Of All Approved Blog Comments
-  	if(is_numeric($data->action[3]))
-  	{
+  	if(is_numeric($data->action[3])) {
 		$statement = $db->prepare('getApprovedCommentsByPost','admin_blogcomments');
 	  	$statement->execute(array(':post' => $data->action[3]));
 	  	$data->output['commentList']['approved'] = $statement->fetchAll();
-		
+
 		// Comments Awaiting Approval
 		$statement = $db->prepare('getCommentsAwaitingApproval','admin_blogcomments');
 		$statement->execute(array(':post' => $data->action[3]));
@@ -64,18 +61,15 @@ function admin_blogsBuild($data,$db)
 		$data->output['commentList']['disapproved'] = $statement->fetchAll();
 	}
 }
-function admin_blogsShow($data)
-{
-	if(count($data->output['commentList']) < 1)
-	{
+function admin_blogsShow($data) {
+	if(count($data->output['commentList']) < 1) {
 		theme_blogsListCommentsNoComments();
 		return;
 	}
 	// Comments Awaiting Approval
 	theme_blogsListCommentsPendingTableHead();
 	$count = 0;
-	if(count($data->output['commentList']['queue']) > 0)
-	{
+	if(count($data->output['commentList']['queue']) > 0) {
 		foreach($data->output['commentList']['queue'] as $item)
 		{
 			theme_blogsListCommentsPendingTableRow($data,$item,$count);

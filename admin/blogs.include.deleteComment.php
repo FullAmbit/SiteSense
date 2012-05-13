@@ -22,25 +22,14 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_blogsBuild($data,$db)
-{
-	//var_dump($data->action);
+function admin_blogsBuild($data,$db) {
 	$data->output['delete']='';
 	// Make Sure We Have An ID
-	if(!is_numeric($data->action[3]))
-	{
+	if(!is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 		return;
 	}
-	// Check for User Permissions
-	if (checkPermission('canSeeOtherBlogs','blogs',$data))
-	{
-		$data->output['rejectError']='Insufficient User Permissions';
-		$data->output['rejectText']='You do not have sufficient access to perform this action.';
-		return;
-	}
-	
 	// Get The Comment Info So Far
 	$statement = $db->prepare('getCommentById','admin_blogcomments');
 	$statement->execute(array(':id' => $data->action[3]));
@@ -52,20 +41,25 @@ function admin_blogsBuild($data,$db)
 	 * is under.
 	 * ---------------------------------------
 	**/
-	if(checkPermission('commentsDelete','blogs',$data))
-	{
+	if(checkPermission('commentDelete','blogs',$data)) {
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
 			':postId' => $data->output['commentItem']['post']
 		));
 		
 		$blogItem = $statement->fetch();
-		if($data->user['id'] !== $blogItem['owner'])
-		{
-			$data->output['savedOkMessage'] = '<h2>You do not have the permissions to modify this blog</h2>';
-			return;
+		if($data->user['id'] !== $blogItem['owner']) {
+            if(!checkPermission('accessOthers','blogs',$data)) {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                return;
+            }
 		}
-	}
+	} else {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	
 	// Delete Comment
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])

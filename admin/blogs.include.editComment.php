@@ -25,38 +25,35 @@
 common_include('libraries/forms.php');
 function admin_blogsBuild($data,$db)
 {
-	if(is_numeric($data->action[3]))
-	{
+	if(is_numeric($data->action[3])) {
 		// Retrieve Comment
 		$statement = $db->prepare('getCommentById','blogcomments');
 		$statement->execute(array(':blogId' => $data->action[3]));
-		if(($data->output['commentItem'] = $statement->fetch()) === FALSE)
-		{
+		if(($data->output['commentItem'] = $statement->fetch()) === FALSE)	{
 			$data->output['abort'] = true;
 			$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 			return;
 		}
-		
-		/* Permission Check-----------------------
-		 * If the user is anything less than a moderator,
-		 * check to see if the user owns the blog this
-		 * is under.
-		 * ---------------------------------------
-		**/
-		if(checkPermission('commentsEdit','blogs',$data))
-		{
+
+		if(checkPermission('commentEdit','blogs',$data)) {
 			$statement = $db->prepare('getBlogByPost','admin_blogs');
 			$statement->execute(array(
 				':postId' => $data->output['commentItem']['post']
 			));
 			
 			$blogItem = $statement->fetch();
-			if($data->user['id'] !== $blogItem['owner'])
-			{
-				$data->output['savedOkMessage'] = '<h2>You do not have the permissions to modify this comment</h2>';
-				return;
+			if($data->user['id'] !== $blogItem['owner']) {
+                if(!checkPermission('accessOthers','blogs',$data)) {
+                    $data->output['abort'] = true;
+                    $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                    return;
+                }
 			}
-		}
+		} else {
+            $data->output['abort'] = true;
+            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            return;
+        }
 		
 		$data->output['commentItemForm'] = new formHandler('commentItem',$data,true);
 		$data->output['commentItemForm']->caption = 'Editing Comment';

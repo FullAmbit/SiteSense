@@ -36,26 +36,25 @@ function admin_blogsBuild($data,$db)
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['commentItem'] = $statement->fetch();
 	
-	/* Permission Check-----------------------
-	 * If the user is anything less than a moderator,
-	 * check to see if the user owns the blog this
-	 * is under.
-	 * ---------------------------------------
-	**/
-	if(checkPermisison('commentsDisapprove','blogs',$data))
-	{
+	if(checkPermisison('commentDisapprove','blogs',$data))	{
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
 			':postId' => $data->output['commentItem']['post']
 		));
 		
 		$blogItem = $statement->fetch();
-		if($data->user['id'] !== $blogItem['owner'])
-		{
-			$data->output['savedOkMessage'] = '<h2>You do not have the permissions to modify this blog</h2>';
-			return;
+		if($data->user['id'] !== $blogItem['owner']) {
+            if(!checkPermission('accessOthers','blogs',$data)) {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                return;
+            }
 		}
-	}
+	} else {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	
 	// Disapprove Comment
 	$statement = $db->prepare('disapproveComment','admin_blogcomments');

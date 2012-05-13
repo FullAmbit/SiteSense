@@ -28,13 +28,12 @@ function admin_blogsBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (checkPermission('ownerDelete','blogs',$data)) {
+		if (checkPermission('blogDelete','blogs',$data)) {
 			/*	Permissions
 			 *	Anything less than a moderator only have individual access to blogs,
 			 *	Thus, check to see if the user owns this blog.
 			*/
-			if(checkPermission('blogsViewOthers','blogs',$data))
-			{
+			if(!checkPermission('accessOthers','blogs',$data)) {
 				$qHandle=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 				$qHandle->execute(array(
 					':id' => $data->action[3],
@@ -46,8 +45,7 @@ function admin_blogsBuild($data,$db) {
 					':id' => $data->action[3]
 				));
 			}
-			if(($data->output['thisBlog']=$qHandle->fetch()) == FALSE)
-			{
+			if(($data->output['thisBlog']=$qHandle->fetch()) == FALSE) {
 				$data->output['rejectError']='invalid parameters';
 				$data->output['rejectText']='The blog you specified was not found.';
 				return;
@@ -85,9 +83,10 @@ function admin_blogsBuild($data,$db) {
 				}
 			}
 		} else {
-			$data->output['rejectError']='Insufficient User Permissions';
-			$data->output['rejectText']='You do not have sufficient access to perform this action.';
-		}
+            $data->output['abort'] = true;
+            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            return;
+        }
 	}
 }
 function admin_blogsShow($data) {

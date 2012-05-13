@@ -23,11 +23,14 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_blogsBuild($data,$db)
-{
+function admin_blogsBuild($data,$db) {
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('categoryAdd','blogs',$data))
-	{
+    if(!checkPermission('categoryAdd','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    if(!checkPermission('accessOthers','blogs',$data)) {
 		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],

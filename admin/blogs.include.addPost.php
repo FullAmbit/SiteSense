@@ -26,9 +26,13 @@ common_include('libraries/forms.php');
 
 function admin_blogsBuild($data,$db)
 {
+    if(!checkPermission('postAdd','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
-	if(checkPermission('postAdd','blogs',$data))
-	{
+	if(!checkPermission('accessOthers','blogs',$data)) {
 		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3],

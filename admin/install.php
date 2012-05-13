@@ -272,6 +272,7 @@ if (
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Administrators' => array(
+            // Core
             'core_canAccessAdminPanel',
             'core_canAccessMainMenu',
             'core_canAccessMainMenuConfig',
@@ -290,20 +291,45 @@ if (
             'core_canEnableModules',
             'core_canViewLeftSideBar',
             'core_canAccessAdminPanel',
-            'users_access',
+            // Users
             'users_access',
             'users_activate',
             'users_ban',
             'users_add',
             'users_edit',
             'users_delete',
-            'users_permissions'
+            'users_permissions',
+            // Blogs
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
         ),
         'User' => array(
             'core_canAccessAdminPanel'
         )
     );
-    /*
+
     // --- Start new part
     $permissionList->permissions = array();
     // Get all enabled permissions
@@ -344,7 +370,7 @@ if (
         }
     }
     // --- end new part
-    */
+
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addPermissionGroup','common');
         if($groupName=='Administrators') {

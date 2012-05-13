@@ -22,11 +22,14 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_blogsBuild($data,$db)
-{
+function admin_blogsBuild($data,$db) {
+    if(!checkPermission('categoryList','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('canListBlogCategory','blogs',$data))
-	{
+	if(!checkPermission('accessOthers','blogs',$data)) {
 		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
@@ -37,8 +40,7 @@ function admin_blogsBuild($data,$db)
 		$check->execute(array(':id' => $data->action[3]));
 	}
 	// Check For Results
-	if(($data->output['blogItem'] = $check->fetch()) === FALSE)
-	{
+	if(($data->output['blogItem'] = $check->fetch()) === FALSE)	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
@@ -50,8 +52,7 @@ function admin_blogsBuild($data,$db)
 	));
 	$data->output['categoryList'] = $statement->fetchAll();
 }
-function admin_blogsShow($data)
-{
+function admin_blogsShow($data) {
 	$aRoot=$data->linkRoot.'admin/blogs/';
 	theme_blogsListCatTableHead($data,$aRoot) ;
 	$count = 0;

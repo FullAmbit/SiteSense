@@ -32,16 +32,19 @@ function admin_blogPostsCheckShortName($db,$shortName) {
 		return $first['id'];
 	} else return false;
 }
-function admin_blogsBuild($data,$db)
-{
-	global $languageText;
+function admin_blogsBuild($data,$db) {
+    if(!checkPermission('postEdit','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+
+    global $languageText;
 	$aRoot=$data->linkRoot.'admin/blogs/';
-	
-	
+
 	if (is_numeric($data->action[3])) {
 		//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
-		if(checkPermission('postEdit','blogs',$data))
-		{
+		if(!checkPermission('accessOthers','blogs',$data)) {
 			$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$statement->execute(array(
 				':id' => $data->action[3],
@@ -53,8 +56,7 @@ function admin_blogsBuild($data,$db)
 				':id' => $data->action[3]
 			));
 		}
-		if(($data->output['parentBlog']=$statement->fetch()) == FALSE)
-		{
+		if(($data->output['parentBlog']=$statement->fetch()) == FALSE) {
 			$data->output['savedOkMessage'] = '
 			<h2>Invalid Parameters</h2>
 			The blog you specified could not be found.';

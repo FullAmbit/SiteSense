@@ -22,22 +22,23 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_blogsBuild($data,$db)
-{
+function admin_blogsBuild($data,$db) {
+    if (!checkPermission('categoryDelete','blogs',$data))	{
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	$data->output["delete"] = "";
 	// Check To See If The Category Exists
 	$check = $db->prepare('getCategoryById','admin_blogs');
 	$check->execute(array(':id' => $data->action[3]));
-	if(($data->output['categoryItem'] = $check->fetch()) === FALSE)
-	{
+	if(($data->output['categoryItem'] = $check->fetch()) === FALSE)	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
 	}
-	
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('ownerView','blogs',$data))
-	{
+	if(!checkPermission('accessOthers','blogs',$data))	{
 		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->output['categoryItem']['blogId'],
@@ -50,20 +51,12 @@ function admin_blogsBuild($data,$db)
 		));
 	}
 
-	if(($data->output['blogItem'] = $check->fetch()) === FALSE)
-	{
+	if(($data->output['blogItem'] = $check->fetch()) === FALSE)	{
 		$data->output['rejectError'] = 'Invalid Parameters';
 		$data->output['rejectText'] = 'The blog you specified could not be found.';
 		return;
 	}
 	
-	// Check for User Permissions
-	if (checkPermission('categoryDelete','blogs',$data))
-	{
-		$data->output['rejectError']='Insufficient User Permissions';
-		$data->output['rejectText']='You do not have sufficient access to perform this action.';
-		return;
-	}
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])
 	{
 		if(!empty($_POST['delete']))

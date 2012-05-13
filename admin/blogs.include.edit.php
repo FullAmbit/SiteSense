@@ -33,18 +33,21 @@ function admin_blogsCheckShortName($db,$shortName) {
 	} else return false;
 }
 function admin_blogsBuild($data,$db) {
-	global $languageText;
+    if(!checkPermission('blogEdit','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    global $languageText;
 	$aRoot=$data->linkRoot.'admin/blogs/';
 	// Check If The Blog ID Is Supplied
-	if(!is_numeric($data->action[3]))
-	{
+	if(!is_numeric($data->action[3])) {
 		$data->output['rejectError'] = 'Insufficient Parameters';
 		$data->output['rejectText'] = 'Please provide a blog ID';
 		return;
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if(checkPermission('blogsEdit','blogs',$data))
-	{
+	if(!checkPermission('accessOthers','blogs',$data)) {
 		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3],

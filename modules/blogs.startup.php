@@ -47,33 +47,7 @@ function blogs_startup($data) {
         'postAdd'             => 'Add posts',
         'postEdit'            => 'Edit posts',
         'postDelete'          => 'Delete posts',
-        'postView'            => 'View posts',
-
-        //----
-        'blogsManage'          => 'Manage blogs',
-        'blogsViewOthers'      => 'View other user\'s blogs',
-        'categoryAdd'          => 'Add blog category',
-        'categoryDelete'       => 'Delete categories',
-        'commentsApprove'      => 'Approve comments',
-        'commentsDisapprove'   => 'Disapprove comments',
-        'commentsList'         => 'List comments',
-        'commentsEdit'         => 'Edit comments',
-        'commentsDelete'       => 'Remove comments',
-        'ownerAdd'             => 'Add blog owner',
-        'ownerDelete'          => 'Remove blog owners',
-        'ownerView'            => 'View blog owners',
-        'postAdd'              => 'Add blog post',
-        'postEdit'             => 'Edit blog posts',
-
-        'blogsEdit' => 'User can view this speicifc blog',
-        'canEditBlogCategory' => 'User can modify the blog category',
-
-
-        'canListBlogPosts' => 'User can list their own blog posts',
-        'canListOthersBlogPosts' => 'User can list others blog posts along with their own',
-        'canListBlogCategory' => 'User can list a blogs categories',
-
-        'canListBlogPosts' => 'User can list blogs posts'
+        'postList'            => 'View posts'
     );
 }
 ?>
