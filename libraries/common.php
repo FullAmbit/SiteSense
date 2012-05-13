@@ -270,6 +270,18 @@ function getUserPermissions(&$db,&$user) {
         }
     }
     // User permissions
+	// Finds out if user is Admin with universal access
+    $statement=$db->prepare('isUserAdmin');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
+    foreach($userAdmin as $userAdmin) {
+		if(($userAdmin['groupName'] == "Administrators") && (($userAdmin['expires'] == 0) || ($userAdmin['expires'] > date("Y-m-d H:i:s")))) {
+			$user['isAdmin'] = 1;
+		}
+	}
+
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
         ':userID' => $user['id']
@@ -278,7 +290,7 @@ function getUserPermissions(&$db,&$user) {
     foreach($permissions as $permission) {
         // Check to see if the user has already been granted the permission
         if(!in_array($permission['permissionName'],$user['permissions'])){ // User doesn't have permission
-            // Allow/Forbit?
+            // Allow/Forbid?
             if($permission['allow']==1) { // Allow; add permission
                 $user['permissions'][] = $permission['permissionName'];
             }
@@ -307,6 +319,9 @@ function getUserPermissions(&$db,&$user) {
 
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
+	// User is Admin, which is universal access, Return true
+	if($data->user['isAdmin'])
+		return true;
     if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
             $hasPermission = true;
     }
