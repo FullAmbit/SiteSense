@@ -45,7 +45,9 @@ function messages_startup($data,$db) {
 	$data->menuSource[] = $link;
     $data->permissions['messages']=array(
         'access'      => 'Messages access',
-        'delete'      => 'Delete pages'
+        'delete'      => 'Delete messages',
+        'list'        => 'Delete messages',
+        'view'        => 'Delete messages'
     );
 }
 ?>
