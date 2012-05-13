@@ -24,6 +24,12 @@
 */
 function admin_formsBuild($data,$db)
 {
+	//permission check for forms delete
+	if(!checkPermission('delete','forms',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}	
 	$data->output['delete'] = $data->output['rejectError'] = $data->output['rejectText'] = FALSE;
 	
 	// Check to see if the form exists

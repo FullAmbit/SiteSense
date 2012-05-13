@@ -180,12 +180,4 @@ function page_content($data) {
 		theme_contentBoxFooter();
 	}
 }
-
-function loadPermissions($data) {
-    $data->permissions['forms']=array(
-        'admin' => 'User has form admin rights',
-        'canDeleteFormField' => 'User can delete form fields',
-        'canDeleteFormOption' => 'User can delete form options'
-    );
-}
 ?>

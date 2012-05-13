@@ -24,6 +24,12 @@
 */
 common_include('libraries/forms.php');
 function admin_formsBuild($data,$db) {
+	//permission check for forms edit
+	if(!checkPermission('edit','forms',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}	
 	if($data->action[3] === false){
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
