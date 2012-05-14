@@ -112,10 +112,11 @@ function admin_usersBuild($data,$db) {
                 case 'id':
                 case 'fullName':
                 case 'name':
-                case 'registeredIP:':
+                case 'registeredIP':
                 case 'contactEMail':
                 case 'publicEMail':
 					$data->output['userForm']->fields[$key]['value']=$item[$key];
+                break;
 		    }
 		}
 	} else {
@@ -184,7 +185,7 @@ function admin_usersBuild($data,$db) {
                     }
                     unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
                 }
-            }/*
+            }
             foreach($data->output['groupList'] as $key => $value) {
                 $member=0;
                 $expires='Never';
@@ -208,6 +209,9 @@ function admin_usersBuild($data,$db) {
                     } else {
                         // Remove user from group
                     }
+                    unset($data->output['userForm']->sendArray[$value['groupName']]);
+                    unset($data->output['userForm']->sendArray[$value['groupName'].'_expiration']);
+                    unset($data->output['userForm']->sendArray[$value['groupName'].'_update']);
                 } else {
                     if($data->output['userForm']->sendArray[$value['groupName']]=='checked') {
                         // User is not a member and is being added to a group
@@ -216,8 +220,7 @@ function admin_usersBuild($data,$db) {
                         // Do nothing
                     }
                 }
-            }*/
-
+            }
 			//--Don't Need These, User Already Exists--//
 			unset($data->output['userForm']->sendArray[':password2']);
 			unset($data->output['userForm']->sendArray[':registeredDate']);

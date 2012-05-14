@@ -175,9 +175,9 @@ function common_addQueries() {
         ',
         'addPermissionGroup' => '
             INSERT INTO !prefix!user_groups
-            (userId,groupName)
+            (userId,groupName,expires)
             VALUES
-            (:userID,:groupName)
+            (:userID,:groupName,:expires)
         ',
         'getGroupsByUserID' => '
 			SELECT *

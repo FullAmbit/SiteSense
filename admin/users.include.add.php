@@ -45,6 +45,15 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
+    // Load all groups
+    $statement=$db->query('getAllGroups','admin_users');
+    $data->output['groupList']=$statement->fetchAll();
+    // Load all groups by userID
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID' =>  $data->action[3]
+    ));
+    $data->output['userGroupList']=$statement->fetchAll();
     // Load core permissions
     getPermissions($data,$db);
 
@@ -110,6 +119,19 @@ function admin_usersBuild($data,$db) {
                     }
                 }
             }
+
+            foreach($data->output['groupList'] as $key => $value) {
+                $expires='Never';
+                if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
+                    // User is still a member
+                    // Check expiration
+                    $submittedGroups[$value['groupName']]['expires']=$expires;
+
+                }
+                unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
+            }
 			$statement=$db->prepare('insertUser','admin_users');
 			$result=$statement->execute($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');
@@ -137,8 +159,16 @@ function admin_usersBuild($data,$db) {
                     }
                 }
             }
-			if($result == FALSE)
-			{
+            $submittedGroups=array();
+            foreach($submittedGroups as $groupName => $value) {
+                $statement=$db->prepare('addPermissionGroup','common');
+                $statement->execute(array(
+                    ':userID'    => $userID[0]['id'],
+                    ':groupName' => $groupName,
+                    ':expires'   => 0//$value['expires']
+                ));
+            }
+			if($result == FALSE) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
 				return;
 			}
