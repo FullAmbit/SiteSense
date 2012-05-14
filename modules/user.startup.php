@@ -25,9 +25,10 @@
 function user_startup($data,$db) {
     $data->permissions['users']=array(
         'access'               => 'Users Access',
+        'accessOthers'         => 'Manage Other Users',
         'activate'             => 'Activate Users',
-        'ban'                  => 'Ban Users',
         'add'                  => 'Add Users',
+        'ban'                  => 'Ban Users',
         'edit'                 => 'Edit Users',
         'delete'               => 'Delete Users',
         'permissions'          => 'Manage User Groups'

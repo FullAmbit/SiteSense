@@ -49,17 +49,27 @@ function user_install($data,$drop=false) {
 	$data->createTable('users',$structures['users'],false);
     // Set up default permission groups
     $defaultPermissionGroups=array(
-        'Administrators' => array(
-            'users_access',
-            'users_activate',
-            'users_ban',
-            'users_add',
-            'users_edit',
-            'users_delete',
-            'users_permissions'
+        'Moderator' => array(
+            'access',
+            'accessOthers',
+            'activate',
+            'add',
+            'ban',
+            'edit',
+            'delete',
+            'permissions'
         ),
-        'Users' => array(
-            'core_access'
+        'Writer' => array(
+            'access',
+			'edit'
+        ),
+        'Blogger' => array(
+            'access',
+			'edit'
+        ),
+        'User' => array(
+            'access',
+            'edit'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
