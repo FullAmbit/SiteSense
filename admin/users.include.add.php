@@ -119,7 +119,7 @@ function admin_usersBuild($data,$db) {
                     }
                 }
             }
-
+            $submittedGroups=array();
             foreach($data->output['groupList'] as $key => $value) {
                 $expires='Never';
                 if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
@@ -159,13 +159,13 @@ function admin_usersBuild($data,$db) {
                     }
                 }
             }
-            $submittedGroups=array();
+
             foreach($submittedGroups as $groupName => $value) {
-                $statement=$db->prepare('addPermissionGroup','common');
+                $statement=$db->prepare('addPermissionGroup');
                 $statement->execute(array(
                     ':userID'    => $userID[0]['id'],
                     ':groupName' => $groupName,
-                    ':expires'   => 0//$value['expires']
+                    ':expires'   => 0
                 ));
             }
 			if($result == FALSE) {
