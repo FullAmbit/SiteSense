@@ -102,10 +102,16 @@ function admin_usersBuild($data,$db) {
 			
 			$data->output['userForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
 			$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
+            foreach($data->permissions as $category => $permissions) {
+                foreach($permissions as $permissionName => $permissionDescription) {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        $submittedPermissions[':'.$category.'_'.$permissionName]=$data->output['userForm']->sendArray[':'.$category.'_'.$permissionName];
+                        unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+                    }
+                }
+            }
 			$statement=$db->prepare('insertUser','admin_users');
-			
-			$result = $statement->execute($data->output['userForm']->sendArray);
-
+			$result=$statement->execute($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');
             $statement->execute(array(
                 ':name' => $data->output['userForm']->sendArray[':name']
@@ -114,10 +120,10 @@ function admin_usersBuild($data,$db) {
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
                 foreach($permissions as $permissionName => $permissionDescription) {
-                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
-                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
+                    if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
+                        if($submittedPermissions[':'.$category.'_'.$permissionName]!=='Inherited') {
                             $allow=0;
-                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
+                            if($submittedPermissions[':'.$category.'_'.$permissionName]=='Allow') {
                                 $allow=1;
                             }
                             // Add it to the database
@@ -129,7 +135,6 @@ function admin_usersBuild($data,$db) {
                             ));
                         }
                     }
-                    unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
                 }
             }
 			if($result == FALSE)
