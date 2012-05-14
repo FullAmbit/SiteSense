@@ -142,11 +142,11 @@ function admin_usersBuild($data,$db) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
 				return;
 			}
-			
+
 			$id = $db->lastInsertId();
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
 			$profileAlbum->execute(array(':user' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
-			
+
 			// All Is Good
 			$data->output['savedOkMessage']='
 					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>

@@ -317,8 +317,12 @@ function getUserPermissions(&$db,&$user) {
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
 	// User is Admin, which is universal access, Return true
-    if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
+    if(isset($data->user['isAdmin']) && $data->user['isAdmin']==1) {
+        $hasPermission = true;
+    } else {
+        if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
             $hasPermission = true;
+        }
     }
     return $hasPermission;
 }

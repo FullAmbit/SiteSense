@@ -97,28 +97,7 @@ function admin_usersBuild($data,$db) {
 
 		foreach ($data->output['userForm']->fields as $key => $value) {
 
-            if($value['tag'] == 'select') {
-				//$data->output['userForm']->fields[$key]['value'] = $item[$key];
-			} elseif(!empty($value['params']['type'])) {
-				switch ($value['params']['type']) {
-					case 'checkbox':
-						//$data->output['userForm']->fields[$key]['checked']=(
-						//	$item[$key] ? 'checked' : ''
-						//);
-					break;
-					case 'password':
-						// NEVER SEND PASSWORD TO A FORM!!!
-					break;
-					default:
-						//$data->output['userForm']->fields[$key]['value']=$item[$key];
-			}
-			} else switch ($key) {
-                case 'id':
-                case 'fullName':
-                case 'name':
-                case 'registeredIP:':
-                case 'contactEMail':
-                case 'publicEMail':
+           switch ($key) {
                 case 'lastAccess':
 				case 'registeredDate':
 					$data->output['userForm']->fields[$key]['value']=(
@@ -130,9 +109,14 @@ function admin_usersBuild($data,$db) {
 						)
 					);
 				break;
-				default:
+                case 'id':
+                case 'fullName':
+                case 'name':
+                case 'registeredIP:':
+                case 'contactEMail':
+                case 'publicEMail':
 					$data->output['userForm']->fields[$key]['value']=$item[$key];
-			}
+		    }
 		}
 	} else {
 		$data->output['abort'] = true;

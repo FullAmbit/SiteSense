@@ -61,18 +61,18 @@ function pages_install($data,$drop=false) {
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
-            'access',
-			'add',
-			'edit',
-			'delete',
-			'publish'
+            'pages_access',
+			'pages_add',
+			'pages_edit',
+			'pages_delete',
+			'pages_publish'
         ),
         'Writer' => array(
-            'access',
-			'add',
-			'edit',
-			'delete',
-			'publish'
+            'pages_access',
+			'pages_add',
+			'pages_edit',
+			'pages_delete',
+			'pages_publish'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

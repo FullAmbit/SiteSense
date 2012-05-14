@@ -49,26 +49,26 @@ function user_install($data,$drop=false) {
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
-            'access',
-            'accessOthers',
-            'activate',
-            'add',
-            'ban',
-            'edit',
-            'delete',
-            'permissions'
+            'users_access',
+            'users_accessOthers',
+            'users_activate',
+            'users_add',
+            'users_ban',
+            'users_edit',
+            'users_delete',
+            'users_permissions'
         ),
         'Writer' => array(
-            'access',
-			'edit'
+            'users_access',
+			'users_edit'
         ),
         'Blogger' => array(
-            'access',
-			'edit'
+            'users_access',
+			'users_edit'
         ),
         'User' => array(
-            'access',
-            'edit'
+            'users_access',
+            'users_edit'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
