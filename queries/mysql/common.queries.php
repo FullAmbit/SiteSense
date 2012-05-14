@@ -163,6 +163,10 @@ function common_addQueries() {
             VALUES
             (:id,:permission,:allow)
         ',
+        'removeAllUserPermissionsByUserID' => '
+            DELETE FROM !prefix!user_permissions
+            WHERE userId = :userID
+        ',
         'addPermissionByGroupName' => '
             INSERT INTO !prefix!user_group_permissions
             (groupName,permissionName)

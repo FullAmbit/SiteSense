@@ -23,7 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-
+function getPermissions($data,$db) {
+    $targetFunction='loadPermissions';
+    // Get core permissions
+    if (function_exists($targetFunction)) {
+        $targetFunction($data);
+    }
+}
 function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
@@ -39,10 +45,11 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
-	global $languageText;
-	
-	$data->output['userForm'] = $form = new formHandler('users',$data,true);
-	
+    // Load core permissions
+    getPermissions($data,$db);
+
+    $data->output['userForm'] = $form = new formHandler('users',$data,true);
+
 	unset($form->fields['registeredDate']);
 	unset($form->fields['registeredIP']);
 	unset($form->fields['lastAccess']);
@@ -58,8 +65,7 @@ function admin_usersBuild($data,$db) {
 		$form->populateFromPostData();
 		// Check If UserName Already Exists //
 		$existing = checkUserName($form->sendArray[':name'],$db);
-		if($existing)
-		{
+		if($existing) {
 			$data->output['secondSideBar']='
 				  <h2>Error in Data</h2>
 				  <p>
@@ -72,6 +78,7 @@ function admin_usersBuild($data,$db) {
 				  
 			return;
 		}
+
 		// Did it validate?!?
 		if (($form->validateFromPost()))
 		{
@@ -98,7 +105,33 @@ function admin_usersBuild($data,$db) {
 			$statement=$db->prepare('insertUser','admin_users');
 			
 			$result = $statement->execute($data->output['userForm']->sendArray);
-			
+
+            $statement=$db->prepare('getUserIdByName');
+            $statement->execute(array(
+                ':name' => $data->output['userForm']->sendArray[':name']
+            ));
+            $userID=$statement->fetchAll();
+            // Insert Permissions
+            foreach($data->permissions as $category => $permissions) {
+                foreach($permissions as $permissionName => $permissionDescription) {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
+                            $allow=0;
+                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
+                                $allow=1;
+                            }
+                            // Add it to the database
+                            $statement=$db->prepare('addPermissionsByUserId');
+                            $statement->execute(array(
+                                ':id' => $userID[0]['id'],
+                                ':permission' => $category.'_'.$permissionName,
+                                ':allow' => $allow
+                            ));
+                        }
+                    }
+                    unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+                }
+            }
 			if($result == FALSE)
 			{
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';

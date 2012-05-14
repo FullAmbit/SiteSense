@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+function getPermissions($data,$db) {
+    $targetFunction='loadPermissions';
+    // Get core permissions
+    if (function_exists($targetFunction)) {
+        $targetFunction($data);
+    }
+}
 function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
@@ -37,11 +44,39 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
-	global $languageText;
-	
-	$data->output['userForm'] = $form = new formHandler('users',$data,true);
-	
-	
+    // Load core permissions
+    getPermissions($data,$db);
+    // Get User Permissions
+    $statement=$db->prepare('getUserPermissionsByUserID');
+    $statement->execute(array(
+        ':userID' =>  $data->action[3]
+    ));
+    $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
+    /*
+    $statement=$db->query('getAllGroups','admin_users');
+    $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach($groupList as $key => $value) {
+        if($groupList[$key]['groupName']==$data->action[5]) {
+            $existing=true;
+        }
+    }
+    */
+    if(isset($permissions)) {
+        foreach($permissions as $key => $permission) {
+            $permissionName=$permission['permissionName'];
+            $allow=$permission['allow'];
+            $separator=strpos($permissionName,'_');
+            $prefix=substr($permissionName,0,$separator);
+            $suffix=substr($permissionName,$separator+1);
+            $data->output['userForm']['permissions'][$prefix][]=$suffix;
+            $data->output['userForm']['permissions'][$prefix][$suffix]['allow']=$allow;
+        }
+
+    }
+    // ---
+    $data->output['userForm']=$form=new formHandler('users',$data,true);
+
 	$statement=$db->prepare('getById','admin_users');
 	$statement->execute(array(
 		':id' => $data->action[3]
@@ -52,11 +87,10 @@ function admin_usersBuild($data,$db) {
 		$data->output['userForm']->caption = 'Editing User '.$item['name'];
 
 		foreach ($data->output['userForm']->fields as $key => $value) {
-			if($value['tag'] == 'select')
-			{
-				$data->output['userForm']->fields[$key]['value'] = $item[$key];
-			} else
-			if (!empty($value['params']['type'])) {
+
+            if($value['tag'] == 'select') {
+				//$data->output['userForm']->fields[$key]['value'] = $item[$key];
+			} elseif(!empty($value['params']['type'])) {
 				switch ($value['params']['type']) {
 					case 'checkbox':
 						$data->output['userForm']->fields[$key]['checked']=(
@@ -68,7 +102,7 @@ function admin_usersBuild($data,$db) {
 					break;
 					default:
 						$data->output['userForm']->fields[$key]['value']=$item[$key];
-				}
+			}
 			} else switch ($key) {
 				case 'lastAccess':
 				case 'registeredDate':
@@ -121,6 +155,38 @@ function admin_usersBuild($data,$db) {
 		
 		
 		if (($data->output['userForm']->validateFromPost())) {
+			// Update User Permissions in DB
+            $statement=$db->prepare('getUserIdByName');
+            $statement->execute(array(
+                ':name' => $data->output['userForm']->sendArray[':name']
+            ));
+            $userID=$statement->fetchAll();
+            // Purge all of a user's permissions
+            $statement=$db->prepare('removeAllUserPermissionsByUserID');
+            $statement->execute(array(
+                ':userID' => $userID[0]['id']
+            ));
+
+            foreach($data->permissions as $category => $permissions) {
+                foreach($permissions as $permissionName => $permissionDescription) {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
+                            $allow=0;
+                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
+                                $allow=1;
+                            }
+                            // Add it to the database
+                            $statement=$db->prepare('addPermissionsByUserId');
+                            $statement->execute(array(
+                                ':id' => $userID[0]['id'],
+                                ':permission' => $category.'_'.$permissionName,
+                                ':allow' => $allow
+                            ));
+                        }
+                    }
+                    unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+                }
+            }
 			//--Don't Need These, User Already Exists--//
 			unset($data->output['userForm']->sendArray[':password2']);
 			unset($data->output['userForm']->sendArray[':registeredDate']);

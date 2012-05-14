@@ -32,26 +32,7 @@ function admin_users_addQueries() {
 			SELECT * FROM !prefix!users
 			LIMIT :start, :count
 		',
-		'getListLimitedStaff' => '
-			SELECT * FROM !prefix!users
-			WHERE userLevel > 126
-			LIMIT :start, :count
-		',
-		'getListActivations' => '
-			SELECT * FROM !prefix!users WHERE userLevel = 0
-			LIMIT :start, :count
-		',
 		'activate' => '
-			UPDATE !prefix!users SET userLevel = '.USERLEVEL_USER.' WHERE id = :id
-		',
-		'searchUsers_IncludingLevel' => '
-			SELECT * FROM !prefix!users
-			WHERE
-				userLevel = :userLevel
-				AND
-				name LIKE :name
-				AND
-				fullName LIKE :fullName
 		',
 		'searchUsers_NotIncludingLevel' => '
 			SELECT * FROM !prefix!users
@@ -69,7 +50,6 @@ function admin_users_addQueries() {
 			SET
 				name = :name,
 				fullName = :fullName,
-				userLevel = :userLevel,
 				contactEMail = :contactEMail,
 				publicEMail = :publicEMail
 			WHERE id = :id
@@ -80,16 +60,15 @@ function admin_users_addQueries() {
 				name = :name,
 				fullName = :fullName,
 				password = :password,
-				userLevel = :userLevel,
 				contactEMail = :contactEMail,
 				publicEMail = :publicEMail
 			WHERE id = :id
 		',
 		'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,fullName,password,registeredIP,userLevel,contactEMail,publicEMail)
+			(name,fullName,password,registeredIP,contactEMail,publicEMail)
 			VALUES
-			(:name,:fullName,:password,:registeredIP,:userLevel,:contactEMail,:publicEMail)
+			(:name,:fullName,:password,:registeredIP,:contactEMail,:publicEMail)
 		',
 		'checkUserName' => '
 			SELECT id FROM !prefix!users
@@ -98,28 +77,6 @@ function admin_users_addQueries() {
 		'deleteUserById' => '
 			DELETE FROM !prefix!users
 			WHERE id = :id
-		',
-		'updateUserLevel' => '
-			UPDATE !prefix!users
-			SET
-				userLevel = :userLevel
-			WHERE
-				id = :userId
-		',
-		'addBan' => '
-			REPLACE INTO !prefix!banned
-			SET
-				userId = :userId,
-				userLevel = :userLevel,
-				email = :email,
-				ipAddress = :ip,
-				expiration = :expiration
-		',
-		'removeBanByUserId' => '
-			DELETE FROM !prefix!banned WHERE userId = :userId LIMIT 1
-		',
-		'getBanByUserId' => '
-			SELECT * FROM !prefix!banned WHERE userId = :userId LIMIT 1
 		',
         'getAllGroups' => '
 			SELECT DISTINCT groupName

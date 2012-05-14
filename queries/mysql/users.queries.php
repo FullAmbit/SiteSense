@@ -50,9 +50,6 @@ function users_addQueries() {
 		',
 		'removeBan' => '
 			DELETE FROM !prefix!banned WHERE id = :id LIMIT 1
-		',
-		'updateUserLevel' => '
-			UPDATE !prefix!users SET userLevel = :userLevel WHERE id = :userId
 		'
 	);
 }

@@ -30,9 +30,9 @@ function register_addQueries() {
 	return array(
 		'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,password,fullName,registeredDate,registeredIP,lastAccess,userLevel,contactEMail,publicEMail,emailVerified)
+			(name,password,fullName,registeredDate,registeredIP,lastAccess,contactEMail,publicEMail,emailVerified)
 			VALUES
-			(:name,:password,:fullName,:registeredDate,:registeredIP,:lastAccess,:userLevel,:contactEMail,:publicEMail,:emailVerified)
+			(:name,:password,:fullName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified)
 		',
 		'getRegistrationEMail' => '
 			SELECT parsedContent FROM !prefix!pages
@@ -71,9 +71,7 @@ function register_addQueries() {
 				hash = :hash
 		',
 		'activateUser' => '
-			UPDATE !prefix!users
-			SET userLevel = '.USERLEVEL_USER.'
-			WHERE id = :userId
+
 		',
 		'updateEmailVerification' => '
 			UPDATE !prefix!users SET emailVerified = 1 WHERE id = :userId

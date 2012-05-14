@@ -35,7 +35,6 @@ function user_install($data,$drop=false) {
 			'name'                => SQR_username,
 			'password'            => SQR_password,
 			'fullName'            => SQR_fullName,
-			'userLevel'           => SQR_userLevel,
 			'registeredDate'      => SQR_added,
 			'registeredIP'        => SQR_IP,
 			'lastAccess'          => SQR_time,
@@ -94,7 +93,6 @@ function user_install($data,$drop=false) {
 			$statement->execute(array(
 				':name' => 'admin',
 				':passphrase' => hash('sha256',$newPassword),
-				':userLevel' => 255,
 				':registeredIP' => $_SERVER['REMOTE_ADDR']
 			));
 			echo '
