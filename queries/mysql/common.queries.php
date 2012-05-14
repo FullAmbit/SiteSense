@@ -199,6 +199,11 @@ function common_addQueries() {
 			FROM !prefix!user_permissions
 			WHERE userID = :userID
 		',
+        'isUserAdmin' => '
+			SELECT expires
+			FROM !prefix!user_groups
+			WHERE userID = :userID AND groupName = "Administrators" AND ((expires = 0) OR (expires > CURRENT_TIMESTAMP))
+		',
         'purgeExpiredGroups' => '
 			DELETE FROM !prefix!user_groups
 			WHERE expires > 0 AND expires < CURRENT_TIMESTAMP
