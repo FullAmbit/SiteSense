@@ -44,6 +44,15 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
+    // Load all groups
+    $statement=$db->query('getAllGroups','admin_users');
+    $data->output['groupList']=$statement->fetchAll();
+    // Load all groups by userID
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID' =>  $data->action[3]
+    ));
+    $data->output['userGroupList']=$statement->fetchAll();
     // Load core permissions
     getPermissions($data,$db);
     // Get User Permissions
@@ -93,18 +102,24 @@ function admin_usersBuild($data,$db) {
 			} elseif(!empty($value['params']['type'])) {
 				switch ($value['params']['type']) {
 					case 'checkbox':
-						$data->output['userForm']->fields[$key]['checked']=(
-							$item[$key] ? 'checked' : ''
-						);
+						//$data->output['userForm']->fields[$key]['checked']=(
+						//	$item[$key] ? 'checked' : ''
+						//);
 					break;
 					case 'password':
-						/* NEVER SEND PASSWORD TO A FORM!!! */
+						// NEVER SEND PASSWORD TO A FORM!!!
 					break;
 					default:
-						$data->output['userForm']->fields[$key]['value']=$item[$key];
+						//$data->output['userForm']->fields[$key]['value']=$item[$key];
 			}
 			} else switch ($key) {
-				case 'lastAccess':
+                case 'id':
+                case 'fullName':
+                case 'name':
+                case 'registeredIP:':
+                case 'contactEMail':
+                case 'publicEMail':
+                case 'lastAccess':
 				case 'registeredDate':
 					$data->output['userForm']->fields[$key]['value']=(
 						($item[$key]==0) ?
@@ -166,7 +181,6 @@ function admin_usersBuild($data,$db) {
             $statement->execute(array(
                 ':userID' => $userID[0]['id']
             ));
-
             foreach($data->permissions as $category => $permissions) {
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
@@ -186,7 +200,40 @@ function admin_usersBuild($data,$db) {
                     }
                     unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
                 }
-            }
+            }/*
+            foreach($data->output['groupList'] as $key => $value) {
+                $member=0;
+                $expires='Never';
+                foreach($data->output['userGroupList'] as $subKey => $subValue) {
+                    if($subValue['groupName']==$value['groupName']) {
+                        // User must be already a member of the group
+                        $member=1;
+                        // Find out when the group expires
+                        if($subValue['expires']==0) {
+                            $expires=0;
+                        } else {
+                            $expires=$subValue['expires'];
+                        }
+                    }
+                }
+                if($member) {
+                    // User already is a member of the group
+                    if($data->output['userForm']->sendArray[$value['groupName']]=='checked') {
+                        // User is still a member
+                        // Check to see if expiration has changed
+                    } else {
+                        // Remove user from group
+                    }
+                } else {
+                    if($data->output['userForm']->sendArray[$value['groupName']]=='checked') {
+                        // User is not a member and is being added to a group
+                        // Check the expiration
+                    } else {
+                        // Do nothing
+                    }
+                }
+            }*/
+
 			//--Don't Need These, User Already Exists--//
 			unset($data->output['userForm']->sendArray[':password2']);
 			unset($data->output['userForm']->sendArray[':registeredDate']);
