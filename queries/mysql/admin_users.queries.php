@@ -69,7 +69,6 @@ function admin_users_addQueries() {
 			SET
 				name = :name,
 				fullName = :fullName,
-				userLevel = :userLevel,
 				contactEMail = :contactEMail,
 				publicEMail = :publicEMail
 			WHERE id = :id
@@ -80,7 +79,6 @@ function admin_users_addQueries() {
 				name = :name,
 				fullName = :fullName,
 				password = :password,
-				userLevel = :userLevel,
 				contactEMail = :contactEMail,
 				publicEMail = :publicEMail
 			WHERE id = :id

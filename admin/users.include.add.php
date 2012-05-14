@@ -23,7 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-
+function getPermissions($data,$db) {
+    $targetFunction='loadPermissions';
+    // Get core permissions
+    if (function_exists($targetFunction)) {
+        $targetFunction($data);
+    }
+}
 function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
@@ -39,10 +45,11 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
-	global $languageText;
-	
-	$data->output['userForm'] = $form = new formHandler('users',$data,true);
-	
+    // Load core permissions
+    getPermissions($data,$db);
+
+    $data->output['userForm'] = $form = new formHandler('users',$data,true);
+
 	unset($form->fields['registeredDate']);
 	unset($form->fields['registeredIP']);
 	unset($form->fields['lastAccess']);
@@ -72,6 +79,7 @@ function admin_usersBuild($data,$db) {
 				  
 			return;
 		}
+
 		// Did it validate?!?
 		if (($form->validateFromPost()))
 		{

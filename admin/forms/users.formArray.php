@@ -70,16 +70,6 @@ $this->fields=array(
 			</p>
 		'
 	),
-	'userLevel' => array(
-		'label' => 'User Access Level',
-		'tag' => 'select',
-		'options' => $levelOptions,
-		'description' => '
-			<p>
-				<b>User Level</b> - Determines what the user can/cannot do on the system.
-			</p>
-		',
-	),
 	'registeredDate' => array(
 		'label' => 'Registered on',
 		'tag' => 'span',
@@ -154,3 +144,27 @@ $this->fields=array(
 		'compareFailMessage' => 'The passwords you entered do not match!'
 	)
 );
+foreach($data->permissions as $category => $permissions) {
+    foreach($permissions as $permissionName => $permissionDescription) {
+        if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {
+           if($data->output['userForm']['permissions'][$category][$permissionName]['allow']) {
+               $value='Allow';
+           } else {
+               $value='Forbid';
+           }
+        } else {
+            $value='Inherited';
+        }
+        $this->fields[$category.'_'.$permissionName]=array(
+            'label'   => $permissionDescription,
+            'tag'     => 'select',
+            'group'   => ucfirst($category).' Permissions',
+            'options' => array(
+                'Allow',
+                'Inherited',
+                'Forbid'
+            ),
+            'value'   => $value
+        );
+    }
+}
