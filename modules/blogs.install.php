@@ -38,14 +38,13 @@ function blogs_install($data,$drop=false) {
 			'shortName'            => SQR_shortName,
 			'title'                => SQR_title,
 			'owner'                => SQR_ID,
-			'minPermission'        => SQR_userLevel,
 			'numberPerPage'        => 'TINYINT UNSIGNED NOT NULL',
 			'description'          => 'TEXT NOT NULL',
 			'allowComments'        => SQR_boolean.' DEFAULT \'1\'',
 			'commentsRequireLogin' => SQR_boolean,
 			'topLevel'             => SQR_boolean,
 			'rssOverride'          => SQR_URL,
-			'KEY `name` (`name`,`owner`,`minPermission`)'
+			'KEY `name` (`name`,`owner`)'
 		),
 		'blog_categories' => array(
 			'id'                   => SQR_IDKey,

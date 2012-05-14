@@ -161,14 +161,15 @@ function admin_usersBuild($data,$db) {
                 ':name' => $data->output['userForm']->sendArray[':name']
             ));
             $userID=$statement->fetchAll();
+            // Purge all of a user's permissions
+            $statement=$db->prepare('removeAllUserPermissionsByUserID');
+            $statement->execute(array(
+                ':userID' => $userID[0]['id']
+            ));
+
             foreach($data->permissions as $category => $permissions) {
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
-                        // Purge all of a user's permissions
-                        $statement=$db->prepare('removeAllUserPermissionsByUserID');
-                        $statement->execute(array(
-                            ':userID' => $userID[0]['id']
-                        ));
                         if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
                             $allow=0;
                             if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {

@@ -74,15 +74,7 @@ function admin_blogs_addQueries() {
 			SELECT id FROM !prefix!blog_posts
 			WHERE shortName = :shortName
 		',
-		'getBloggersByUserLevel' => '
-			SELECT id,name,userLevel FROM !prefix!users
-			WHERE userLevel >= '.USERLEVEL_BLOGGER.'
-			ORDER BY userLevel DESC,id ASC
-		',
         'getUsersWithBlogAccess' => '
-			SELECT id,name FROM !prefix!users
-			WHERE userLevel >= '.USERLEVEL_BLOGGER.'
-			ORDER BY userLevel DESC,id ASC
 		',
 		'updateBlogById' => '
 			UPDATE !prefix!blogs

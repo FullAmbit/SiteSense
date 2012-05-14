@@ -65,8 +65,7 @@ function admin_usersBuild($data,$db) {
 		$form->populateFromPostData();
 		// Check If UserName Already Exists //
 		$existing = checkUserName($form->sendArray[':name'],$db);
-		if($existing)
-		{
+		if($existing) {
 			$data->output['secondSideBar']='
 				  <h2>Error in Data</h2>
 				  <p>
@@ -106,7 +105,33 @@ function admin_usersBuild($data,$db) {
 			$statement=$db->prepare('insertUser','admin_users');
 			
 			$result = $statement->execute($data->output['userForm']->sendArray);
-			
+
+            $statement=$db->prepare('getUserIdByName');
+            $statement->execute(array(
+                ':name' => $data->output['userForm']->sendArray[':name']
+            ));
+            $userID=$statement->fetchAll();
+            // Insert Permissions
+            foreach($data->permissions as $category => $permissions) {
+                foreach($permissions as $permissionName => $permissionDescription) {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
+                            $allow=0;
+                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
+                                $allow=1;
+                            }
+                            // Add it to the database
+                            $statement=$db->prepare('addPermissionsByUserId');
+                            $statement->execute(array(
+                                ':id' => $userID[0]['id'],
+                                ':permission' => $category.'_'.$permissionName,
+                                ':allow' => $allow
+                            ));
+                        }
+                    }
+                    unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+                }
+            }
 			if($result == FALSE)
 			{
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';

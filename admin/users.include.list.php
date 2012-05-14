@@ -75,26 +75,8 @@ function admin_usersShow($data) {
 global $languageText;
 	theme_usersListTableHead($data->output['userList'],$data->output['userListStart']);
 	foreach($data->output['userList'] as $key => $user) {
-		$userLevelText=$languageText['userLevels'][$user['userLevel']];
-		$userLevelClass='userLevel_'.common_camelBack($userLevelText);
 
-        /*
-         * For new permissioning system
-         * Three states:
-         * banned <0
-         * bannable <= 0
-         * un-bannable > 0
-         */
-		if($user['userLevel'] < 0)
-		{
-			$banControl = '<a href="'.$data->linkRoot.'admin/users/unban/'.$user['id'].'">UnBan</a>';
-		} else if($user['userLevel'] < USERLEVEL_ADMIN){
-			$banControl = '<a href="'.$data->linkRoot.'admin/users/ban/'.$user['id'].'">Ban</a>';
-		} else {
-			$banControl = '';
-		}
-		
-		theme_usersListTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
+		theme_usersListTableRow($user['id'],$user['name'],$data->linkRoot,$key);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

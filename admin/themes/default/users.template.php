@@ -88,14 +88,14 @@ function theme_usersListTableHead($userList,$userListStart) {
 				<tr>
 					<th class="id">ID</th>
 					<th class="userName">Username</th>
-					<th class="userLevel">Access Level</th>
 					<th class="controls">Controls</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$userLevelText,$banControl,$linkRoot,$key) {
-	echo '
+function theme_usersListTableRow($userId,$userName,$linkRoot,$key) {
+	echo '';
+    echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
 			<td class="id">',$userId,'</td>
 			<td class="userName">
@@ -103,11 +103,8 @@ function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$u
 					',$userName,'
 				</a>
 			</td>
-			<td class="userLevel ',$userLevelClass,'">',$userLevelText,'</td>
-			<td class="buttonList">',($userLevel==USERLEVEL_ADMIN ? '
+			<td class="buttonList">
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
-				'.$banControl :	''
-				),'
 			</td>
 		</tr>';
 }

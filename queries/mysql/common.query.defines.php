@@ -9,7 +9,6 @@
 	define('SQR_title', 			'TINYTEXT NOT NULL');
 	define('SQR_URL', 				'VARCHAR(255) NOT NULL');
 	define('SQR_moduleName',		'VARCHAR(63) NOT NULL');
-	define('SQR_userLevel', 		'TINYINT UNSIGNED NOT NULL');
 	define('SQR_email', 			'TINYTEXT NOT NULL');
 	define('SQR_boolean', 			'TINYINT(1) NOT NULL');
 	define('SQR_side',				'VARCHAR(5) NOT NULL');
