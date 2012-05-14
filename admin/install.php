@@ -271,7 +271,8 @@ if (
 	}
     // Set up default permission groups
     $defaultPermissionGroups=array(
-        'Administrators' => array(
+/*      // Admin has universal access by defaul, this list is commented just for reference on full list
+		'Administrators' => array(
             // Core
             'core_access',
 
@@ -310,7 +311,47 @@ if (
             'core_urlRemap_delete',
             'core_urlRemap_edit',
             'core_urlRemap_list'
-        )
+        ),*/
+		'Moderator' => array(
+            'core_access',
+
+            'core_dashboard_access',
+
+            'core_mainMenu_access',
+            'core_mainMenu_add',
+            'core_mainMenu_delete',
+            'core_mainMenu_disable',
+            'core_mainMenu_edit',
+            'core_mainMenu_enable',
+            'core_mainMenu_list',
+
+            'core_sidebars_access',
+            'core_sidebars_add',
+            'core_sidebars_delete',
+            'core_sidebars_edit',
+            'core_sidebars_list',
+
+            'core_urlRemap_access',
+            'core_urlRemap_add',
+            'core_urlRemap_delete',
+            'core_urlRemap_edit',
+            'core_urlRemap_list'
+		),
+		'Writer' => array(
+            'core_access',
+
+            'core_dashboard_access'
+		),
+		'Blogger' => array(
+            'core_access',
+
+            'core_dashboard_access'
+		),
+		'User' => array(
+            'core_access',
+
+            'core_dashboard_access'
+		)
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addPermissionGroup','common');
