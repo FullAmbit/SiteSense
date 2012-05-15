@@ -276,8 +276,8 @@ function getUserPermissions(&$db,&$user) {
         ':userID' => $user['id'],
     ));
     $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
-	if($userAdmin[0])
-		$user['isAdmin'] = 1;
+	if(isset($userAdmin[0]))
+		$user['isAdmin']=1;
 
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(

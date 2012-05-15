@@ -271,9 +271,9 @@ if (
     }
     // Set up default permission groups
     $defaultPermissionGroups=array(
-/*      // Admin has universal access by defaul, this list is commented just for reference on full list
+      // Admin has universal access by defaul, this list is commented just for reference on full list
 		'Administrators' => array(
-            // Core
+            /*// Core
             'core_access',
 
             'core_dashboard_access',
@@ -310,8 +310,8 @@ if (
             'core_urlRemap_add',
             'core_urlRemap_delete',
             'core_urlRemap_edit',
-            'core_urlRemap_list'
-        ),*/
+            'core_urlRemap_list'*/
+        ),
 		'Writer' => array(
             'core_access',
 
