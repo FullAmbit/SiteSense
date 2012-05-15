@@ -38,13 +38,13 @@ $this->fields=array(
 	'id' => array(
 		'label' => 'ID #',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['id'])
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['id'])
 	),
 	'fullName' => array(
 		'label' => 'Full Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']['fullName']{0}) ? '' : $data->output['viewUser']['fullName']),
+		'value' => (empty($data->output['userForm']['fullName']{0}) ? '' : $data->output['userForm']['fullName']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128,
@@ -59,7 +59,7 @@ $this->fields=array(
 		'label' => 'Username',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']),
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['name']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -73,22 +73,22 @@ $this->fields=array(
 	'registeredDate' => array(
 		'label' => 'Registered on',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredDate']),
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['registeredDate']),
 	),
 	'registeredIP' => array(
 		'label' => 'Registered From',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredIP']),
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['registeredIP']),
 	),
 	'lastAccess' => array(
 		'label' => 'Last Access',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastAccess']),
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['lastAccess']),
 	),
 	'contactEMail' => array(
 		'label' => 'Contact E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['contactEMail']),
+		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['contactEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -144,6 +144,54 @@ $this->fields=array(
 		'compareFailMessage' => 'The passwords you entered do not match!'
 	)
 );
+foreach($data->output['groupList'] as $key => $value) {
+    $checked='';
+    $expires='Never';
+    foreach($data->output['userGroupList'] as $subKey => $subValue) {
+        if($subValue['groupName']==$value['groupName']) {
+            // User must be already a member of the group
+            $checked='checked';
+            // Find out when the group expires
+            if($subValue['expires']==0) {
+                $expires='Never';
+            } else {
+                $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+            }
+        }
+    }
+    $this->fields[$value['groupName']]=array(
+        'label'   => $value['groupName'],
+        'tag'     => 'input',
+        'group'   => 'User Groups',
+        'value'   => 'checked',
+        'checked' => $checked,
+        'params' => array(
+            'type' => 'checkbox'
+        )
+    );
+    $this->fields[$value['groupName'].'_expiration']=array(
+        'label' => 'Expires',
+        'tag' => 'span',
+        'value' => $expires,
+
+    );
+    $this->fields[$value['groupName'].'_update']=array(
+        'label'   => 'Update Expiration',
+        'tag'     => 'select',
+        'group'   => 'User Groups',
+        'options' => array(
+            'No change',
+            'Never',
+            '15 minutes',
+            '1 hour',
+            '2 hours',
+            '1 day',
+            '2 days',
+            '1 week'
+        ),
+        'value'   => 'No change'
+    );
+}
 foreach($data->permissions as $category => $permissions) {
     foreach($permissions as $permissionName => $permissionDescription) {
         if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {

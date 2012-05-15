@@ -45,6 +45,15 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
+    // Load all groups
+    $statement=$db->query('getAllGroups','admin_users');
+    $data->output['groupList']=$statement->fetchAll();
+    // Load all groups by userID
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID' =>  $data->action[3]
+    ));
+    $data->output['userGroupList']=$statement->fetchAll();
     // Load core permissions
     getPermissions($data,$db);
 
@@ -102,10 +111,29 @@ function admin_usersBuild($data,$db) {
 			
 			$data->output['userForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
 			$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
-			$statement=$db->prepare('insertUser','admin_users');
-			
-			$result = $statement->execute($data->output['userForm']->sendArray);
+            foreach($data->permissions as $category => $permissions) {
+                foreach($permissions as $permissionName => $permissionDescription) {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        $submittedPermissions[':'.$category.'_'.$permissionName]=$data->output['userForm']->sendArray[':'.$category.'_'.$permissionName];
+                        unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+                    }
+                }
+            }
+            $submittedGroups=array();
+            foreach($data->output['groupList'] as $key => $value) {
+                $expires='Never';
+                if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
+                    // User is still a member
+                    // Check expiration
+                    $submittedGroups[$value['groupName']]['expires']=$expires;
 
+                }
+                unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
+            }
+			$statement=$db->prepare('insertUser','admin_users');
+			$result=$statement->execute($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');
             $statement->execute(array(
                 ':name' => $data->output['userForm']->sendArray[':name']
@@ -114,10 +142,10 @@ function admin_usersBuild($data,$db) {
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
                 foreach($permissions as $permissionName => $permissionDescription) {
-                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
-                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
+                    if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
+                        if($submittedPermissions[':'.$category.'_'.$permissionName]!=='Inherited') {
                             $allow=0;
-                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
+                            if($submittedPermissions[':'.$category.'_'.$permissionName]=='Allow') {
                                 $allow=1;
                             }
                             // Add it to the database
@@ -129,19 +157,26 @@ function admin_usersBuild($data,$db) {
                             ));
                         }
                     }
-                    unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
                 }
             }
-			if($result == FALSE)
-			{
+
+            foreach($submittedGroups as $groupName => $value) {
+                $statement=$db->prepare('addPermissionGroup');
+                $statement->execute(array(
+                    ':userID'    => $userID[0]['id'],
+                    ':groupName' => $groupName,
+                    ':expires'   => 0
+                ));
+            }
+			if($result == FALSE) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
 				return;
 			}
-			
+
 			$id = $db->lastInsertId();
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
 			$profileAlbum->execute(array(':user' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
-			
+
 			// All Is Good
 			$data->output['savedOkMessage']='
 					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>

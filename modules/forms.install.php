@@ -96,18 +96,18 @@ function forms_install($data,$drop=false) {
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
-            'access',
-			'add',
-			'edit',
-			'delete',
-			'viewData'
+            'forms_access',
+			'forms_add',
+			'forms_edit',
+			'forms_delete',
+			'forms_viewData'
         ),
         'Writer' => array(
-            'access',
-			'add',
-			'edit',
-			'delete',
-			'viewData'
+            'forms_access',
+			'forms_add',
+			'forms_edit',
+			'forms_delete',
+			'forms_viewData'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
