@@ -173,12 +173,35 @@ function common_addQueries() {
             VALUES
             (:groupName,:permissionName)
         ',
-        'addPermissionGroup' => '
+        'addUserToPermissionGroup' => '
             INSERT INTO !prefix!user_groups
-            (userId,groupName,expires)
+            (userID,groupName,expires)
             VALUES
-            (:userID,:groupName,:expires)
+            (:userID,:groupName,FROM_UNIXTIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP)+:expires))
         ',
+        'removeUserFromPermissionGroup' => '
+            DELETE FROM !prefix!user_groups
+            WHERE userID = :userID
+            AND groupName = :groupName
+        ',
+        'updateExpirationInPermissionGroup' => '
+			UPDATE !prefix!user_groups
+			SET expires = FROM_UNIXTIME(UNIX_TIMESTAMP(CURRENT_TIMESTAMP)+:expires)
+			WHERE userID = :userID
+            AND groupName = :groupName
+		',
+        'addUserToPermissionGroupNoExpires' => '
+            INSERT INTO !prefix!user_groups
+            (userID,groupName,expires)
+            VALUES
+            (:userID,:groupName,0)
+        ',
+        'updateExpirationInPermissionGroupNoExpires' => '
+			UPDATE !prefix!user_groups
+			SET expires = 0
+			WHERE userID = :userID
+            AND groupName = :groupName
+		',
         'getGroupsByUserID' => '
 			SELECT *
 			FROM !prefix!user_groups

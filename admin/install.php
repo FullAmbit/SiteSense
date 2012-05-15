@@ -313,13 +313,12 @@ if (
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
-        $statement=$data->prepare('addPermissionGroup','common');
+        $statement=$data->prepare('addUserToPermissionGroupNoExpires');
         if($groupName=='Administrators') {
             $statement->execute(
                 array(
                     ':userID'    => '1',
-                    ':groupName' => $groupName,
-                    ':expires'   => 0
+                    ':groupName' => $groupName
                 )
             );
         }

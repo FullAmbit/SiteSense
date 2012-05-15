@@ -78,6 +78,14 @@ function admin_users_addQueries() {
 			DELETE FROM !prefix!users
 			WHERE id = :id
 		',
+        'deleteUserFromUserGroups' => '
+			DELETE FROM !prefix!user_groups
+			WHERE userID = :userID
+		',
+        'deleteUserFromUserPermissions' => '
+			DELETE FROM !prefix!user_permissions
+			WHERE userID = :userID
+		',
         'getAllGroups' => '
 			SELECT DISTINCT groupName
 			FROM !prefix!user_group_permissions

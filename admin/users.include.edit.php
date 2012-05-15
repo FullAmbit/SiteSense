@@ -45,6 +45,7 @@ function admin_usersBuild($data,$db) {
 		return;
 	}
     // Load all groups
+    $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
     // Load all groups by userID
@@ -156,29 +157,24 @@ function admin_usersBuild($data,$db) {
 		
 		if (($data->output['userForm']->validateFromPost())) {
 			// Update User Permissions in DB
-            $statement=$db->prepare('getUserIdByName');
-            $statement->execute(array(
-                ':name' => $data->output['userForm']->sendArray[':name']
-            ));
-            $userID=$statement->fetchAll();
             // Purge all of a user's permissions
             $statement=$db->prepare('removeAllUserPermissionsByUserID');
             $statement->execute(array(
-                ':userID' => $userID[0]['id']
+                ':userID' => $data->action[3]
             ));
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
                 foreach($permissions as $permissionName => $permissionDescription) {
-                    if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
-                        if($submittedPermissions[':'.$category.'_'.$permissionName]!=='Inherited') {
+                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
                             $allow=0;
-                            if($submittedPermissions[':'.$category.'_'.$permissionName]=='Allow') {
+                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
                                 $allow=1;
                             }
                             // Add it to the database
                             $statement=$db->prepare('addPermissionsByUserId');
                             $statement->execute(array(
-                                ':id' => $userID[0]['id'],
+                                ':id' => $data->action[3],
                                 ':permission' => $category.'_'.$permissionName,
                                 ':allow' => $allow
                             ));
@@ -188,6 +184,8 @@ function admin_usersBuild($data,$db) {
                 }
             }
             // Insert Groups
+            // Remove expired groups
+            $db->query('purgeExpiredGroups');
             foreach($data->output['groupList'] as $key => $value) {
                 $member=0;
                 $expires='Never';
@@ -195,34 +193,83 @@ function admin_usersBuild($data,$db) {
                     if($subValue['groupName']==$value['groupName']) {
                         // User must be already a member of the group
                         $member=1;
-                        // Find out when the group expires
-                        if($subValue['expires']==0) {
-                            $expires=0;
-                        } else {
-                            $expires=$subValue['expires'];
-                        }
                     }
+                }
+                switch($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']) {
+                    case 'No change':
+                        $expires='No change';
+                        break;
+                    case 'Never':
+                        $expires=0;
+                        break;
+                    case '15 minutes':
+                        $expires=900;
+                        break;
+                    case '1 hour':
+                        $expires=3600;
+                        break;
+                    case '2 hours':
+                        $expires=7200;
+                        break;
+                    case '1 day':
+                        $expires=86400;
+                        break;
+                    case '2 days':
+                        $expires=172800;
+                        break;
+                    case '1 week':
+                        $expires=604800;
+                        break;
                 }
                 if($member) {
                     // User already is a member of the group
-                    if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
+                    if($data->output['userForm']->sendArray[':'.$value['groupName']]) {
                         // User is still a member
                         // Check to see if expiration has changed
+                        if($expires!=='No change') {
+                            if($expires==0) {
+                                $statement=$db->prepare('updateExpirationInPermissionGroupNoExpires');
+                                $statement->execute(array(
+                                    ':userID' => $data->action[3],
+                                    ':groupName' => $value['groupName']
+                                ));
+                            } else {
+                                // Update expiration
+                                $statement=$db->prepare('updateExpirationInPermissionGroup');
+                                $statement->execute(array(
+                                    ':userID' => $data->action[3],
+                                    ':groupName' => $value['groupName'],
+                                    ':expires' => $expires
+                                ));
+                            }
+                        }
                     } else {
                         // Remove user from group
-
+                        $statement=$db->prepare('removeUserFromPermissionGroup');
+                        $statement->execute(array(
+                            ':userID' => $data->action[3],
+                            ':groupName' => $value['groupName']
+                        ));
 
                     }
                 } else {
-                    if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
-                        // User is not a member and is being added to a group
-                        // Check the expiration
-                        $statement=$db->prepare('addPermissionGroup');
-                        $statement->execute(array(
-                            ':userID' => $userID[0]['id'],
-                            ':groupName' => $value['groupName'],
-                            ':expires' => 0
-                        ));
+                    if($data->output['userForm']->sendArray[':'.$value['groupName']]) {
+                        if($expires==0) {
+                            // User is not a member and is being added to a group
+                            $statement=$db->prepare('addUserToPermissionGroupNoExpires');
+                            $statement->execute(array(
+                                ':userID' => $data->action[3],
+                                ':groupName' => $value['groupName']
+                            ));
+                        } else {
+                            // User is not a member and is being added to a group
+                            $statement=$db->prepare('addUserToPermissionGroup');
+                            $statement->execute(array(
+                                ':userID' => $data->action[3],
+                                ':groupName' => $value['groupName'],
+                                ':expires' => $expires
+                            ));
+                        }
                     } else {
                         // Do nothing
                     }

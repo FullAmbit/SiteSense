@@ -46,14 +46,10 @@ function admin_usersBuild($data,$db) {
 		return;
 	}
     // Load all groups
+    $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
-    // Load all groups by userID
-    $statement=$db->prepare('getGroupsByUserID');
-    $statement->execute(array(
-        ':userID' =>  $data->action[3]
-    ));
-    $data->output['userGroupList']=$statement->fetchAll();
+
     // Load core permissions
     getPermissions($data,$db);
 
@@ -121,11 +117,10 @@ function admin_usersBuild($data,$db) {
             }
             $submittedGroups=array();
             foreach($data->output['groupList'] as $key => $value) {
-                $expires='Never';
                 if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
                     // User is still a member
                     // Check expiration
-                    $submittedGroups[$value['groupName']]['expires']=$expires;
+                    $submittedGroups[$value['groupName']]['expires']=$data->output['userForm']->sendArray[':'.$value['groupName'].'_update'];
 
                 }
                 unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
@@ -161,11 +156,38 @@ function admin_usersBuild($data,$db) {
             }
 
             foreach($submittedGroups as $groupName => $value) {
-                $statement=$db->prepare('addPermissionGroup');
+                // Add expiration dropdown box to the current time stamp
+                $expires=0;
+                $dropdown=$submittedGroups[$groupName]['expires'];
+                switch($dropdown) {
+                    case 'No change':
+                    case 'Never':
+                        $expires=0;
+                        break;
+                    case '15 minutes':
+                        $expires=900;
+                        break;
+                    case '1 hour':
+                        $expires=3600;
+                        break;
+                    case '2 hours':
+                        $expires=7200;
+                        break;
+                    case '1 day':
+                        $expires=86400;
+                        break;
+                    case '2 days':
+                        $expires=172800;
+                        break;
+                    case '1 week':
+                        $expires=604800;
+                        break;
+                }
+                $statement=$db->prepare('addUserToPermissionGroup');
                 $statement->execute(array(
-                    ':userID'    => $userID[0]['id'],
-                    ':groupName' => $groupName,
-                    ':expires'   => 0
+                    ':userID'          => $userID[0]['id'],
+                    ':groupName'       => $groupName,
+                    ':expires'         => $expires
                 ));
             }
 			if($result == FALSE) {

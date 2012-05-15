@@ -41,6 +41,17 @@ function admin_usersBuild($data,$db) {
 					$qHandle->execute(array(
 						':id' => $data->action[3]
 					));
+                    // Delete from user_groups
+                    $statement=$db->prepare('deleteUserFromUserGroups','admin_users');
+                    $statement->execute(array(
+                        ':userID' => $data->action[3]
+                    ));
+                    // Delete user specific permissions
+                    $statement=$db->prepare('deleteUserFromUserPermissions','admin_users');
+                    $statement->execute(array(
+                        ':userID' => $data->action[3]
+                    ));
+
 					$data->output['deleteCount']=$qHandle->rowCount();
 					if ($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';

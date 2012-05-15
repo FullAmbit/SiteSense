@@ -38,7 +38,7 @@ $this->fields=array(
 	'id' => array(
 		'label' => 'ID #',
 		'tag' => 'span',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['id'])
+		'value' => (empty($data->output['userForm']['id']) ? '' : $data->output['userForm']['id'])
 	),
 	'fullName' => array(
 		'label' => 'Full Name',
@@ -59,7 +59,7 @@ $this->fields=array(
 		'label' => 'Username',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['name']),
+		'value' => (empty($data->output['userForm']['name']) ? '' : $data->output['userForm']['name']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -73,22 +73,22 @@ $this->fields=array(
 	'registeredDate' => array(
 		'label' => 'Registered on',
 		'tag' => 'span',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['registeredDate']),
+		'value' => (empty($data->output['userForm']['registeredDate']) ? '' : $data->output['userForm']['registeredDate']),
 	),
 	'registeredIP' => array(
 		'label' => 'Registered From',
 		'tag' => 'span',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['registeredIP']),
+		'value' => (empty($data->output['userForm']['registeredIP']) ? '' : $data->output['userForm']['registeredIP']),
 	),
 	'lastAccess' => array(
 		'label' => 'Last Access',
 		'tag' => 'span',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['lastAccess']),
+		'value' => (empty($data->output['userForm']['lastAccess']) ? '' : $data->output['userForm']['lastAccess']),
 	),
 	'contactEMail' => array(
 		'label' => 'Contact E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['userForm']) ? '' : $data->output['userForm']['contactEMail']),
+		'value' => (empty($data->output['userForm']['contactEMail']) ? '' : $data->output['userForm']['contactEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -147,15 +147,17 @@ $this->fields=array(
 foreach($data->output['groupList'] as $key => $value) {
     $checked='';
     $expires='Never';
+    if(isset($data->output['userGroupList'])) {
     foreach($data->output['userGroupList'] as $subKey => $subValue) {
-        if($subValue['groupName']==$value['groupName']) {
-            // User must be already a member of the group
-            $checked='checked';
-            // Find out when the group expires
-            if($subValue['expires']==0) {
-                $expires='Never';
-            } else {
-                $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+            if($subValue['groupName']==$value['groupName']) {
+                // User must be already a member of the group
+                $checked='checked';
+                // Find out when the group expires
+                if($subValue['expires']==0) {
+                    $expires='Never';
+                } else {
+                    $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+                }
             }
         }
     }
