@@ -312,11 +312,11 @@ if (
             'core_urlRemap_edit',
             'core_urlRemap_list'
         ),*/
-		'Moderator' => array(
+		'Writer' => array(
             'core_access',
 
             'core_dashboard_access',
-
+			
             'core_mainMenu_access',
             'core_mainMenu_add',
             'core_mainMenu_delete',
@@ -337,10 +337,10 @@ if (
             'core_urlRemap_edit',
             'core_urlRemap_list'
 		),
-		'Writer' => array(
+		'Moderator' => array(
             'core_access',
 
-            'core_dashboard_access'
+            'core_dashboard_access',
 		),
 		'Blogger' => array(
             'core_access',
