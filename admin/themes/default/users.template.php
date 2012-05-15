@@ -135,14 +135,16 @@ function theme_GroupsListTableHead() {
 function theme_GroupsListTableRow($groupName,$linkRoot,$key) {
     echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
-			<td class="userName">
-				<a href="',$linkRoot,'admin/users/permissions/group/edit/',$groupName,'">
-					',$groupName,'
-				</a>
-			</td>
-			<td class="buttonList">
-			    <a href="',$linkRoot,'admin/users/permissions/group/delete/',$groupName,'">Delete</a>
-			</td>
+			<td class="userName">',
+                (($groupName=='Administrators')? $groupName:'
+				<a href="'.$linkRoot.'admin/users/permissions/group/edit/'.$groupName.'">
+					'.$groupName.'
+				</a>'),
+			'</td>
+			<td class="buttonList">',
+			    (($groupName=='Administrators')? '':'
+			    <a href="'.$linkRoot.'admin/users/permissions/group/delete/'.$groupName.'">Delete</a>'),
+			'</td>
 		</tr>';
 }
 

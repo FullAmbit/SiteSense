@@ -104,6 +104,11 @@ function admin_usersBuild($data,$db) {
                 return;
             }
         } elseif($data->action[4]=='edit') { // Edit Group
+            if($data->action[5]=='Administrators') {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                return;
+            }
             getPermissions($data,$db);
             // Get Group Permissions
             $statement=$db->prepare('getPermissionsByGroupName');
@@ -217,6 +222,11 @@ function admin_usersBuild($data,$db) {
                 return;
             }
         } elseif($data->action[4]=='delete') { // Delete Group
+            if($data->action[5]=='Administrators') {
+                $data->output['abort'] = true;
+                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                return;
+            }
             $data->output['delete']='';
             if(empty($data->action[5])) {
                 $data->output['rejectError']='insufficient parameters';
