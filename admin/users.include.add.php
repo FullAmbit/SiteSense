@@ -64,8 +64,7 @@ function admin_usersBuild($data,$db) {
 	
 	$form->caption = 'Add A User';
 	// Handle Form Submission
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)) {
 		// Populate From Post //
 		$form->populateFromPostData();
 		// Check If UserName Already Exists //

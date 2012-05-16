@@ -24,17 +24,17 @@
 */
 function admin_usersBuild($data,$db) {
 	//permission check for users access
-	if(!checkPermission('delete','users',$data)) {
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
-		return;
-	}
+    if($data->user['id']!==$data->action[3] && !checkPermission('accessOthers','users',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	$data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (checkPermission('canDeleteUsers','users',$data)) {
+		if (checkPermission('delete','users',$data)) {
 			if (@$_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					$qHandle=$db->prepare('deleteUserById','admin_users');

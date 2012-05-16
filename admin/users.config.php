@@ -32,13 +32,13 @@ function users_config($data,$db) {
 				'sortOrder' => 1
 			);
 		}
-		$data->admin['menu'][]=array(
-			'category'  => 'User Management',
-			'command'   => 'users/list',
-			'name'      => 'Browse Users',
-			'sortOrder' => 2
-		);
-		if (checkPermission('accessOthers','users',$data)) {
+        if (checkPermission('accessOthers','users',$data)) {
+            $data->admin['menu'][]=array(
+                'category'  => 'User Management',
+                'command'   => 'users/list',
+                'name'      => 'Browse Users',
+                'sortOrder' => 2
+            );
 			$data->admin['menu'][]=array(
 				'category'  => 'User Management',
 				'command'   => 'users/search',

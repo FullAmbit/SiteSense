@@ -39,11 +39,16 @@ function checkUserName($name,$db) {
 }
 function admin_usersBuild($data,$db) {
 	//permission check for users edit
-	if(!checkPermission('edit','users',$data)) {
+    if(!checkPermission('edit','users',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
+    if($data->user['id']!==$data->action[3] && !checkPermission('accessOthers','users',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
     // Load all groups
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
@@ -87,10 +92,12 @@ function admin_usersBuild($data,$db) {
     // ---
     $data->output['userForm']=$form=new formHandler('users',$data,true);
 
-	$statement=$db->prepare('getById','admin_users');
-	$statement->execute(array(
-		':id' => $data->action[3]
-	));
+    $statement=$db->prepare('getById','admin_users');
+    $statement->execute(array(
+        ':id' => $data->action[3]
+    ));
+
+
 	
 	if (($item=$statement->fetch()) !== FALSE) {
 		
@@ -315,8 +322,7 @@ function admin_usersBuild($data,$db) {
 
 			$result = $statement->execute($data->output['userForm']->sendArray);
 			
-			if($result == FALSE)
-			{
+			if($result == FALSE) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
 				return;
 			}
