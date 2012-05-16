@@ -125,8 +125,13 @@ function admin_usersBuild($data,$db) {
                 }
                 unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
             }
+            unset($data->output['userForm']->sendArray[':id_hidden']);
+            unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
+            unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
+            unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
 			$statement=$db->prepare('insertUser','admin_users');
 			$result=$statement->execute($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');

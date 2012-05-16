@@ -288,6 +288,7 @@ function admin_usersBuild($data,$db) {
                 }
                 unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
+                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
             }
 
@@ -296,7 +297,11 @@ function admin_usersBuild($data,$db) {
 			unset($data->output['userForm']->sendArray[':registeredDate']);
 			unset($data->output['userForm']->sendArray[':registeredIP']);
 			unset($data->output['userForm']->sendArray[':lastAccess']);
-			
+
+            unset($data->output['userForm']->sendArray[':id_hidden']);
+            unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
+            unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
+            unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
 			/* existing user, from form, must be save existing */
 			if ($_POST['viewUser_password']=='') {
 				$statement=$db->prepare('updateUserByIdNoPw','admin_users');
