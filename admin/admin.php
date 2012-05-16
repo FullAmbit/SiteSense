@@ -33,7 +33,7 @@ function page_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-  if ($data->user['userLevel']>=USERLEVEL_BLOGGER) {
+  if (checkPermission('access','core',$data)) {
     if (empty($data->action[1])) {
       common_include('admin/dashboard.admin.php');
 	  common_include('admin/themes/default/dashboard.template.php');
@@ -64,19 +64,16 @@ function page_buildContent($data,$db) {
     }
   }
 }
+
 function page_content($data) {
-  if ($data->user['userLevel']<USERLEVEL_BLOGGER) {
-    if ($data->user['userLevel']>USERLEVEL_GUEST) {
-      theme_accessDenied();
-    } else {
+    if (!checkPermission('access','core',$data)) {
       theme_accessDenied(true);
       theme_loginForm($data);
-    }
-  } else {
-    if (function_exists('admin_content')) {
-      admin_content($data);
     } else {
-	  theme_fatalError('The requested admin.php module is not installed.');
+        if (function_exists('admin_content')) {
+          admin_content($data);
+        } else {
+          theme_fatalError('The requested admin.php module is not installed.');
+        }
     }
-  }
 }

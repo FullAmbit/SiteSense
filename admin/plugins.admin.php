@@ -27,15 +27,11 @@ function admin_buildContent($data,$db)
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if($data->user['userLevel'] < USERLEVEL_ADMIN)
-	{
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient Permissions</h2>
-			You do not have the permissions to access this area';
-			
-			return;
-	}
+    if(!checkPermission('plugins_access','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	
 	// Action To Take = $data->action[2]
 	// Sub User Info = $data->action[3]

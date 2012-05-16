@@ -98,7 +98,7 @@ function page_content($data) {
 				You attempted to access "', implode('/', array_filter($data->action)), '" which does not exist on this server. Please check the URL and try again. If you feel this is in error, please contact the site administrator.
 			</p>';
 		theme_contentBoxFooter();
-		if($data->user['userLevel'] >= USERLEVEL_ADMIN && $data->module !== false && $data->module['enabled'] == 0){
+		if(checkPermission('canEnableModules','core',$data) && $data->module !== false && $data->module['enabled'] == 0){
 			theme_contentBoxHeader('Admin Options');
 			echo '
 				<p>

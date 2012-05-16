@@ -23,12 +23,15 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_urlremapsBuild($data,$db)
-{
-	$form = $data->output['remapForm'] = new formHandler('urlremap',$data,true);
+function admin_urlremapsBuild($data,$db) {
+    if(!checkPermission('urlRemap_add','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $form = $data->output['remapForm'] = new formHandler('urlremap',$data,true);
 	
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
 		$form->populateFromPostData();
 		if ($form->validateFromPost())

@@ -23,6 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_usersBuild($data,$db) {
+	//permission check for users ban
+	if(!checkPermission('access','users',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	$staff=false;
 	if (empty($data->action[3])) {
 		$data->output['userListStart']=0;
@@ -69,19 +75,8 @@ function admin_usersShow($data) {
 global $languageText;
 	theme_usersListTableHead($data->output['userList'],$data->output['userListStart']);
 	foreach($data->output['userList'] as $key => $user) {
-		$userLevelText=$languageText['userLevels'][$user['userLevel']];
-		$userLevelClass='userLevel_'.common_camelBack($userLevelText);
-		
-		if($user['userLevel'] == USERLEVEL_BANNED)
-		{
-			$banControl = '<a href="'.$data->linkRoot.'admin/users/unban/'.$user['id'].'">UnBan</a>';
-		} else if($user['userLevel'] < USERLEVEL_ADMIN){
-			$banControl = '<a href="'.$data->linkRoot.'admin/users/ban/'.$user['id'].'">Ban</a>';
-		} else {
-			$banControl = '';
-		}
-		
-		theme_usersListTableRow($user['id'],$user['name'],$data->user['userLevel'],$userLevelClass,$userLevelText,$banControl,$data->linkRoot,$key);
+
+		theme_usersListTableRow($user['id'],$user['name'],$data->linkRoot,$key);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

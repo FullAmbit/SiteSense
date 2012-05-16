@@ -196,7 +196,8 @@ final class sitesense {
 		$jsEditor;
 
 	private $db;
-	public function __construct() {
+
+    public function __construct() {
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -227,7 +228,7 @@ final class sitesense {
         $clientIp=$_SERVER['REMOTE_ADDR'];
 		$statement=$this->db->prepare('checkIpBan','users');
 		$statement->execute(array(
-			':ip' => $clientIp,
+			':ip' => $clientIp
 		));		
 		if($banItem=$statement->fetch()) {
 			// Check Expiration Time
@@ -465,61 +466,50 @@ final class sitesense {
 						':userId' => $session['userId']
 					));
 					if ($user=$statement->fetch()) {
-						// Check Banned
-						if($user['userLevel'] <= USERLEVEL_BANNED) { // User is banned
-							// Get the expiration time of your ban
-							$statement = $this->db->prepare('getBanByUserId','users');
-							$statement->execute(array(
-								':userId' => $session['userId']
-							));
-							if($this->output['banItem'] = $banItem = $statement->fetch()) {
-								if(time() < strtotime($banItem['expiration'])) { // User still banned and not allow to log in
-									$this->banned = true;
-									$this->loginResult = false;
-									$this->currentPage = 'banned';
-								}
-							}
-						} else { // User is NOT banned
-							$this->user=$user;
-							$this->user['sessions']=$session;
-							// Push expiration ahead
-							$expires=time()+$this->settings['userSessionTimeOut'];
-							$session['expires']=strtotime($session['expires']);
-							if ($expires<$session['expires']) {
-								/*
-									If the current expiration is ahead of our calculated one,
-									they must have hit 'keep me logged in' - so let's tack on
-									a week.
-								*/
-								$expires+=604800;
-							}
 
-							// Update and sync cookie to server values
-							setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
-							$expires=gmdate("Y-m-d H:i:s",$expires);
-							$statement=$this->db->prepare('updateSessionExpiration');
-							$statement->execute(array(
-								':expires' => $expires,
-								':sessionId' => $session['sessionId']
-							)) or die('Session Database failed updating expiration');
-
-							// Update last access
-                            $statement=$this->db->prepare('updateLastAccess');
-							$statement->execute(array(
-								':id' => $user['id']
-							)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-
-							//Load profile pictures
-							$profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
-							$profilePictures->execute(array(':user' => $this->user['id']));
-							$this->user['profilePictures'] = $profilePictures->fetchAll();
-
-							//Load albums
-							$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
-							$albums->execute(array(':user' => $this->user['id']));
-							$this->user['albums'] = $albums->fetchAll();
-                            $this->loginResult=true;
+						$this->user=$user;
+                        // Load permissions
+                        getUserPermissions($this->db,$this->user);
+						$this->user['sessions']=$session;
+						// Push expiration ahead
+						$expires=time()+$this->settings['userSessionTimeOut'];
+						$session['expires']=strtotime($session['expires']);
+						if ($expires<$session['expires']) {
+							/*
+								If the current expiration is ahead of our calculated one,
+								they must have hit 'keep me logged in' - so let's tack on
+								a week.
+							*/
+							$expires+=604800;
 						}
+
+						// Update and sync cookie to server values
+						setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
+						$expires=gmdate("Y-m-d H:i:s",$expires);
+						$statement=$this->db->prepare('updateSessionExpiration');
+						$statement->execute(array(
+							':expires' => $expires,
+							':sessionId' => $session['sessionId']
+						)) or die('Session Database failed updating expiration');
+
+						// Update last access
+                        $statement=$this->db->prepare('updateLastAccess');
+						$statement->execute(array(
+							':id' => $user['id']
+						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
+
+						//Load profile pictures
+						$profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
+						$profilePictures->execute(array(':user' => $this->user['id']));
+						$this->user['profilePictures'] = $profilePictures->fetchAll();
+
+						//Load albums
+						$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
+						$albums->execute(array(':user' => $this->user['id']));
+						$this->user['albums'] = $albums->fetchAll();
+                        $this->loginResult=true;
+
+
 					}
 				}
 			}
@@ -536,47 +526,34 @@ final class sitesense {
 			));
 			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
 				$this->user=$user;
-				if($this->user['userLevel'] <= USERLEVEL_BANNED)
-				{ // User is banned
-					// Get The Expiration Time of Your ban
-					$statement = $this->db->prepare('getBanByUserId','users');
-					$statement->execute(array(
-						':userId' => $session['userId']
-					));
-					if($this->output['banItem']=$banItem = $statement->fetch()) {
-						if(time()<$banItem['expiration']) {
-							$this->banned = true;
-							$this->loginResult = false;
-							$this->currentPage = 'banned';
-						}
-					}
-				} else {
-					// Purge existing sessions containing user ID
-					$statement=$this->db->prepare('purgeSessionByUserId');
-					$statement->execute(array(
-						'userId' => $user['id']
-					));
-					// Create new session
-					$userCookieValue = hash('sha256',
-                        $user['id'].'|'.time().'|'.common_randomPassword(32,64)
-					);
-					$expires=time()+$this->settings['userSessionTimeOut'];
-					if (isset($_POST['keepLogged']) && $_POST['keepLogged']=='on') {
-						$expires+=+604800; // 1 week
-					}
-					// Update and sync cookie to server values
-					setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
-					$expires=gmdate("Y-m-d H:i:s",$expires);
-					$statement=$this->db->prepare('updateUserSession');
-					$statement->execute(array(
-						':sessionId' => $userCookieValue,
-						':userId'    => $user['id'],
-						':expires'   => $expires,
-						':ipAddress' => $_SERVER['REMOTE_ADDR'],
-						':userAgent' => $_SERVER['HTTP_USER_AGENT']
-					));
-					$this->loginResult=true;
+                // Load permissions
+                getUserPermissions($this->db,$this->user);
+				// Purge existing sessions containing user ID
+				$statement=$this->db->prepare('purgeSessionByUserId');
+				$statement->execute(array(
+					'userId' => $user['id']
+				));
+				// Create new session
+				$userCookieValue = hash('sha256',
+                     $user['id'].'|'.time().'|'.common_randomPassword(32,64)
+				);
+				$expires=time()+$this->settings['userSessionTimeOut'];
+				if (isset($_POST['keepLogged']) && $_POST['keepLogged']=='on') {
+					$expires+=+604800; // 1 week
 				}
+				// Update and sync cookie to server values
+				setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
+				$expires=gmdate("Y-m-d H:i:s",$expires);
+				$statement=$this->db->prepare('updateUserSession');
+				$statement->execute(array(
+					':sessionId' => $userCookieValue,
+					':userId'    => $user['id'],
+					':expires'   => $expires,
+					':ipAddress' => $_SERVER['REMOTE_ADDR'],
+					':userAgent' => $_SERVER['HTTP_USER_AGENT']
+				));
+				$this->loginResult=true;
+
 			}
 		}
 		

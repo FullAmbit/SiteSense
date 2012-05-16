@@ -23,13 +23,11 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_usersBuild($data,$db)
-{
-	// Anything less than admin GTFO
-	if($data->user['userLevel'] < USERLEVEL_ADMIN)
-	{
+function admin_usersBuild($data,$db) {
+	//permission check for users ban
+	if(!checkPermission('ban','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient Permissions</h2>You do not have the permissions to access this area';
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
 	$userId = $data->action[3];
@@ -38,22 +36,19 @@ function admin_usersBuild($data,$db)
 	$statement->execute(array(
 		':id' => $userId
 	));
-	if(($data->output['userItem'] = $userItem = $statement->fetch()) == FALSE)
-	{
+	if(($data->output['userItem'] = $userItem = $statement->fetch()) == FALSE) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Invalid User ID</h2>The user you specified could not be found';
 		return;
 	}
 	// Cannot Ban Anything Admin Or Greater
-	if($userItem['userLevel'] >= USERLEVEL_ADMIN)
-	{
+	if($userItem['userLevel'] >= USERLEVEL_ADMIN) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>User Cannot Be Banned</h2>The user you specified is an administrator and cannot be banned';
 		return;
 	}
 	// Cannot Ban A User Already Banned
-	if($userItem['userLevel'] < USERLEVEL_USER)
-	{
+	if($userItem['userLevel'] < USERLEVEL_USER) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>User Already Banned</h2>';
 		return;
@@ -62,8 +57,7 @@ function admin_usersBuild($data,$db)
 	$data->output['banForm'] = $form = new formHandler('banForm',$data,true);
 	
 	//--Handle Post Form--//
-	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $form->fromForm))
-	{
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $form->fromForm)) {
 		$form->populateFromPostData();
 		$emailResult = NULL;
 		$ipResult = NULL;

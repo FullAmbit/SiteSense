@@ -23,7 +23,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function forms_config($data,$db) {
-	if ($data->user['userLevel']>=USERLEVEL_WRITER) {
+	//permission check for forms access
+	if (checkPermission('access','forms',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
 			'command' 	=> 'forms/list',

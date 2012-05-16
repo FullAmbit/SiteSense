@@ -22,8 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-global $languageText;
-
 $this->formPrefix='viewUser_';
 $this->caption='Editing User: '.(
 	empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']
@@ -31,20 +29,18 @@ $this->caption='Editing User: '.(
 $this->submitTitle='Save Changes';
 $this->fromForm='viewUser';
 $levelOptions = array();
-foreach($languageText['userLevels'] as $value => $text){
-	$levelOptions[] = array('value' => $value, 'text' => $text);
-}
+
 $this->fields=array(
 	'id' => array(
 		'label' => 'ID #',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['id'])
+		'value' => (empty($data->output['userForm']['id']) ? '' : $data->output['userForm']['id'])
 	),
 	'fullName' => array(
 		'label' => 'Full Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']['fullName']{0}) ? '' : $data->output['viewUser']['fullName']),
+		'value' => (empty($data->output['userForm']['fullName']{0}) ? '' : $data->output['userForm']['fullName']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128,
@@ -59,7 +55,7 @@ $this->fields=array(
 		'label' => 'Username',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']),
+		'value' => (empty($data->output['userForm']['name']) ? '' : $data->output['userForm']['name']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -70,35 +66,25 @@ $this->fields=array(
 			</p>
 		'
 	),
-	'userLevel' => array(
-		'label' => 'User Access Level',
-		'tag' => 'select',
-		'options' => $levelOptions,
-		'description' => '
-			<p>
-				<b>User Level</b> - Determines what the user can/cannot do on the system.
-			</p>
-		',
-	),
 	'registeredDate' => array(
 		'label' => 'Registered on',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredDate']),
+		'value' => (empty($data->output['userForm']['registeredDate']) ? '' : $data->output['userForm']['registeredDate']),
 	),
 	'registeredIP' => array(
 		'label' => 'Registered From',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['registeredIP']),
+		'value' => (empty($data->output['userForm']['registeredIP']) ? '' : $data->output['userForm']['registeredIP']),
 	),
 	'lastAccess' => array(
 		'label' => 'Last Access',
 		'tag' => 'span',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastAccess']),
+		'value' => (empty($data->output['userForm']['lastAccess']) ? '' : $data->output['userForm']['lastAccess']),
 	),
 	'contactEMail' => array(
 		'label' => 'Contact E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['contactEMail']),
+		'value' => (empty($data->output['userForm']['contactEMail']) ? '' : $data->output['userForm']['contactEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -112,7 +98,7 @@ $this->fields=array(
 	'publicEMail' => array(
 		'label' => 'Public E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['publicEMail']),
+		'value' => (empty($data->output['viewUser']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -154,3 +140,77 @@ $this->fields=array(
 		'compareFailMessage' => 'The passwords you entered do not match!'
 	)
 );
+foreach($data->output['groupList'] as $key => $value) {
+    $checked='';
+    $expires='Never';
+    if(isset($data->output['userGroupList'])) {
+        foreach($data->output['userGroupList'] as $subKey => $subValue) {
+            if($subValue['groupName']==$value['groupName']) {
+                // User must be already a member of the group
+                $checked='checked';
+                // Find out when the group expires
+                if($subValue['expires']==0) {
+                    $expires='Never';
+                } else {
+                    $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+                }
+            }
+        }
+    }
+    $this->fields[$value['groupName']]=array(
+        'label'   => $value['groupName'],
+        'tag'     => 'input',
+        'group'   => 'User Groups',
+        'value'   => 'checked',
+        'checked' => $checked,
+        'params' => array(
+            'type' => 'checkbox'
+        )
+    );
+    $this->fields[$value['groupName'].'_expiration']=array(
+        'label' => 'Expires',
+        'tag' => 'span',
+        'value' => $expires,
+
+    );
+    $this->fields[$value['groupName'].'_update']=array(
+        'label'   => 'Update Expiration',
+        'tag'     => 'select',
+        'group'   => 'User Groups',
+        'options' => array(
+            'No change',
+            'Never',
+            '15 minutes',
+            '1 hour',
+            '2 hours',
+            '1 day',
+            '2 days',
+            '1 week'
+        ),
+        'value'   => 'No change'
+    );
+}
+foreach($data->permissions as $category => $permissions) {
+    foreach($permissions as $permissionName => $permissionDescription) {
+        if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {
+           if($data->output['userForm']['permissions'][$category][$permissionName]['allow']) {
+               $value='Allow';
+           } else {
+               $value='Forbid';
+           }
+        } else {
+            $value='Inherited';
+        }
+        $this->fields[$category.'_'.$permissionName]=array(
+            'label'   => $permissionDescription,
+            'tag'     => 'select',
+            'group'   => ucfirst($category).' Permissions',
+            'options' => array(
+                'Allow',
+                'Inherited',
+                'Forbid'
+            ),
+            'value'   => $value
+        );
+    }
+}

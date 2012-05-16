@@ -22,14 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function settings_config($data) {
-	if(checkPermission('settings_access','core',$data)) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => 'settings',
-			'name'      => 'Settings',
-			'sortOrder' => 1
-		);
-	}
+function forms_startup($data,$db) {
+	$data->permissions['forms']=array(
+        'access'               => 'Pages forms',
+        'add'                  => 'Add forms',
+        'delete'               => 'Delete forms',
+        'edit'                 => 'Edit forms',
+        'viewData'             => 'View Submit Data forms'
+    );
 }
 ?>

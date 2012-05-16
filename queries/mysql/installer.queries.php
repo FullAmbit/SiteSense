@@ -38,15 +38,15 @@ function installer_addQueries() {
 		',
 		'addUser' => '
 			INSERT INTO !prefix!users
-			(name,password,userLevel,registeredIP)
+			(name,password,registeredIP)
 			VALUES
-			(:name,:passphrase,:userLevel,:registeredIP)
+			(:name,:passphrase,:registeredIP)
 		',
 		'makeNewsBlog' => '
 			INSERT INTO !prefix!blogs
-			(name,shortName,title,owner,minPermission,numberPerPage,description)
+			(name,shortName,title,owner,numberPerPage,description)
 			VALUES
-			(\'news\', \'news\', \'News\', 0, '.USERLEVEL_WRITER.', 3, \'Home Page News\')
+			(\'news\', \'news\', \'News\', 0, 3, \'Home Page News\')
 		',
 		'makeWelcomePost' => '
 			INSERT INTO !prefix!blog_posts
@@ -130,7 +130,6 @@ function installer_tableStructures() {
 		'banned' => array(
 			'id'							 => SQR_IDKey,
 			'userId'					 => SQR_ID,
-			'userLevel'				 => SQR_userLevel,
 			'email'						 => SQR_email,
 			'ipAddress'				 => SQR_IP,
 			'timestamp'				 => SQR_added,
@@ -206,6 +205,20 @@ function installer_tableStructures() {
 			'match'						 => 'VARCHAR(127) NOT NULL',
 			'replace'					 => 'VARCHAR(127) NOT NULL'
 		),
+        'user_groups' => array(
+            'userID'         => SQR_ID,
+            'groupName'      => SQR_name,
+            'expires'      => SQR_time
+        ),
+        'user_group_permissions' => array(
+            'groupName'             => SQR_name,
+            'permissionName'        => SQR_name
+        ),
+        'user_permissions' => array(
+            'userId'         => SQR_ID,
+            'permissionName' => SQR_name,
+            'allow'          => SQR_boolean
+        )
 	);
 }
 ?>

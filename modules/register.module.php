@@ -78,13 +78,12 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
 }
 function page_buildContent($data,$db) {
 	
-	if($data->user['userLevel'] > 0)
+	if(isset($data->user['id']))
 	{
 		common_redirect_local($data, 'default');
 	}
 	
 	require_once('libraries/forms.php');
-	require_once($data->themeDir.'formGenerator.template.php');
 	$data->output['registerForm']=new formHandler('register',$data);
 	$data->output['showForm']=true;
 	$data->output['messages']=array();

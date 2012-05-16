@@ -23,11 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function dashboard_config($data,$db) {
-  $data->admin['menu'][]=array(
-    'category'  => 'Site Management',
-    'command'   => 'dashboard',
-    'name'      => 'Dashboard',
-    'sortOrder' => 0
-  );
+    if(checkPermission('dashboard_access','core',$data)) {
+        $data->admin['menu'][]=array(
+          'category'  => 'Site Management',
+          'command'   => 'dashboard',
+          'name'      => 'Dashboard',
+          'sortOrder' => 0
+        );
+    }
 }
 ?>

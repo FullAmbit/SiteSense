@@ -27,7 +27,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if($data->user['userLevel'] < USERLEVEL_ADMIN)
+	if(!checkPermission('urlRemap_access','core',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '

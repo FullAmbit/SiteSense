@@ -27,6 +27,12 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='gallery';
 }
 function page_buildContent($data,$db) {
+	//permission check for gallery access
+	if(!checkPermission('access','gallery',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	// In this module, there are many possible combinations
 	// of things to be loaded from the database, so this time
 	// the approach is first find out what needs to be loaded

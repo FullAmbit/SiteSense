@@ -22,14 +22,16 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function settings_config($data) {
-	if(checkPermission('settings_access','core',$data)) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => 'settings',
-			'name'      => 'Settings',
-			'sortOrder' => 1
-		);
-	}
+function user_startup($data,$db) {
+    $data->permissions['users']=array(
+        'access'               => 'Users Access',
+        'accessOthers'         => 'Manage Other Users',
+        'activate'             => 'Activate Users',
+        'add'                  => 'Add Users',
+        'ban'                  => 'Ban Users',
+        'edit'                 => 'Edit Users',
+        'delete'               => 'Delete Users',
+        'permissions'          => 'Manage User Groups'
+    );
 }
 ?>

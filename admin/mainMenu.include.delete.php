@@ -22,17 +22,16 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_mainMenuBuild($data,$db)
-{
+function admin_mainMenuBuild($data,$db) {
 	$data->output["delete"] = "";
 	// Make Sure We Have An ID
-	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
+	if(!empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 		return;
 	}
 	// Check for User Permissions
-	if ($data->user['userLevel']<USERLEVEL_WRITER)
+	if (!checkPermission('mainMenu_delete','core',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';

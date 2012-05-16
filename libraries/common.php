@@ -30,13 +30,11 @@ function killHacker($reason) {
 } 
 function common_loadPlugin(&$data,$name)
 {
-	if(isset($data->plugins[$name]))
-	{
+	if(isset($data->plugins[$name])) {
 		return true;
 	}
 	
-	if(file_exists('plugins/'.$name.'/plugin.php'))
-	{
+	if(file_exists('plugins/'.$name.'/plugin.php'))	{
 		common_include('plugins/'.$name.'/plugin.php');
 		$objectName = 'plugin_'.$name;		
 		$data->plugins[$name] = new $objectName;
@@ -46,16 +44,14 @@ function common_loadPlugin(&$data,$name)
 	}
 }
 
-function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE)
-{
+function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
 	$data->output['links'][] = array(
 		'link' => $link,
 		'rel' => ($rel) ? $rel : $id,
 		'id' => $id
 	);
 	
-	if(!$return)
-	{
+	if(!$return) {
 		echo '<a href="',$link,'" rel="',$rel,'" id="',$id,'" class="',$class,'">',$text,'</a>';
 	} else {
 		return '<a href="'.$link.'" rel="'.$rel.'" id="'.$id.'" class="'.$class.'">'.$text.'</a>';
@@ -80,10 +76,10 @@ function common_isValidEmail($address) {
 		)
 	);
 }
-function common_redirect_local($data, $where){
+function common_redirect_local($data, $where) {
 	common_redirect($data->linkHome . $where);
 }
-function common_redirect($where){
+function common_redirect($where) {
 	ob_end_clean();
 	header('location: ' . $where);
 	exit;
@@ -126,10 +122,10 @@ function common_hasUrlPrefix($url) {
 	}
 	return false;
 }
-function common_timedRedirect($URL, $seconds = 5){
+function common_timedRedirect($URL, $seconds = 5) {
 	echo _common_timedRedirect($URL);
 }
-function _common_timedRedirect($URL, $seconds = 5){
+function _common_timedRedirect($URL, $seconds = 5) {
 	return '
 		<p>Click <a href="'. $URL . '">here</a> if you are not redirected in ' . $seconds . ' seconds</p>
 		<script type="text/javascript">
@@ -209,5 +205,125 @@ function common_generateShortName($string)
 
 function common_include($includeName) {
 	require_once($includeName);
+}
+
+function loadPermissions($data) {
+    $data->permissions['core']=array(
+        'access'            => 'Control panel access',
+
+        'dashboard_access'  => 'Dashboard access',
+
+        'mainMenu_access'   => 'Main menu access',
+        'mainMenu_add'      => 'Add main menu items',
+        'mainMenu_delete'   => 'Delete main menu items',
+        'mainMenu_disable'  => 'Disable main menu items',
+        'mainMenu_edit'     => 'Edit main menu items',
+        'mainMenu_enable'   => 'Enable main menu items',
+        'mainMenu_list'     => 'List main menu items',
+
+        'modules_access'    => 'Modules access',
+        'modules_disable'   => 'Disable modules',
+        'modules_edit'      => 'Edit modules',
+        'modules_enable'    => 'Enable modules',
+        'modules_list'      => 'List modules',
+
+        'plugins_access'    => 'Plugins access',
+        'plugins_edit'      => 'Edit plugins',
+        'plugins_disable'   => 'Disable plugins',
+        'plugins_enable'    => 'Enable plugins',
+        'plugins_list'      => 'List plugins',
+
+        'settings_access'   => 'Settings access',
+
+        'sidebars_access'   => 'Sidebar access',
+        'sidebars_add'      => 'Add sidebars',
+        'sidebars_delete'   => 'Delete sidebars',
+        'sidebars_edit'     => 'Edit sidebars',
+        'sidebars_list'     => 'List sidebars',
+
+        'urlRemap_access'   => 'URL Remap Access',
+        'urlRemap_add'      => 'Add URL Remaps',
+        'urlRemap_delete'   => 'Delete URL Remaps',
+        'urlRemap_edit'     => 'Edit URL Remaps',
+        'urlRemap_list'     => 'List URL Remaps'
+    );
+}
+
+function getUserPermissions(&$db,&$user) {
+    $user['permissions']=array();
+    // Group Permissions
+    // Purge expired Groups
+    $db->query('purgeExpiredGroups');
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $groups=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all groups a user is a member of
+    foreach($groups as $group) {
+        $statement=$db->prepare('getPermissionsByGroupName');
+        $statement->execute(array(
+            ':groupName' =>  $group['groupName']
+        ));
+        $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all permissions in each group
+        foreach($permissions as $permission) {
+           $user['permissions'][] = $permission['permissionName'];
+        }
+    }
+    // User permissions
+	// Finds out if user is Admin with universal access
+    $statement=$db->prepare('isUserAdmin');
+    $statement->execute(array(
+        ':userID' => $user['id'],
+    ));
+    $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
+	if(isset($userAdmin[0]))
+		$user['isAdmin']=1;
+
+    $statement=$db->prepare('getUserPermissionsByUserID');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
+    foreach($permissions as $permission) {
+        // Check to see if the user has already been granted the permission
+        if(!in_array($permission['permissionName'],$user['permissions'])){ // User doesn't have permission
+            // Allow/Forbid?
+            if($permission['allow']==1) { // Allow; add permission
+                $user['permissions'][] = $permission['permissionName'];
+            }
+        } else { // User has permission
+            // Allow/Forbit?
+            if($permission['allow']==0) { //Forbit; delete permission
+                $key = array_search($permission['permissionName'],$user['permissions']);
+                unset($user['permissions'][$key]);
+            }
+        }
+    }
+    if(isset($user['permissions'])) {
+        // Organize array by module (Ex. $user['permissions']['blogs'])
+        foreach($user['permissions'] as $key => $permission) {
+            unset($user['permissions'][$key]);
+            $separator = strpos($permission,'_');
+            $prefix = substr($permission,0,$separator);
+            $suffix = substr($permission,$separator+1);
+            $user['permissions'][$prefix][] = $suffix;
+        }
+
+        // Clean up
+        asort($user['permissions']);
+    }
+}
+
+function checkPermission($permission,$module,$data) {
+    $hasPermission = false;
+	// User is Admin, which is universal access, Return true
+    if(isset($data->user['isAdmin']) && $data->user['isAdmin']==1) {
+        $hasPermission = true;
+    } else {
+        if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
+            $hasPermission = true;
+        }
+    }
+    return $hasPermission;
 }
 ?>

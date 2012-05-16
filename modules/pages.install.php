@@ -58,6 +58,34 @@ function pages_install($data,$drop=false) {
 	}
 	$data->createTable('pages',$structures['pages'],false);
 	$data->createTable('pages_sidebars',$structures['pages_sidebars'],false);
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Moderator' => array(
+            'pages_access',
+			'pages_add',
+			'pages_edit',
+			'pages_delete',
+			'pages_publish'
+        ),
+        'Writer' => array(
+            'pages_access',
+			'pages_add',
+			'pages_edit',
+			'pages_delete',
+			'pages_publish'
+        )
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
 	if($data->countRows('pages')==0) {
 		try {
 			echo '

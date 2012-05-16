@@ -42,19 +42,13 @@ function admin_pagesResort($db) {
 	}
 }
 function admin_buildContent($data,$db) {
-	/**
-	 *	Permissions: Writers + Admin Only
-	**/
-	if($data->user['userLevel'] < USERLEVEL_WRITER)
-	{
+	//permission check for pages access
+	if(!checkPermission('access','pages',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient Permissions</h2>
-			You do not have the permissions to access this area';
-			
-			return;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
 	}
-	
+	//default for page view is the list of pages
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}

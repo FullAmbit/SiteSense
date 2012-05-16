@@ -79,7 +79,6 @@ function blog_pageContent($data,$firstPagination=false,$secondPagination=false,$
 			$data->localRoot.'/'
 		);
 	}
-	common_include($data->themeDir . 'formGenerator.template.php');
 	foreach ($data->output['newsList'] as $newsItem) {
 		// What's The Author's Name? Scan The User's Array. Better Than Running A Crapton of Queries.
 		foreach($data->output['usersList'] as $userItem)

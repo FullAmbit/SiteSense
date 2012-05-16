@@ -26,13 +26,11 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if($data->user['userLevel'] < USERLEVEL_WRITER)
-	{
+	if(!checkPermission('mainMenu_access','core',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
 			<h2>Insufficient Permissions</h2>
 			You do not have the permissions to access this area';
-			
 			return;
 	}
 	

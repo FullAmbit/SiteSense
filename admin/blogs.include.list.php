@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_blogsBuild($data,$db) {
-	$statement=$db->query('countBlogs','admin_blogs');
+    if(!checkPermission('blogList','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $statement=$db->query('countBlogs','admin_blogs');
 	if ($count=$statement->fetch()) {
 		$data->output['blogStart']=(
 			is_numeric($data->action[3]) ?
@@ -33,8 +38,7 @@ function admin_blogsBuild($data,$db) {
 		$data->output['blogLimit']=ADMIN_SHOWPERPAGE;
 		$data->output['blogsCount']=$count['count'];
 		//---If Less Then Moderator, Load Only OWN Blog Posts
-		if($data->user['userLevel'] < USERLEVEL_MODERATOR)
-		{
+		if(!checkPermission('accessOthers','blogs',$data)) {
 			$statement = $db->prepare('getBlogsByUser','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);

@@ -31,6 +31,12 @@ function checkUserName($name,$db) {
 	return $statement->fetchColumn();
 }
 function admin_usersBuild($data,$db) {
+	//permission check for users access
+	if(!checkPermission('access','users',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
 	$data->output['userForm']=new formHandler('userSearch',$data,true);
 	if (
 		(!empty($_POST['fromForm'])) &&
@@ -57,7 +63,7 @@ function admin_usersShow($data) {
 		foreach($data->output['userList'] as $key => $user) {
 			$userLevelText=$languageText['userLevels'][$user['userLevel']];
 			$userLevelClass='userLevel_'.common_camelBack($userLevelText);
-			theme_usersSearchTableRow($user['id'],$user['name'],$data->user['userLevel'],$userLevelClass,$userLevelText,$ldata->inkRoot,$key);
+			theme_usersSearchTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$ldata->inkRoot,$key);
 		}
 		theme_usersSearchTableFoot();
 	}

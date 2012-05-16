@@ -57,7 +57,7 @@ echo '
 </head><body>
 <div id="pageWrapper">
 	<h1>Control Panel - <a href="',$data->domainName,$data->linkRoot,'">',$data->settings['siteTitle'],'</a></h1>';
-	if ($data->user['userLevel']>0) {
+	if (isset($data->user['id'])) {
 		echo '
 	<div id="loggedBar" class="buttonList">
 		<a href="',$data->linkRoot,'logout">Logout</a>
@@ -79,7 +79,7 @@ function theme_footer($data) {
 function theme_leftSideBar($data) {
 	echo '
 	<!-- #content,#contentWrapper --></div></div>';
-	if ($data->user['userLevel']>=USERLEVEL_BLOGGER) {
+	if (checkPermission('access','core',$data)) {
 		if (!empty($data->output['forceMenu'])) {
 			$currentCompare=$data->output['forceMenu'];
 		} else if (empty($data->action[1])) {
@@ -242,6 +242,14 @@ function theme_buildForm($formData) {
 				$fieldClass[]='nsDesc';
 			}
 			$fieldClass=implode(' ',$fieldClass);
+            $checked='';
+            if((isset($formField['checked']) && $formField['checked']=='checked') || (isset($formField['label']) && isset($formData->sendArray[':'.$formField['label']]) && $formData->sendArray[':'.$formField['label']])) {
+                $checked='checked="checked"';
+            }
+            $spanValue=htmlspecialchars($formField['value']);
+            if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
+                $spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
+            }
 			echo '
 				<tr',($class ? ' class="'.$class.'"' : ''),'>
 					<th>
@@ -265,10 +273,7 @@ function theme_buildForm($formData) {
 							),(
 								$fieldClass ? '
 							class="'.$fieldClass.'"' : ''
-							),(
-								empty($formField['checked']) ?	'' : '
-							checked="checked"'
-							);
+							),$checked;
 			if (!empty($formField['params'])) {
 				foreach ($formField['params'] as $attribute => $value) {
 					echo '
@@ -329,7 +334,7 @@ function theme_buildForm($formData) {
 						</select>';
 				break;
 				case 'span':
-					echo '>',htmlspecialchars($formField['value']),'</span>';
+					echo '>',$spanValue,'</span>';
 				break;
 				default:
 					if (!empty($formField['value'])) {

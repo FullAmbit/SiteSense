@@ -38,14 +38,13 @@ function blogs_install($data,$drop=false) {
 			'shortName'            => SQR_shortName,
 			'title'                => SQR_title,
 			'owner'                => SQR_ID,
-			'minPermission'        => SQR_userLevel,
 			'numberPerPage'        => 'TINYINT UNSIGNED NOT NULL',
 			'description'          => 'TEXT NOT NULL',
 			'allowComments'        => SQR_boolean.' DEFAULT \'1\'',
 			'commentsRequireLogin' => SQR_boolean,
 			'topLevel'             => SQR_boolean,
 			'rssOverride'          => SQR_URL,
-			'KEY `name` (`name`,`owner`,`minPermission`)'
+			'KEY `name` (`name`,`owner`)'
 		),
 		'blog_categories' => array(
 			'id'                   => SQR_IDKey,
@@ -96,6 +95,101 @@ function blogs_install($data,$drop=false) {
 	$data->createTable('blog_posts',$structures['blog_posts'],false);
 	$data->createTable('blog_comments',$structures['blog_comments'],false);
 	$data->createTable('blog_categories',$structures['blog_categories'],false);
+
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+         'Writer' => array(
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
+        ),
+        'Moderator' => array(
+            'blogs_access',
+            'blogs_accessOthers',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
+
+        ),
+        'Blogger' => array(
+            'blogs_access',
+
+            'blogs_blogAdd',
+            'blogs_blogEdit',
+            'blogs_blogDelete',
+            'blogs_blogList',
+
+            'blogs_categoryAdd',
+            'blogs_categoryEdit',
+            'blogs_categoryDelete',
+            'blogs_categoryView',
+
+            'blogs_commentAdd',
+            'blogs_commentEdit',
+            'blogs_commentDelete',
+            'blogs_commentApprove',
+            'blogs_commentDisapprove',
+            'blogs_commentList',
+
+            'blogs_postAdd',
+            'blogs_postEdit',
+            'blogs_postDelete',
+            'blogs_postList'
+        ),
+
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+    // ---
 	if ($data->countRows('blogs')==0) {
 		try {
 			echo '

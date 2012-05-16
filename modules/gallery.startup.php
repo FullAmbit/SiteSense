@@ -29,5 +29,8 @@ function gallery_startup($data,$db) {
 		'url' 		=> 'gallery',
 		'module'	=> 'gallery'
 	);
+    $data->permissions['friends']=array(
+        'access'   => 'Gallery access'
+    );
 }
 ?>

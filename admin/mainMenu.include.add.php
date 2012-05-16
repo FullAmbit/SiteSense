@@ -23,9 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_mainMenuBuild($data,$db)
-{
-	$data->output['MenuItemForm'] = new formHandler('menuItem',$data,true);
+function admin_mainMenuBuild($data,$db) {
+	if(!checkPermission('mainMenu_add','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $data->output['MenuItemForm'] = new formHandler('menuItem',$data,true);
 	$data->output['MenuItemForm']->caption = 'New Menu Item';
 	$options = admin_mainMenuOptions($db);
 	$data->output['MenuItemForm']->fields['parent']['options'] = array_merge($data->output['MenuItemForm']->fields['parent']['options'], admin_mainMenuOptions($db));
@@ -73,8 +77,7 @@ function admin_mainMenuShow($data) {
 		theme_buildForm($data->output['MenuItemForm']);
 	}
 }
-function admin_mainMenuOptions($db,$parent = 0,$level = 0,$options = array())
-{
+function admin_mainMenuOptions($db,$parent = 0,$level = 0,$options = array()) {
 	// Get All Items In Current Level
 	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
 	$statement->execute(array(

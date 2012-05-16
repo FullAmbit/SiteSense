@@ -92,5 +92,35 @@ function forms_install($data,$drop=false) {
 	$data->createTable('form_rows',$structures['form_rows'],false);
 	$data->createTable('form_values',$structures['form_values'],false);
 	$data->createTable('form_sidebars',$structures['form_sidebars'],false);
+
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Moderator' => array(
+            'forms_access',
+			'forms_add',
+			'forms_edit',
+			'forms_delete',
+			'forms_viewData'
+        ),
+        'Writer' => array(
+            'forms_access',
+			'forms_add',
+			'forms_edit',
+			'forms_delete',
+			'forms_viewData'
+        )
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+
 }
 ?>

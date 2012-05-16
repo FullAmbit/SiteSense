@@ -23,18 +23,15 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_blogsBuild($data,$db)
-{
-	global $languageText;
-	
-	$data->output['blogForm'] = new formHandler('blogsEdit',$data,true);
-	
-	/*	Owner Permissions
-	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
-	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
-	**/
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
-	{
+function admin_blogsBuild($data,$db) {
+
+    if(!checkPermission('blogAdd','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $data->output['blogForm'] = new formHandler('blogsEdit',$data,true);
+    if(!checkPermission('accessOthers','blogs',$data))	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
 			'params' => array(
@@ -42,17 +39,43 @@ function admin_blogsBuild($data,$db)
 			),
 			'value' => $data->user['id']
 		);
-		
+
 	} else {
-		$statement = $db->query('getBloggersByUserLevel','admin_blogs');
+		/*
+		// Get all users with 'Blog access'
+        // Start by purging expired groups
+        $statement = $db->query('purgeExpiredGroups');
+        $statement->execute();
+        $statement = $db->prepare('getUserByPermissionNameGroupOnlyScope');
+        $statement->execute(array(
+            ':permissionName' => 'blogs_access'
+        ));
+        $usersFromGroupPermissionCheck=$statement->fetchAll();
+        $statement = $db->prepare('getUserByPermissionNameUserOnlyScope');
+        $statement->execute(array(
+            ':permissionName' => 'blogs_access'
+        ));
+        $usersFromUserPermissionCheck=$statement->fetchAll();
+        $usersWithBlogAccess = array();
+        foreach($usersFromGroupPermissionCheck as $user){
+            if(is_set($usersWithBlogAccess)) {
+                // Run Checks
+            } else {
+                // Empty, add the first user
+                $usersWithBlogAccess[] = $user['userID'];
+            }
+        }
+		*/
+        $statement = $db->query('getBloggersByUserLevel','admin_blogs');
 		$statement->execute();
 		while ($item=$statement->fetch()) {
 			$data->output['blogForm']->fields['owner']['options'][]=array(
 				'value' => $item['id'],
-				'text' => $item['name'].' - '.$languageText['userLevels'][$item['userLevel']]
+				'text' => $item['name']
 			);
 		}
 	}
+
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
 	{
 		$data->output['blogForm']->populateFromPostData();
@@ -71,7 +94,7 @@ function admin_blogsBuild($data,$db)
 		$data->output['blogForm']->fields['name']['cannotEqual'] = $cannotEqual;
 		// Apply ShortName Convention To Name For Use In Comparison //
 		$_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
-		
+
 		// Validate Form
 		if($data->output['blogForm']->validateFromPost($data))
 		{
@@ -90,9 +113,9 @@ function admin_blogsBuild($data,$db)
 					rename($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp',$data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/'.$shortName);
 				}
 			}
-			
+
 			$aRoot = $data->linkRoot . 'admin/blogs/';
-			
+
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>
@@ -106,7 +129,7 @@ function admin_blogsBuild($data,$db)
 						Return to Blog List
 					</a>
 				</div>';
-			
+
 		} else {
 			// Form Validation Fail
 			$data->output['secondSideBar']='
@@ -116,6 +139,7 @@ function admin_blogsBuild($data,$db)
 				</p>';
 		}
 	}
+
 }
 
 function admin_blogsShow($data)
@@ -124,7 +148,7 @@ function admin_blogsShow($data)
 	{
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['blogForm']);	
+		theme_buildForm($data->output['blogForm']);
 	}
 }
 ?>

@@ -24,7 +24,11 @@
 */
 common_include('libraries/forms.php');
 function admin_urlremapsBuild($data,$db) {
-
+    if(!checkPermission('urlRemap_edit','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	$remapId = (int)$data->action[3];
 	$check = $db->prepare('getUrlRemapById', 'admin_urlremap');
 	$check->execute(array(

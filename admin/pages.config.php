@@ -22,8 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+
+//configures admin's left menu bar configurations - category, order, name, etc.
 function pages_config($data,$db) {
-	if ($data->user['userLevel']>=USERLEVEL_WRITER) {
+	if (checkPermission('access','pages',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
 			'command' 	=> 'pages/list',

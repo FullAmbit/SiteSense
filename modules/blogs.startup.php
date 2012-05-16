@@ -22,4 +22,32 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+function blogs_startup($data) {
+    $data->permissions['blogs']=array(
+        'access'              => 'Blog access',
+        'accessOthers'        => 'Manage content of others',
+
+        'blogAdd'             => 'Add blogs',
+        'blogEdit'            => 'Edit blogs',
+        'blogDelete'          => 'Delete blogs',
+        'blogList'            => 'View blogs',
+
+        'categoryAdd'         => 'Add categories',
+        'categoryEdit'        => 'Edit categories',
+        'categoryDelete'      => 'Delete categories',
+        'categoryView'        => 'View categories',
+
+        'commentAdd'          => 'Add comments',
+        'commentEdit'         => 'Edit comments',
+        'commentDelete'       => 'Delete comments',
+        'commentApprove'      => 'Approve comments',
+        'commentDisapprove'   => 'Disapprove comments',
+        'commentList'         => 'List comments',
+
+        'postAdd'             => 'Add posts',
+        'postEdit'            => 'Edit posts',
+        'postDelete'          => 'Delete posts',
+        'postList'            => 'View posts'
+    );
+}
 ?>

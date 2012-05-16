@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function theme_loginForm($data) {
-	if ($data->user['userLevel']==0) {
+	if (!isset($data->user['id'])) {
 		echo '
 			<form action="',$data->linkRoot,'login"
 				method="post"

@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_pluginsBuild($data,$db) {
-	$statement=$db->query('getAllPlugins','admin_plugins');
+    if(!checkPermission('plugins_list','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $statement=$db->query('getAllPlugins','admin_plugins');
 	$data->output['plugins']=$statement->fetchAll();
 	// Build an array of the names of the plugins in the filesystem
 	$dirs=scandir('plugins');

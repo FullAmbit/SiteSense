@@ -33,18 +33,21 @@ function admin_blogsCheckShortName($db,$shortName) {
 	} else return false;
 }
 function admin_blogsBuild($data,$db) {
-	global $languageText;
+    if(!checkPermission('blogEdit','blogs',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    global $languageText;
 	$aRoot=$data->linkRoot.'admin/blogs/';
 	// Check If The Blog ID Is Supplied
-	if(!is_numeric($data->action[3]))
-	{
+	if(!is_numeric($data->action[3])) {
 		$data->output['rejectError'] = 'Insufficient Parameters';
 		$data->output['rejectText'] = 'Please provide a blog ID';
 		return;
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
-	{
+	if(!checkPermission('accessOthers','blogs',$data)) {
 		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3],
@@ -71,7 +74,7 @@ function admin_blogsBuild($data,$db) {
 	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
 	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
 	**/
-	if($data->user['userLevel'] < USERLEVEL_MODERATOR)
+	if(checkPermission('ownerView','blogs',$data))
 	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
@@ -91,18 +94,6 @@ function admin_blogsBuild($data,$db) {
 			);
 		}
 	}
-	
-	/*
-	 * Deprecated until the dynamic permission system is made
-	 * -------------------------------------------------------
-	foreach ($languageText['userLevels'] as $value => $text) {
-		if ($value>=USERLEVEL_MODERATOR) {
-			$data->output['blogForm']->fields['minPermission']['options'][]=array(
-				'value' => $value,
-				'text' => $text
-			);
-		}
-	}*/
 	
 	//--Fill out Form--//
 	$item = $blogItem;
@@ -145,7 +136,7 @@ function admin_blogsBuild($data,$db) {
 			// Apply ShortName Convention To Name For Use In Comparison //
 			$_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
 		}
-		//--Validate All The Form Shit--//
+		//--Validate All The Form Information--//
 		if ($data->output['blogForm']->validateFromPost($data)) {
 			
 			// Rename To New Shortname

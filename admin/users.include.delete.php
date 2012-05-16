@@ -23,18 +23,35 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_usersBuild($data,$db) {
+	//permission check for users access
+    if($data->user['id']!==$data->action[3] && !checkPermission('accessOthers','users',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	$data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
+		if (checkPermission('delete','users',$data)) {
 			if (@$_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
 					$qHandle=$db->prepare('deleteUserById','admin_users');
 					$qHandle->execute(array(
 						':id' => $data->action[3]
 					));
+                    // Delete from user_groups
+                    $statement=$db->prepare('deleteUserFromUserGroups','admin_users');
+                    $statement->execute(array(
+                        ':userID' => $data->action[3]
+                    ));
+                    // Delete user specific permissions
+                    $statement=$db->prepare('deleteUserFromUserPermissions','admin_users');
+                    $statement->execute(array(
+                        ':userID' => $data->action[3]
+                    ));
+
 					$data->output['deleteCount']=$qHandle->rowCount();
 					if ($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';

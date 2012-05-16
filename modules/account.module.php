@@ -27,7 +27,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='account';
 }
 function build_accountSettings($data, $db){
-	if(!isset($data->user) || $data->user['userLevel'] == 0){
+	if(!isset($data->user['id'])){
 		common_redirect_local($data, 'login');
 	} else {
 		$data->output['userForm'] = new formHandler('user', $data);
@@ -99,13 +99,12 @@ function build_accountSettings($data, $db){
 	}
 }
 function page_buildContent($data,$db) {
-		build_accountSettings($data,$db);
+	build_accountSettings($data,$db);
 }
 function page_content($data) {
-				common_include($data->themeDir . 'formGenerator.template.php');
-				theme_contentBoxHeader('Manage UrAccount Settings');
-				theme_accountSettings($data);
-				theme_contentBoxFooter();
-				echo $data->jsEditor->addEditor('useredit_aboutSummary');
+	theme_contentBoxHeader('Manage UrAccount Settings');
+	theme_accountSettings($data);
+	theme_contentBoxFooter();
+	echo $data->jsEditor->addEditor('useredit_aboutSummary');
 }
 ?>

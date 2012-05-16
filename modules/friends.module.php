@@ -27,6 +27,13 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='gallery';
 }
 function page_buildContent($data,$db) {
+	//permission check for friends access
+	if(!checkPermission('access','friends',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+
 	$friendsHome = $data->currentPage;
 	if($data->request[0] != $data->action[0]){
 		$friendsHome = $data->request[0];
@@ -93,7 +100,6 @@ function page_buildContent($data,$db) {
 	}
 }
 function page_content(&$data) {
-	common_include($data->themeDir . 'formGenerator.template.php');
 	switch($data->output['pageType']){
 		case 'results':
 			theme_searchResults($data);

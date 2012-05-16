@@ -24,6 +24,12 @@
 */
 function admin_formsBuild($data,$db)
 {
+	//permission check for forms edit
+	if(!checkPermission('edit','forms',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}	
 	$data->output['delete'] = "";
 	// Check To See If The Field Exists
 	$check = $db->prepare('getFieldById','form');
@@ -35,7 +41,7 @@ function admin_formsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if ($data->user['userLevel']<USERLEVEL_WRITER)
+	if (!checkPermission('canDeleteFormField','forms',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';

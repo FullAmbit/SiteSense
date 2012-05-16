@@ -24,13 +24,16 @@
 */
 common_include('libraries/forms.php');
 
-function admin_sideBarsBuild($data,$db)
-{
+function admin_sideBarsBuild($data,$db) {
+    if(!checkPermission('sidebars_add','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
 	// Load Form
 	$data->output['sideBarForm'] = new formHandler('sideBars',$data,true);
 	
-	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['sideBarForm']->fromForm))
-	{
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['sideBarForm']->fromForm)) {
 		$data->output['sideBarForm']->populateFromPostData();
 		/**
 		 * Set up Short Name Check

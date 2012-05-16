@@ -23,39 +23,47 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function users_config($data,$db) {
-  if ($data->user['userLevel']>=USERLEVEL_ADMIN) {
-    $data->admin['menu'][]=array(
-        'category'  => 'User Management',
-        'command'   => 'users/add',
-        'name'      => 'Add New User',
-        'sortOrder' => 1
-    );
-    $data->admin['menu'][]=array(
-        'category'  => 'User Management',
-        'command'   => 'users/list',
-        'name'      => 'Browse Users',
-        'sortOrder' => 2
-    );
-    $data->admin['menu'][]=array(
-        'category'  => 'User Management',
-        'command'   => 'users/search',
-        'name'      => 'Search Users',
-        'sortOrder' => 3
-    );
-    $data->admin['menu'][]=array(
-        'category'  => 'User Management',
-        'command'   => 'users/activation',
-        'name'      => 'Activate Users',
-        'sortOrder' => 4
-    );
-    $data->admin['menu'][]=array(
-        'category'  => 'User Management',
-        'command'   => 'users/list/staff',
-        'name'      => 'Staff Members',
-        'sortOrder' => 5
-    );
-
-
-  }
+	if (checkPermission('access','users',$data)) {
+		if (checkPermission('add','users',$data)) {
+			$data->admin['menu'][]=array(
+				'category'  => 'User Management',
+				'command'   => 'users/add',
+				'name'      => 'Add New User',
+				'sortOrder' => 1
+			);
+		}
+        if (checkPermission('accessOthers','users',$data)) {
+            $data->admin['menu'][]=array(
+                'category'  => 'User Management',
+                'command'   => 'users/list',
+                'name'      => 'Browse Users',
+                'sortOrder' => 2
+            );
+			$data->admin['menu'][]=array(
+				'category'  => 'User Management',
+				'command'   => 'users/search',
+				'name'      => 'Search Users',
+				'sortOrder' => 3
+			);
+			$data->admin['menu'][]=array(
+				'category'  => 'User Management',
+				'command'   => 'users/activation',
+				'name'      => 'Activate Users',
+				'sortOrder' => 4
+			);
+			$data->admin['menu'][]=array(
+				'category'  => 'User Management',
+				'command'   => 'users/list/staff',
+				'name'      => 'Staff Members',
+				'sortOrder' => 5
+			);
+			$data->admin['menu'][]=array(
+				'category'  => 'User Management',
+				'command'   => 'users/permissions',
+				'name'      => 'Permissions',
+				'sortOrder' => 6
+			);
+		}
+	}
 }
 ?>

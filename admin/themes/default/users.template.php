@@ -88,14 +88,14 @@ function theme_usersListTableHead($userList,$userListStart) {
 				<tr>
 					<th class="id">ID</th>
 					<th class="userName">Username</th>
-					<th class="userLevel">Access Level</th>
 					<th class="controls">Controls</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$userLevelText,$banControl,$linkRoot,$key) {
-	echo '	
+function theme_usersListTableRow($userId,$userName,$linkRoot,$key) {
+	echo '';
+    echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
 			<td class="id">',$userId,'</td>
 			<td class="userName">
@@ -103,12 +103,8 @@ function theme_usersListTableRow($userId,$userName,$userLevel,$userLevelClass,$u
 					',$userName,'
 				</a>
 			</td>
-			<td class="userLevel ',$userLevelClass,'">',$userLevelText,'</td>
-			<td class="buttonList">',(
-					$userLevel==USERLEVEL_ADMIN ? '
+			<td class="buttonList">
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
-				'.$banControl :	''
-				),'
 			</td>
 		</tr>';
 }
@@ -118,7 +114,46 @@ function theme_usersListTableFoot($linkRoot) {
 			</tbody>
 		</table>
 		<div class="panel buttonList">
-			<a href="'.$linkRoot.'admin/users/add">Add New User</a>
+			<a href="',$linkRoot,'admin/users/add">Add New User</a>
+		</div>';
+}
+
+function theme_GroupsListTableHead() {
+    echo '
+		<table class="userList">
+			<caption>
+				Groups
+			</caption>
+			<thead>
+				<tr>
+					<th class="userName">Groups</th>
+					<th class="controls">Controls</th>
+				</tr>
+			</thead><tbody>';
+}
+
+function theme_GroupsListTableRow($groupName,$linkRoot,$key) {
+    echo '
+		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
+			<td class="userName">',
+                (($groupName=='Administrators')? $groupName:'
+				<a href="'.$linkRoot.'admin/users/permissions/group/edit/'.$groupName.'">
+					'.$groupName.'
+				</a>'),
+			'</td>
+			<td class="buttonList">',
+			    (($groupName=='Administrators')? '':'
+			    <a href="'.$linkRoot.'admin/users/permissions/group/delete/'.$groupName.'">Delete</a>'),
+			'</td>
+		</tr>';
+}
+
+function theme_GroupsListTableFoot($linkRoot) {
+    echo '
+			</tbody>
+		</table>
+		<div class="panel buttonList">
+			<a href="'.$linkRoot.'admin/users/permissions/group/add/">Add New Group</a>
 		</div>';
 }
 
@@ -155,7 +190,39 @@ function theme_usersDeleteDefault($action3,$linkRoot) {
 			</fieldset>
 		</form>';
 }
+function theme_groupDeleteDeleted($action5,$linkRoot) {
+    echo '
+		<h2>Group: ',$action5,' Deleted</h2>
+		<p>
+			Group ',$action5,' has successfully deleted!
+		</p>
+		<div class="buttonList">
+			<a href="',$linkRoot,'admin/users/permissions">Return to List</a>
+		</div>
+		';
+}
 
+function theme_groupDeleteCancelled($linkRoot) {
+    echo '
+		<h2>Deletion Cancelled</h2>
+		<p>
+			You should be auto redirected to the page list in three seconds.
+			<a href="',$linkRoot,'admin/users/permissions/">Click Here if you don not wish to wait.</a>
+		</p>';
+}
+
+function theme_groupDeleteDefault($action5,$linkRoot) {
+    echo '
+		<form action="',$linkRoot,'admin/users/permissions/group/delete/',$action5,'" method="post" class="verifyForm">
+			<fieldset>
+				<legend><span>Are you sure you want to delete group ',$action5,'?</span></legend>
+				<p class="warning">*** WARNING *** This action cannot be undone</p>
+				<input type="submit" name="delete" value="Yes, Delete it" />
+				<input type="submit" name="cancel" value="Cancel" />
+				<input type="hidden" name="fromForm" value="',$action5,'" />
+			</fieldset>
+		</form>';
+}
 function theme_usersActivationNone() {
 	echo '<p>There are no users awaiting activation</p>';
 }

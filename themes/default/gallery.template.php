@@ -23,7 +23,6 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function theme_galleryImageView($data){
-	require_once($data->themeDir.'formGenerator.template.php');
 	theme_contentBoxHeader('Album Info');
 	echo '
 				<ul>
@@ -139,22 +138,18 @@ function theme_galleryAlbumView($data){
 	}
 }
 function theme_galleryImageAdd($data){
-	require_once($data->themeDir.'formGenerator.template.php');
 	theme_buildForm($data->output['form']);
 }
 function theme_galleryImageEdit($data){
-	require_once($data->themeDir.'formGenerator.template.php');
 	echo '
 		<img src="', $data->linkRoot, 'images/gallery/thumbs/', $data->output['image']['thumb'], '" />
 	';
 	theme_buildForm($data->output['form']);
 }
 function theme_galleryAlbumAdd($data){
-	require_once($data->themeDir.'formGenerator.template.php');
 	theme_buildForm($data->output['form']);
 }
 function theme_galleryAlbumEdit($data){
-	require_once($data->themeDir.'formGenerator.template.php');
 	theme_buildForm($data->output['form']);
 }
 function theme_galleryAlbumDelete($data){

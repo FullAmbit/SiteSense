@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_modulesBuild($data,$db) {
-	$statement=$db->query('getAllModules','admin_modules');
+    if(!checkPermission('modules_list','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    $statement=$db->query('getAllModules','admin_modules');
 	$data->output['modules']=$statement->fetchAll();
 	// Build an array of the names of the modules in the filesystem
 	$moduleFiles=glob('modules/*.module.php');

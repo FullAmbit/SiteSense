@@ -31,22 +31,58 @@ function user_settings($data) {
 function user_install($data,$drop=false) {
 	$structures = array(
 		'users' => array(
-			'id'										 => SQR_IDKey,
-			'name'									 => SQR_username,
-			'password'							 => SQR_password,
-			'fullName'							 => SQR_fullName,
-			'userLevel'							 => SQR_userLevel,
-			'registeredDate'				 => SQR_added,
-			'registeredIP'					 => SQR_IP,
-			'lastAccess'						 => SQR_time,
-			'contactEMail'					 => SQR_email,
-			'publicEMail'						 => SQR_email,
-			'emailVerified'					 => SQR_boolean.' DEFAULT \'0\''
+			'id'                  => SQR_IDKey,
+			'name'                => SQR_username,
+			'password'            => SQR_password,
+			'fullName'            => SQR_fullName,
+			'registeredDate'      => SQR_added,
+			'registeredIP'        => SQR_IP,
+			'lastAccess'          => SQR_time,
+			'contactEMail'        => SQR_email,
+			'publicEMail'         => SQR_email,
+			'emailVerified'       => SQR_boolean.' DEFAULT \'0\''
 		)
 	);
 	if($drop)
 		$data->dropTable('users');
-	$data->createTable('users',$structures['users'],true);
+	$data->createTable('users',$structures['users'],false);
+    // Set up default permission groups
+    $defaultPermissionGroups=array(
+        'Moderator' => array(
+            'users_access',
+            'users_accessOthers',
+            'users_activate',
+            'users_add',
+            'users_ban',
+            'users_edit',
+            'users_delete',
+            'users_permissions'
+        ),
+        'Writer' => array(
+            'users_access',
+			'users_edit'
+        ),
+        'Blogger' => array(
+            'users_access',
+			'users_edit'
+        ),
+        'User' => array(
+            'users_access',
+            'users_edit'
+        )
+    );
+    foreach($defaultPermissionGroups as $groupName => $permissions) {
+        foreach($permissions as $permissionName) {
+            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement->execute(
+                array(
+                    ':groupName' => $groupName,
+                    ':permissionName' => $permissionName
+                )
+            );
+        }
+    }
+    // ---
 	// Generate an admin account if this is a fresh installation
 	if($data->countRows('users')==0) {
 		try {
@@ -57,7 +93,6 @@ function user_install($data,$drop=false) {
 			$statement->execute(array(
 				':name' => 'admin',
 				':passphrase' => hash('sha256',$newPassword),
-				':userLevel' => 255,
 				':registeredIP' => $_SERVER['REMOTE_ADDR']
 			));
 			echo '

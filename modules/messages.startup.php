@@ -24,8 +24,8 @@
 */
 function messages_startup($data,$db) {
 	$link=array(
-		'text'        => 'Messages',
-		'title'       => 'Personal Messages',
+		'text'        		=> 'Messages',
+		'title'       		=> 'Personal Messages',
 		'url' 				=> 'messages',
 		'module'			=> 'messages'
 	);
@@ -43,5 +43,11 @@ function messages_startup($data,$db) {
 		}
 	}
 	$data->menuSource[] = $link;
+    $data->permissions['messages']=array(
+        'access'      => 'Messages access',
+        'delete'      => 'Delete messages',
+        'list'        => 'Delete messages',
+        'view'        => 'Delete messages'
+    );
 }
 ?>

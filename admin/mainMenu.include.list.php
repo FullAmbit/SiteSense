@@ -23,7 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_mainMenuBuild($data,$db) {
-	switch ($data->action[3]) {
+    if(!checkPermission('mainMenu_list','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+    switch ($data->action[3]) {
 		case 'switch':
 			if (is_numeric($data->action[4])) {
 				$statement=$db->prepare('getMenuItemById','admin_mainMenu');
