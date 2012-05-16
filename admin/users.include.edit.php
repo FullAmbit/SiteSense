@@ -100,8 +100,18 @@ function admin_usersBuild($data,$db) {
 
            switch ($key) {
                 case 'lastAccess':
+                    $data->output['userForm']->fields[$key]['value']=(
+                    ($item[$key]==0) ?
+                        'never' :
+                        gmdate(
+                            'd F Y - G:i:s',
+                            strtotime($item[$key])
+                        )
+                    );
+                    $data->output['userForm']->fields[$key.'_hidden']['value']=$data->output['userForm']->fields[$key]['value'];
+                break;
 				case 'registeredDate':
-					$data->output['userForm']->fields[$key]['value']=(
+                    $data->output['userForm']->fields[$key]['value']=(
 						($item[$key]==0) ?
 						'never' :
 						gmdate(
@@ -109,11 +119,13 @@ function admin_usersBuild($data,$db) {
 							strtotime($item[$key])
 						)
 					);
+                    $data->output['userForm']->fields[$key.'_hidden']['value']=$data->output['userForm']->fields[$key]['value'];
 				break;
                 case 'id':
+                case 'registeredIP':
+                    $data->output['userForm']->fields[$key.'_hidden']['value']=$item[$key];
                 case 'fullName':
                 case 'name':
-                case 'registeredIP':
                 case 'contactEMail':
                 case 'publicEMail':
 					$data->output['userForm']->fields[$key]['value']=$item[$key];

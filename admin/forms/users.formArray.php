@@ -22,8 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-global $languageText;
-
 $this->formPrefix='viewUser_';
 $this->caption='Editing User: '.(
 	empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']
@@ -31,9 +29,7 @@ $this->caption='Editing User: '.(
 $this->submitTitle='Save Changes';
 $this->fromForm='viewUser';
 $levelOptions = array();
-foreach($languageText['userLevels'] as $value => $text){
-	$levelOptions[] = array('value' => $value, 'text' => $text);
-}
+
 $this->fields=array(
 	'id' => array(
 		'label' => 'ID #',
@@ -102,7 +98,7 @@ $this->fields=array(
 	'publicEMail' => array(
 		'label' => 'Public E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['publicEMail']),
+		'value' => (empty($data->output['viewUser']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -148,7 +144,7 @@ foreach($data->output['groupList'] as $key => $value) {
     $checked='';
     $expires='Never';
     if(isset($data->output['userGroupList'])) {
-    foreach($data->output['userGroupList'] as $subKey => $subValue) {
+        foreach($data->output['userGroupList'] as $subKey => $subValue) {
             if($subValue['groupName']==$value['groupName']) {
                 // User must be already a member of the group
                 $checked='checked';

@@ -132,7 +132,6 @@ function page_content($data){
 			theme_contentBoxFooter();
 		break;
 		case 'edit':
-			common_include($data->themeDir . 'formGenerator.template.php');
 			theme_contentBoxHeader('Editing User Details');
 			//theme_EditSettings($data);
 			theme_buildForm($data->output['userForm']);

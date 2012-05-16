@@ -242,6 +242,14 @@ function theme_buildForm($formData) {
 				$fieldClass[]='nsDesc';
 			}
 			$fieldClass=implode(' ',$fieldClass);
+            $checked='';
+            if((isset($formField['checked']) && $formField['checked']=='checked') || (isset($formField['label']) && isset($formData->sendArray[':'.$formField['label']]) && $formData->sendArray[':'.$formField['label']])) {
+                $checked='checked="checked"';
+            }
+            $spanValue=htmlspecialchars($formField['value']);
+            if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
+                $spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
+            }
 			echo '
 				<tr',($class ? ' class="'.$class.'"' : ''),'>
 					<th>
@@ -265,10 +273,7 @@ function theme_buildForm($formData) {
 							),(
 								$fieldClass ? '
 							class="'.$fieldClass.'"' : ''
-							),(
-								empty($formField['checked']) ?	'' : '
-							checked="checked"'
-							);
+							),$checked;
 			if (!empty($formField['params'])) {
 				foreach ($formField['params'] as $attribute => $value) {
 					echo '
@@ -329,7 +334,7 @@ function theme_buildForm($formData) {
 						</select>';
 				break;
 				case 'span':
-					echo '>',htmlspecialchars($formField['value']),'</span>';
+					echo '>',$spanValue,'</span>';
 				break;
 				default:
 					if (!empty($formField['value'])) {

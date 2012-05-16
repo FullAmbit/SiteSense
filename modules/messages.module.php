@@ -58,7 +58,6 @@ function page_buildContent($data,$db) {
 			case 'with':
 				// Send Message Form
 				require_once('libraries/forms.php');
-				require_once($data->themeDir.'formGenerator.template.php');
 				$statement = $db->prepare('getUserByName', 'users');
 				$statement->execute(array(':name' => $data->action[2]));
 				$otherUser = $statement->fetch();

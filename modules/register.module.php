@@ -84,7 +84,6 @@ function page_buildContent($data,$db) {
 	}
 	
 	require_once('libraries/forms.php');
-	require_once($data->themeDir.'formGenerator.template.php');
 	$data->output['registerForm']=new formHandler('register',$data);
 	$data->output['showForm']=true;
 	$data->output['messages']=array();

@@ -102,7 +102,6 @@ function page_buildContent($data,$db) {
 	build_accountSettings($data,$db);
 }
 function page_content($data) {
-	common_include($data->themeDir . 'formGenerator.template.php');
 	theme_contentBoxHeader('Manage UrAccount Settings');
 	theme_accountSettings($data);
 	theme_contentBoxFooter();

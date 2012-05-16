@@ -91,6 +91,19 @@ class formHandler {
 			'compareFailed' => false,
 			'errorList' => array()
 		);
+        $hiddenFields=array();
+        foreach($this->fields as $field => $fieldData){
+            if($fieldData['tag']=='span'){
+                $hiddenFields[$field.'_hidden']= array(
+                    'tag' => 'input',
+                    'params' => array(
+                        'type' => 'hidden'
+                    ),
+                    'value' => $fieldData['value']
+                );
+            }
+        }
+        $this->fields=array_merge($this->fields,$hiddenFields);
 		foreach($this->fields as &$field){
 			$field = array_merge($defaults, $field);
 			if(!isset($field['params']['type'])){
@@ -523,9 +536,7 @@ class formHandler {
 				($value['params']['type']=='checkbox')
 			) {
 				$this->sendArray[$subKey]=!empty($_POST[$this->formPrefix.$key]);
-				$this->fields[$key]['checked']=(
-					$this->sendArray[$subKey] ? 'checked' : ''
-				);
+				$this->fields[$key]['checked']=($this->sendArray[$subKey] ? 'checked': '');
 			} else {
 				$this->sendArray[$subKey] = array_key_exists($this->formPrefix.$key, $_POST) ? $_POST[$this->formPrefix.$key] : '';
 				$this->fields[$key]['value']=$this->sendArray[$subKey];

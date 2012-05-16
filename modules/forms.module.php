@@ -27,7 +27,6 @@ function page_getUniqueSettings($data) {
 }
 function page_buildContent($data,$db) {
 	require_once('libraries/forms.php');
-	require_once($data->themeDir.'formGenerator.template.php');
 	$form = false;
 	if ($data->action[1] !== false){
 		$statement=$db->prepare('getFormByShortName','form');

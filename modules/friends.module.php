@@ -100,7 +100,6 @@ function page_buildContent($data,$db) {
 	}
 }
 function page_content(&$data) {
-	common_include($data->themeDir . 'formGenerator.template.php');
 	switch($data->output['pageType']){
 		case 'results':
 			theme_searchResults($data);
