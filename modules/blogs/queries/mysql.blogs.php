@@ -83,6 +83,35 @@ function blogs_addQueries() {
 		',
 		'getAllCategoriesByBlogId' => '
 			SELECT * FROM !prefix!blog_categories WHERE blogId = :blogId ORDER BY name ASC
+		',
+        'getCommentById' => '
+			SELECT * FROM !prefix!blog_comments
+			WHERE id = :blogId
+		',
+        'getApprovedCommentsByPost' => '
+			SELECT * FROM !prefix!blog_comments
+			WHERE post = :post AND approved = 1
+			ORDER BY `time` ASC
+		',
+        'editCommentById' => '
+			UPDATE !prefix!blog_comments SET author = :author, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
+		',
+        'deleteCommentById' => '
+			DELETE FROM !prefix!blog_comments WHERE id = :id
+		',
+        'countCommentsByPost' => '
+			SELECT count(id) AS count
+			FROM !prefix!blog_comments
+			WHERE post = :post
+		',
+        'makeComment' => '
+			INSERT INTO !prefix!blog_comments
+			(post, author, rawContent, parsedContent, email,loggedIP)
+			VALUES
+			(:post, :author, :rawContent, :parsedContent, :email,:loggedIP)
+		',
+        'getCommentsAwaitingApproval' =>'
+			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post
 		'
 	);
 }

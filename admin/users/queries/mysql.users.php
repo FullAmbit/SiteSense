@@ -28,13 +28,30 @@
 */
 function admin_users_addQueries() {
 	return array(
+        'getUserById' => '
+			SELECT * FROM !prefix!users
+			WHERE id = :userId
+		',
+        'getUserByName' => '
+			SELECT * FROM !prefix!users
+			WHERE name = :name
+		',
+        'getAllUsers' => '
+			SELECT * FROM !prefix!users
+		',
+        'getUserNameByID' => '
+			SELECT name FROM !prefix!users WHERE id = :userID
+		',
+        'checkIpBan' => '
+			SELECT * FROM !prefix!banned WHERE ipAddress = :ip
+		',
+        'removeBan' => '
+			DELETE FROM !prefix!banned WHERE id = :id LIMIT 1
+		',
 		'getListLimited' => '
 			SELECT * FROM !prefix!users
 			LIMIT :start, :count
-		',
-		'activate' => '
-		',
-		'searchUsers_NotIncludingLevel' => '
+		',		'searchUsers_NotIncludingLevel' => '
 			SELECT * FROM !prefix!users
 			WHERE
 				name LIKE :name

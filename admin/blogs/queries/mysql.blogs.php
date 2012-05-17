@@ -209,6 +209,48 @@ function admin_blogs_addQueries() {
 		',
 		'getExistingBlogShortNames' => '
 			SELECT shortName FROM !prefix!blogs
+		',
+        'getCommentById' => '
+			SELECT * FROM !prefix!blog_comments
+			WHERE id = :id
+		',
+        'getApprovedCommentsByPost' => '
+			SELECT * FROM !prefix!blog_comments
+			WHERE post = :post AND approved = 1
+			ORDER BY `time` ASC
+		',
+        'getDisapprovedCommentsByPost' => '
+			SELECT * FROM !prefix!blog_comments
+			WHERE post = :post AND approved = -1
+			ORDER BY `time` ASC
+		',
+        'editCommentById' => '
+			UPDATE !prefix!blog_comments SET author = :author, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
+		',
+        'deleteCommentById' => '
+			DELETE FROM !prefix!blog_comments WHERE id = :id
+		',
+        'countCommentsByPost' => '
+			SELECT count(id) AS count
+			FROM !prefix!blog_comments
+			WHERE post = :post
+		',
+        'makeComment' => '
+			INSERT INTO !prefix!blog_comments
+			(post, author, content,email,loggedIP)
+			VALUES
+			(:post, :author, :content,:email,:loggedIP)
+		',
+        'getCommentsAwaitingApproval' =>'
+			SELECT * FROM !prefix!blog_comments
+			WHERE post = :post AND approved = 0
+			ORDER BY `time` ASC
+		',
+        'approveComment' => '
+			UPDATE !prefix!blog_comments SET approved = 1 WHERE id = :id LIMIT 1
+		',
+        'disapproveComment' => '
+			UPDATE !prefix!blog_comments SET approved = -1 WHERE id = :id LIMIT 1
 		'
 	);
 }
