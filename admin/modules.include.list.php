@@ -31,7 +31,7 @@ function admin_modulesBuild($data,$db) {
     $statement=$db->query('getAllModules','admin_modules');
 	$data->output['modules']=$statement->fetchAll();
 	// Build an array of the names of the modules in the filesystem
-	$moduleFiles=glob('modules/*.module.php');
+	$moduleFiles=glob('modules/*/*.module.php');
 	$fileModules=array_map(
 		function($path) {
 			$dirEnd=strrpos($path,'/')+1;

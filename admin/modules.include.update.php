@@ -24,7 +24,7 @@
 */
 function admin_modulesBuild($data,$db){
 	$statement = $db->query('getAllModules', 'modules');
-	$moduleFiles = glob('modules/*.module.php');
+	$moduleFiles = glob('modules/*/*.module.php');
 	$dbModules = $statement->fetchAll();
 	$fileModules = array_map(
 		function($path){

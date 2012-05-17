@@ -33,7 +33,7 @@ function admin_modulesBuild($data,$db){
 		$data->output['rejectText']='No module name was entered to be enabled';
 	} else {
 		// Include the install file for this module
-		$targetInclude='modules/'.$data->action[3].'.install.php';
+		$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
 		if(!file_exists($targetInclude)) {
 			$data->output['rejectError']='Module installation file does not exist';
 			$data->output['rejectText']='The module installation could not be found.';

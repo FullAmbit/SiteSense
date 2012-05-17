@@ -40,7 +40,7 @@ function admin_modulesBuild($data,$db){
 			));
 		} else if($data->action[4]=='uninstall') {
 			// Include the install file for this module
-			$targetInclude='modules/'.$data->action[3].'.install.php';
+			$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
 			if(!file_exists($targetInclude)) {
 				$data->output['rejectError']='Module installation file does not exist';
 				$data->output['rejectText']='The module installation file could not be found.';
@@ -58,7 +58,7 @@ function admin_modulesBuild($data,$db){
 }
 function admin_modulesShow($data) {
 	if(empty($data->output['rejectError'])) {
-		$targetInclude='modules/'.$data->action[3].'.install.php';
+		$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
 		if(file_exists($targetInclude)
 		&& !$data->action[4]) {
 			theme_disabledOfferUninstall($data);

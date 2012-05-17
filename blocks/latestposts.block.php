@@ -2,7 +2,7 @@
 
 function latestPosts_getUniqueSettings($data,$attributes)
 {
-	common_include('modules/blogs.common.php');
+	common_include('modules/blogs/blogs.common.php');
 }
 
 function latestPosts_buildContent($data,$db,$attributes)

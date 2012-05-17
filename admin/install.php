@@ -182,7 +182,7 @@ if (
         'user'
     );
 
-    $uninstalledModuleFiles = glob('modules/*.install.php');
+    $uninstalledModuleFiles = glob('modules/*/*.install.php');
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module
         if(!file_exists($moduleInstallFile)) {
@@ -214,7 +214,7 @@ if (
         }
     }
 
-    $moduleFiles=glob('modules/*.module.php');
+    $moduleFiles=glob('modules/*/*.module.php');
     // Build an array of the names of the modules in the filesystem
     $fileModules=array_map(
         function($path) {

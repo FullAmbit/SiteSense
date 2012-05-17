@@ -26,7 +26,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='default';
 }
 function page_buildContent($data,$db) {
-	require_once('modules/blogs.common.php');
+	require_once('modules/blogs/blogs.common.php');
 	$db->loadModuleQueries('blogs');
 	$statement=$db->query('getAllNews');
 	$data->output['blogInfo']=$statement->fetch();

@@ -75,7 +75,7 @@ function admin_mainMenuRebuild($data,$db) {
 		then we need to add any that are in our
 		constructed list that aren't in the database
 	*/
-	foreach(glob('modules/*.startup.php') as $path){
+	foreach(glob('modules/*/*.startup.php') as $path){
 		$dirend = strrpos($path, '/') + 1;
 		$nameend = strpos($path, '.');
 		$name = substr($path, $dirend, $nameend - $dirend);

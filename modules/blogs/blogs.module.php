@@ -29,7 +29,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageTitle']='Blog';
 }
 function page_buildContent($data,$db) {
-	require_once('modules/blogs.common.php');
+	require_once('modules/blogs/blogs.common.php');
 	$data->output['summarize'] = false;
 	$data->output['notFound'] = false;
 	// Now Get Users //

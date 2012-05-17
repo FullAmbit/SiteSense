@@ -311,7 +311,7 @@ final class sitesense {
             ($url=='index.php?')) {
                 // On default, go to homepage
                 if(isset($this->settings['homepage']) && $this->action[0]=='default') {
-                    $targetInclude='modules/'.$this->settings['homepage'].'.module.php';
+                    $targetInclude='modules/'.$this->settings['homepage'].'/'.$this->settings['homepage'].'.module.php';
                     if(file_exists($targetInclude)) {
                         $this->action[0]=$this->settings['homepage'];
                     } else {
@@ -335,7 +335,7 @@ final class sitesense {
             if($this->module === false || $this->module['enabled'] == 0){ // Module does not exist or is disabled.
 				if($this->module !== false){ // Exists, but is disabled.
 					$this->currentPage = 'pageNotFound';
-				}else if(file_exists('modules/' . $this->module['name'] . '.module.php')){ // Exists in the file system, but not in the db.
+				}else if(file_exists('modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')){ // Exists in the file system, but not in the db.
 					$statement = $this->db->prepare('newModule', 'modules');
 					$statement->execute(
 						array(
@@ -560,7 +560,7 @@ final class sitesense {
 		$moduleQuery = $this->db->query('getEnabledModules','modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
-			$filename = 'modules/' . $module['name'] . '.startup.php';
+			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
 			if(file_exists($filename)){;
 				common_include($filename);
 				$targetFunction=$module['name'].'_startUp';
@@ -597,11 +597,11 @@ final class sitesense {
 			}
 			
 			if($this->currentPage == 'pageNotFound' || $this->banned){
-				common_include('modules/pages.module.php');
-			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'.module.php')) {
+				common_include('modules/pages/pages.module.php');
+			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {
 				common_include($targetInclude);
 			} else {
-				common_include('modules/pages.module.php');
+				common_include('modules/pages/pages.module.php');
 			}
 			if (function_exists('page_getUniqueSettings')) {
 				page_getUniqueSettings($this,$this->db);
