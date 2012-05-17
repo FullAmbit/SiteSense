@@ -23,30 +23,29 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_buildContent($data,$db) {
-	//permission check for users access
-	if(!checkPermission('access','users',$data)) {
+	//permission check for forms access
+	if(!checkPermission('access','forms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
-	}
-	
+	}	
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	$target='admin/users.include.'.$data->action[2].'.php';
+	$target='admin/forms/forms.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_usersBuild')) admin_usersBuild($data,$db);
-	$data->output['pageTitle']='Users';
+	if (function_exists('admin_formsBuild')) admin_formsBuild($data,$db);
+	$data->output['pageTitle']='Forms';
 }
 function admin_content($data) {
-	if (isset($data->output['abort']) && $data->output['abort'] === true) {
+	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_usersShow($data);
+			admin_formsShow($data);
 		} else admin_unknown();
 	}
 }

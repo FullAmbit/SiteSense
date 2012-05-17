@@ -35,10 +35,10 @@ function page_buildContent($data,$db) {
 	$data->output = array_merge($defaults, $data->output);
   if (checkPermission('access','core',$data)) {
     if (empty($data->action[1])) {
-      common_include('admin/dashboard.admin.php');
+      common_include('admin/dashboard/dashboard.admin.php');
 	  common_include('admin/themes/default/dashboard.template.php');
     } else {
-      $target='admin/'.$data->action[1].'.admin.php';
+      $target='admin/'.$data->action[1].'/'.$data->action[1].'.admin.php';
       if (file_exists($target)) {
         common_include($target);
 				$db->loadModuleQueries('admin_'.$data->action[1]);
@@ -49,7 +49,7 @@ function page_buildContent($data,$db) {
         common_include('admin/themes/default/404.static.php');
       }
     }
-    $files=glob('admin/*.config.php');
+    $files=glob('admin/*/*.config.php');
     foreach ($files as $fileName) {
       common_include($fileName);
       $targetName=substr(strrchr(str_replace('.config.php','',$fileName),'/'),1);

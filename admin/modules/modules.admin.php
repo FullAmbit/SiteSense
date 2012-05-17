@@ -23,33 +23,32 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_buildContent($data,$db) {
+	/**
+	 *	Permissions: Admin Only
+	**/
+    if(!checkPermission('modules_access','core',$data)) {
+        $data->output['abort'] = true;
+        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        return;
+    }
+	
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	if ($data->action[2]=='list') {
-		$statement=$db->query('getAllBlogs','admin_blogs');
-		$data->output['blogList']=$statement->fetchAll();
-		$statement=$db->prepare('countBlogPosts','admin_blogs');
-		foreach ($data->output['blogList'] as $item) {
-			$statement->execute(array(
-				':blogId' => $item['id']
-			));
-		}
-	}
-	$target='admin/blogs.include.'.$data->action[2].'.php';
+	$target='admin/modules/modules.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_blogsBuild')) admin_blogsBuild($data,$db);
-	$data->output['pageTitle']='Blogs';
+	if (function_exists('admin_modulesBuild')) admin_modulesBuild($data,$db);
+	$data->output['pageTitle']='Modules';
 }
 function admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_blogsShow($data);
+			admin_modulesShow($data);
 		} else admin_unknown();
 	}
 }

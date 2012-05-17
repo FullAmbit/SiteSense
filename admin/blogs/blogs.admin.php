@@ -23,30 +23,33 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_buildContent($data,$db) {
-	//permission check for messages access
-	if(!checkPermission('access','messages',$data)) {
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
-		return;
-	}
-	
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	$target='admin/messages.include.'.$data->action[2].'.php';
+	if ($data->action[2]=='list') {
+		$statement=$db->query('getAllBlogs','admin_blogs');
+		$data->output['blogList']=$statement->fetchAll();
+		$statement=$db->prepare('countBlogPosts','admin_blogs');
+		foreach ($data->output['blogList'] as $item) {
+			$statement->execute(array(
+				':blogId' => $item['id']
+			));
+		}
+	}
+	$target='admin/blogs/blogs.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_messagesBuild')) admin_messagesBuild($data,$db);
-	$data->output['pageTitle']='Messages';
+	if (function_exists('admin_blogsBuild')) admin_blogsBuild($data,$db);
+	$data->output['pageTitle']='Blogs';
 }
 function admin_content($data) {
-	if (isset($data->output['abort']) && $data->output['abort'] === true) {
+	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_messagesShow($data);
+			admin_blogsShow($data);
 		} else admin_unknown();
 	}
 }

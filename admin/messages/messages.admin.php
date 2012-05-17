@@ -23,41 +23,30 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_buildContent($data,$db) {
-	
-	/**
-	 *	Permissions: Admin Only
-	**/
-	if(!checkPermission('urlRemap_access','core',$data))
-	{
+	//permission check for messages access
+	if(!checkPermission('access','messages',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient Permissions</h2>
-			You do not have the permissions to access this area';
-			
-			return;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
 	}
 	
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	if ($data->action[2]=='list') {
-		$statement=$db->query('getAllUrlRemaps','admin_urlremap');
-		$data->output['urlremapList']=$statement->fetchAll();
-	}
-	$target='admin/urlremap.include.'.$data->action[2].'.php';
+	$target='admin/messages/messages.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_urlremapsBuild')) admin_urlremapsBuild($data,$db);
-	$data->output['pageTitle']='URL Remaps';
+	if (function_exists('admin_messagesBuild')) admin_messagesBuild($data,$db);
+	$data->output['pageTitle']='Messages';
 }
 function admin_content($data) {
-	if ($data->output['abort']) {
+	if (isset($data->output['abort']) && $data->output['abort'] === true) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_urlremapsShow($data);
+			admin_messagesShow($data);
 		} else admin_unknown();
 	}
 }

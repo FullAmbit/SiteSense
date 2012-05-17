@@ -135,7 +135,7 @@ function admin_buildContent($data,$db) {
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	$target='admin/sideBars.include.'.$data->action[2].'.php';
+	$target='admin/sideBars/sideBars.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];

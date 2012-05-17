@@ -22,36 +22,50 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildContent($data,$db) {
-	/**
-	 *	Permissions: Writers + Admin Only
-	**/
-	if(!checkPermission('mainMenu_access','core',$data)) {
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '
-			<h2>Insufficient Permissions</h2>
-			You do not have the permissions to access this area';
-			return;
+function admin_pagesResort($db) {
+	$statement=$db->query('getPageListOrdered','admin_pages');
+	$list=$statement->fetchAll();
+	$statement=$db->prepare('updatePageSortOrderById','admin_pages');
+	$count=1;
+	foreach ($list as $item) {
+		if ($item['sortOrder']!=$count) {
+			$statement->execute(array(
+				':sortOrder' => $count,
+				':id' => $item['id']
+			));
+		}
+		if ($item['parent']<1) {
+			$count+=4;
+		} else {
+			$count+=2; /* by sorting every other we can cheat our depth sorting */
+		}
 	}
-	
+}
+function admin_buildContent($data,$db) {
+	//permission check for pages access
+	if(!checkPermission('access','pages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		return;
+	}
+	//default for page view is the list of pages
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	$target='admin/mainMenu.include.'.$data->action[2].'.php';
+	$target='admin/pages/pages.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_mainMenuBuild')) admin_mainMenuBuild($data,$db);
-	$data->output['pageTitle']='Main Menu';
+	if (function_exists('admin_pagesBuild')) admin_pagesBuild($data,$db);
+	$data->output['pageTitle']='Static Pages';
 }
-
 function admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_mainMenuShow($data);
+			admin_pagesShow($data);
 		} else admin_unknown();
 	}
 }

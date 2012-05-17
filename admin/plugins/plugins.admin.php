@@ -41,7 +41,7 @@ function admin_buildContent($data,$db)
 	} else {
 		$action = $data->action[2];
 	}
-	$target = 'admin/plugins.include.'.$action.'.php';
+	$target = 'admin/plugins/plugins.include.'.$action.'.php';
 	// Check If Function File Exists
 	if(file_exists($target))
 	{
