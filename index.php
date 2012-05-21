@@ -59,7 +59,7 @@ final class dynamicPDO extends PDO {
 		$this->loadModuleQueries('common',true);
 	}
 	public function loadCommonQueryDefines($dieOnError=false) {
-		$target='modules/common/queries/'.$this->sqlType.'.defines.php';
+		$target='libraries/queries/'.$this->sqlType.'.defines.php';
 		if (file_exists($target)) {
 			require_once($target);
 			return true;
@@ -72,10 +72,10 @@ final class dynamicPDO extends PDO {
         $pos=strpos($moduleName,'admin_');
         if(!($pos===false)) {
             $moduleNameOnly=substr($moduleName,6);
-            $target='admin/'.$moduleNameOnly.'/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.php';
+            $target='modules/'.$moduleNameOnly.'/admin/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.php';
         }
         if($moduleName=='admin') {
-            $target='admin/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+            $target='libaries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
         }
         if (file_exists($target)) {
 			require_once($target);
@@ -228,7 +228,7 @@ final class sitesense {
         // Install
         if ($this->action[0]=='install') {
 			$data=$this->db;
-			require_once('admin/install.php');
+			require_once('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
 
@@ -559,8 +559,8 @@ final class sitesense {
 			}
 		}
 		if ($this->currentPage=='admin' && !$this->banned) {
-			common_include('admin/themes/default/admin.template.php');
-			common_include('admin/admin.php');
+			common_include('themes/default/admin/admin.template.php');
+			common_include('libraries/admin.php');
 			$this->loadModuleLanguage('admin');
 		} else {
 			
@@ -663,23 +663,6 @@ final class sitesense {
 			}
 		);
 	}
-	public function loadModuleLanguage($module) {
-		$language=(
-			isset($this->settings['language']) ?
-			$this->settings['language'] :
-			'english'
-		);
-		$target='language/'.$language.'/'.$module.'.language.php';
-		if (file_exists($target)) {
-			common_include($target);
-			$languageFunction=$module.'_languageStrings';
-			if (function_exists($languageFunction)) {
-				$this->text[$module]=$languageFunction();
-				return true;
-			}
-		}
-		return false;
-	} /* loadModuleLanguage */
 	public function loadModuleTemplate($module) {
 		$targetInclude=$this->themeDir.$module.'.template.php';
 		$defaultInclude='themes/default/'.$module.'.template.php';
