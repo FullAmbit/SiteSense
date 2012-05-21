@@ -90,7 +90,7 @@ function deleteChildren($db,$item)
 
 function admin_mainMenuShow($data)
 {
-	$aRoot=$data->linkRoot.'admin/mainMenu/';
+	$aRoot=$data->linkRoot.'admin/main-menu/';
 	if(empty($data->output['rejectError']))
 	{
 		switch($data->output['delete'])

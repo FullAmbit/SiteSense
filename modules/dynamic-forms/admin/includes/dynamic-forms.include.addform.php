@@ -55,7 +55,7 @@ function admin_formsBuild($data,$db)
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing SideBar ShortNames For Comparison
-		$statement = $db->prepare('getExistingShortNames','form');
+		$statement = $db->prepare('getExistingShortNames','admin_dynamicForms');
 		$statement->execute();
 		$formList = $statement->fetchAll();
 		$existingShortNames = array();

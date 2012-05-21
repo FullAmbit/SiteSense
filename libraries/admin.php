@@ -41,8 +41,8 @@ function page_buildContent($data,$db) {
       $target='modules/'.$data->action[1].'/admin/'.$data->action[1].'.admin.php';
       if (file_exists($target)) {
         common_include($target);
-				$db->loadModuleQueries('admin_'.$data->action[1]);
-		$theme = 'themes/default/admin'.$data->action[1].'.template.php';
+		$db->loadModuleQueries('admin_'.$data->action[1]);
+		$theme = 'themes/default/admin/'.$data->action[1].'.template.php';
 		if( file_exists($theme) )
 			common_include($theme);
       } else {
@@ -53,7 +53,10 @@ function page_buildContent($data,$db) {
     foreach ($files as $fileName) {
       common_include($fileName);
       $targetName=substr(strrchr(str_replace('.config.php','',$fileName),'/'),1);
+      $targetName=hyphenToCamel($targetName);
       $targetFunction=$targetName.'_config';
+
+
       if (function_exists($targetFunction)) {
         $targetFunction($data,$db);
       }

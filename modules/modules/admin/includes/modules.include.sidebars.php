@@ -29,7 +29,7 @@ function admin_modulesBuild($data,$db){
 		return;
 	}
 	$moduleId = $data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getModuleById', 'modules');
+	$statement = $db->prepare('getModuleById', 'admin_modules');
 	$statement->execute(array(':id' => $data->action[3]));
 	$module = $statement->fetch();
 	if($module === false){
@@ -41,7 +41,7 @@ function admin_modulesBuild($data,$db){
 	
 	// Do SideBar Settings For This Page Exist? (Match Row Count with total sidebar count)
 	$maxSideBarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSideBarsByModule','modules');
+	$statement = $db->prepare('countSideBarsByModule','admin_modules');
 	$statement->execute(array(':moduleId' => $moduleId));
 	list($rowCount) = $statement->fetch();
 	
@@ -49,13 +49,13 @@ function admin_modulesBuild($data,$db){
 	{
 		$i = $rowCount;
 		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','admin_sideBars');
+		$statement = $db->prepare('getAllSideBars','admin_sidebars');
 		$statement->execute();
 		$sideBarList = $statement->fetchAll();
 		foreach($sideBarList as $sideBarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSideBarSetting','modules');
+			$statement = $db->prepare('createSideBarSetting','admin_modules');
 			$statement->execute(array(
 				':moduleId' => $moduleId,
 				':sideBarId' => $sideBarItem['id'],
@@ -70,18 +70,18 @@ function admin_modulesBuild($data,$db){
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSideBar', 'modules');
+			$statement = $db->prepare('enableSideBar', 'admin_modules');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSideBar', 'modules');
+			$statement = $db->prepare('disableSideBar', 'admin_modules');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSideBarSetting','modules');
+			$statement = $db->prepare('getSideBarSetting','admin_modules');
 			$statement->execute(array(':id' => $settingId));
 			if(($sideBarItem = $statement->fetch()) === FALSE)
 			{
@@ -96,12 +96,12 @@ function admin_modulesBuild($data,$db){
 			}
 			if(isset($query1))
 			{
-				$statement = $db->prepare($query1,'modules');
+				$statement = $db->prepare($query1,'admin_modules');
 				$statement->execute(array(
 					':sortOrder' => $sideBarItem['sortOrder'],
 					':moduleId' => $moduleId
 				));
-				$statement = $db->prepare($query2,'modules');
+				$statement = $db->prepare($query2,'admin_modules');
 				$statement->execute(array(
 					':id' => $sideBarItem['id']
 				));
@@ -110,7 +110,7 @@ function admin_modulesBuild($data,$db){
 		break;
 	}
 	//
-	$statement = $db->prepare('getSideBarsByModule', 'modules');
+	$statement = $db->prepare('getSideBarsByModule', 'admin_modules');
 	$statement->execute(array(':module' => $module['id']));
 	$data->output['sidebars'] = $statement->fetchAll();
 }

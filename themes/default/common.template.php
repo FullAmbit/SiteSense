@@ -242,7 +242,7 @@ function theme_leftSideBar($data) {
 			
 			if ($sideBar['name']!=$data->output['pageShortName']) {
 				if ($sideBar['fromFile']) {
-					require_once('sidebars/'.$sideBar['name'].'.sidebar.php');
+					require_once('modules/sidebars/'.$sideBar['name'].'.sidebar.php');
 				} else {
 					common_parseDynamicValues($data, $sideBar['titleURL']);
 					common_parseDynamicValues($data, $sideBar['parsedContent']);
@@ -262,19 +262,17 @@ function theme_leftSideBar($data) {
 function theme_rightSideBar($data) {
 
 	// Check If We Have Any Sidebars	
-	if(empty($data->sideBarList['right']))
-	{
+	if(empty($data->sideBarList['right'])) {
 		return;
 	}
 
-	echo '
-		<div id="rightSidebar">';
+	echo '<div id="rightSidebar">';
 
 	if (count($data->sideBarList)>0) {
 		foreach($data->sideBarList['right'] as $sideBar) {
 			if ($sideBar['name']!=$data->output['pageShortName']) {
 				if ($sideBar['fromFile']) {
-					require_once('sidebars/'.$sideBar['name'].'.sidebar.php');
+					require_once('modules/sidebars/'.$sideBar['name'].'.sidebar.php');
 				} else {
 					common_parseDynamicValues($data, $sideBar['titleURL']);
 					common_parseDynamicValues($data, $sideBar['parsedContent']);

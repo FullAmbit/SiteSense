@@ -326,4 +326,11 @@ function checkPermission($permission,$module,$data) {
     }
     return $hasPermission;
 }
+
+function hyphenToCamel($str,$ucfirst=false) {
+    $parts=explode('-',$str);
+    $parts=$parts ? array_map('ucfirst',$parts):array($str);
+    $parts[0]=$ucfirst ? ucfirst($parts[0]):lcfirst($parts[0]);
+    return implode('',$parts);
+}
 ?>

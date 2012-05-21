@@ -78,6 +78,7 @@ final class dynamicPDO extends PDO {
         }
         if (file_exists($target)) {
 			require_once($target);
+            $moduleName=hyphenToCamel($moduleName);
 			$loader=$moduleName.'_addQueries';
 			$this->queries[$moduleName]=$loader();
 			return true;
@@ -561,7 +562,7 @@ final class sitesense {
 			common_include('themes/default/admin/admin.template.php');
 			common_include('libraries/admin.php');
 		} else {
-			
+
 			if (
 				($this->settings['hideContentGuests']!='no') &&
 				($this->user['userLevel']<USERLEVEL_USER)

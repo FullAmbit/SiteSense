@@ -26,14 +26,14 @@ common_include('libraries/forms.php');
 function admin_formsBuild($data,$db)
 {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
 	// Check If Form Exists //	
 	$formId = $data->action[3];
-	$check = $db->prepare('getFormById', 'form'); 
+	$check = $db->prepare('getFormById', 'admin_dynamicForms');
 	$check->execute(array(':id' => $formId));
 	if(($data->output['formItem'] = $check->fetch()) === FALSE)
 	{
@@ -44,7 +44,7 @@ function admin_formsBuild($data,$db)
 
 	$form = $data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
-	$statement = $db->prepare('getEnabledPlugins','plugins');
+	$statement = $db->prepare('getEnabledPlugins','admin_plugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	
@@ -72,7 +72,7 @@ function admin_formsBuild($data,$db)
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
 			// Load All Existing SideBar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','form');
+			$statement = $db->prepare('getExistingShortNames','admin_dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
 			$existingShortNames = array();
@@ -88,7 +88,7 @@ function admin_formsBuild($data,$db)
 			if($data->output['fromForm']->sendArray[':showOnMenu'] == 1)
 			{
 				$rowCount = $db->countRows('main_menu');
-				$saveMenuItem = $db->prepare('saveMenuItem','form');
+				$saveMenuItem = $db->prepare('saveMenuItem','admin_dynamicForms');
 				$saveMenuItem->execute(array(
 					'name' => $data->output['fromForm']->sendArray[':name'],
 					'title' => $data->output['fromForm']->sendArray[':menuTitle'],
@@ -115,7 +115,7 @@ function admin_formsBuild($data,$db)
 			}
 			//------------//
 			// Save To DB //
-			$statement = $db->prepare('editForm', 'form');
+			$statement = $db->prepare('editForm', 'admin_dynamicForms');
 			
 			$data->output['fromForm']->sendArray[':id'] = $formId;
 			$statement->execute($data->output['fromForm']->sendArray);

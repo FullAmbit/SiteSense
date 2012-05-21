@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_sideBarsBuild($data,$db) {
+function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('sidebars_list','core',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
@@ -75,12 +75,12 @@ function admin_sideBarsBuild($data,$db) {
 		if($data->action[3] == 'switch')
 		{
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getById','admin_sideBars');
+				$statement=$db->prepare('getById','admin_sidebars');
 				$statement->execute(array(
 					':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
-					$statement=$db->prepare('updateSideById','admin_sideBars');
+					$statement=$db->prepare('updateSideById','admin_sidebars');
 					$statement->execute(array(
 						':side' => ( $item['side']=='left' ? 'right' : 'left' ),
 						':id' => $item['id']
@@ -89,11 +89,11 @@ function admin_sideBarsBuild($data,$db) {
 			}
 		}
 	}
-	$qHandle=$db->prepare('getAllOrdered','admin_sideBars');
+	$qHandle=$db->prepare('getAllOrdered','admin_sidebars');
 	$qHandle->execute();
 	$data->output['sideBars']=$qHandle->fetchAll();
 }
-function admin_sideBarsShow($data) {
+function admin_sidebarsShow($data) {
 	$aRoot=$data->linkRoot.'admin/sidebars/';
 	theme_sideBarsListAddNewButton($aRoot);
 	if (empty($data->output['sideBars'])) {

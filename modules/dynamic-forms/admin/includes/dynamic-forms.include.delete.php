@@ -25,7 +25,7 @@
 function admin_formsBuild($data,$db)
 {
 	//permission check for forms delete
-	if(!checkPermission('delete','forms',$data)) {
+	if(!checkPermission('delete','dynamic-forms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -34,7 +34,7 @@ function admin_formsBuild($data,$db)
 	
 	// Check to see if the form exists
 	$formID = $data->action[3];
-	$statement = $db->prepare('getFormById','form');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $formID));
 	$data->output['formItem'] = $statement->fetch();
 	if($data->output['formItem'] == FALSE || $formID === FALSE)
@@ -49,24 +49,24 @@ function admin_formsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
 			// Get A List of ROW IDs
-			$statement = $db->prepare("getRowsByForm",'form');
+			$statement = $db->prepare('getRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':form' => $formID));
 			$rowList = $statement->fetchAll();
 			foreach($rowList as $rowItem)
 			{
 				$rowID = $rowItem['id'];
 				// Delete All Values Part Of This Row
-				$statement = $db->prepare("deleteValueByRow","form");
+				$statement = $db->prepare('deleteValueByRow','admin_dynamicForms');
 				$statement->execute(array(':rowID' => $rowID));
 			}
 			// Now Delete The Rows
-			$statement = $db->prepare('deleteRowsByForm','form');
+			$statement = $db->prepare('deleteRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':formID' => $formID));
 			// Delete The Fields
-			$statement = $db->prepare('deleteFieldsByForm','form');
+			$statement = $db->prepare('deleteFieldsByForm','admin_dynamicForms');
 			$statement->execute(array(':formID' => $formID));
 			// Delete The Form Itself
-			$statement = $db->prepare('deleteForm','form');
+			$statement = $db->prepare('deleteForm','admin_dynamicForms');
 			$statement->execute(array(':id' => $formID));
 			
 			$data->output['delete'] = 'deleted';
@@ -77,7 +77,7 @@ function admin_formsBuild($data,$db)
 }
 function admin_formsShow($data)
 {
-	$aRoot = $data->linkRoot . 'admin/forms/';
+	$aRoot = $data->linkRoot . 'admin/dynamic-forms/';
 	if($data->output['rejectText'])
 	{
 		theme_formsDeleteReject($data,$aRoot);

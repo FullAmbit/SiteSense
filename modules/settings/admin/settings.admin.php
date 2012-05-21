@@ -33,7 +33,7 @@ function admin_buildContent($data,$db) {
 		return;
 	}
 	$data->output['settingsForm']=new formHandler('settings',$data,true);
-	$getModules = $db->query('getEnabledModules', 'modules');
+	$getModules = $db->query('getEnabledModules', 'admin_modules');
 	$modules = $getModules->fetchAll();
 	// All Enabled Modules
 	foreach($modules as $module){

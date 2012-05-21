@@ -60,7 +60,7 @@ function admin_pluginsBuild($data,$db) {
 		}
 	}
 	// Insert new plugins into the database
-	$insert=$db->prepare('newPlugin','plugins');
+	$insert=$db->prepare('newPlugin','admin_plugins');
 	foreach($filePlugins as $filePlugin) {
 		$found=false;
 		foreach($data->output['plugins'] as $dbPlugin) {

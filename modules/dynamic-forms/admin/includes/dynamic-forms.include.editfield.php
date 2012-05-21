@@ -25,7 +25,7 @@
 common_include('libraries/forms.php');
 function admin_formsBuild($data,$db) {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -36,7 +36,7 @@ function admin_formsBuild($data,$db) {
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFieldById', 'form');
+	$statement = $db->prepare('getFieldById', 'admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['field'] = $field = $statement->fetch();
 	if($field === false){
@@ -44,7 +44,7 @@ function admin_formsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
 		return;
 	}
-	$statement = $db->prepare('getFormById', 'form');
+	$statement = $db->prepare('getFormById', 'admin_dynamicForms');
 	$statement->execute(array(':id' => $field['form']));
 	$dbform = $statement->fetch();
 	if($dbform === false){
@@ -60,16 +60,16 @@ function admin_formsBuild($data,$db) {
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
 			$form->sendArray[':id'] = $field['id'];
-			$statement = $db->prepare('editField', 'form');
+			$statement = $db->prepare('editField', 'admin_dynamicForms');
 			$statement->execute($form->sendArray) or die(var_dump($statement->errorInfo()));
 			if (empty($data->output['secondSideBar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Field Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/forms/newfield/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/newfield/' . $data->output['form']['id'] . '">
 							Add New Field
 						</a>
-						<a href="'.$data->linkRoot.'admin/forms/listfields/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/' . $data->output['form']['id'] . '">
 							Return to Field List
 						</a>
 					</div>';

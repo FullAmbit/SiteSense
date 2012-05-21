@@ -26,7 +26,7 @@ function urlremap_config($data,$db) {
   if (checkPermission('urlRemap_access','core',$data)) {
     $data->admin['menu'][]=array(
       'category'  => 'Site Management',
-      'command'   => 'urlremap/list',
+      'command'   => 'url-remap/list',
       'name'      => 'URLs',
       'sortOrder' => 9
     );

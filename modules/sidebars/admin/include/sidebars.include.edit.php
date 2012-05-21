@@ -24,18 +24,18 @@
 */
 common_include('libraries/forms.php');
 
-function admin_sideBarsBuild($data,$db) {
+function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('sidebars_edit','core',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-	$aRoot=$data->linkRoot.'admin/sideBars/';
+	$aRoot=$data->linkRoot.'admin/sidebars/';
 	
 	// Check To See If SideBar Exists
 	$sideBarId = $data->action[3];
 
-	$statement=$db->prepare('getById','admin_sideBars');
+	$statement=$db->prepare('getById','admin_sidebars');
 	$statement->execute(array(
 		':id' => $sideBarId
 	));
@@ -79,7 +79,7 @@ function admin_sideBarsBuild($data,$db) {
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$_POST[$data->output['sideBarForm']->formPrefix.'name'] = $shortName;
 			// Load All Existing SideBar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','admin_sideBars');
+			$statement = $db->prepare('getExistingShortNames','admin_sidebars');
 			$statement->execute();
 			$sideBarList = $statement->fetchAll();
 			$existingShortNames = array();
@@ -102,7 +102,7 @@ function admin_sideBarsBuild($data,$db) {
 			}
 			
 			// Save TO DB
-			$statement=$db->prepare('updateById','admin_sideBars');
+			$statement=$db->prepare('updateById','admin_sidebars');
 			$data->output['sideBarForm']->sendArray[':id'] = $data->action[3];
 			$statement->execute($data->output['sideBarForm']->sendArray);
 				
@@ -128,7 +128,7 @@ function admin_sideBarsBuild($data,$db) {
 		}
 	}
 }
-function admin_sideBarsShow($data) {
+function admin_sidebarsShow($data) {
 	if ($data->output['pagesError']=='unknown function') {
 		admin_unknown();
 	} else if (!empty($data->output['savedOkMessage'])) {

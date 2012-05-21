@@ -124,7 +124,7 @@ function admin_pagesBuild($data,$db)
 					<a href="'.$data->linkRoot.'admin/pages/list/">
 						Return to Page List
 					</a>'.
-					(isset($menuId) ? '<a href="'.$data->linkRoot.'admin/mainMenu/edit/'.$menuId.'/">Edit Menu Item</a>' : NULL)
+					(isset($menuId) ? '<a href="'.$data->linkRoot.'admin/main-menu/edit/'.$menuId.'/">Edit Menu Item</a>' : NULL)
 				.
 				'</div>';
             } else {

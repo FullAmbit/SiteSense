@@ -44,24 +44,24 @@ function theme_menuDeleteDefault($aRoot,$data) {
 
 function theme_menuItemRow($level,$data,$item,$enable) {
 	echo '<tr class="level',$level,'">
-				<td class="text"><a href="',$data->linkRoot,'admin/mainMenu/edit/',$item['id'],'">',$item['text'],'</a></td>
+				<td class="text"><a href="',$data->linkRoot,'admin/main-menu/edit/',$item['id'],'">',$item['text'],'</a></td>
 				<td class="side">',(($item['parent'] == '0') ? $item['side'] : ''),'</td>
 				<td class="buttonList">
 					',$enable,'
 					
-					<a href="',$data->linkRoot,'admin/mainMenu/delete/',$item['id'],'">Delete</a>',
+					<a href="',$data->linkRoot,'admin/main-menu/delete/',$item['id'],'">Delete</a>',
 					(($item['parent'] == '0') ? '
-					<a href="'.$data->linkRoot.'admin/mainMenu/list/switch/'.$item['id'].'"
+					<a href="'.$data->linkRoot.'admin/main-menu/list/switch/'.$item['id'].'"
 						title="Switch side of menu this item is shown on"
 					>Switch Side</a>' : ''),'
-					<a href="',$data->linkRoot,'admin/mainMenu/list/moveUp/',$item['id'],'" title="Move Up">&uArr;</a>
-					<a href="',$data->linkRoot,'admin/mainMenu/list/moveDown/',$item['id'],'" title="Move Down">&dArr;</a>
+					<a href="',$data->linkRoot,'admin/main-menu/list/moveUp/',$item['id'],'" title="Move Up">&uArr;</a>
+					<a href="',$data->linkRoot,'admin/main-menu/list/moveDown/',$item['id'],'" title="Move Down">&dArr;</a>
 				</td>
 			</tr>';
 }
 
 function theme_menuShowHead($data) {
-	echo '<div class="panel buttonList"><a href="'.$data->linkRoot.'admin/mainMenu/add/" title="Add A Menu Item">Add A Menu Item</a></div>
+	echo '<div class="panel buttonList"><a href="'.$data->linkRoot.'admin/main-menu/add/" title="Add A Menu Item">Add A Menu Item</a></div>
 			<table class="mainMenuList">
 				<caption>Manage Main Menu</caption>
 				<thead>

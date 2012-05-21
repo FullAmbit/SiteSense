@@ -25,14 +25,14 @@
 function admin_formsBuild($data,$db)
 {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
 	$formId = (int)$data->action[3];
 	// Check if Form Exists
-	$statement = $db->prepare('getFormById','form');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $formId));
 	if(($data->output['formItem'] = $statement->fetch()) === FALSE)
 	{
@@ -42,20 +42,20 @@ function admin_formsBuild($data,$db)
 	
 	// Do SideBar Settings For This Page Exist? (Match Row Count with total sidebar count)
 	$maxSideBarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSideBarsByForm','form');
+	$statement = $db->prepare('countSideBarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	list($rowCount) = $statement->fetch();
 	if($rowCount < $maxSideBarCount)
 	{
 		$i = $rowCount;
 		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','admin_sideBars');
+		$statement = $db->prepare('getAllSideBars','admin_sidebars');
 		$statement->execute();
 		$sideBarList = $statement->fetchAll();
 		foreach($sideBarList as $sideBarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSideBarSetting','form');
+			$statement = $db->prepare('createSideBarSetting','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $formId,
 				':sideBarId' => $sideBarItem['id'],
@@ -69,18 +69,18 @@ function admin_formsBuild($data,$db)
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSideBar', 'form');
+			$statement = $db->prepare('enableSideBar', 'admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSideBar', 'form');
+			$statement = $db->prepare('disableSideBar', 'admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSideBarSetting','form');
+			$statement = $db->prepare('getSideBarSetting','admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			if(($sideBarItem = $statement->fetch()) === FALSE)
 			{
@@ -95,12 +95,12 @@ function admin_formsBuild($data,$db)
 			}
 			if(isset($query1))
 			{
-				$statement = $db->prepare($query1,'form');
+				$statement = $db->prepare($query1,'admin_dynamicForms');
 				$statement->execute(array(
 					':sortOrder' => $sideBarItem['sortOrder'],
 					':formId' => $formId
 				));
-				$statement = $db->prepare($query2,'form');
+				$statement = $db->prepare($query2,'admin_dynamicForms');
 				$statement->execute(array(
 					':id' => $sideBarItem['id']
 				));
@@ -110,7 +110,7 @@ function admin_formsBuild($data,$db)
 	}
 	
 	// Get List Of All Sidebars For This Form
-	$statement = $db->prepare('getSideBarsByForm','form');
+	$statement = $db->prepare('getSideBarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	$data->output['sideBarList'] = $statement->fetchAll();
 }

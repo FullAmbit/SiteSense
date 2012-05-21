@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function dynamicForms_addQueries() {
+function admin_dynamicForms_addQueries() {
 	return array(
 		'getAllFormIds' => '
 			SELECT id FROM !prefix!forms

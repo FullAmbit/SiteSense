@@ -25,7 +25,7 @@
 function admin_formsBuild($data,$db)
 {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -39,7 +39,7 @@ function admin_formsBuild($data,$db)
 	}
 	
 	// Check To See If The Field Exists
-	$check = $db->prepare('getFieldById','form');
+	$check = $db->prepare('getFieldById','admin_dynamicForms');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['fieldItem'] = $check->fetch()) === FALSE)
 	{
@@ -48,14 +48,14 @@ function admin_formsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if (!checkPermission('canDeleteFormOption','forms',$data))
+	if (!checkPermission('canDeleteFormOption','admin_dynamicForms',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';
 		return;
 	}
 	// Get Options
-	$statement = $db->prepare('getOptionsByFieldId','form');
+	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
 	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
 	$optionsSerialized = $statement->fetch();
 	$data->output['optionList'] = unserialize($optionsSerialized[0]);
@@ -76,7 +76,7 @@ function admin_formsBuild($data,$db)
 			
 			$options = serialize($data->output['optionList']);
 			
-			$statement = $db->prepare('updateOptions','form');
+			$statement = $db->prepare('updateOptions','admin_dynamicForms');
 			$statement->execute(array(':fieldId' => $data->output['fieldItem']['id'],':options' => $options));
 			
 			$data->output['delete']='deleted';
@@ -85,10 +85,10 @@ function admin_formsBuild($data,$db)
 			  $data->output['savedOkMessage']='
 				  <h2>Option Deleted Successfully</h2>
 				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/forms/addoption/'.$data->output['fieldItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/dynamic-forms/addoption/'.$data->output['fieldItem']['id'].'">
 						  Add New Option
 					  </a>
-					  <a href="'.$data->linkRoot.'admin/forms/listoptions/'.$data->output['fieldItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/dynamic-forms/listoptions/'.$data->output['fieldItem']['id'].'">
 						  Return to Options List
 					  </a>
 				  </div>';
@@ -100,7 +100,7 @@ function admin_formsBuild($data,$db)
 }
 function admin_formsShow($data)
 {
-	$aRoot=$data->linkRoot.'admin/forms/';
+	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
 	if(empty($data->output['rejectError']))
 	{
 		switch($data->output['delete'])

@@ -72,7 +72,7 @@ function theme_footer($data) {
 	echo '
 	<!-- #pageWrapper --></div>
 <script type="text/javascript"
-	src="',$data->linkRoot,'admin/themes/default/admin.js"
+	src="',$data->linkRoot,'themes/default/admin/admin.js"
 ></script>
 </body></html>';
 }
@@ -439,7 +439,7 @@ function theme_pagination($count,$current,$linkPrefix) {
 			}
 		}
 		if ($lastPage>9) {
-			$counter=($currentpage<6) ? 0 : $currentPage-5;
+			$counter=($currentPage<6) ? 0 : $currentPage-5;
 			$endPage=$counter+10;
 			if ($endPage>$lastPage) $endPage=$lastPage;
 		} else {

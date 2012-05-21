@@ -24,12 +24,12 @@
 */
 function admin_formsBuild($data,$db){
 	//permission check for forms access
-	if(!checkPermission('access','forms',$data)) {
+	if(!checkPermission('access','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
-	$statement = $db->query('getAllForms', 'form');
+	$statement = $db->query('getAllForms', 'admin_dynamicForms');
 	$data->output['forms'] = $statement->fetchAll();
 }
 function admin_formsShow($data){

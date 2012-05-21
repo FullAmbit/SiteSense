@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 
-function admin_sideBarsBuild($data,$db) {
+function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('sidebars_add','core',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
@@ -42,7 +42,7 @@ function admin_sideBarsBuild($data,$db) {
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['sideBarForm']->sendArray[':shortName'] = $_POST[$data->output['sideBarForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing SideBar ShortNames For Comparison
-		$statement = $db->prepare('getExistingShortNames','admin_sideBars');
+		$statement = $db->prepare('getExistingShortNames','admin_sidebars');
 		$statement->execute();
 		$sideBarList = $statement->fetchAll();
 		$existingShortNames = array();
@@ -63,7 +63,7 @@ function admin_sideBarsBuild($data,$db) {
 				$data->output['sideBarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sideBarForm']->sendArray[':rawContent']);
 			}
 			// Save To DB
-			$statement = $db->prepare('insertSideBar','admin_sideBars');
+			$statement = $db->prepare('insertSideBar','admin_sidebars');
 			$result = $statement->execute($data->output['sideBarForm']->sendArray);
 			$sideBarId = $db->lastInsertId();	
 			
@@ -93,8 +93,8 @@ function admin_sideBarsBuild($data,$db) {
 				$pageQ->execute($vars);
 			}
 			//---Modules---//
-			$moduleQ = $db->prepare('createSideBarSetting','modules');
-			$statement = $db->prepare('getAllModuleIds','modules');
+			$moduleQ = $db->prepare('createSideBarSetting','admin_modules');
+			$statement = $db->prepare('getAllModuleIds','admin_modules');
 			$statement->execute();
 			$moduleList = $statement->fetchAll();
 			foreach($moduleList as $moduleItem)
@@ -109,8 +109,8 @@ function admin_sideBarsBuild($data,$db) {
 				$moduleQ->execute($vars);
 			}
 			//---Forms---//
-			$formQ = $db->prepare('createSideBarSetting','form');
-			$statement = $db->prepare('getAllFormIds','form');
+			$formQ = $db->prepare('createSideBarSetting','admin_dynamicForms');
+			$statement = $db->prepare('getAllFormIds','admin_dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
 			foreach($formList as $formItem)
@@ -131,10 +131,10 @@ function admin_sideBarsBuild($data,$db) {
 					Auto generated short name was: '.$shortName.'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$data->linkRoot.'admin/sideBars/add/">
+					<a href="'.$data->linkRoot.'admin/sidebars/add/">
 						Add New SideBar
 					</a>
-					<a href="'.$data->linkRoot.'admin/sideBars/list/">
+					<a href="'.$data->linkRoot.'admin/sidebars/list/">
 						Return to SideBar List
 					</a>
 				</div>';
@@ -149,7 +149,7 @@ function admin_sideBarsBuild($data,$db) {
 	}
 }
 
-function admin_sideBarsShow($data)
+function admin_sidebarsShow($data)
 {
 	if(isset($data->output['error']) && $data->output['error'] === TRUE)
 	{

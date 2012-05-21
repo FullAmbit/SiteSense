@@ -33,7 +33,7 @@ function admin_buildContent($data,$db) {
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	$target='users/admin/users.include.'.$data->action[2].'.php';
+	$target='modules/users/admin/include/users.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];

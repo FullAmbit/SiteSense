@@ -25,14 +25,14 @@
 function admin_formsBuild($data,$db)
 {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','dynamic-forms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
 	$data->output['delete'] = "";
 	// Check To See If The Field Exists
-	$check = $db->prepare('getFieldById','form');
+	$check = $db->prepare('getFieldById','admin_dynamicForms');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['fieldItem'] = $check->fetch()) === FALSE)
 	{
@@ -41,14 +41,14 @@ function admin_formsBuild($data,$db)
 		return;
 	}
 	// Check for User Permissions
-	if (!checkPermission('canDeleteFormField','forms',$data))
+	if (!checkPermission('canDeleteFormField','admin_dynamicForms',$data))
 	{
 		$data->output['rejectError']='Insufficient User Permissions';
 		$data->output['rejectText']='You do not have sufficient access to perform this action.';
 		return;
 	}
 	// Get Form Information
-	$statement = $db->prepare('getFormById','form');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->output['fieldItem']['form']));
 	list($data->output['formItem']) = $statement->fetchAll();
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])
@@ -56,12 +56,12 @@ function admin_formsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
 			// Delete Form Field
-			$statement = $db->prepare('deleteField','form');
+			$statement = $db->prepare('deleteField','admin_dynamicForms');
 			$statement->execute(array(
 				':id' => $data->output['fieldItem']['id']
 			));
 			// Fix Sort Order Gap
-			$statement = $db->prepare('fixFieldSortOrderGap','form');
+			$statement = $db->prepare('fixFieldSortOrderGap','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $data->output['fieldItem']['form'],
 				':sortOrder' => $data->output['fieldItem']['sortOrder']
@@ -88,7 +88,7 @@ function admin_formsBuild($data,$db)
 }
 function admin_formsShow($data)
 {
-	$aRoot=$data->linkRoot.'admin/forms/';
+	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
 	if(empty($data->output['rejectError']))
 	{
 		switch($data->output['delete'])

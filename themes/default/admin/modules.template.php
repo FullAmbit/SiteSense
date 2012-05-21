@@ -85,7 +85,7 @@ function theme_modulesListTableRow($data,$module,$count) {
 		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">Enable</a>';
 		switch($module['shortName']) {
 			case 'forms':
-				$sidebarsLink = 'admin/forms/list/';
+				$sidebarsLink = 'admin/dynamic-forms/list/';
 				break;
 			case 'page':
 				$sidebarsLink = 'admin/pages/list';

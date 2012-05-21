@@ -152,7 +152,7 @@ function theme_formsListTableFoot() {
 function theme_formsListFieldsTableHead($data) {
 	echo '
 		<div class="panel buttonList">
-			<a href="',$data->linkRoot,'admin/forms/newfield/',$data->output['form']['id'],'">
+			<a href="',$data->linkRoot,'admin/dynamic-forms/newfield/',$data->output['form']['id'],'">
 				New Field
 			</a>
 		</div>
@@ -174,13 +174,13 @@ function theme_formsListFieldsTableRow($data,$field,$count) {
 	if($field['type'] == 'select')
 	{
 		echo '
-			<a href="',$data->linkRoot, 'admin/forms/listoptions/',$field['id'],'">Options</a>';
+			<a href="',$data->linkRoot, 'admin/dynamic-forms/listoptions/',$field['id'],'">Options</a>';
 	}
 	echo'
-			<a href="', $data->linkRoot, 'admin/forms/editfield/', $field['id'], '">Edit</a>
-			<a href="', $data->linkRoot, 'admin/forms/deleteField/', $field['id'], '">Delete</a>
-			<a href="', $data->linkRoot, 'admin/forms/listfields/', $data->output['form']['id'], '/moveUp/', $field['id'], '">&uArr;</a>
-			<a href="', $data->linkRoot, 'admin/forms/listfields/', $data->output['form']['id'], '/moveDown/', $field['id'], '">&dArr;</a>
+			<a href="', $data->linkRoot, 'admin/dynamic-forms/editfield/', $field['id'], '">Edit</a>
+			<a href="', $data->linkRoot, 'admin/dynamic-forms/deleteField/', $field['id'], '">Delete</a>
+			<a href="', $data->linkRoot, 'admin/dynamic-forms/listfields/', $data->output['form']['id'], '/moveUp/', $field['id'], '">&uArr;</a>
+			<a href="', $data->linkRoot, 'admin/dynamic-forms/listfields/', $data->output['form']['id'], '/moveDown/', $field['id'], '">&dArr;</a>
 		</td>
 	</tr>
 	';
@@ -195,8 +195,8 @@ function theme_formsListFieldsTableFoot() {
 function theme_formsListOptionsButtons($data) {
 	echo 
 	'<div class="panel buttonList">
-		<a href="'.$data->linkRoot.'admin/forms/listfields/'.$data->output['fieldItem']['form'].'" title="Back To Fields">Back To Fields</a>
-		<a href="'.$data->linkRoot.'admin/forms/addoption/'.$data->output['fieldItem']['id'].'" title="Add An Option">Add An Option</a>
+		<a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/'.$data->output['fieldItem']['form'].'" title="Back To Fields">Back To Fields</a>
+		<a href="'.$data->linkRoot.'admin/dynamic-forms/addoption/'.$data->output['fieldItem']['id'].'" title="Add An Option">Add An Option</a>
 	</div>';
 }
 
@@ -226,10 +226,10 @@ function theme_formsListOptionsTableRow($data,$option,$optionIndex,$i) {
 			<td>', $option['text'], '</td>
 			<td>', $option['value'], '</td>
 			<td class="buttonList">
-				<a href="', $data->linkRoot, 'admin/forms/editoption/',$data->output['fieldItem']['id'],'/">Edit</a>
-				<a href="', $data->linkRoot, 'admin/forms/deleteoption/',$data->output['fieldItem']['id'],'/">Delete</a>
-				<a href="', $data->linkRoot, 'admin/forms/listoptions/',$data->output['fieldItem']['id'],'/moveUp/',$optionIndex,'">&uArr;</a>
-				<a href="', $data->linkRoot, 'admin/forms/listoptions/',$data->output['fieldItem']['id'],'/moveDown/',$optionIndex,'">&dArr;</a>
+				<a href="', $data->linkRoot, 'admin/dynamic-forms/editoption/',$data->output['fieldItem']['id'],'/">Edit</a>
+				<a href="', $data->linkRoot, 'admin/dynamic-forms/deleteoption/',$data->output['fieldItem']['id'],'/">Delete</a>
+				<a href="', $data->linkRoot, 'admin/dynamic-forms/listoptions/',$data->output['fieldItem']['id'],'/moveUp/',$optionIndex,'">&uArr;</a>
+				<a href="', $data->linkRoot, 'admin/dynamic-forms/listoptions/',$data->output['fieldItem']['id'],'/moveDown/',$optionIndex,'">&dArr;</a>
 			</td>
 		</tr>
 	';
@@ -260,11 +260,11 @@ function theme_formsSidebarsTableRow($data,$sideBar,$action,$count) {
 				<td class="name">',$sideBar['name'],'</td>
 				<td>', ($sideBar['enabled'] ? 'Yes' : 'No'), '</td>
 				<td class="buttonList">
-					<a href="', $data->linkRoot, 'admin/forms/sidebars/', $data->output['formItem']['id'], '/', $action, '/', $sideBar['id'], '">
+					<a href="', $data->linkRoot, 'admin/dynamic-forms/sidebars/', $data->output['formItem']['id'], '/', $action, '/', $sideBar['id'], '">
 						', ucfirst($action), '
 					</a>
-					<a href="',$data->linkRoot,'admin/forms/sidebars/',$data->output['formItem']['id'],'/moveUp/',$sideBar['id'],'" title="Move Up">&uArr;</a>
-					<a href="',$data->linkRoot,'admin/forms/sidebars/',$data->output['formItem']['id'],'/moveDown/',$sideBar['id'],'" title="Move Down">&dArr;</a>
+					<a href="',$data->linkRoot,'admin/dynamic-forms/sidebars/',$data->output['formItem']['id'],'/moveUp/',$sideBar['id'],'" title="Move Up">&uArr;</a>
+					<a href="',$data->linkRoot,'admin/dynamic-forms/sidebars/',$data->output['formItem']['id'],'/moveDown/',$sideBar['id'],'" title="Move Down">&dArr;</a>
 				</td>
 			</tr>';
 }

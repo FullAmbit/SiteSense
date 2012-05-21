@@ -24,7 +24,7 @@
 */
 function admin_formsBuild($data,$db){
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -35,7 +35,7 @@ function admin_formsBuild($data,$db){
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'form');
+	$statement = $db->prepare('getFormById', 'admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$form = $statement->fetch();
 	if($form === false){
@@ -50,12 +50,12 @@ function admin_formsBuild($data,$db){
 	{
 		case 'moveUp':
 		case 'moveDown':
-			$qHandle = $db->prepare('getFieldById','form');
+			$qHandle = $db->prepare('getFieldById','admin_dynamicForms');
 			$qHandle->execute(array(':id' => $data->action[5]));
 			
 			if($fieldItem = $qHandle->fetch())
 			{				
-				$statement = $db->prepare('countFieldsByForm','form');
+				$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
 				$statement->execute(array(':formId' => $form['id']));
 				list($rowCount) = $statement->fetch();
 				
@@ -69,12 +69,12 @@ function admin_formsBuild($data,$db){
 				
 				if(isset($query1))
 				{
-					$statement = $db->prepare($query1,'form');
+					$statement = $db->prepare($query1,'admin_dynamicForms');
 					$statement->execute(array(
 						':sortOrder' => $fieldItem['sortOrder'],
 						':formId' => $fieldItem['form']
 					));
-					$statement = $db->prepare($query2,'form');
+					$statement = $db->prepare($query2,'admin_dynamicForms');
 					$statement->execute(array(
 						':id' => $fieldItem['id']
 					));
@@ -83,7 +83,7 @@ function admin_formsBuild($data,$db){
 		break;
 	}
 	
-	$statement = $db->prepare('getFieldsByForm', 'form');
+	$statement = $db->prepare('getFieldsByForm', 'admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
 }

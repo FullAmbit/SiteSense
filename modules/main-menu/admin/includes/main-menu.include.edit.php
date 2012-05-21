@@ -77,10 +77,10 @@ function admin_mainMenuBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>MenuItem Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/mainMenu/add/">
+						<a href="'.$data->linkRoot.'admin/main-menu/add/">
 							Add New Menu Item
 						</a>
-						<a href="'.$data->linkRoot.'admin/mainMenu/list/">
+						<a href="'.$data->linkRoot.'admin/main-menu/list/">
 							Return to MenuItem List
 						</a>
 					</div>';

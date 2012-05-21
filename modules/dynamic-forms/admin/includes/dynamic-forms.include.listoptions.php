@@ -24,7 +24,7 @@
 */
 function admin_formsBuild($data,$db){
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -35,7 +35,7 @@ function admin_formsBuild($data,$db){
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFieldById', 'form');
+	$statement = $db->prepare('getFieldById', 'admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['fieldItem'] = $statement->fetch();
 	if($data->output['fieldItem'] === false || $data->output['fieldItem']['type'] !== 'select'){
@@ -69,7 +69,7 @@ function admin_formsBuild($data,$db){
 			usort($optionArray,'sortCmp');
 			
 			$options = serialize($optionArray);
-			$statement = $db->prepare('updateOptions', 'form');
+			$statement = $db->prepare('updateOptions', 'admin_dynamicForms');
 			$statement->execute(array(
 				':options' => $options,
 				':fieldId' => $data->action[3]
@@ -77,7 +77,7 @@ function admin_formsBuild($data,$db){
 		break;
 	}
 	// Get Options
-	$statement = $db->prepare('getOptionsByFieldId','form');
+	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
 	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
 	$optionsSerialized = $statement->fetch();
 	$optionList = unserialize($optionsSerialized[0]);

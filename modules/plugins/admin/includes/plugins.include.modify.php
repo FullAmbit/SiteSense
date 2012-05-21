@@ -52,7 +52,7 @@ function admin_pluginsBuild($data,$db) {
 	// Load The Form
 	$data->output['pluginForm']=new formHandler('pluginEdit',$data,true);
 	// Load The List Of Modules
-	$statement = $db->prepare('getEnabledModules','modules');
+	$statement = $db->prepare('getEnabledModules','admin_modules');
 	$statement->execute();
 	$moduleList = $statement->fetchAll();
 	// Insert Modules Into FormHandler

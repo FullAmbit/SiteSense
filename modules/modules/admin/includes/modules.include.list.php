@@ -62,7 +62,7 @@ function admin_modulesBuild($data,$db) {
 		}
 	}
 	// Insert new modules into the database
-	$insert=$db->prepare('newModule','modules');
+	$insert=$db->prepare('newModule','admin_modules');
 	foreach($fileModules as $fileModule) {
 		$found=false;
 		foreach($data->output['modules'] as $dbModule) {

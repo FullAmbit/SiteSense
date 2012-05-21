@@ -146,9 +146,9 @@ function itemRow($data,$item,$level)
 	
 	if($item['enabled'] == '0')
 		{
-			$enable = '<a href="'.$data->linkRoot.'admin/mainMenu/enable/'.$item['id'].'/" title="Enable">Enable</a>';
+			$enable = '<a href="'.$data->linkRoot.'admin/main-menu/enable/'.$item['id'].'/" title="Enable">Enable</a>';
 		} else {
-			$enable = '<a href="'.$data->linkRoot.'admin/mainMenu/disable/'.$item['id'].'/" title="Disable">Disable</a>';
+			$enable = '<a href="'.$data->linkRoot.'admin/main-menu/disable/'.$item['id'].'/" title="Disable">Disable</a>';
 		}
 		theme_menuItemRow($level,$data,$item,$enable);
 }

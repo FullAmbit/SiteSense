@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_sideBarsBuild($data,$db) {
+function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('sidebars_delete','core',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
@@ -33,7 +33,7 @@ function admin_sideBarsBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		$qHandle=$db->prepare('getFromFileById','admin_sideBars');
+		$qHandle=$db->prepare('getFromFileById','admin_sidebars');
 		$qHandle->execute(array(
 			':id' => $data->action[3]
 		));
@@ -44,15 +44,15 @@ function admin_sideBarsBuild($data,$db) {
 			} else if (checkPermission('canDeleteSideBarItem','core',$data)) {
 				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
-						$qHandle=$db->prepare('deleteById','admin_sideBars');
+						$qHandle=$db->prepare('deleteById','admin_sidebars');
 						$qHandle->execute(array(
 							':id' => $data->action[3]
 						));
 						//--Delete Form, Page, and Module Setting For Sidebar--//
 						$vars = array(':sidebar' => $data->action[3]);
 						
-						$q1 = $db->prepare('deleteSideBarSettingBySideBar','form');
-						$q2 = $db->prepare('deleteSideBarSettingBySideBar','modules');
+						$q1 = $db->prepare('deleteSideBarSettingBySideBar','admin_dynamic-form');
+						$q2 = $db->prepare('deleteSideBarSettingBySideBar','admin_modules');
 						$q3 = $db->prepare('deleteSideBarSettingBySideBar','admin_pages');
 						
 						$q1->execute($vars);
@@ -78,8 +78,8 @@ function admin_sideBarsBuild($data,$db) {
 		}
 	}
 }
-function admin_sideBarsShow($data) {
-	$aRoot=$data->linkRoot.'admin/sideBars/';
+function admin_sidebarsShow($data) {
+	$aRoot=$data->linkRoot.'admin/sidebars/';
 	if (empty($data->output['rejectError'])) {
 		switch ($data->output['delete']) {
 			case 'deleted':

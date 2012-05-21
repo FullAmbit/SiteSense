@@ -51,7 +51,7 @@ function admin_pagesBuild($data,$db)
 	{
 		$i = $rowCount;
 		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','admin_sideBars');
+		$statement = $db->prepare('getAllSideBars','admin_sidebars');
 		$statement->execute();
 		$sideBarList = $statement->fetchAll();
 		foreach($sideBarList as $sideBarItem)

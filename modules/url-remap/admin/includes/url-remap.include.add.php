@@ -50,10 +50,10 @@ function admin_urlremapsBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Remap Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/urlremap/add">
+						<a href="'.$data->linkRoot.'admin/url-remap/add">
 							Add New URL Remap
 						</a>
-						<a href="'.$data->linkRoot.'admin/urlremap/list/">
+						<a href="'.$data->linkRoot.'admin/url-remap/list/">
 							Return to URL Remap List
 						</a>
 					</div>';

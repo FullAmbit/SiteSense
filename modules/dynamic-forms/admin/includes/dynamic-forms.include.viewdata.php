@@ -24,7 +24,7 @@
 */
 function admin_formsBuild($data,$db){
 	//permission check for forms access
-	if(!checkPermission('viewData','forms',$data)) {
+	if(!checkPermission('viewData','admin_dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -35,7 +35,7 @@ function admin_formsBuild($data,$db){
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'form');
+	$statement = $db->prepare('getFormById', 'admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$form = $statement->fetch();
 	if($form === false){
@@ -44,7 +44,7 @@ function admin_formsBuild($data,$db){
 		return;
 	}
 	$data->output['form'] = $form;
-	$statement = $db->prepare('getFieldsByForm', 'form');
+	$statement = $db->prepare('getFieldsByForm', 'admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
 	$statement = $db->prepare('getRowsByForm', 'form');
