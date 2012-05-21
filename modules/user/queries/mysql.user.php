@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function user_addQueries() {
+function users_addQueries() {
 	return array(
 		'getAllUsers' => '
 			SELECT * FROM !prefix!users ORDER BY id ASC

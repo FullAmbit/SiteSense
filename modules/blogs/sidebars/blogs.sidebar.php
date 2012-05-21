@@ -22,15 +22,31 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicForms_config($data,$db) {
-	//permission check for forms access
-	if (checkPermission('access','dynamic-forms',$data)) {
-		$data->admin['menu'][]=array(
-			'category'	=> 'Site Management',
-			'command' 	=> 'dynamic-forms/list',
-			'name'			=> 'Forms',
-			'sortOrder' => 5
-		);
+$rssLink = isset($data->output['blogInfo']['rssOverride']{1}) ? $data->output['blogInfo']['rssOverride'] : $data->localRoot.'/rss';
+echo '
+			<div class="sidebarBox blogSidebar">
+				<div class="innerBox">
+
+					<div class="buttonWrapper">
+						<a href="',$rssLink,'" class="greenButton"><span>
+							<b></b>Subscribe
+							<i><!-- hover state precache --></i>
+						</span></a>
+					<!-- .buttonWrapper --></div>';
+// Loop Through Categories
+if($data->output['blogCategoryList']) {
+	echo '
+					<h2>Blog Categories</h2>
+					<ul>';
+	foreach($data->output['blogCategoryList'] as $categoryItem)
+	{
+			echo '
+						<li>
+							<a href="',$data->localRoot,'/categories/',$categoryItem['shortName'],'">',$categoryItem['name'],'</a>
+						</li>';	
 	}
-}
+	echo '
+					</ul>';
+	}
+theme_sideBarBoxFooter();
 ?>

@@ -53,15 +53,9 @@ function users_config($data,$db) {
 			);
 			$data->admin['menu'][]=array(
 				'category'  => 'User Management',
-				'command'   => 'users/list/staff',
-				'name'      => 'Staff Members',
-				'sortOrder' => 5
-			);
-			$data->admin['menu'][]=array(
-				'category'  => 'User Management',
 				'command'   => 'users/permissions',
 				'name'      => 'Permissions',
-				'sortOrder' => 6
+				'sortOrder' => 5
 			);
 		}
 	}

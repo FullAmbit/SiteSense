@@ -26,7 +26,7 @@ function sideBars_config($data,$db) {
 	if (checkPermission('settings_access','core',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
-			'command' 	=> 'sideBars/list',
+			'command' 	=> 'sidebars/list',
 			'name'			=> 'Sidebars',
 			'sortOrder' => 6
 		);

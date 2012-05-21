@@ -59,7 +59,7 @@ final class dynamicPDO extends PDO {
 		$this->loadModuleQueries('common',true);
 	}
 	public function loadCommonQueryDefines($dieOnError=false) {
-		$target='queries/'.$this->sqlType.'/common.query.defines.php';
+		$target='modules/common/queries/'.$this->sqlType.'.defines.php';
 		if (file_exists($target)) {
 			require_once($target);
 			return true;
@@ -68,8 +68,16 @@ final class dynamicPDO extends PDO {
 		} else return false;
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) {
-		$target='queries/'.$this->sqlType.'/'.$moduleName.'.queries.php';
-		if (file_exists($target)) {
+        $target='modules/'.$moduleName.'/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+        $pos=strpos($moduleName,'admin_');
+        if(!($pos===false)) {
+            $moduleNameOnly=substr($moduleName,6);
+            $target='admin/'.$moduleNameOnly.'/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.php';
+        }
+        if($moduleName=='admin') {
+            $target='admin/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+        }
+        if (file_exists($target)) {
 			require_once($target);
 			$loader=$moduleName.'_addQueries';
 			$this->queries[$moduleName]=$loader();
@@ -81,7 +89,7 @@ final class dynamicPDO extends PDO {
 	private function prepQuery($queryName,$module,$tableName) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
-			$this->loadModuleQueries($module);
+            $this->loadModuleQueries($module);
 		}
 		if (isset($this->queries[$module][$queryName])) {
 			return str_replace(
@@ -224,37 +232,6 @@ final class sitesense {
 			die; // technically install.php should die at end, but to be sure...
 		}
 
-        // Check to see if the IP is banned
-        $clientIp=$_SERVER['REMOTE_ADDR'];
-		$statement=$this->db->prepare('checkIpBan','users');
-		$statement->execute(array(
-			':ip' => $clientIp
-		));		
-		if($banItem=$statement->fetch()) {
-			// Check Expiration Time
-			if(time() > $banItem['expiration'])
-			{
-				// You served your time, let's remove your ban.
-				$statement = $this->db->prepare('removeBan','users');
-				$statement->execute(array(
-					':id' => $banItem['id']
-				));
-				// Was There A User Associated With This?
-				if($banItem['userId'] !== NULL)
-				{
-					$statement = $this->db->prepare('updateUserLevel','users');
-					$statement->execute(array(
-						':userId' => $banItem['userId'],
-						':userLevel' => $banItem['userLevel']
-					));
-				}
-			} else {
-				// You're still banned
-				$this->currentPage = 'banned';
-				$this->banned = true;
-			}
-		}
-
 		// Load settings
         $statement=$this->db->query('getSettings');
         while ($row=$statement->fetch()) {
@@ -328,7 +305,7 @@ final class sitesense {
 
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
 		if($this->currentPage != 'admin' && !$this->banned){
-			$moduleQuery = $this->db->prepare('getModuleByShortName', 'modules');
+			$moduleQuery = $this->db->prepare('getModuleByShortName', 'admin_modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
             // Does this module exist, and is it enabled?
@@ -336,7 +313,7 @@ final class sitesense {
 				if($this->module !== false){ // Exists, but is disabled.
 					$this->currentPage = 'pageNotFound';
 				}else if(file_exists('modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')){ // Exists in the file system, but not in the db.
-					$statement = $this->db->prepare('newModule', 'modules');
+					$statement = $this->db->prepare('newModule', 'admin_modules');
 					$statement->execute(
 						array(
 							':name' => $this->currentPage,
@@ -395,7 +372,7 @@ final class sitesense {
 			}
 			// If we didn't set the currentPage above, the page was not found.
             if($this->currentPage != 'pageNotFound'){
-				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'modules');
+				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'admin_modules');
 				$sideBarQuery->execute(
 					array(
 						':module' => $this->module['id']
@@ -557,7 +534,7 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules','modules');
+		$moduleQuery = $this->db->query('getEnabledModules','admin_modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
 			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
@@ -613,7 +590,7 @@ final class sitesense {
 		$this->loadModuleLanguage($this->currentPage);
 		// Get the plugins for this module
 		
-		$statement=$this->db->query('getEnabledPlugins','plugins');
+		$statement=$this->db->query('getEnabledPlugins');
 		$plugins=$statement->fetchAll();
 		foreach($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');

@@ -225,7 +225,7 @@ if (
         $moduleFiles
     );
     // Insert new modules into the database
-    $insert=$data->prepare('newModule','modules');
+    $insert=$data->prepare('newModule');
     foreach($fileModules as $fileModule) {
         $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
         $insert->execute(
@@ -272,46 +272,7 @@ if (
     // Set up default permission groups
     $defaultPermissionGroups=array(
       // Admin has universal access by defaul, this list is commented just for reference on full list
-		'Administrators' => array(
-            /*// Core
-            'core_access',
-
-            'core_dashboard_access',
-
-            'core_mainMenu_access',
-            'core_mainMenu_add',
-            'core_mainMenu_delete',
-            'core_mainMenu_disable',
-            'core_mainMenu_edit',
-            'core_mainMenu_enable',
-            'core_mainMenu_list',
-
-            'core_modules_access',
-            'core_modules_disable',
-            'core_modules_edit',
-            'core_modules_enable',
-            'core_modules_list',
-
-            'core_plugins_access',
-            'core_plugins_edit',
-            'core_plugins_disable',
-            'core_plugins_enable',
-            'core_plugins_list',
-
-            'core_settings_access',
-
-            'core_sidebars_access',
-            'core_sidebars_add',
-            'core_sidebars_delete',
-            'core_sidebars_edit',
-            'core_sidebars_list',
-
-            'core_urlRemap_access',
-            'core_urlRemap_add',
-            'core_urlRemap_delete',
-            'core_urlRemap_edit',
-            'core_urlRemap_list'*/
-        ),
+		'Administrators' => array(),
 		'Writer' => array(
             'core_access',
 
@@ -364,7 +325,7 @@ if (
             );
         }
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement=$data->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,

@@ -94,7 +94,7 @@ function admin_sideBarsBuild($data,$db) {
 	$data->output['sideBars']=$qHandle->fetchAll();
 }
 function admin_sideBarsShow($data) {
-	$aRoot=$data->linkRoot.'admin/sideBars/';
+	$aRoot=$data->linkRoot.'admin/sidebars/';
 	theme_sideBarsListAddNewButton($aRoot);
 	if (empty($data->output['sideBars'])) {
 		theme_sideBarsListNoSidebars();
@@ -109,8 +109,8 @@ function admin_sideBarsShow($data) {
 				$titleEndTag='</b>'.$titleEndTag;
 			}
 			if ($item['fromFile']) {
-				$titleStartTag.='/sideBars/';
-				$titleEndTag='.sideBar.php'.$titleEndTag;
+				$titleStartTag.='/sidebars/';
+				$titleEndTag='.sidebar.php'.$titleEndTag;
 			} else {
 				$titleStartTag.='<a href="'.$aRoot.'edit/'.$item['id'].'">';
 				$titleEndTag='</a>'.$titleEndTag;
