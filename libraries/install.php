@@ -172,14 +172,14 @@ if (
 
     // Install modules
     $coreModules = array(
-        'forms',
+        'dynamic-forms',
         'default',
         'blogs',
         'pages',
         'login',
         'logout',
         'register',
-        'user'
+        'users'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
@@ -200,7 +200,7 @@ if (
                 if(!function_exists($targetFunction)) {
                     $data->output['rejectError']='Improper installation file';
                     $data->output['rejectText']='The module install function could not be found within the module installation file.';
-                } else if($moduleName=='user')
+                } else if($moduleName=='users')
                     $newPassword=$targetFunction($data,$drop);
                 else $targetFunction($data,$drop);
             } else if ($drop) {

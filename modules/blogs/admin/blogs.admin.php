@@ -36,7 +36,7 @@ function admin_buildContent($data,$db) {
 			));
 		}
 	}
-	$target='admin/blogs/blogs.include.'.$data->action[2].'.php';
+	$target='blogs/admin/includes/blogs.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];

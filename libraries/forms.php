@@ -80,7 +80,7 @@ class formHandler {
 		$this->randomName = substr(md5(rand() * time()),0,10);
 		$this->formPrefix = $dataName . '_';
 		$this->fromForm = $dataName;
-		require_once(($admin ? 'admin/'.$data->action[1] : $data->action[0]).'/forms/'.$dataName.'.formArray.php');
+		require_once('modules/'.($admin ? $data->action[1].'/admin' : $data->action[0]).'/forms/'.$dataName.'.formArray.php');
 		//And some defaults for the form items.
 		$defaults = array(
 			'params' => array(),

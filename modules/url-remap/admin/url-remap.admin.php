@@ -44,7 +44,7 @@ function admin_buildContent($data,$db) {
 		$statement=$db->query('getAllUrlRemaps','admin_urlremap');
 		$data->output['urlremapList']=$statement->fetchAll();
 	}
-	$target='admin/urlremap/urlremap.include.'.$data->action[2].'.php';
+	$target='urlremap/admin/urlremap.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];

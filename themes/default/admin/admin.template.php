@@ -38,7 +38,7 @@ function theme_header($data) {
 <link
 	type="text/css"
 	rel="stylesheet"
-	href="',$data->linkRoot,'admin/themes/default/admin.screen.css"
+	href="',$data->linkRoot,'themes/default/admin/admin.screen.css"
 	media="screen,projection,tv"
 />';
 foreach($data->plugins as $key => $pluginObj)

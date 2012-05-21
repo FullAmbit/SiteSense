@@ -25,7 +25,6 @@
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
-require_once('libraries/defines.php');
 
 final class dynamicPDO extends PDO {
     public  $sessionPrefix;
@@ -74,8 +73,8 @@ final class dynamicPDO extends PDO {
             $moduleNameOnly=substr($moduleName,6);
             $target='modules/'.$moduleNameOnly.'/admin/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.php';
         }
-        if($moduleName=='admin') {
-            $target='libaries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+        if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
+            $target='libraries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
         }
         if (file_exists($target)) {
 			require_once($target);
@@ -561,7 +560,6 @@ final class sitesense {
 		if ($this->currentPage=='admin' && !$this->banned) {
 			common_include('themes/default/admin/admin.template.php');
 			common_include('libraries/admin.php');
-			$this->loadModuleLanguage('admin');
 		} else {
 			
 			if (
@@ -586,8 +584,6 @@ final class sitesense {
 			$this->loadModuleTemplate('common');
 			$this->loadModuleTemplate($this->module['name']);
 		}
-		$this->loadModuleLanguage('common');
-		$this->loadModuleLanguage($this->currentPage);
 		// Get the plugins for this module
 		
 		$statement=$this->db->query('getEnabledPlugins');

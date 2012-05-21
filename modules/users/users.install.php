@@ -22,13 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function user_settings($data) {
+function users_settings($data) {
 	return array(
-		'name' => 'user',
-		'shortName' => 'user'
+		'name' => 'users',
+		'shortName' => 'users'
 	);
 }
-function user_install($data,$drop=false) {
+function users_install($data,$drop=false) {
 	$structures = array(
 		'users' => array(
 			'id'                  => SQR_IDKey,
