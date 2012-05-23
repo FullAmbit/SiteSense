@@ -32,7 +32,7 @@ function admin_blogsBuild($data,$db)
 		return;
 	}
 	// Get The Comment Info So Far
-	$statement = $db->prepare('getCommentById','admin_blogcomments');
+	$statement = $db->prepare('getCommentById','blogs');
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['commentItem'] = $statement->fetch();
 	
@@ -44,7 +44,7 @@ function admin_blogsBuild($data,$db)
 	**/
 
     if(checkPermission('commentApprove','blogs',$data))	{
-		$statement = $db->prepare('getBlogByPost','admin_blogs');
+		$statement = $db->prepare('getBlogByPost','blogs');
 		$statement->execute(array(
 			':postId' => $data->output['commentItem']['post']
 		));
@@ -64,7 +64,7 @@ function admin_blogsBuild($data,$db)
     }
 	
 	// Approve Comment
-	$statement = $db->prepare('approveComment','admin_blogcomments');
+	$statement = $db->prepare('approveComment','blogs');
 	$statement->execute(array(':id' => $data->action[3]));
 	
 	if (empty($data->output['secondSideBar'])) {

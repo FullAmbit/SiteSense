@@ -33,11 +33,11 @@ function admin_buildContent($data,$db) {
 		return;
 	}
 	$data->output['settingsForm']=new formHandler('settings',$data,true);
-	$getModules = $db->query('getEnabledModules', 'admin_modules');
+	$getModules = $db->query('getEnabledModules', 'modules');
 	$modules = $getModules->fetchAll();
 	// All Enabled Modules
 	foreach($modules as $module){
-		if($module['shortName'] == 'page' || $module['shortName'] == 'ajax' || $module['shortName'] == 'user') continue;
+		if($module['shortName'] == 'pages' || $module['shortName'] == 'ajax' || $module['shortName'] == 'users') continue;
 		$option = array(
 			'text' => $module['shortName'],
 			'value' => $module['shortName'],
@@ -46,7 +46,7 @@ function admin_buildContent($data,$db) {
 		$data->output['settingsForm']->fields['homepage']['options'][] = $option;
 	}
 	// Get All Top Level Pages //
-	$statement = $db->prepare('getTopLevelPages','admin_pages');
+	$statement = $db->prepare('getTopLevelPages','pages');
 	$statement->execute();
 	$pageList = $statement->fetchAll();
 	if(count($pageList) > 0)
@@ -62,7 +62,7 @@ function admin_buildContent($data,$db) {
 		}
 	}
 	// Get All CDN Plugins //
-	$statement = $db->prepare('getCDNPlugins','admin_plugins');
+	$statement = $db->prepare('getCDNPlugins','plugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	foreach($pluginList as $pluginItem)
@@ -74,7 +74,7 @@ function admin_buildContent($data,$db) {
 		$data->output['settingsForm']->fields['cdnPlugin']['options'][] = $option;
 	}
 	// Get All WYSIWYG Plugins //
-	$statement = $db->prepare('getEditorPlugins','admin_plugins');
+	$statement = $db->prepare('getEditorPlugins','plugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	foreach($pluginList as $pluginItem)
@@ -87,7 +87,7 @@ function admin_buildContent($data,$db) {
 		$data->output['settingsForm']->fields['jsEditor']['options'][] = $option;
 	}
 	// Get All Blogs/
-	$statement = $db->prepare('getAllBlogs','admin_blogs');
+	$statement = $db->prepare('getAllBlogs','blogs');
 	$statement->execute();
 	$blogList = $statement->fetchAll();
 	foreach($blogList as $blogItem)
@@ -127,7 +127,7 @@ function admin_buildContent($data,$db) {
 			if(isset($data->output['settingsForm']->fields['parsedFooterContent']['newValue']))
 				$data->output['settingsForm']->fields['parsedFooterContent']['updated']='newValue';
 			// Loop Through Form Fields //
-			$statement=$db->prepare('updateSettings','admin_settings');
+			$statement=$db->prepare('updateSettings','settings');
 			foreach ($data->output['settingsForm']->fields as $fieldKey => $fieldData) {
 				if (!empty($fieldData['updated'])) {
 					$data->output['secondSideBar'].='

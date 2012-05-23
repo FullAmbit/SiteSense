@@ -34,7 +34,7 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='moveDown')
 		) {
 			
-			$qHandle=$db->prepare('getSortOrderById','admin_sideBars');
+			$qHandle=$db->prepare('getSortOrderById','sideBars');
 			$qHandle->execute(array(
 				':id' => $data->action[4]
 			));
@@ -52,11 +52,11 @@ function admin_sidebarsBuild($data,$db) {
 				  if(isset($query1))
 				  {
 					 
-					  $statement = $db->prepare($query1,'admin_sideBars');
+					  $statement = $db->prepare($query1,'sideBars');
 					  $statement->execute(array(
 						  ':sortOrder' => $item['sortOrder']
 					  ));
-					  $statement = $db->prepare($query2,'admin_sideBars');
+					  $statement = $db->prepare($query2,'sideBars');
 					  $statement->execute(array(
 						  ':id' => $item['id']
 					  ));
@@ -66,7 +66,7 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='enable') ||
 			($data->action[3]=='disable')
 		) {
-			$qHandle=$db->prepare('updateEnabledById','admin_sideBars');
+			$qHandle=$db->prepare('updateEnabledById','sideBars');
 			$qHandle->execute(array(
 				':enabled' => ($data->action[3]=='enable'),
 				':id' => $data->action[4]
@@ -75,12 +75,12 @@ function admin_sidebarsBuild($data,$db) {
 		if($data->action[3] == 'switch')
 		{
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getById','admin_sidebars');
+				$statement=$db->prepare('getById','sidebars');
 				$statement->execute(array(
 					':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
-					$statement=$db->prepare('updateSideById','admin_sidebars');
+					$statement=$db->prepare('updateSideById','sidebars');
 					$statement->execute(array(
 						':side' => ( $item['side']=='left' ? 'right' : 'left' ),
 						':id' => $item['id']
@@ -89,7 +89,7 @@ function admin_sidebarsBuild($data,$db) {
 			}
 		}
 	}
-	$qHandle=$db->prepare('getAllOrdered','admin_sidebars');
+	$qHandle=$db->prepare('getAllOrdered','sidebars');
 	$qHandle->execute();
 	$data->output['sideBars']=$qHandle->fetchAll();
 }

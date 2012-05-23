@@ -34,13 +34,13 @@ function admin_blogsBuild($data,$db) {
 			 *	Thus, check to see if the user owns this blog.
 			*/
 			if(!checkPermission('accessOthers','blogs',$data)) {
-				$qHandle=$db->prepare('getBlogByIdAndOwner','admin_blogs');
+				$qHandle=$db->prepare('getBlogByIdAndOwner','blogs');
 				$qHandle->execute(array(
 					':id' => $data->action[3],
 					':owner' => $data->user['id']
 				));
 			} else {
-				$qHandle=$db->prepare('getBlogById','admin_blogs');
+				$qHandle=$db->prepare('getBlogById','blogs');
 				$qHandle->execute(array(
 					':id' => $data->action[3]
 				));
@@ -53,13 +53,13 @@ function admin_blogsBuild($data,$db) {
 			
 			if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
-					$qHandle=$db->prepare('deleteBlogById','admin_blogs');
+					$qHandle=$db->prepare('deleteBlogById','blogs');
 					$qHandle->execute(array(
 						':id' => $data->action[3]
 					));
 					$data->output['deleteCount']=$qHandle->rowCount();
 					if ($data->output['deleteCount']>0) {
-						$qHandle=$db->prepare('deleteBlogPostByBlogId','admin_blogs');
+						$qHandle=$db->prepare('deleteBlogPostByBlogId','blogs');
 						//$qHandle->execute(array(
 							//':id' => $data->action[3]
 						//));

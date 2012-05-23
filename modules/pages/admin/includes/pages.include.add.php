@@ -46,7 +46,7 @@ function admin_pagesBuild($data,$db)
 		$shortName = common_generateShortName($_POST[$data->output['pageForm']->formPrefix.'name']);
 		$data->output['pageForm']->sendArray[':shortName'] = $shortName;
 		
-		$statement = $db->prepare('getExistingShortNames','admin_pages');
+		$statement = $db->prepare('getExistingShortNames','pages');
 		$statement->execute();
 		//if(count($pageShortNameList = $statement->fetchAll())){
 		//	echo 'test';
@@ -63,7 +63,7 @@ function admin_pagesBuild($data,$db)
 		if ($data->output['pageForm']->validateFromPost())
 		{
 			// Get Sort Order
-			$statement = $db->prepare('countPagesByParent','admin_pages');
+			$statement = $db->prepare('countPagesByParent','pages');
 			$statement->execute(array(':parent' => $data->output['pageForm']->sendArray[':parent']));
 			list($rowCount) = $statement->fetch();
 			
@@ -87,7 +87,7 @@ function admin_pagesBuild($data,$db)
 				$rowCount = $db->countRows('main_menu');
 				$sortOrder = $rowCount + 1;
 				
-				$statement = $db->prepare('newMenuItem','admin_mainMenu');
+				$statement = $db->prepare('newMenuItem','mainMenu');
 				$statement->execute(array(
 					':text' => $title,
 					':title' => $title,
@@ -107,7 +107,7 @@ function admin_pagesBuild($data,$db)
 			
 			
 			// Save To DB
-			var_dump($statement = $db->prepare('insertPage','admin_pages'));
+			var_dump($statement = $db->prepare('insertPage','pages'));
 			var_dump($data->output['pageForm']->sendArray);
 			if($statement->execute($data->output['pageForm']->sendArray)) {
 				
@@ -144,7 +144,7 @@ function admin_pageOptions($db, $Parent = -1, $Level = 0){ // Using a function i
 		$options[] = array('value' => 0, 'text' => 'Site Root');
 		$options = array_merge($options, admin_pageOptions($db, 0, 1));
 	}else{
-		$statement = $db->prepare('getPageListByParent', 'admin_pages');
+		$statement = $db->prepare('getPageListByParent', 'pages');
 		$statement->execute(array(':parent' => $Parent));
 		while($item = $statement->fetch()){
 			$options[] = array(

@@ -87,7 +87,7 @@ function admin_buildContent($data,$db) {
 	 * 1 = Version
 	**/
 	// Update Attribution Setting In The DB
-	$statement = $db->prepare('updateSettings','admin_settings');
+	$statement = $db->prepare('updateSettings','settings');
 	$statement->execute(array(
 		':name' => 'removeAttribution',
 		':value' => $data->output['result'][0]

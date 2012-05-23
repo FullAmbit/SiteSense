@@ -101,7 +101,7 @@ function admin_mainMenuRebuild($data,$db) {
 	}
 	$sortstatement = $db->prepare('insertMenuItemWithSortAndSide', 'admin');
 	$deletePages = $db->query('deletePageMenuItems', 'admin');
-	$pageQuery = $db->query('getMenuPages', 'admin_pages');
+	$pageQuery = $db->query('getMenuPages', pages');
 	while($item = $pageQuery->fetch()){
 		if(isset($pages[$item['shortName']])){
 			$sortstatement->execute(array(

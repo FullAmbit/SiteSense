@@ -172,7 +172,7 @@ if (
 
     // Install modules
     $coreModules = array(
-        'dynamic-forms',
+        'dynamicForms',
         'default',
         'blogs',
         'pages',

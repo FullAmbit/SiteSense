@@ -28,7 +28,7 @@ function admin_modulesBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $statement=$db->query('getAllModules','admin_modules');
+    $statement=$db->query('getAllModules','modules');
 	$data->output['modules']=$statement->fetchAll();
 	// Build an array of the names of the modules in the filesystem
 	$moduleFiles=glob('modules/*/*.module.php');
@@ -41,7 +41,7 @@ function admin_modulesBuild($data,$db) {
 		$moduleFiles
 	);
 	// Remove duplicate database entries
-	$delete=$db->prepare('deleteModule','admin_modules');
+	$delete=$db->prepare('deleteModule','modules');
 	foreach($data->output['modules'] as $dbModule) {
 		foreach($data->output['modules'] as $key => $dbModule2) {
 			if(isset($duplicatedModules))
@@ -62,7 +62,7 @@ function admin_modulesBuild($data,$db) {
 		}
 	}
 	// Insert new modules into the database
-	$insert=$db->prepare('newModule','admin_modules');
+	$insert=$db->prepare('newModule','modules');
 	foreach($fileModules as $fileModule) {
 		$found=false;
 		foreach($data->output['modules'] as $dbModule) {

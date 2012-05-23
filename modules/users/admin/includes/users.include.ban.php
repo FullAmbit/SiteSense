@@ -32,7 +32,7 @@ function admin_usersBuild($data,$db) {
 	}
 	$userId = $data->action[3];
 	// Check That User Exists And Can Be Banned
-	$statement = $db->prepare('getById','admin_users');
+	$statement = $db->prepare('getById','users');
 	$statement->execute(array(
 		':id' => $userId
 	));
@@ -72,7 +72,7 @@ function admin_usersBuild($data,$db) {
 		$ipResult = ($form->sendArray[':banIp']) ? '<br />The IP address <b>'.$userItem['registeredIP'].'</b> has been banned' : NULL;
 
 		//--Shift User To Ban Group--//
-		$statement = $db->prepare('updateUserLevel','admin_users');
+		$statement = $db->prepare('updateUserLevel','users');
 		$statement->execute(array(
 			':userId' => $userItem['id'],
 			':userLevel' => USERLEVEL_BANNED
@@ -84,7 +84,7 @@ function admin_usersBuild($data,$db) {
 		//--Insert Into Banned Table--//
 		$sqlVars[':userId'] = $userItem['id'];
 		$sqlVars[':userLevel'] = $userItem['userLevel'];
-		$statement = $db->prepare('addBan','admin_users');
+		$statement = $db->prepare('addBan','users');
 		$statement->execute($sqlVars) or die("WTF BRO");
 		
 		$data->output['savedOkMessage'] = '

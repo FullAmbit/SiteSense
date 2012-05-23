@@ -37,17 +37,17 @@ function admin_usersBuild($data,$db) {
 		if (checkPermission('delete','users',$data)) {
 			if (@$_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
-					$qHandle=$db->prepare('deleteUserById','admin_users');
+					$qHandle=$db->prepare('deleteUserById','users');
 					$qHandle->execute(array(
 						':id' => $data->action[3]
 					));
                     // Delete from user_groups
-                    $statement=$db->prepare('deleteUserFromUserGroups','admin_users');
+                    $statement=$db->prepare('deleteUserFromUserGroups','users');
                     $statement->execute(array(
                         ':userID' => $data->action[3]
                     ));
                     // Delete user specific permissions
-                    $statement=$db->prepare('deleteUserFromUserPermissions','admin_users');
+                    $statement=$db->prepare('deleteUserFromUserPermissions','users');
                     $statement->execute(array(
                         ':userID' => $data->action[3]
                     ));

@@ -148,7 +148,7 @@ function page_buildContent($data,$db) {
 		$data->output['summarize'] = true;
 		blog_buildContent($data,$db);
 		foreach($data->output['newsList'] as &$item){
-			$statement=$db->prepare('countCommentsByPost','blogcomments');
+			$statement=$db->prepare('countCommentsByPost','blogs');
 			$statement->execute(array('post' => $item['id']));
 			$item['commentCount'] = $statement->fetchColumn();
 		}
@@ -169,7 +169,7 @@ function page_buildContent($data,$db) {
 		}
 		$data->output['summarize'] = true;
 		foreach($data->output['newsList'] as &$item){
-			$statement=$db->prepare('countCommentsByPost','blogcomments');
+			$statement=$db->prepare('countCommentsByPost','blogs');
 			$statement->execute(array('post' => $item['id']));
 			$item['commentCount'] = $statement->fetchColumn();
 		}
@@ -196,7 +196,7 @@ function page_buildContent($data,$db) {
 		}
 		$data->output['summarize'] = true;
 		foreach($data->output['newsList'] as &$item){
-			$statement=$db->prepare('countCommentsByPost','blogcomments');
+			$statement=$db->prepare('countCommentsByPost','blogs');
 			$statement->execute(array('post' => $item['id']));
 			$item['commentCount'] = $statement->fetchColumn();
 		}
@@ -225,7 +225,7 @@ function page_buildContent($data,$db) {
 				$data->output['commentForm']->populateFromPostData();
 				if ($data->output['commentForm']->validateFromPost())
 				{
-					$statement=$db->prepare('makeComment','blogcomments');
+					$statement=$db->prepare('makeComment','blogs');
 					//$data->output['commentForm']->sendArray[':comment'] = htmlspecialchars($data->output['commentForm']->sendArray[':comment']);
 					
 					// BBCode Parsing //
@@ -252,12 +252,12 @@ function page_buildContent($data,$db) {
 	// Call The Theme Functions And Generate The Post
 	foreach($data->output['newsList'] as &$item)
 	{
-		$statement=$db->prepare('getApprovedCommentsByPost','blogcomments');
+		$statement=$db->prepare('getApprovedCommentsByPost','blogs');
 		$statement->execute(array('post' => $item['id']));
 		$item['comments'] = $statement->fetchAll();
 		$item['commentCount'] = count($item['comments']);
 		// Get A Count Of All Comments Awaiting Approval
-		$statement = $db->prepare('getCommentsAwaitingApproval','blogcomments');
+		$statement = $db->prepare('getCommentsAwaitingApproval','blogs');
 		$statement->execute(array('post' => $item['id']));
 		$result = $statement->fetch();
 		$item['commentsWaiting'] = intval($result[0]);

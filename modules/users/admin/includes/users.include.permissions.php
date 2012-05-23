@@ -40,7 +40,7 @@ function admin_usersBuild($data,$db) {
 		return;
 	}
 	if(empty($data->action[3])){ // Display List of Groups
-        $statement=$db->query('getAllGroups','admin_users');
+        $statement=$db->query('getAllGroups','users');
         $data->output['groupList']=$statement->fetchAll();
     } elseif($data->action[3]=='group') {
         if($data->action[4]=='add') { //Add a new Group
@@ -117,7 +117,7 @@ function admin_usersBuild($data,$db) {
             ));
             $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
 
-            $statement=$db->query('getAllGroups','admin_users');
+            $statement=$db->query('getAllGroups','users');
             $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
             $existing=false;
             foreach($groupList as $key => $value) {
@@ -235,14 +235,14 @@ function admin_usersBuild($data,$db) {
                 if (@$_POST['fromForm']==$data->action[5]) {
                     if (!empty($_POST['delete'])) {
                         $success=false;
-                        $statement=$db->prepare('removeGroupFromGroup_permissions','admin_users');
+                        $statement=$db->prepare('removeGroupFromGroup_permissions','users');
                         $statement->execute(array(
                             ':groupName' => $data->action[5]
                         ));
                         if($statement->rowCount()>0) {
                             $success = true;
                         }
-                        $statement=$db->prepare('removeGroupFromUsersPermission_groups','admin_users');
+                        $statement=$db->prepare('removeGroupFromUsersPermission_groups','users');
                         $statement->execute(array(
                             ':groupName' => $data->action[5]
                         ));

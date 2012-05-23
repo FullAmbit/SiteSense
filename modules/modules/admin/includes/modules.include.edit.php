@@ -33,7 +33,7 @@ function admin_modulesBuild($data,$db) {
 		$existing = false;
 	}else{
 		$existing = (int)$data->action[3];
-		$check = $db->prepare('getModuleById', 'admin_modules');
+		$check = $db->prepare('getModuleById', 'modules');
 		$check->execute(array(':id' => $existing));
 		if(($data->output['module'] = $check->fetch()) === false){
 			$data->output['abort'] = true;

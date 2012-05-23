@@ -27,7 +27,7 @@ function admin_blogsBuild($data,$db)
 {
 	if(is_numeric($data->action[3])) {
 		// Retrieve Comment
-		$statement = $db->prepare('getCommentById','blogcomments');
+		$statement = $db->prepare('getCommentById','blogs');
 		$statement->execute(array(':blogId' => $data->action[3]));
 		if(($data->output['commentItem'] = $statement->fetch()) === FALSE)	{
 			$data->output['abort'] = true;
@@ -36,7 +36,7 @@ function admin_blogsBuild($data,$db)
 		}
 
 		if(checkPermission('commentEdit','blogs',$data)) {
-			$statement = $db->prepare('getBlogByPost','admin_blogs');
+			$statement = $db->prepare('getBlogByPost','blogs');
 			$statement->execute(array(
 				':postId' => $data->output['commentItem']['post']
 			));
@@ -73,7 +73,7 @@ function admin_blogsBuild($data,$db)
 					$data->output['commentItemForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['commentItemForm']->sendArray[':rawContent']);
 				}
 				// SQL Save Statement
-				$statement = $db->prepare('editCommentById','blogcomments');
+				$statement = $db->prepare('editCommentById','blogs');
 				$data->output['commentItemForm']->sendArray[':id'] = $data->action[3];
 				//var_dump($data->output['commentItemForm']->sendArray);
 				$statement->execute($data->output['commentItemForm']->sendArray) or die('Saving Comment Item Failed');

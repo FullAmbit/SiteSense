@@ -31,13 +31,13 @@ function admin_blogsBuild($data,$db) {
     if (is_numeric($data->action[3])) {
 		//---If You're a Blogger, You Can Only Load Your OWN Blog--//
 		if(!checkPermission('accessOthers','blogs',$data)) {
-			$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
+			$check = $db->prepare('getBlogByIdAndOwner','blogs');
 			$check->execute(array(
 				':id' => $data->action[3],
 				':owner' => $data->user['id']
 			));
 		} else {
-			$check = $db->prepare('getBlogById','admin_blogs');
+			$check = $db->prepare('getBlogById','blogs');
 			$check->execute(array(':id' => $data->action[3]));
 		}
 		// Check For Results
@@ -47,7 +47,7 @@ function admin_blogsBuild($data,$db) {
 			return;
 		}
 		
-		$statement=$db->prepare('countBlogPostsByBlogId','admin_blogs');
+		$statement=$db->prepare('countBlogPostsByBlogId','blogs');
 		$statement->execute(array(
 			':id' => $data->output['parentBlog']['id']
 		));
@@ -59,7 +59,7 @@ function admin_blogsBuild($data,$db) {
 			);
 			$data->output['blogLimit']=ADMIN_SHOWPERPAGE;
 			$data->output['blogsCount']=$count['count'];
-			$statement=$db->prepare('getBlogPostsByBlogIdLimited','admin_blogs');
+			$statement=$db->prepare('getBlogPostsByBlogIdLimited','blogs');
 			/* limit only works with bind, damned if I know why */
 			$statement->bindParam(':blogId',$data->output['parentBlog']['id'],PDO::PARAM_INT);
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);

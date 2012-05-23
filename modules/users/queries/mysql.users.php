@@ -55,6 +55,102 @@ function users_addQueries() {
 		'checkUserName' => '
 			SELECT id FROM !prefix!users
 			WHERE name = :name
+		',
+        // Admin
+        'getUserById' => '
+			SELECT * FROM !prefix!users
+			WHERE id = :userId
+		',
+        'getUserByName' => '
+			SELECT * FROM !prefix!users
+			WHERE name = :name
+		',
+        'getAllUsers' => '
+			SELECT * FROM !prefix!users
+		',
+        'getUserNameByID' => '
+			SELECT name FROM !prefix!users WHERE id = :userID
+		',
+        'checkIpBan' => '
+			SELECT * FROM !prefix!banned WHERE ipAddress = :ip
+		',
+        'removeBan' => '
+			DELETE FROM !prefix!banned WHERE id = :id LIMIT 1
+		',
+        'getListLimited' => '
+			SELECT * FROM !prefix!users
+			LIMIT :start, :count
+		',		'searchUsers_NotIncludingLevel' => '
+			SELECT * FROM !prefix!users
+			WHERE
+				name LIKE :name
+				AND
+				fullName LIKE :fullName
+		',
+        'getById' => '
+			SELECT * FROM !prefix!users
+			WHERE id = :id
+		',
+        'updateUserByIdNoPw' => '
+			UPDATE !prefix!users
+			SET
+				name = :name,
+				fullName = :fullName,
+				contactEMail = :contactEMail,
+				publicEMail = :publicEMail
+			WHERE id = :id
+		',
+        'updateUserById' => '
+			UPDATE !prefix!users
+			SET
+				name = :name,
+				fullName = :fullName,
+				password = :password,
+				contactEMail = :contactEMail,
+				publicEMail = :publicEMail
+			WHERE id = :id
+		',
+        'insertUser' => '
+			INSERT INTO !prefix!users
+			(name,fullName,password,registeredIP,contactEMail,publicEMail)
+			VALUES
+			(:name,:fullName,:password,:registeredIP,:contactEMail,:publicEMail)
+		',
+        'checkUserName' => '
+			SELECT id FROM !prefix!users
+			WHERE name = :name
+		',
+        'deleteUserById' => '
+			DELETE FROM !prefix!users
+			WHERE id = :id
+		',
+        'deleteUserFromUserGroups' => '
+			DELETE FROM !prefix!user_groups
+			WHERE userID = :userID
+		',
+        'deleteUserFromUserPermissions' => '
+			DELETE FROM !prefix!user_permissions
+			WHERE userID = :userID
+		',
+        'getAllGroups' => '
+			SELECT DISTINCT groupName
+			FROM !prefix!user_group_permissions
+		',
+        'getPermissionsByGroupName' => '
+			SELECT * FROM !prefix!user_groups
+			WHERE groupName = :groupName
+		',
+        'getGroupName' => '
+            SELECT groupName FROM !prefix!user_groups
+            WHERE groupName = :groupName
+        ',
+        'removeGroupFromGroup_permissions' => '
+			DELETE FROM !prefix!user_group_permissions
+			WHERE groupName = :groupName
+		',
+        'removeGroupFromUsersPermission_groups' => '
+			DELETE FROM !prefix!user_groups
+			WHERE groupName = :groupName
 		'
 	);
 }

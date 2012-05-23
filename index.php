@@ -68,11 +68,6 @@ final class dynamicPDO extends PDO {
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) {
         $target='modules/'.$moduleName.'/queries/'.$this->sqlType.'.'.$moduleName.'.php';
-        $pos=strpos($moduleName,'admin_');
-        if(!($pos===false)) {
-            $moduleNameOnly=substr($moduleName,6);
-            $target='modules/'.$moduleNameOnly.'/admin/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.php';
-        }
         if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
             $target='libraries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
         }
@@ -305,7 +300,7 @@ final class sitesense {
 
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
 		if($this->currentPage != 'admin' && !$this->banned){
-			$moduleQuery = $this->db->prepare('getModuleByShortName', 'admin_modules');
+			$moduleQuery = $this->db->prepare('getModuleByShortName', 'modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
             // Does this module exist, and is it enabled?
@@ -313,7 +308,7 @@ final class sitesense {
 				if($this->module !== false){ // Exists, but is disabled.
 					$this->currentPage = 'pageNotFound';
 				}else if(file_exists('modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')){ // Exists in the file system, but not in the db.
-					$statement = $this->db->prepare('newModule', 'admin_modules');
+					$statement = $this->db->prepare('newModule', 'modules');
 					$statement->execute(
 						array(
 							':name' => $this->currentPage,
@@ -327,7 +322,7 @@ final class sitesense {
 					$this->module = $moduleQuery->fetch();
 				}else{ // Not a module, but could it be a form, blog or a page.
 					// Check to see if it is a form:
-                    $formStatement = $this->db->prepare('getTopLevelFormByShortName', 'form'); //Form
+                    $formStatement = $this->db->prepare('getTopLevelFormByShortName', 'dynamicForms'); //Form
 					$formStatement->execute(
 						array(
 							':shortName' => $this->currentPage,
@@ -372,7 +367,7 @@ final class sitesense {
 			}
 			// If we didn't set the currentPage above, the page was not found.
             if($this->currentPage != 'pageNotFound'){
-				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'admin_modules');
+				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'modules');
 				$sideBarQuery->execute(
 					array(
 						':module' => $this->module['id']
@@ -534,7 +529,7 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules','admin_modules');
+		$moduleQuery = $this->db->query('getEnabledModules',modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
 			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';

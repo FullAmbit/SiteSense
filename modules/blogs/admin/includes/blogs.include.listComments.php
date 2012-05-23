@@ -25,7 +25,7 @@
 function admin_blogsBuild($data,$db)
 {
     if(checkPermission('commentList','blogs',$data)) {
-    	$statement = $db->prepare('getBlogByPost','admin_blogs');
+    	$statement = $db->prepare('getBlogByPost','blogs');
     	$statement->execute(array(
     		':postId' => $data->action[3]
     	));
@@ -46,17 +46,17 @@ function admin_blogsBuild($data,$db)
 
 	// Retrieve List Of All Approved Blog Comments
   	if(is_numeric($data->action[3])) {
-		$statement = $db->prepare('getApprovedCommentsByPost','admin_blogcomments');
+		$statement = $db->prepare('getApprovedCommentsByPost','blogs');
 	  	$statement->execute(array(':post' => $data->action[3]));
 	  	$data->output['commentList']['approved'] = $statement->fetchAll();
 
 		// Comments Awaiting Approval
-		$statement = $db->prepare('getCommentsAwaitingApproval','admin_blogcomments');
+		$statement = $db->prepare('getCommentsAwaitingApproval','blogs');
 		$statement->execute(array(':post' => $data->action[3]));
 		$data->output['commentList']['queue'] = $statement->fetchAll();
 		
 		// Comments Disapproved
-		$statement = $db->prepare('getDisapprovedCommentsByPost','admin_blogcomments');
+		$statement = $db->prepare('getDisapprovedCommentsByPost','blogs');
 		$statement->execute(array(':post' => $data->action[3]));
 		$data->output['commentList']['disapproved'] = $statement->fetchAll();
 	}

@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_modulesBuild($data,$db){
-	$statement = $db->query('getAllModules', 'admin_modules');
+	$statement = $db->query('getAllModules', 'modules');
 	$moduleFiles = glob('modules/*/*.module.php');
 	$dbModules = $statement->fetchAll();
 	$fileModules = array_map(
@@ -34,7 +34,7 @@ function admin_modulesBuild($data,$db){
 		}, 
 		$moduleFiles
 	);
-	$delete = $db->prepare('deleteModule', 'admin_modules');
+	$delete = $db->prepare('deleteModule', 'modules');
 	foreach($dbModules as $dbModule){
 		foreach($dbModules as &$dbModule2){
 			if(
@@ -54,7 +54,7 @@ function admin_modulesBuild($data,$db){
 		}
 	}
 	//insert new modules into the database
-	$insert = $db->prepare('newModule', 'admin_modules');
+	$insert = $db->prepare('newModule', 'modules');
 	foreach($fileModules as $fileModule){
 		$found = false;
 		foreach($dbModules as $dbModule){

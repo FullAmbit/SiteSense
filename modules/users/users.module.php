@@ -27,7 +27,7 @@ function page_getUniqueSettings($data) {
 	$data->output['pageShortName']='user';
 }
 function checkUserName($name,$db) {
-	$statement=$db->prepare('checkUserName','admin_users');
+	$statement=$db->prepare('checkUserName','users');
 	$statement->execute(array(':name' => $name));
 	return $statement->fetchColumn();
 }
@@ -38,12 +38,12 @@ function build_edit($data, $db){
 		if ($data->output['userForm']->validateFromPost()) {
 			unset($data->output['userForm']->sendArray[':password2']);
 			if ($data->output['userForm']->sendArray[':password']=='') {
-				$statement=$db->prepare('updateUserByIdNoPw','user');
+				$statement=$db->prepare('updateUserByIdNoPw','users');
 				unset($data->output['userForm']->sendArray[':password']);
 				$data->output['userForm']->sendArray[':id']=$data->user['id'];
 			} else {
 				$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
-				$statement=$db->prepare('updateUserById','user');
+				$statement=$db->prepare('updateUserById','users');
 				$data->output['userForm']->sendArray[':id']=$data->user['id'];
 			}
 			$statement->execute($data->output['userForm']->sendArray);
@@ -51,7 +51,7 @@ function build_edit($data, $db){
 				$data->output['savedOkMessage']='
 						<h2>User Details Saved Successfully</h2>
 						<p>You will be redirected to your user page shortly.</p>
-					' . _common_timedRedirect($data->linkRoot . 'user');
+					' . _common_timedRedirect($data->linkRoot . 'users');
 			}
 		} else {
 			/*
@@ -73,7 +73,7 @@ function build_edit($data, $db){
 		}
 	} else {
 		$data->output['userForm']->caption='Editing User Details';
-		$statement=$db->prepare('getById','user');
+		$statement=$db->prepare('getById','users');
 		$statement->execute(array(
 				':id' => $data->user['id']
 		));
@@ -123,7 +123,7 @@ function page_buildContent($data,$db)
 }
 	
 function page_content($data){
-	$data->loadModuleTemplate('user');
+	$data->loadModuleTemplate('users');
 	switch($data->action[1]){
 		case "default":
 		default:

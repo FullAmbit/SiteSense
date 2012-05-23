@@ -40,12 +40,12 @@ function build_accountSettings($data, $db){
 			if ($data->output['userForm']->validateFromPost()) {
 				unset($data->output['userForm']->sendArray[':password2']);
 				if ($data->output['userForm']->sendArray[':password']=='') {
-					$statement=$db->prepare('updateUserByIdNoPw','user');
+					$statement=$db->prepare('updateUserByIdNoPw','users');
 					unset($data->output['userForm']->sendArray[':password']);
 					$data->output['userForm']->sendArray[':id']=$data->user['id'];
 				} else {
 					$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
-					$statement=$db->prepare('updateUserById','user');
+					$statement=$db->prepare('updateUserById','users');
 					$data->output['userForm']->sendArray[':id']=$data->user['id'];
 				}
 				$statement->execute($data->output['userForm']->sendArray);
@@ -72,7 +72,7 @@ function build_accountSettings($data, $db){
 			}
 		} else {
 			$data->output['userForm']->caption='Editing User Details';
-			$statement=$db->prepare('getById','user');
+			$statement=$db->prepare('getById','users');
 			$statement->execute(array(
 					':id' => $data->user['id']
 			));

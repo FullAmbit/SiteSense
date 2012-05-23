@@ -31,7 +31,7 @@ function getPermissions($data,$db) {
     }
 }
 function checkUserName($name,$db) {
-	$statement=$db->prepare('checkUserName','admin_users');
+	$statement=$db->prepare('checkUserName','users');
 	$statement->execute(array(
 		':name' => $name
 	));
@@ -47,7 +47,7 @@ function admin_usersBuild($data,$db) {
 	}
     // Load all groups
     $db->query('purgeExpiredGroups');
-    $statement=$db->query('getAllGroups','admin_users');
+    $statement=$db->query('getAllGroups','users');
     $data->output['groupList']=$statement->fetchAll();
 
     // Load core permissions
@@ -131,7 +131,7 @@ function admin_usersBuild($data,$db) {
             unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
             unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
             unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
-			$statement=$db->prepare('insertUser','admin_users');
+			$statement=$db->prepare('insertUser','users');
 			$result=$statement->execute($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');
             $statement->execute(array(

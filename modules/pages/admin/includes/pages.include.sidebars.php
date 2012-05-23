@@ -33,7 +33,7 @@ function admin_pagesBuild($data,$db)
 
 	$pageId = (int)$data->action[3];
 	
-	$statement = $db->prepare('getPageById','admin_pages');
+	$statement = $db->prepare('getPageById','pages');
 	$statement->execute(array(':id' => $pageId));
 	$data->output['pageItem'] = $statement->fetch();
 	if($data->output['pageItem'] == FALSE || !is_numeric($pageId))
@@ -44,20 +44,20 @@ function admin_pagesBuild($data,$db)
 	
 	// Do SideBar Settings For This Page Exist? (Match Row Count with total sidebar count)
 	$maxSideBarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSideBarsByPage','admin_pages');
+	$statement = $db->prepare('countSideBarsByPage','pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();
 	if($rowCount < $maxSideBarCount)
 	{
 		$i = $rowCount;
 		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','admin_sidebars');
+		$statement = $db->prepare('getAllSideBars','sidebars');
 		$statement->execute();
 		$sideBarList = $statement->fetchAll();
 		foreach($sideBarList as $sideBarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSideBarSetting','admin_pages');
+			$statement = $db->prepare('createSideBarSetting','pages');
 			$statement->execute(array(
 				':pageId' => $pageId,
 				':sideBarId' => $sideBarItem['id'],
@@ -71,25 +71,25 @@ function admin_pagesBuild($data,$db)
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSideBar', 'admin_pages');
+			$statement = $db->prepare('enableSideBar', 'pages');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSideBar', 'admin_pages');
+			$statement = $db->prepare('disableSideBar', 'pages');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSideBarSetting','admin_pages');
+			$statement = $db->prepare('getSideBarSetting','pages');
 			$statement->execute(array(':id' => $settingId));
 			if(($sideBarItem = $statement->fetch()) === FALSE)
 			{
 				continue;
 			}
 			// Get The Current Count
-			$statement = $db->prepare('countSideBarsByPage','admin_pages');
+			$statement = $db->prepare('countSideBarsByPage','pages');
 			$statement->execute(array(':pageId' => $pageId));
 			list($rowCount) = $statement->fetch();
 			if($data->action[4] == 'moveUp' && intval($sideBarItem['sortOrder']) > 1) {
@@ -102,12 +102,12 @@ function admin_pagesBuild($data,$db)
 			}
 			if(isset($query1))
 			{
-				$statement = $db->prepare($query1,'admin_pages');
+				$statement = $db->prepare($query1,'pages');
 				$statement->execute(array(
 					':sortOrder' => $sideBarItem['sortOrder'],
 					':pageId' => $pageId
 				));
-				$statement = $db->prepare($query2,'admin_pages');
+				$statement = $db->prepare($query2,'pages');
 				$statement->execute(array(
 					':id' => $sideBarItem['id']
 				));
@@ -117,7 +117,7 @@ function admin_pagesBuild($data,$db)
 	}
 	
 	// Get List Of All Sidebars
-	$statement = $db->prepare('getSideBarsByPage','admin_pages');
+	$statement = $db->prepare('getSideBarsByPage','pages');
 	$statement->execute(array(':pageId' => $pageId));
 	$data->output['sideBarList'] = $statement->fetchAll();
 }

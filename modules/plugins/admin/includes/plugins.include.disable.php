@@ -34,7 +34,7 @@ function admin_pluginsBuild($data,$db){
 	} else {
 		if(!$data->action[4]) {
 			// Disable the plugin
-			$statement=$db->prepare('disable','admin_plugins');
+			$statement=$db->prepare('disable','plugins');
 			$statement->execute(array(
 				':name' => $data->action[3]
 			));

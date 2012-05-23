@@ -34,7 +34,7 @@ function admin_messagesBuild($data,$db) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
 	}else{
-		$messages = $db->prepare('getMessage','admin_messages');
+		$messages = $db->prepare('getMessage','messages');
 		$messages->execute(array(':id' => (int)$data->action[3]));
 		$data->output['message']=$messages->fetch();
 		if($data->output['message'] === false){

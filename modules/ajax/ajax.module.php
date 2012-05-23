@@ -30,7 +30,7 @@ function ajax_buildContent(&$data,&$db)
 				
 	$url = implode('/',$newAction);			
 			
-	$rewrite = $db->prepare('findReplacement','urlremap'); 
+	$rewrite = $db->prepare('findReplacement','dynamicURLs');
 	$rewrite->execute(array(':url' => $url));
 		
 	// We Got A ReMap

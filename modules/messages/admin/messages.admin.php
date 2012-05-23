@@ -38,7 +38,7 @@ function admin_buildContent($data,$db) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_messagesBuild')) admin_messagesBuild($data,$db);
+	if (function_exists('messagesBuild')) admin_messagesBuild($data,$db);
 	$data->output['pageTitle']='Messages';
 }
 function admin_content($data) {
