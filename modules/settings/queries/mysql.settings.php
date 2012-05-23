@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_settings_addQueries() {
+function settings_addQueries() {
 	return array(
 		'updateSettings' => "
 			UPDATE !prefix!settings

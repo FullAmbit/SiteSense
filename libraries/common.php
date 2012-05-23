@@ -209,43 +209,57 @@ function common_include($includeName) {
 
 function loadPermissions($data) {
     $data->permissions['core']=array(
-        'access'            => 'Control panel access',
+        'access'            => 'Control panel access'
+    );
 
-        'dashboard_access'  => 'Dashboard access',
+    $data->permissions['dashboard']=array(
+        'access'  => 'Dashboard access'
+    );
 
-        'mainMenu_access'   => 'Main menu access',
-        'mainMenu_add'      => 'Add main menu items',
-        'mainMenu_delete'   => 'Delete main menu items',
-        'mainMenu_disable'  => 'Disable main menu items',
-        'mainMenu_edit'     => 'Edit main menu items',
-        'mainMenu_enable'   => 'Enable main menu items',
-        'mainMenu_list'     => 'List main menu items',
+    $data->permissions['mainMenu']=array(
+        'access'   => 'Main menu access',
+        'add'      => 'Add main menu items',
+        'delete'   => 'Delete main menu items',
+        'disable'  => 'Disable main menu items',
+        'edit'     => 'Edit main menu items',
+        'enable'   => 'Enable main menu items',
+        'list'     => 'List main menu items'
+    );
 
-        'modules_access'    => 'Modules access',
-        'modules_disable'   => 'Disable modules',
-        'modules_edit'      => 'Edit modules',
-        'modules_enable'    => 'Enable modules',
-        'modules_list'      => 'List modules',
+    $data->permissions['modules']=array(
+        'access'    => 'Modules access',
+        'disable'   => 'Disable modules',
+        'edit'      => 'Edit modules',
+        'enable'    => 'Enable modules',
+        'list'      => 'List modules'
+    );
 
-        'plugins_access'    => 'Plugins access',
-        'plugins_edit'      => 'Edit plugins',
-        'plugins_disable'   => 'Disable plugins',
-        'plugins_enable'    => 'Enable plugins',
-        'plugins_list'      => 'List plugins',
+    $data->permissions['plugins']=array(
+        'access'    => 'Plugins access',
+        'edit'      => 'Edit plugins',
+        'disable'   => 'Disable plugins',
+        'enable'    => 'Enable plugins',
+        'list'      => 'List plugins'
+    );
 
-        'settings_access'   => 'Settings access',
+    $data->permissions['settings']=array(
+        'access'   => 'Settings access'
+    );
 
-        'sidebars_access'   => 'Sidebar access',
-        'sidebars_add'      => 'Add sidebars',
-        'sidebars_delete'   => 'Delete sidebars',
-        'sidebars_edit'     => 'Edit sidebars',
-        'sidebars_list'     => 'List sidebars',
+    $data->permissions['sidebars']=array(
+        'access'   => 'Sidebar access',
+        'add'      => 'Add sidebars',
+        'delete'   => 'Delete sidebars',
+        'edit'     => 'Edit sidebars',
+        'list'     => 'List sidebars'
+    );
 
-        'urlRemap_access'   => 'URL Remap Access',
-        'urlRemap_add'      => 'Add URL Remaps',
-        'urlRemap_delete'   => 'Delete URL Remaps',
-        'urlRemap_edit'     => 'Edit URL Remaps',
-        'urlRemap_list'     => 'List URL Remaps'
+    $data->permissions['dynamicURLs']=array(
+        'access'   => 'URL Remap Access',
+        'add'      => 'Add URL Remaps',
+        'delete'   => 'Delete URL Remaps',
+        'edit'     => 'Edit URL Remaps',
+        'list'     => 'List URL Remaps'
     );
 }
 

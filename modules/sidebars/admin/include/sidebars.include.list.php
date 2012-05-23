@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_sidebarsBuild($data,$db) {
-    if(!checkPermission('sidebars_list','core',$data)) {
+    if(!checkPermission('list','sidebars',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -34,7 +34,7 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='moveDown')
 		) {
 			
-			$qHandle=$db->prepare('getSortOrderById','sideBars');
+			$qHandle=$db->prepare('getSortOrderById','sidebars');
 			$qHandle->execute(array(
 				':id' => $data->action[4]
 			));
@@ -52,11 +52,11 @@ function admin_sidebarsBuild($data,$db) {
 				  if(isset($query1))
 				  {
 					 
-					  $statement = $db->prepare($query1,'sideBars');
+					  $statement = $db->prepare($query1,'sidebars');
 					  $statement->execute(array(
 						  ':sortOrder' => $item['sortOrder']
 					  ));
-					  $statement = $db->prepare($query2,'sideBars');
+					  $statement = $db->prepare($query2,'sidebars');
 					  $statement->execute(array(
 						  ':id' => $item['id']
 					  ));
@@ -66,14 +66,13 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='enable') ||
 			($data->action[3]=='disable')
 		) {
-			$qHandle=$db->prepare('updateEnabledById','sideBars');
+			$qHandle=$db->prepare('updateEnabledById','sidebars');
 			$qHandle->execute(array(
 				':enabled' => ($data->action[3]=='enable'),
 				':id' => $data->action[4]
 			));
 		} else */
-		if($data->action[3] == 'switch')
-		{
+		if($data->action[3] == 'switch')	{
 			if (is_numeric($data->action[4])) {
 				$statement=$db->prepare('getById','sidebars');
 				$statement->execute(array(
@@ -91,17 +90,17 @@ function admin_sidebarsBuild($data,$db) {
 	}
 	$qHandle=$db->prepare('getAllOrdered','sidebars');
 	$qHandle->execute();
-	$data->output['sideBars']=$qHandle->fetchAll();
+	$data->output['sidebars']=$qHandle->fetchAll();
 }
 function admin_sidebarsShow($data) {
 	$aRoot=$data->linkRoot.'admin/sidebars/';
-	theme_sideBarsListAddNewButton($aRoot);
-	if (empty($data->output['sideBars'])) {
-		theme_sideBarsListNoSidebars();
+	theme_sidebarsListAddNewButton($aRoot);
+	if (empty($data->output['sidebars'])) {
+		theme_sidebarsListNoSidebars();
 	} else {
-		theme_sideBarsListTableHead();
+		theme_sidebarsListTableHead();
 		$count=0;
-		foreach ($data->output['sideBars'] as $item) {
+		foreach ($data->output['sidebars'] as $item) {
 			$titleStartTag='';
 			$titleEndTag='';
 			if ($item['enabled']) {
@@ -115,11 +114,11 @@ function admin_sidebarsShow($data) {
 				$titleStartTag.='<a href="'.$aRoot.'edit/'.$item['id'].'">';
 				$titleEndTag='</a>'.$titleEndTag;
 			}
-			theme_sideBarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count);
+			theme_sidebarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count);
 			$count++;
 		}
-	theme_sideBarsListTableFoot();
+	theme_sidebarsListTableFoot();
 	}
-	theme_sideBarsListAddNewButton($aRoot);
+	theme_sidebarsListAddNewButton($aRoot);
 }
 ?>

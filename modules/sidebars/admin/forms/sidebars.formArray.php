@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->formPrefix='sideBarEdit_';
-$this->caption='Create New SideBar';
+$this->formPrefix='sidebarEdit_';
+$this->caption='Create New Sidebar';
 $this->submitTitle='Save Changes';
-$this->fromForm='sideBarEdit';
+$this->fromForm='sidebarEdit';
 $this->fields=array(
 	'name' => array(
 		'label' => 'Name',

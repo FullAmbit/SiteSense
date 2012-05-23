@@ -56,9 +56,9 @@ function admin_blogsBuild($data,$db) {
 			// Get Short Name
 			$data->output['categoryForm']->sendArray[':shortName'] = common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
 			$data->output['categoryForm']->sendArray[':blogId'] = $data->output['blogItem']['id'];
-			$statement = $db->prepare('addCategory',blogs');
+			$statement = $db->prepare('addCategory','blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
-			if(empty($data->output['secondSideBar']))
+			if(empty($data->output['secondSidebar']))
 			{
 				$data->output['savedOkMessage']='
 					<h2>Category Item Saved Successfully</h2>
@@ -73,7 +73,7 @@ function admin_blogsBuild($data,$db) {
 			}
 		} else {
 			// Invalid Data
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

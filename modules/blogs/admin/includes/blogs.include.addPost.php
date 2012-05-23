@@ -74,7 +74,7 @@ function admin_blogsBuild($data,$db)
 		$shortName = common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['blogForm']->sendArray[':shortName'] = $_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
-		// Load All Existing SideBar ShortNames For Comparison
+		// Load All Existing Sidebar ShortNames For Comparison
 		$statement = $db->prepare('getExistingShortNames','blogs');
 		$statement->execute();
 		$postList = $statement->fetchAll();
@@ -129,7 +129,7 @@ function admin_blogsBuild($data,$db)
 				</div>';
 			
 		} else {
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

@@ -76,7 +76,7 @@ function theme_footer($data) {
 ></script>
 </body></html>';
 }
-function theme_leftSideBar($data) {
+function theme_leftSidebar($data) {
 	echo '
 	<!-- #content,#contentWrapper --></div></div>';
 	if (checkPermission('access','core',$data)) {
@@ -90,7 +90,7 @@ function theme_leftSideBar($data) {
 			);
 		}
 		echo '
-	<div id="sideBar">';
+	<div id="sidebar">';
 		if (count($data->admin['menu'])>0) {
 			$category='';
 			$x = 0;
@@ -126,7 +126,7 @@ function theme_leftSideBar($data) {
 		</ul>';
 		}
 		echo '
-	<!-- #sideBar --></div>';
+	<!-- #sidebar --></div>';
 	}
 }
 function theme_loginForm($data) {
@@ -179,14 +179,14 @@ function theme_loginForm($data) {
 				</div>
 			</form>';
 }
-function theme_rightSideBar($data) {
+function theme_rightSidebar($data) {
 		echo '
-	<div id="secondSideBar">';
-	if (!empty($data->output['secondSideBar'])) {
-		echo $data->output['secondSideBar'];
+	<div id="secondSidebar">';
+	if (!empty($data->output['secondSidebar'])) {
+		echo $data->output['secondSidebar'];
 	}
 		echo'
-	<!-- #secondSideBar --></div>';
+	<!-- #secondSidebar --></div>';
 }
 function theme_buildForm($formData) {
 	echo '
@@ -246,7 +246,10 @@ function theme_buildForm($formData) {
             if((isset($formField['checked']) && $formField['checked']=='checked') || (isset($formField['label']) && isset($formData->sendArray[':'.$formField['label']]) && $formData->sendArray[':'.$formField['label']])) {
                 $checked='checked="checked"';
             }
-            $spanValue=htmlspecialchars($formField['value']);
+            $spanValue='';
+            if(isset($formField['value'])) {
+                $spanValue=htmlspecialchars($formField['value']);
+            }
             if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
                 $spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
             }

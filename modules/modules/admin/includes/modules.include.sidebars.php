@@ -39,27 +39,27 @@ function admin_modulesBuild($data,$db){
 	}
 	$data->output['module'] = $module;
 	
-	// Do SideBar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSideBarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSideBarsByModule','modules');
+	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
+	$maxSidebarCount = $db->countRows('sidebars');
+	$statement = $db->prepare('countSidebarsByModule','modules');
 	$statement->execute(array(':moduleId' => $moduleId));
 	list($rowCount) = $statement->fetch();
 	
-	if($rowCount < $maxSideBarCount)
+	if($rowCount < $maxSidebarCount)
 	{
 		$i = $rowCount;
-		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','sidebars');
+		// Get A List Of All Sidebars
+		$statement = $db->prepare('getAllSidebars','sidebars');
 		$statement->execute();
-		$sideBarList = $statement->fetchAll();
-		foreach($sideBarList as $sideBarItem)
+		$sidebarList = $statement->fetchAll();
+		foreach($sidebarList as $sidebarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSideBarSetting','modules');
+			$statement = $db->prepare('createSidebarSetting','modules');
 			$statement->execute(array(
 				':moduleId' => $moduleId,
-				':sideBarId' => $sideBarItem['id'],
-				':enabled' => $sideBarItem['enabled'],
+				':sidebarId' => $sidebarItem['id'],
+				':enabled' => $sidebarItem['enabled'],
 				':sortOrder' => $i
 			));
 		}
@@ -70,56 +70,56 @@ function admin_modulesBuild($data,$db){
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSideBar', 'modules');
+			$statement = $db->prepare('enableSidebar', 'modules');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSideBar', 'modules');
+			$statement = $db->prepare('disableSidebar', 'modules');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSideBarSetting','modules');
+			$statement = $db->prepare('getSidebarSetting','modules');
 			$statement->execute(array(':id' => $settingId));
-			if(($sideBarItem = $statement->fetch()) === FALSE)
+			if(($sidebarItem = $statement->fetch()) === FALSE)
 			{
 				continue;
 			}
-			if($data->action[4] == 'moveUp' && intval($sideBarItem['sortOrder']) > 1) {
-				$query1 = 'shiftSideBarOrderUpRelative';
-				$query2 = 'shiftSideBarOrderUpByID';
-			} else if($data->action[4] == 'moveDown' && intval($sideBarItem['sortOrder']) < $rowCount) {
-				$query1 = 'shiftSideBarOrderDownRelative';
-				$query2 = 'shiftSideBarOrderDownByID';
+			if($data->action[4] == 'moveUp' && intval($sidebarItem['sortOrder']) > 1) {
+				$query1 = 'shiftSidebarOrderUpRelative';
+				$query2 = 'shiftSidebarOrderUpByID';
+			} else if($data->action[4] == 'moveDown' && intval($sidebarItem['sortOrder']) < $rowCount) {
+				$query1 = 'shiftSidebarOrderDownRelative';
+				$query2 = 'shiftSidebarOrderDownByID';
 			}
 			if(isset($query1))
 			{
 				$statement = $db->prepare($query1,'modules');
 				$statement->execute(array(
-					':sortOrder' => $sideBarItem['sortOrder'],
+					':sortOrder' => $sidebarItem['sortOrder'],
 					':moduleId' => $moduleId
 				));
 				$statement = $db->prepare($query2,'modules');
 				$statement->execute(array(
-					':id' => $sideBarItem['id']
+					':id' => $sidebarItem['id']
 				));
 			}
 			
 		break;
 	}
 	//
-	$statement = $db->prepare('getSideBarsByModule', 'modules');
+	$statement = $db->prepare('getSidebarsByModule', 'modules');
 	$statement->execute(array(':module' => $module['id']));
 	$data->output['sidebars'] = $statement->fetchAll();
 }
 function admin_modulesShow($data){
 	theme_modulesSidebarsTableHead($data);
 	$count=0;
-	foreach($data->output['sidebars'] as $sideBar){
-		$action = ($sideBar['enabled'] == 1) ? 'disable' : 'enable';
-		theme_modulesSidebarsTableRow($data,$sideBar,$action,$count);
+	foreach($data->output['sidebars'] as $sidebar){
+		$action = ($sidebar['enabled'] == 1) ? 'disable' : 'enable';
+		theme_modulesSidebarsTableRow($data,$sidebar,$action,$count);
 		$count++;
 	}
 	theme_modulesSidebarsTableFoot();

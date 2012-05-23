@@ -61,7 +61,7 @@ function admin_usersBuild($data,$db) {
                 }
 
                 if($existing) {
-                    $data->output['secondSideBar']='
+                    $data->output['secondSidebar']='
                       <h2>Error in Data</h2>
                       <p>
                           There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -158,7 +158,7 @@ function admin_usersBuild($data,$db) {
                     ));
                     if($statement->fetchColumn()) {
                         // Returned result, groupName already exists
-                        $data->output['secondSideBar']='
+                        $data->output['secondSidebar']='
                         <h2>Error in Data</h2>
                         <p>
                             There were one or more errors. Please correct the fields with the red X next to them and try again.

@@ -22,23 +22,23 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_urlremapsBuild($data,$db) {
-    if(!checkPermission('urlRemap_list','core',$data)) {
+function admin_dynamicURLsBuild($data,$db) {
+    if(!checkPermission('list','dynamicURLs',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
     $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
-	$messages = $db->query('getAllUrlRemaps','urlremap');
+	$messages = $db->query('getAllUrlRemaps','dynamicURLs');
 	$data->output['remapList'] = $messages->fetchAll();
 }
-function admin_urlremapsShow($data) {
-	theme_urlremapListTableHead($data->linkRoot);
+function admin_dynamicURLsShow($data) {
+	theme_dynamicURLsListTableHead($data->linkRoot);
 	$key = 0;
 	foreach($data->output['remapList'] as $key => $remap) {
-		theme_urlremapListTableRow($remap,$data->linkRoot,$key);
+		theme_dynamicURLsListTableRow($remap,$data->linkRoot,$key);
 	}
 	$key++;
-	theme_urlremapListTableFoot($data->linkRoot);
+	theme_dynamicURLsListTableFoot($data->linkRoot);
 }
 ?>	

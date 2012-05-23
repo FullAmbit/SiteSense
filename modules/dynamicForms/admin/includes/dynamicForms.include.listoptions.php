@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db){
+function admin_dynamicFormsBuild($data,$db){
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -95,22 +95,22 @@ function sortCmp($a,$b)
 	}
 }
 
-function admin_formsShow($data){
-	theme_formsListOptionsButtons($data);
+function admin_dynamicFormsShow($data){
+	theme_dynamicFormsListOptionsButtons($data);
 	
-	theme_formsListOptionsTableHead();
+	theme_dynamicFormsListOptionsTableHead();
 			
 	if(empty($data->output['optionList']))
 	{
-		theme_formsListOptionsNoOptions();
+		theme_dynamicFormsListOptionsNoOptions();
 		return;
 	} 
 	
 	
 	$i = 0;
 	foreach($data->output['optionList'] as $optionIndex => $option){
-		theme_formsListOptionsTableRow($data,$option,$optionIndex,$i);
+		theme_dynamicFormsListOptionsTableRow($data,$option,$optionIndex,$i);
 		$i++;
 	}
-	theme_formsListOptionsTableFoot();
+	theme_dynamicFormsListOptionsTableFoot();
 }

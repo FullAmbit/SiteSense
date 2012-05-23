@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_mainMenuBuild($data,$db) {
-	if(!checkPermission('mainMenu_add','core',$data)) {
+	if(!checkPermission('add','mainMenu',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -47,7 +47,7 @@ function admin_mainMenuBuild($data,$db) {
 			
 			$statement = $db->prepare('newMenuItem','mainMenu');
 			$statement->execute($data->output['MenuItemForm']->sendArray) or die('Saving Menu Item Failed');
-			if(empty($data->output['secondSideBar']))
+			if(empty($data->output['secondSidebar']))
 			{
 				$data->output['savedOkMessage']='
 					<h2>Menu Item Saved Successfully</h2>
@@ -62,7 +62,7 @@ function admin_mainMenuBuild($data,$db) {
 			}
 		} else {
 			// Invalid Data
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

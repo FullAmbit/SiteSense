@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db)
+function admin_dynamicFormsBuild($data,$db)
 {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
@@ -81,7 +81,7 @@ function admin_formsBuild($data,$db)
 			
 			$data->output['delete']='deleted';
 			// Success Message
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 			  $data->output['savedOkMessage']='
 				  <h2>Option Deleted Successfully</h2>
 				  <div class="panel buttonList">
@@ -98,7 +98,7 @@ function admin_formsBuild($data,$db)
 		}
 	}
 }
-function admin_formsShow($data)
+function admin_dynamicFormsShow($data)
 {
 	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
 	if(empty($data->output['rejectError']))
@@ -106,13 +106,13 @@ function admin_formsShow($data)
 		switch($data->output['delete'])
 		{
 			case 'cancelled':
-					theme_formsDeleteOptionCancelled($data,$aRoot);
+					theme_dynamicFormsDeleteOptionCancelled($data,$aRoot);
 				break;
 			case 'deleted':
-					theme_formsDeleteOptionDeleted($aRoot);
+					theme_dynamicFormsDeleteOptionDeleted($aRoot);
 				break;
 			default:
-					theme_formsDeleteOptionDefault($data,$aRoot);
+					theme_dynamicFormsDeleteOptionDefault($data,$aRoot);
 				break;
 		}
 	} else {

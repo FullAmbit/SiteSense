@@ -40,7 +40,7 @@ function admin_buildContent($data,$db) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('modulesBuild')) admin_modulesBuild($data,$db);
+	if (function_exists('admin_modulesBuild')) admin_modulesBuild($data,$db);
 	$data->output['pageTitle']='Modules';
 }
 function admin_content($data) {

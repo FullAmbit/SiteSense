@@ -73,7 +73,6 @@ final class dynamicPDO extends PDO {
         }
         if (file_exists($target)) {
 			require_once($target);
-            $moduleName=hyphenToCamel($moduleName);
 			$loader=$moduleName.'_addQueries';
 			$this->queries[$moduleName]=$loader();
 			return true;
@@ -186,7 +185,7 @@ final class sitesense {
 		$siteRoot,$domainName,$linkHome,$linkRoot,
 		$action,$currentPage,$module,$request,
 		$httpHeaders,
-		$metaList,$menuList,$sideBarList,$sideBars = array(),
+		$metaList,$menuList,$sidebarList,$sidebars = array(),
 		$menuSource,
 		$admin,
 		$compressionType,
@@ -329,8 +328,8 @@ final class sitesense {
 						)
 					);
 					if($formStatement->fetch() !== false){ // It's a Form
-						$this->currentPage = 'forms';
-						array_unshift($this->action, 'page');
+						$this->currentPage = 'dynamicForms';
+						array_unshift($this->action, 'pages');
 						$moduleQuery->execute(array(':shortName' => $this->currentPage));
 						$this->module = $moduleQuery->fetch();
 					}else{ // It's a Blog
@@ -367,13 +366,13 @@ final class sitesense {
 			}
 			// If we didn't set the currentPage above, the page was not found.
             if($this->currentPage != 'pageNotFound'){
-				$sideBarQuery = $this->db->prepare('getEnabledSideBarsByModule', 'modules');
-				$sideBarQuery->execute(
+				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule', 'modules');
+				$sidebarQuery->execute(
 					array(
 						':module' => $this->module['id']
 					)
 				);
-				$this->sideBars = $sideBarQuery->fetchAll();
+				$this->sidebars = $sidebarQuery->fetchAll();
 			}
 		}
 
@@ -399,9 +398,9 @@ final class sitesense {
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
 		// Get Sidebars
-        $sideBars = $this->db->query('getSidebars');
-		foreach($sideBars as $sideBar) {
-			$this->sideBarList[$sideBar['side']][]=$sideBar;
+        $sidebars = $this->db->query('getSidebars');
+		foreach($sidebars as $sidebar) {
+			$this->sidebarList[$sidebar['side']][]=$sidebar;
 		}
 
 		// Cookies and Sessions
@@ -529,7 +528,7 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules',modules');
+		$moduleQuery = $this->db->query('getEnabledModules','modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
 			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
@@ -626,17 +625,17 @@ final class sitesense {
 		}
 		theme_header($this);
 		page_content($this);
-		if(function_exists('theme_leftSideBar')) {
-			theme_leftSideBar($this);
+		if(function_exists('theme_leftSidebar')) {
+			theme_leftSidebar($this);
 		}
-		if (function_exists('theme_rightSideBar')) {
-			theme_rightSideBar($this);
+		if (function_exists('theme_rightSidebar')) {
+			theme_rightSidebar($this);
 		}
 		theme_footer($this);
 	} /* __construct */
 	public function activateSidebar($name){
-		if(isset($this->sideBarList[$name])){
-			$this->sideBarList[$name]['display'] = true;
+		if(isset($this->sidebarList[$name])){
+			$this->sidebarList[$name]['display'] = true;
 			return true;
 		}else{
 			return false;
@@ -649,7 +648,7 @@ final class sitesense {
     }
 	public function getActivatedSidebars(){
 		return array_filter(
-			$this->sideBarList,
+			$this->sidebarList,
 			function($item){
                 return arrayInterrater($item);
 			}

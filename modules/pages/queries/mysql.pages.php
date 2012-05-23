@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function page_addQueries() {
+function pages_addQueries() {
 	return array(
 		'getPagesByShortName' => '
 			SELECT * FROM !prefix!pages
@@ -45,7 +45,7 @@ function page_addQueries() {
 		'getTopLevelPages' => '
 			SELECT * FROM !prefix!pages WHERE parent = 0
 		',
-		'getEnabledSideBarsByPage' => '
+		'getEnabledSidebarsByPage' => '
 			SELECT a.enabled,a.sortOrder,b.* FROM !prefix!pages_sidebars a, !prefix!sidebars b WHERE a.page = :pageId AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 				
 		',
@@ -137,16 +137,16 @@ function page_addQueries() {
         'getPageById' => '
 			SELECT * FROM !prefix!pages WHERE id = :id
 		',
-        'getSideBarsByPage' => '
+        'getSidebarsByPage' => '
 			SELECT a.id,a.page,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!pages_sidebars a, !prefix!sidebars b WHERE a.page = :pageId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
-        'enableSideBar' => '
+        'enableSidebar' => '
 			UPDATE !prefix!pages_sidebars
 			SET
 				enabled  =  1
 			WHERE id = :id
 		',
-        'disableSideBar' => '
+        'disableSidebar' => '
 			UPDATE !prefix!pages_sidebars
 			SET
 				enabled  =  0
@@ -185,48 +185,48 @@ function page_addQueries() {
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND parent = :parent
 		',
-        'countSideBarsByPage' => '
+        'countSidebarsByPage' => '
 			SELECT COUNT(*) as rowCount FROM !prefix!pages_sidebars WHERE page = :pageId
 		',
-        'createSideBarSetting' => '
+        'createSidebarSetting' => '
 			REPLACE INTO !prefix!pages_sidebars
 			SET
 				page = :pageId,
-				sidebar = :sideBarId,
+				sidebar = :sidebarId,
 				enabled = :enabled,
 				sortOrder = :sortOrder
 		',
-        'shiftSideBarOrderUpByID' => '
+        'shiftSidebarOrderUpByID' => '
 			UPDATE !prefix!pages_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
-        'shiftSideBarOrderUpRelative' => '
+        'shiftSidebarOrderUpRelative' => '
 			UPDATE !prefix!pages_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND page = :pageId
 			ORDER BY sortOrder DESC LIMIT 1
 		',
-        'shiftSideBarOrderDownByID' => '
+        'shiftSidebarOrderDownByID' => '
 			UPDATE !prefix!pages_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
-        'shiftSideBarOrderDownRelative' => '
+        'shiftSidebarOrderDownRelative' => '
 			UPDATE !prefix!pages_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND page = :pageId
 			ORDER BY sortOrder ASC LIMIT 1
 		',
-        'fixSideBarSortOrderGap' => '
+        'fixSidebarSortOrderGap' => '
 			UPDATE !prefix!pages_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND page = :pageId
 		',
-        'getSideBarSetting' => '
+        'getSidebarSetting' => '
 			SELECT * FROM !prefix!pages_sidebars WHERE id = :id
 		',
-        'deleteSideBarSettingBySideBar' => '
+        'deleteSidebarSettingBySidebar' => '
 			DELETE FROM !prefix!pages_sidebars WHERE sidebar = :sidebar
 		'
 	);

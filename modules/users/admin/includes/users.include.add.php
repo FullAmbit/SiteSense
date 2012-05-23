@@ -70,7 +70,7 @@ function admin_usersBuild($data,$db) {
 		// Check If UserName Already Exists //
 		$existing = checkUserName($form->sendArray[':name'],$db);
 		if($existing) {
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				  <h2>Error in Data</h2>
 				  <p>
 					  There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -89,7 +89,7 @@ function admin_usersBuild($data,$db) {
 			// Make Sure We Have A Password..
 			if (empty($data->output['userForm']->sendArray[':password']))
 			{
-			  $data->output['secondSideBar']='
+			  $data->output['secondSidebar']='
 				  <h2>Error in Data</h2>
 				  <p>
 					  There were one or more errors. Please correct the fields with the red X next to them and try again.

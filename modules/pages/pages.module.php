@@ -25,7 +25,7 @@
 function page_getUniqueSettings($data,$db) {
 	if($data->banned)
 	{
-		$statement = $db->prepare('getPagesByShortName','page');
+		$statement = $db->prepare('getPagesByShortName','pages');
 		$statement->execute(array(
 			':shortName' => 'banned'
 		));
@@ -33,7 +33,7 @@ function page_getUniqueSettings($data,$db) {
 		$data->output['pageContent'] = $statement->fetch();
 		return;
 	} 
-	$statement = $db->prepare('getPageByShortNameAndParent', 'page');
+	$statement = $db->prepare('getPageByShortNameAndParent', 'pages');
 	$current = array('id' => 0); //pseudo-page, root node.
 	$stages = array_filter(array_slice($data->action, 1));
 	$found = (count($stages) > 0);
@@ -50,7 +50,7 @@ function page_getUniqueSettings($data,$db) {
 	}
 	$data->output['found'] = $found;
 	if($found){
-		$statement = $db->prepare('getPagesByParent', 'page');
+		$statement = $db->prepare('getPagesByParent', 'pages');
 		$statement->execute(array('parent' => $current['id']));
 		$data->output['pageContent'] = $current;
 		$data->output['pageShortName']= $current['title'];
@@ -61,27 +61,27 @@ function page_getUniqueSettings($data,$db) {
 		common_parseDynamicValues($data,$data->output['pageContent']['parsedContent'],$db);
 		// Side Bars?<br />
 
-		$statement = $db->prepare('getEnabledSideBarsByPage','page');
+		$statement = $db->prepare('getEnabledSidebarsByPage','pages');
 		$statement->execute(array(':pageId' => $current['id']));
-		$sideBars = $statement->fetchAll();
-		$data->sideBarList = array();
-		foreach($sideBars as $sideBar)
+		$sidebars = $statement->fetchAll();
+		$data->sidebarList = array();
+		foreach($sidebars as $sidebar)
 		{
-			/**$getSideBar->execute(array(':id' => $sideBar['sidebar']));
-			$item = $getSideBar->fetch();
+			/**$getSidebar->execute(array(':id' => $sidebar['sidebar']));
+			$item = $getSidebar->fetch();
 			if ($item['fromFile']) {
-				if (file_exists('sideBars/'.$item['name'].'.sideBar.php')) {
-					$data->sideBarList[$item['side']][]=$item;
+				if (file_exists('sidebars/'.$item['name'].'.sidebar.php')) {
+					$data->sidebarList[$item['side']][]=$item;
 				} else {
 					$delete->execute(array(
 						':id' => $item['id']
 					));
 				}
 			} else {
-				$data->sideBarList[$item['side']][]=$item;
+				$data->sidebarList[$item['side']][]=$item;
 			}**/
 			
-			$data->sideBarList[$sideBar['side']][] = $sideBar;
+			$data->sidebarList[$sidebar['side']][] = $sidebar;
 		}
 				
 	} else if ($data->httpHeaders[0] === 'Content-Type: text/html; charset='.$data->settings['characterEncoding']) {

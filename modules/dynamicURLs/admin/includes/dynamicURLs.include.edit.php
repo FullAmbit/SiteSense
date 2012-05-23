@@ -23,8 +23,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_urlremapsBuild($data,$db) {
-    if(!checkPermission('urlRemap_edit','core',$data)) {
+function admin_dynamicURLsBuild($data,$db) {
+    if(!checkPermission('edit','dynamicURLs',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -41,7 +41,7 @@ function admin_urlremapsBuild($data,$db) {
 		return;
 	}
 	// Create The Form
-	$form = $data->output['remapForm'] = new formHandler('urlremap',$data,true);
+	$form = $data->output['remapForm'] = new formHandler('dynamicURLs',$data,true);
 	$form->caption = 'Editing URL Remap';
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
@@ -50,7 +50,7 @@ function admin_urlremapsBuild($data,$db) {
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
 				
-			$statement = $db->prepare('editUrlRemap', 'urlremap');
+			$statement = $db->prepare('editUrlRemap', 'dynamicURLs');
 			$form->sendArray[':id'] = $remapId;
 			$result = $statement->execute($form->sendArray) ;
 			
@@ -61,7 +61,7 @@ function admin_urlremapsBuild($data,$db) {
 				return;
 			}
 			
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Remap Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -77,7 +77,7 @@ function admin_urlremapsBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -85,7 +85,7 @@ function admin_urlremapsBuild($data,$db) {
 		}
 	}
 }
-function admin_urlremapsShow($data) {
+function admin_dynamicURLsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

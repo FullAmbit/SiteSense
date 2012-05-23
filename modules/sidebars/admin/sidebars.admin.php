@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if(!checkPermission('sidebars_access','core',$data))
+	if(!checkPermission('access','sidebars',$data))
 	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
@@ -38,9 +38,9 @@ function admin_buildContent($data,$db) {
 	
 	/* first add any that are in the directory but not in the database */
 	$files=glob('modules/*/sidebars/*.sidebar.php');
-	$statement=$db->prepare('getSideBarNameByName','sidebars');
+	$statement=$db->prepare('getSidebarNameByName','sidebars');
 	
- 	$wHandle=$db->prepare('insertSideBarFile','sidebars');
+ 	$wHandle=$db->prepare('insertSidebarFile','sidebars');
 	foreach ($files as $fileName) {
 		$targetName=substr(strrchr(str_replace('.sidebar.php','',$fileName),'/'),1);
 		$statement->execute(array(
@@ -53,11 +53,11 @@ function admin_buildContent($data,$db) {
 			));
 			
 			// Make Sidebar Settings //
-			$sideBarId = $db->lastInsertId();
+			$sidebarId = $db->lastInsertId();
 			$count = $db->countRows('sidebars');
 			$sortOrder = $count;
 			//---Pages---//
-			$pageQ = $db->prepare('createSideBarSetting','pages');
+			$pageQ = $db->prepare('createSidebarSetting','pages');
 			$statement = $db->prepare('getAllPageIds','pages');
 			$statement->execute();
 			$pageList = $statement->fetchAll();
@@ -66,7 +66,7 @@ function admin_buildContent($data,$db) {
 			{
 				$vars = array(
 					':pageId' => $pageItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -74,7 +74,7 @@ function admin_buildContent($data,$db) {
 				$pageQ->execute($vars);
 			}
 			//---Modules---//
-			$moduleQ = $db->prepare('createSideBarSetting','modules');
+			$moduleQ = $db->prepare('createSidebarSetting','modules');
 			$statement = $db->prepare('getAllModuleIds','modules');
 			$statement->execute();
 			$moduleList = $statement->fetchAll();
@@ -82,7 +82,7 @@ function admin_buildContent($data,$db) {
 			{
 				$vars = array(
 					':moduleId' => $moduleItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -90,7 +90,7 @@ function admin_buildContent($data,$db) {
 				$moduleQ->execute($vars);
 			}
 			//---Forms---//
-			$formQ = $db->prepare('createSideBarSetting','dynamicForms');
+			$formQ = $db->prepare('createSidebarSetting','dynamicForms');
 			$statement = $db->prepare('getAllFormIds','dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
@@ -98,7 +98,7 @@ function admin_buildContent($data,$db) {
 			{
 				$vars = array(
 					':formId' => $formItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -111,7 +111,7 @@ function admin_buildContent($data,$db) {
 	/* now even tougher, remove any that are NOT listed */
 	$statement=$db->query('getFromFiles','sidebars');
 	$wHandle=$db->prepare('deleteById','sidebars');
-	$data->output['sideBars']=array();
+	$data->output['sidebars']=array();
 	while ($item = $statement->fetch()) {
 		$testName='modules/'.$item['name'].'/sidebars/'.$item['name'].'.sidebar.php';
 		if (!in_array($testName,$files)) {
@@ -121,9 +121,9 @@ function admin_buildContent($data,$db) {
 			//--Delete Form, Page, and Module Setting For Sidebar--//
 			$vars = array(':sidebar' => $item['id']);
 						
-			$q1 = $db->prepare('deleteSideBarSettingBySideBar','dynamicForms');
-			$q2 = $db->prepare('deleteSideBarSettingBySideBar','modules');
-			$q3 = $db->prepare('deleteSideBarSettingBySideBar','pages');
+			$q1 = $db->prepare('deleteSidebarSettingBySidebar','dynamicForms');
+			$q2 = $db->prepare('deleteSidebarSettingBySidebar','modules');
+			$q3 = $db->prepare('deleteSidebarSettingBySidebar','pages');
 			
 			$q1->execute($vars);
 			$q2->execute($vars);
@@ -131,7 +131,7 @@ function admin_buildContent($data,$db) {
 		}
 	}
 	$statement=$db->query('getAllOrdered','sidebars');
-	$data->output['sideBars']=$statement->fetchAll();
+	$data->output['sidebars']=$statement->fetchAll();
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
@@ -140,15 +140,15 @@ function admin_buildContent($data,$db) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('sideBarsBuild')) admin_sideBarsBuild($data,$db);
-	$data->output['pageTitle']='SideBars';
+	if (function_exists('admin_sidebarsBuild')) admin_sidebarsBuild($data,$db);
+	$data->output['pageTitle']='Sidebars';
 }
 function admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_sideBarsShow($data);
+			admin_sidebarsShow($data);
 		} else admin_unknown();
 	}
 }

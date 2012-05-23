@@ -27,7 +27,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permission: Accessible by administrator only
 	**/
-	if(!checkPermission('settings_access','core',$data)) {
+	if(!checkPermission('access','settings',$data)) {
 		$data->output['rejectError'] = 'Insufficient Permissions';
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;
@@ -102,7 +102,7 @@ function admin_buildContent($data,$db) {
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->output['settingsForm']->fromForm) {
 		
 		if ($data->output['formOk']=$data->output['settingsForm']->validateFromPost()) {
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Settings Saved</h2>
 				<ul class="updateList">';
 			// Parse The Footer //
@@ -130,21 +130,21 @@ function admin_buildContent($data,$db) {
 			$statement=$db->prepare('updateSettings','settings');
 			foreach ($data->output['settingsForm']->fields as $fieldKey => $fieldData) {
 				if (!empty($fieldData['updated'])) {
-					$data->output['secondSideBar'].='
+					$data->output['secondSidebar'].='
 						<li class="changed"><b>'.$fieldKey.'</b><span> updated</span></li>';
 					
 					$statement->execute(array(
 						'value' => $fieldData[$fieldData['updated']],
 						'name' => $fieldKey
 					));
-				} else $data->output['secondSideBar'].='
+				} else $data->output['secondSidebar'].='
 					<li><b>'.$fieldKey.'</b><span> unchanged</span></li>';
 			}
 			unset($data->output['settingsForm']->fields['parsedFooterContent']);
-			$data->output['secondSideBar'].='
+			$data->output['secondSidebar'].='
 				</ul>';
 		} else {
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

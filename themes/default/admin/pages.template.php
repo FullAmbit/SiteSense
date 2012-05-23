@@ -126,17 +126,17 @@ function theme_sidebarsTableHead($data) {
 			</thead><tbody>';
 }
 
-function theme_sidebarsTableList($data,$sideBar,$count,$action) {
+function theme_sidebarsTableList($data,$sidebar,$count,$action) {
 	echo '
 		<tr class="',($count%2==0 ? 'odd' : 'even'),'">
-			<td class="name">',$sideBar['name'],'</td>
-			<td>', ($sideBar['enabled'] ? 'Yes' : 'No'), '</td>
+			<td class="name">',$sidebar['name'],'</td>
+			<td>', ($sidebar['enabled'] ? 'Yes' : 'No'), '</td>
 			<td class="buttonList">
-				<a href="', $data->linkRoot, 'admin/pages/sidebars/', $data->output['pageItem']['id'], '/', $action, '/', $sideBar['id'], '">
+				<a href="', $data->linkRoot, 'admin/pages/sidebars/', $data->output['pageItem']['id'], '/', $action, '/', $sidebar['id'], '">
 					', ucfirst($action), '
 				</a>
-				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveUp/',$sideBar['id'],'" title="Move Up">&uArr;</a>
-				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveDown/',$sideBar['id'],'" title="Move Down">&dArr;</a>
+				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveUp/',$sidebar['id'],'" title="Move Up">&uArr;</a>
+				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveDown/',$sidebar['id'],'" title="Move Down">&dArr;</a>
 			</td>
 		</tr>';
 }

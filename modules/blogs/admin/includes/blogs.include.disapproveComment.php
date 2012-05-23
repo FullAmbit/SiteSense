@@ -60,7 +60,7 @@ function admin_blogsBuild($data,$db)
 	$statement = $db->prepare('disapproveComment','blogs');
 	$statement->execute(array(':id' => $data->action[3]));
 	
-	if (empty($data->output['secondSideBar'])) {
+	if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Comment Disapproved Successfully</h2>
 					<div class="panel buttonList">

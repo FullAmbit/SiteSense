@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_modulesBuild($data,$db) {
-    if(!checkPermission('modules_edit','core',$data)) {
+    if(!checkPermission('edit','modules',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -60,7 +60,7 @@ function admin_modulesBuild($data,$db) {
 				$statement = $db->prepare('newModule', 'modules');
 			}
 			$statement->execute($form->sendArray) or die('Saving module failed');
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>module Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -76,7 +76,7 @@ function admin_modulesBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

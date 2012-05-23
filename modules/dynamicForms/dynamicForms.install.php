@@ -22,13 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function forms_settings() {
+function dynamicForms_settings() {
 	return array(
-		'name' => 'forms',
-		'shortName' => 'forms'
+		'name' => 'dynamicForms',
+		'shortName' => 'dynamicForms'
 	);
 }
-function forms_install($data,$drop=false) {
+function dynamicForms_install($data,$drop=false) {
 	$structures = array(
 		'forms' => array(
 			'id'                   => SQR_IDKey,
@@ -96,18 +96,18 @@ function forms_install($data,$drop=false) {
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
-            'forms_access',
-			'forms_add',
-			'forms_edit',
-			'forms_delete',
-			'forms_viewData'
+            'dynamicForms_access',
+			'dynamicForms_add',
+			'dynamicForms_edit',
+			'dynamicForms_delete',
+			'dynamicForms_viewData'
         ),
         'Writer' => array(
-            'forms_access',
-			'forms_add',
-			'forms_edit',
-			'forms_delete',
-			'forms_viewData'
+            'dynamicForms_access',
+			'dynamicForms_add',
+			'dynamicForms_edit',
+			'dynamicForms_delete',
+			'dynamicForms_viewData'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

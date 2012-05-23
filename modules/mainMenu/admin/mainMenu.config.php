@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function mainMenu_config($data) {
-	if(checkPermission('mainMenu_access','core',$data)) {
+	if(checkPermission('access','mainMenu',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => 'Site Management',
 			'command'   => 'main-menu/list',

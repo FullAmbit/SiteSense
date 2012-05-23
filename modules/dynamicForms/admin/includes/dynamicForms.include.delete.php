@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db)
+function admin_dynamicFormsBuild($data,$db)
 {
 	//permission check for forms delete
-	if(!checkPermission('delete','dynamic-forms',$data)) {
+	if(!checkPermission('delete','dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -75,26 +75,26 @@ function admin_formsBuild($data,$db)
 		}
 	}
 }
-function admin_formsShow($data)
+function admin_dynamicFormsShow($data)
 {
 	$aRoot = $data->linkRoot . 'admin/dynamic-forms/';
 	if($data->output['rejectText'])
 	{
-		theme_formsDeleteReject($data,$aRoot);
+		theme_dynamicFormsDeleteReject($data,$aRoot);
 		return;
 	}
 	switch($data->output['delete'])
 	{	
 		case 'cancelled':
-			theme_formsDeleteCancelled($aRoot);
+			theme_dynamicFormsDeleteCancelled($aRoot);
 		break;
 		
 		case 'deleted':
-			theme_formsDeleteDeleted($aRoot);
+			theme_dynamicFormsDeleteDeleted($aRoot);
 		break;
 		
 		default:
-			theme_formsDeleteDefault($data,$aRoot);
+			theme_dynamicFormsDeleteDefault($data,$aRoot);
 		break;
 	}
 }

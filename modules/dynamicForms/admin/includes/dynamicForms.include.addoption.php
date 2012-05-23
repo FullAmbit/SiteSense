@@ -24,9 +24,9 @@
 */
 common_include('libraries/forms.php');
 
-function admin_formsBuild($data,$db) {
+function admin_dynamicFormsBuild($data,$db) {
 	//permission check for forms edit
-	if(!checkPermission('edit','forms',$data)) {
+	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -67,14 +67,14 @@ function admin_formsBuild($data,$db) {
 			
 			$statement = $db->prepare('updateOptions', 'dynamicForms');
 			$statement->execute($form->sendArray) or die($statement->errorInfo());
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Option Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/forms/addoption/' . $data->output['fieldItem']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/addoption/' . $data->output['fieldItem']['id'] . '">
 							Add New Option
 						</a>
-						<a href="'.$data->linkRoot.'admin/forms/listoptions/' . $data->output['fieldItem']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/listoptions/' . $data->output['fieldItem']['id'] . '">
 							Return to Options List
 						</a>
 					</div>';
@@ -83,7 +83,7 @@ function admin_formsBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -92,7 +92,7 @@ function admin_formsBuild($data,$db) {
 	}
 }
 
-function admin_formsShow($data) {
+function admin_dynamicFormsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

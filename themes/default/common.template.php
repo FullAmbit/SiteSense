@@ -198,7 +198,7 @@ function theme_contentBoxFooter() {
 } // them_contentBoxFooter()
 
 
-function theme_sideBarBoxHeader($heading,$headingURL='') {
+function theme_sidebarBoxHeader($heading,$headingURL='') {
 	echo '
 			<div class="sidebarBox">
 				<h2 class="',(empty($headingURL) ? 'noLink' : 'link'),'">
@@ -211,10 +211,10 @@ function theme_sideBarBoxHeader($heading,$headingURL='') {
 				<div class="innerBox">
 
 ';
-} // theme_sideBarBoxHeader
+} // theme_sidebarBoxHeader
 
 
-function theme_sideBarBoxFooter() {
+function theme_sidebarBoxFooter() {
 	echo '
 
 				<!-- .innerBox --></div>
@@ -222,13 +222,13 @@ function theme_sideBarBoxFooter() {
 ';
 }
 
-function theme_leftSideBar($data) {
+function theme_leftSidebar($data) {
 
 	echo '
 
 		<!-- #content, #contentWrapper --></div></div>';
 	// Check If We Have Any Sidebars	
-	if(empty($data->sideBarList['left']))
+	if(empty($data->sidebarList['left']))
 	{
 		return;
 	}
@@ -236,56 +236,56 @@ function theme_leftSideBar($data) {
 	echo '
 		<div id="leftSidebar">';
 
-	if (count($data->sideBarList['left'])>0) {
+	if (count($data->sidebarList['left'])>0) {
 		
-		foreach($data->sideBarList['left'] as $sideBar) {
+		foreach($data->sidebarList['left'] as $sidebar) {
 			
-			if ($sideBar['name']!=$data->output['pageShortName']) {
-				if ($sideBar['fromFile']) {
-					require_once('modules/sidebars/'.$sideBar['name'].'.sidebar.php');
+			if ($sidebar['name']!=$data->output['pageShortName']) {
+				if ($sidebar['fromFile']) {
+					require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
 				} else {
-					common_parseDynamicValues($data, $sideBar['titleURL']);
-					common_parseDynamicValues($data, $sideBar['parsedContent']);
-					theme_sideBarBoxHeader($sideBar['title'],$sideBar['titleURL']);
-					echo htmlspecialchars_decode($sideBar['parsedContent']);
-					theme_sideBarBoxFooter();
+					common_parseDynamicValues($data, $sidebar['titleURL']);
+					common_parseDynamicValues($data, $sidebar['parsedContent']);
+					theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+					echo htmlspecialchars_decode($sidebar['parsedContent']);
+					theme_sidebarBoxFooter();
 				}
 			}
 		}
 	}
 
 	echo '
-		<!-- .leftSideBar --></div>';
+		<!-- .leftSidebar --></div>';
 
-} // theme_leftSideBar
+} // theme_leftSidebar
 
-function theme_rightSideBar($data) {
+function theme_rightSidebar($data) {
 
 	// Check If We Have Any Sidebars	
-	if(empty($data->sideBarList['right'])) {
+	if(empty($data->sidebarList['right'])) {
 		return;
 	}
 
 	echo '<div id="rightSidebar">';
 
-	if (count($data->sideBarList)>0) {
-		foreach($data->sideBarList['right'] as $sideBar) {
-			if ($sideBar['name']!=$data->output['pageShortName']) {
-				if ($sideBar['fromFile']) {
-					require_once('modules/sidebars/'.$sideBar['name'].'.sidebar.php');
+	if (count($data->sidebarList)>0) {
+		foreach($data->sidebarList['right'] as $sidebar) {
+			if ($sidebar['name']!=$data->output['pageShortName']) {
+				if ($sidebar['fromFile']) {
+					require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
 				} else {
-					common_parseDynamicValues($data, $sideBar['titleURL']);
-					common_parseDynamicValues($data, $sideBar['parsedContent']);
-					theme_sideBarBoxHeader($sideBar['title'],$sideBar['titleURL']);
-					echo htmlspecialchars_decode($sideBar['parsedContent']);
-					theme_sideBarBoxFooter();
+					common_parseDynamicValues($data, $sidebar['titleURL']);
+					common_parseDynamicValues($data, $sidebar['parsedContent']);
+					theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+					echo htmlspecialchars_decode($sidebar['parsedContent']);
+					theme_sidebarBoxFooter();
 				}
 			}
 		}
 	}
 
 	echo '
-		<!-- .rightSideBar --></div>';
+		<!-- .rightSidebar --></div>';
 
 }
 

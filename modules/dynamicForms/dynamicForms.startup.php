@@ -22,13 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function forms_startup($data,$db) {
-	$data->permissions['forms']=array(
-        'access'               => 'Pages forms',
-        'add'                  => 'Add forms',
-        'delete'               => 'Delete forms',
-        'edit'                 => 'Edit forms',
-        'viewData'             => 'View Submit Data forms'
+function dynamicForms_startup($data,$db) {
+	$data->permissions['dynamicForms']=array(
+        'access'               => 'Access Dynamic Forms',
+        'add'                  => 'Add Dynamic Forms',
+        'delete'               => 'Delete Dynamic Forms',
+        'edit'                 => 'Edit Dynamic Forms',
+        'viewData'             => 'View Submit Data'
     );
 }
 ?>

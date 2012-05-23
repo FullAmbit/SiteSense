@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db)
+function admin_dynamicFormsBuild($data,$db)
 {
 	//permission check for forms edit
-	if(!checkPermission('edit','dynamic-forms',$data)) {
+	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -69,14 +69,14 @@ function admin_formsBuild($data,$db)
 			
 			$data->output['delete']='deleted';
 			// Success Message
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 			  $data->output['savedOkMessage']='
 				  <h2>Project screenshot Deleted Successfully</h2>
 				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/forms/newfield/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/dynamic-forms/newfield/'.$data->output['formItem']['id'].'">
 						  Add New Field
 					  </a>
-					  <a href="'.$data->linkRoot.'admin/forms/listfields/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/'.$data->output['formItem']['id'].'">
 						  Return to Fields List
 					  </a>
 				  </div>';
@@ -86,7 +86,7 @@ function admin_formsBuild($data,$db)
 		}
 	}
 }
-function admin_formsShow($data)
+function admin_dynamicFormsShow($data)
 {
 	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
 	if(empty($data->output['rejectError']))
@@ -94,13 +94,13 @@ function admin_formsShow($data)
 		switch($data->output['delete'])
 		{
 			case 'deleted':
-					theme_formsDeleteFieldCancelled($data,$aRoot);
+					theme_dynamicFormsDeleteFieldCancelled($data,$aRoot);
 				break;
 			case 'cancelled':
-					theme_formsDeleteFieldDeleted($aRoot);
+					theme_dynamicFormsDeleteFieldDeleted($aRoot);
 				break;
 			default:
-					theme_formsDeleteFieldDefault($data,$aRoot);
+					theme_dynamicFormsDeleteFieldDefault($data,$aRoot);
 				break;
 		}
 	} else {

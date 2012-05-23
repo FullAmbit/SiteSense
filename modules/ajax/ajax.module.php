@@ -54,16 +54,16 @@ function ajax_buildContent(&$data,&$db)
 		echo 'The page you requested was not found';
 		return;
 	}
-	// Load SideBars //
-	$sideBarQuery = $db->prepare('getEnabledSideBarsByModule', 'modules');
-	$sideBarQuery->execute(array(
+	// Load Sidebars //
+	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'modules');
+	$sidebarQuery->execute(array(
 		':module' => $moduleData['id']
 	));
-	$sideBars = $sideBarQuery->fetchAll();
-	$data->sideBarList = array();
-	foreach($sideBars as $sideBar)
+	$sidebars = $sidebarQuery->fetchAll();
+	$data->sidebarList = array();
+	foreach($sidebars as $sidebar)
 	{
-		$data->sideBarList[$sideBar['side']][]=$sideBar;
+		$data->sidebarList[$sidebar['side']][]=$sidebar;
 	}
 	
 	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------

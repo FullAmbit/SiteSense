@@ -22,8 +22,8 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_urlremapsBuild($data,$db) {
-    if(!checkPermission('urlRemap_delete','core',$data)) {
+function admin_dynamicURLsBuild($data,$db) {
+    if(!checkPermission('delete','dynamicURLs',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -33,26 +33,26 @@ function admin_urlremapsBuild($data,$db) {
 		$data->output['abort'] = true;
 		$data->output['abortremap'] = '<h2>No ID Given</h2>';
 	}else{
-		$remap = $db->prepare('getUrlRemapById', 'urlremap');
+		$remap = $db->prepare('getUrlRemapById', 'dynamicURLs');
 		$remap->execute(array(':id' => (int)$data->action[3]));
 		$remap = $remap->fetch();
 		$data->output['exists'] = $remap !== false;
 		if($data->action[4] == 'confirm'){
-			$remaps = $db->prepare('deleteUrlRemap','urlremap');
+			$remaps = $db->prepare('deleteUrlRemap','dynamicURLs');
 			$remaps->execute(array(':id' => (int)$data->action[3]));
 			$data->output['success'] = ($remaps->rowCount() == 1);
 		}
 	}
 }
-function admin_urlremapsShow($data) {
+function admin_dynamicURLsShow($data) {
 	if(isset($data->output['success'])){
 		if($data->output['success']){
-			theme_urlremapDeleteSuccess($data->linkRoot);
+			theme_dynamicURLsDeleteSuccess($data->linkRoot);
 		}else{
-			theme_urlremapDeleteError($data->output['exists'],$data->linkRoot);
+			theme_dynamicURLsDeleteError($data->output['exists'],$data->linkRoot);
 		}
 	}else{
-		theme_urlremapDeleteConfirm($data->action[3],$data->linkRoot);
+		theme_dynamicURLsDeleteConfirm($data->action[3],$data->linkRoot);
 	}
 }
 ?>

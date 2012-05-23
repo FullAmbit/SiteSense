@@ -173,6 +173,7 @@ if (
     // Install modules
     $coreModules = array(
         'dynamicForms',
+        'dynamicURLs',
         'default',
         'blogs',
         'pages',
@@ -276,42 +277,42 @@ if (
 		'Writer' => array(
             'core_access',
 
-            'core_dashboard_access',
-			
-            'core_mainMenu_access',
-            'core_mainMenu_add',
-            'core_mainMenu_delete',
-            'core_mainMenu_disable',
-            'core_mainMenu_edit',
-            'core_mainMenu_enable',
-            'core_mainMenu_list',
+            'dashboard_access',
 
-            'core_sidebars_access',
-            'core_sidebars_add',
-            'core_sidebars_delete',
-            'core_sidebars_edit',
-            'core_sidebars_list',
+            'mainMenu_access',
+            'mainMenu_add',
+            'mainMenu_delete',
+            'mainMenu_disable',
+            'mainMenu_edit',
+            'mainMenu_enable',
+            'mainMenu_list',
 
-            'core_urlRemap_access',
-            'core_urlRemap_add',
-            'core_urlRemap_delete',
-            'core_urlRemap_edit',
-            'core_urlRemap_list'
+            'sidebars_access',
+            'sidebars_add',
+            'sidebars_delete',
+            'sidebars_edit',
+            'sidebars_list',
+
+            'dynamicURLs_access',
+            'dynamicURLs_add',
+            'dynamicURLs_delete',
+            'dynamicURLs_edit',
+            'dynamicURLs_list'
 		),
 		'Moderator' => array(
             'core_access',
 
-            'core_dashboard_access',
+            'dashboard_access'
 		),
 		'Blogger' => array(
             'core_access',
 
-            'core_dashboard_access'
+            'dashboard_access'
 		),
 		'User' => array(
             'core_access',
 
-            'core_dashboard_access'
+            'dashboard_access'
 		)
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

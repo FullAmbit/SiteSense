@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db){
+function admin_dynamicFormsBuild($data,$db){
 	//permission check for forms access
 	if(!checkPermission('viewData','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -47,10 +47,10 @@ function admin_formsBuild($data,$db){
 	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
-	$statement = $db->prepare('getRowsByForm', 'form');
+	$statement = $db->prepare('getRowsByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['rows'] = $statement->fetchAll();
-	$statement = $db->prepare('getValuesByForm', 'form');
+	$statement = $db->prepare('getValuesByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$results = $statement->fetchAll();
 	$values = array();
@@ -62,7 +62,7 @@ function admin_formsBuild($data,$db){
 	}
 	$data->output['values'] = $values;
 }
-function admin_formsShow($data){
+function admin_dynamicFormsShow($data){
 	theme_viewdataTableHead();
 	foreach($data->output['fields'] as $field){
 		theme_viewdataTableHeadCell($field);

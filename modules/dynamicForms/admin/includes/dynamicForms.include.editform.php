@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_formsBuild($data,$db)
+function admin_dynamicFormsBuild($data,$db)
 {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
@@ -71,7 +71,7 @@ function admin_formsBuild($data,$db)
 		} else {
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
-			// Load All Existing SideBar ShortNames For Comparison
+			// Load All Existing Sidebar ShortNames For Comparison
 			$statement = $db->prepare('getExistingShortNames','dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
@@ -95,7 +95,7 @@ function admin_formsBuild($data,$db)
 					'shortName' => $data->output['fromForm']->sendArray[':shortName'],
 					'side' => 'left',
 					'enabled' => $data->output['fromForm']->sendArray[':enabled'],
-					'module' => 'forms',
+					'module' => 'dynamicForms',
 					'sortOrder' => $rowCount + 1
 				));
 			}
@@ -120,14 +120,14 @@ function admin_formsBuild($data,$db)
 			$data->output['fromForm']->sendArray[':id'] = $formId;
 			$statement->execute($data->output['fromForm']->sendArray);
 			
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/forms/addform">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/addform">
 							Add New Form
 						</a>
-						<a href="'.$data->linkRoot.'admin/forms/list/">
+						<a href="'.$data->linkRoot.'admin/dynamic-forms/list/">
 							Return to Form List
 						</a>
 					</div>';
@@ -136,7 +136,7 @@ function admin_formsBuild($data,$db)
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -144,7 +144,7 @@ function admin_formsBuild($data,$db)
 		}
 	}
 }
-function admin_formsShow($data) {
+function admin_dynamicFormsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_formsBuild($data,$db) {
+function admin_dynamicFormsBuild($data,$db) {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -62,7 +62,7 @@ function admin_formsBuild($data,$db) {
 			$form->sendArray[':id'] = $field['id'];
 			$statement = $db->prepare('editField', 'dynamicForms');
 			$statement->execute($form->sendArray) or die(var_dump($statement->errorInfo()));
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Field Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -78,7 +78,7 @@ function admin_formsBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -86,7 +86,7 @@ function admin_formsBuild($data,$db) {
 		}
 	}
 }
-function admin_formsShow($data) {
+function admin_dynamicFormsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

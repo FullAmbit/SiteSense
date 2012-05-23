@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_plugins_addQueries() {
+function plugins_addQueries() {
 	return array(
 		'getAllPlugins' => '
 			SELECT * FROM !prefix!plugins ORDER BY name ASC

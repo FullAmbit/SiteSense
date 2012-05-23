@@ -24,7 +24,7 @@
 */
 function admin_buildContent($data,$db) {
 	//permission check for forms access
-	if(!checkPermission('access','forms',$data)) {
+	if(!checkPermission('access','dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
@@ -37,15 +37,15 @@ function admin_buildContent($data,$db) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_formsBuild')) admin_formsBuild($data,$db);
-	$data->output['pageTitle']='Forms';
+	if (function_exists('admin_dynamicFormsBuild')) admin_dynamicFormsBuild($data,$db);
+	$data->output['pageTitle']='Dynamic Forms';
 }
 function admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_formsShow($data);
+			admin_dynamicFormsShow($data);
 		} else admin_unknown();
 	}
 }

@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_mainMenuBuild($data,$db) {
-    if(!checkPermission('mainMenu_enable','core',$data)) {
+    if(!checkPermission('enable','mainMenu',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -44,7 +44,7 @@ function admin_mainMenuBuild($data,$db) {
 		':enabled' => '1'
 	));
 	// Success Message
-	if (empty($data->output['secondSideBar'])) {
+	if (empty($data->output['secondSidebar'])) {
 	  $data->output['savedOkMessage']='
 		  <h2>Menu Item Enabled Successfully</h2>
 		  <div class="panel buttonList">

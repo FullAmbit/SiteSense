@@ -35,28 +35,28 @@ function admin_buildContent($data,$db) {
 	$info['Zend Version']=zend_version().'</td></tr><tr><td colspan="2">
 		<img src="'.$_SERVER['PHP_SELF'].'?='.zend_logo_guid().'" alt="Zend Logo" />';
 	$info['Host OS']=PHP_OS;
-	$data->output['secondSideBar']='
+	$data->output['secondSidebar']='
 	<table class="sysInfo">
 		<caption>System Information</caption>
 		';
 	foreach ($info as $title => $value) {
 		if (is_array($value)) {
-			$data->output['secondSideBar'].='<tr>
+			$data->output['secondSidebar'].='<tr>
 			<th colspan="2" class="section">'.$title.'</th>';
 			foreach ($value as $subTitle => $subValue) {
-				$data->output['secondSideBar'].='<tr>
+				$data->output['secondSidebar'].='<tr>
 			<th>'.$subTitle.'</th>
 			<td>'.$subValue.'</td>
 		</tr>';
 			}
 		} else {
-			$data->output['secondSideBar'].='<tr>
+			$data->output['secondSidebar'].='<tr>
 			<th>'.$title.'</th>
 			<td>'.$value.'</td>
 		</tr>';
 		}
 	}
-	$data->output['secondSideBar'].='
+	$data->output['secondSidebar'].='
 	</table>';
 	$data->output['pageTitle']='About This CMS -';
 	//-----Call Home-----//

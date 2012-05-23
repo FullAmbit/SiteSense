@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_modules_addQueries() {
+function modules_addQueries() {
 	return array(
 		'getAllModuleIds' => '
 			SELECT id FROM !prefix!modules
@@ -51,23 +51,23 @@ function admin_modules_addQueries() {
 		'getAllSidebars' => '
 			SELECT * FROM !prefix!sidebars
 		',
-		'getSideBarById' => '
+		'getSidebarById' => '
 			SELECT * FROM !prefix!sidebars
 			WHERE id = :id
 		',
-		'getSideBarsByModule' => '
+		'getSidebarsByModule' => '
 			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
-		'getEnabledSideBarsByModule' => '
+		'getEnabledSidebarsByModule' => '
 				SELECT a.enabled,a.sortOrder,b.* FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 		',
-		'enableSideBar' => '
+		'enableSidebar' => '
 			UPDATE !prefix!module_sidebars
 			SET
 				enabled  =  1
 			WHERE id = :id
 		',
-		'disableSideBar' => '
+		'disableSidebar' => '
 			UPDATE !prefix!module_sidebars
 			SET
 				enabled  =  0
@@ -110,43 +110,43 @@ function admin_modules_addQueries() {
 		'deleteModule' => '
 			DELETE FROM !prefix!modules WHERE id = :id
 		',
-		'countSideBarsByModule' => '
+		'countSidebarsByModule' => '
 			SELECT COUNT(*) AS rowCount FROM !prefix!module_sidebars WHERE module = :moduleId
 		',
-		'createSideBarSetting' => '
+		'createSidebarSetting' => '
 			REPLACE INTO !prefix!module_sidebars
 			SET
 				module = :moduleId,
-				sidebar = :sideBarId,
+				sidebar = :sidebarId,
 				enabled = :enabled,
 				sortOrder = :sortOrder
 		',
-		'getSideBarSetting' => '
+		'getSidebarSetting' => '
 			SELECT * FROM !prefix!module_sidebars WHERE id = :id
 		',
-		'shiftSideBarOrderUpByID' => '
+		'shiftSidebarOrderUpByID' => '
 			UPDATE !prefix!module_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
-		'shiftSideBarOrderUpRelative' => '
+		'shiftSidebarOrderUpRelative' => '
 			UPDATE !prefix!module_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND module = :moduleId
 			ORDER BY sortOrder DESC LIMIT 1
 		',
-		'shiftSideBarOrderDownByID' => '
+		'shiftSidebarOrderDownByID' => '
 			UPDATE !prefix!module_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
-		'shiftSideBarOrderDownRelative' => '
+		'shiftSidebarOrderDownRelative' => '
 			UPDATE !prefix!module_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND module = :moduleId
 			ORDER BY sortOrder ASC LIMIT 1
 		',
-		'deleteSideBarSettingBySideBar' => '
+		'deleteSidebarSettingBySidebar' => '
 			DELETE FROM !prefix!module_sidebars WHERE sidebar = :sidebar
 		'
 	);

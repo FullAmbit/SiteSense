@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_dynamicForms_addQueries() {
+function dynamicForms_addQueries() {
 	return array(
 		'getAllFormIds' => '
 			SELECT id FROM !prefix!forms
@@ -176,61 +176,61 @@ function admin_dynamicForms_addQueries() {
 		'getExistingShortNames' => '
 			SELECT shortName FROM !prefix!forms
 		',
-		'countSideBarsByForm' => '
+		'countSidebarsByForm' => '
 			SELECT COUNT(*) FROM !prefix!form_sidebars WHERE form = :formId
 		',
-		'createSideBarSetting' => '
+		'createSidebarSetting' => '
 			REPLACE INTO !prefix!form_sidebars
 			SET
 				form = :formId,
-				sidebar = :sideBarId,
+				sidebar = :sidebarId,
 				enabled = :enabled,
 				sortOrder = :sortOrder
 		',
-		'getSideBarsByForm' => '
+		'getSidebarsByForm' => '
 			SELECT a.id,a.form,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!form_sidebars a, !prefix!sidebars b WHERE a.form = :formId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
-		'enableSideBar' => '
+		'enableSidebar' => '
 			UPDATE !prefix!form_sidebars
 			SET
 				enabled  =  1
 			WHERE id = :id
 		',
-		'disableSideBar' => '
+		'disableSidebar' => '
 			UPDATE !prefix!form_sidebars
 			SET
 				enabled  =  0
 			WHERE id = :id
 		',
-		'getSideBarSetting' => '
+		'getSidebarSetting' => '
 			SELECT * FROM !prefix!form_sidebars WHERE id = :id
 		',
-		'shiftSideBarOrderUpByID' => '
+		'shiftSidebarOrderUpByID' => '
 			UPDATE !prefix!form_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
-		'shiftSideBarOrderUpRelative' => '
+		'shiftSidebarOrderUpRelative' => '
 			UPDATE !prefix!form_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND form = :formId
 			ORDER BY sortOrder DESC LIMIT 1
 		',
-		'shiftSideBarOrderDownByID' => '
+		'shiftSidebarOrderDownByID' => '
 			UPDATE !prefix!form_sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
-		'shiftSideBarOrderDownRelative' => '
+		'shiftSidebarOrderDownRelative' => '
 			UPDATE !prefix!form_sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND form = :formId
 			ORDER BY sortOrder ASC LIMIT 1
 		',
-		'deleteSideBarSettingBySideBar' => '
+		'deleteSidebarSettingBySidebar' => '
 			DELETE FROM !prefix!form_sidebars WHERE sidebar = :sidebar
 		',
-		'getEnabledSideBarsByForm' => '
+		'getEnabledSidebarsByForm' => '
 			SELECT a.enabled,a.sortOrder,b.* FROM !prefix!form_sidebars a, !prefix!sidebars b WHERE a.form = :formId AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 		',
 		'countFieldsByForm' => '

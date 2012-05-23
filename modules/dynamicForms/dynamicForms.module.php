@@ -23,13 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='forms';
+	$data->output['pageShortName']='dynamicForms';
 }
 function page_buildContent($data,$db) {
 	require_once('libraries/forms.php');
 	$form = false;
 	if ($data->action[1] !== false){
-		$statement=$db->prepare('getFormByShortName','form');
+		$statement=$db->prepare('getFormByShortName','dynamicForms');
 		$statement->execute(array(
 			':shortName' => $data->action[1]
 		));
@@ -45,17 +45,17 @@ function page_buildContent($data,$db) {
 		$data->action['error'] = 'accessDenied';
 		return;
 	}
-	// Load SideBars
-	$statement = $db->prepare('getEnabledSideBarsByForm','form');
+	// Load Sidebars
+	$statement = $db->prepare('getEnabledSidebarsByForm','dynamicForms');
 	$statement->execute(array(':formId' => $form['id']));
-	$sideBars = $statement->fetchAll();
-	$data->sideBarList = array();
-	foreach($sideBars as $sideBar)
+	$sidebars = $statement->fetchAll();
+	$data->sidebarList = array();
+	foreach($sidebars as $sidebar)
 	{
-		$data->sideBarList[$sideBar['side']][] = $sideBar;
+		$data->sidebarList[$sidebar['side']][] = $sidebar;
 	}
 	// Process Fields //
-	$statement = $db->prepare('getFieldsByForm', 'form');
+	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$rawFields = $statement->fetchAll();
 	$rawForm = array();
@@ -102,10 +102,10 @@ function page_buildContent($data,$db) {
 	if (isset($_POST['fromForm']) && ($_POST['fromForm'] == $customForm->fromForm)){
 		$customForm->populateFromPostData();
 		if ($customForm->validateFromPost()) {
-			$newRow = $db->prepare('newRow', 'form');
+			$newRow = $db->prepare('newRow', 'dynamicForms');
 			$newRow->execute(array(':form' => $form['id']));
 			$rowId = $db->lastInsertId();
-			$statement = $db->prepare('newValue', 'form');
+			$statement = $db->prepare('newValue', 'dynamicForms');
 			$emailText = '';
 			foreach($rawFields as $field){
 				$fieldId = $field['id'];

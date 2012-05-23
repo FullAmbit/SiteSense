@@ -47,7 +47,7 @@ function build_edit($data, $db){
 				$data->output['userForm']->sendArray[':id']=$data->user['id'];
 			}
 			$statement->execute($data->output['userForm']->sendArray);
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 						<h2>User Details Saved Successfully</h2>
 						<p>You will be redirected to your user page shortly.</p>
@@ -57,13 +57,13 @@ function build_edit($data, $db){
 			/*
 			 invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 					<h2>Error in Data</h2>
 					<p>
 						There were one or more errors. Please correct the fields with the red X next to them and try again.
 					</p>';
 			if ($data->output['userForm']->sendArray[':password'] != $data->output['userForm']->sendArray[':password2']) {
-				$data->output['secondSideBar'].='
+				$data->output['secondSidebar'].='
 					<p>
 						<strong>Password fields do not match!</strong>
 					</p>';
@@ -98,8 +98,7 @@ function build_edit($data, $db){
 		}
 	}}
 	
-function build_default($data, $db)
-{
+function build_default($data, $db) {
 }
 
 function page_buildContent($data,$db)

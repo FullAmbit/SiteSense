@@ -22,27 +22,9 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_dynamicFormsBuild($data,$db){
-	//permission check for forms access
-	if(!checkPermission('access','dynamicForms',$data)) {
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
-		return;
-	}	
-	$statement = $db->query('getAllForms', 'dynamicForms');
-	$data->output['forms'] = $statement->fetchAll();
+function dashboard_startup($data,$db) {
+	$data->permissions['dashboard']=array(
+        'access'               => 'Access Dashboard'
+    );
 }
-function admin_dynamicFormsShow($data){
-	theme_dynamicFormsListNewButton($data);
-	if (empty($data->output['forms'])) {
-		theme_dynamicFormsListNoForms();
-	} else {
-		theme_dynamicFormsListTableHead();
-	$count=0;
-	foreach($data->output['forms'] as $form){
-		theme_dynamicFormsListTableRow($data,$form,$count);
-		$count++;
-	}
-	theme_dynamicFormsListTableFoot();
-  }
-}
+?>

@@ -27,7 +27,7 @@ function admin_buildContent($data,$db) {
 		$data->action[2]='list';
 	}
 	if ($data->action[2]=='list') {
-		$statement=$db->query('getAllBlogs',blogs');
+		$statement=$db->query('getAllBlogs','blogs');
 		$data->output['blogList']=$statement->fetchAll();
 		$statement=$db->prepare('countBlogPosts','blogs');
 		foreach ($data->output['blogList'] as $item) {

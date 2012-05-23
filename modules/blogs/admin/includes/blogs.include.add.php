@@ -66,7 +66,7 @@ function admin_blogsBuild($data,$db) {
             }
         }
 		*/
-        $statement = $db->query('getBloggersByUserLevel',blogs');
+        $statement = $db->query('getBloggersByUserLevel','blogs');
 		$statement->execute();
 		while ($item=$statement->fetch()) {
 			$data->output['blogForm']->fields['owner']['options'][]=array(
@@ -132,7 +132,7 @@ function admin_blogsBuild($data,$db) {
 
 		} else {
 			// Form Validation Fail
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

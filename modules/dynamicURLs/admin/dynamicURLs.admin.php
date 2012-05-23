@@ -27,8 +27,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if(!checkPermission('urlRemap_access','core',$data))
-	{
+	if(!checkPermission('access','dynamicURLs',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
 			<h2>Insufficient Permissions</h2>
@@ -44,12 +43,12 @@ function admin_buildContent($data,$db) {
 		$statement=$db->query('getAllUrlRemaps','dynamicURLs');
 		$data->output['urlremapList']=$statement->fetchAll();
 	}
-	$target='modules/dynamicURLs/admin/include/dynamicURLs.include.'.$data->action[2].'.php';
+	$target='modules/dynamicURLs/admin/includes/dynamicURLs.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_urlremapsBuild')) admin_urlremapsBuild($data,$db);
+	if (function_exists('admin_dynamicURLsBuild')) admin_dynamicURLsBuild($data,$db);
 	$data->output['pageTitle']='URL Remaps';
 }
 function admin_content($data) {
@@ -57,7 +56,7 @@ function admin_content($data) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_urlremapsShow($data);
+			admin_dynamicURLsShow($data);
 		} else admin_unknown();
 	}
 }

@@ -160,7 +160,7 @@ function admin_usersBuild($data,$db) {
 		
 		if($existing)
 		{
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				  <h2>Error in Data</h2>
 				  <p>
 					  There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -331,7 +331,7 @@ function admin_usersBuild($data,$db) {
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
 			$profileAlbum->execute(array(':user' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
 			
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -347,20 +347,20 @@ function admin_usersBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
 				</p>';
 			if ($existing) {
-				$data->output['secondSideBar'].='
+				$data->output['secondSidebar'].='
 				<p>
 					<strong>Username Already Exists!</strong>
 				</p>';
 				$data->output['userForm']->fields['name']['error']=true;
 			}
 			if ($_POST['viewUser_password']!=$_POST['viewUser_password2']) {
-				$data->output['secondSideBar'].='
+				$data->output['secondSidebar'].='
 				<p>
 					<strong>Password fields do not match!</strong>
 				</p>';

@@ -42,26 +42,26 @@ function admin_pagesBuild($data,$db)
 		return;
 	}
 	
-	// Do SideBar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSideBarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSideBarsByPage','pages');
+	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
+	$maxSidebarCount = $db->countRows('sidebars');
+	$statement = $db->prepare('countSidebarsByPage','pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();
-	if($rowCount < $maxSideBarCount)
+	if($rowCount < $maxSidebarCount)
 	{
 		$i = $rowCount;
-		// Get A List Of All SideBars
-		$statement = $db->prepare('getAllSideBars','sidebars');
+		// Get A List Of All Sidebars
+		$statement = $db->prepare('getAllSidebars','sidebars');
 		$statement->execute();
-		$sideBarList = $statement->fetchAll();
-		foreach($sideBarList as $sideBarItem)
+		$sidebarList = $statement->fetchAll();
+		foreach($sidebarList as $sidebarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSideBarSetting','pages');
+			$statement = $db->prepare('createSidebarSetting','pages');
 			$statement->execute(array(
 				':pageId' => $pageId,
-				':sideBarId' => $sideBarItem['id'],
-				':enabled' => $sideBarItem['enabled'],
+				':sidebarId' => $sidebarItem['id'],
+				':enabled' => $sidebarItem['enabled'],
 				':sortOrder' => $i
 			));
 		}
@@ -71,45 +71,45 @@ function admin_pagesBuild($data,$db)
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSideBar', 'pages');
+			$statement = $db->prepare('enableSidebar', 'pages');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSideBar', 'pages');
+			$statement = $db->prepare('disableSidebar', 'pages');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSideBarSetting','pages');
+			$statement = $db->prepare('getSidebarSetting','pages');
 			$statement->execute(array(':id' => $settingId));
-			if(($sideBarItem = $statement->fetch()) === FALSE)
+			if(($sidebarItem = $statement->fetch()) === FALSE)
 			{
 				continue;
 			}
 			// Get The Current Count
-			$statement = $db->prepare('countSideBarsByPage','pages');
+			$statement = $db->prepare('countSidebarsByPage','pages');
 			$statement->execute(array(':pageId' => $pageId));
 			list($rowCount) = $statement->fetch();
-			if($data->action[4] == 'moveUp' && intval($sideBarItem['sortOrder']) > 1) {
+			if($data->action[4] == 'moveUp' && intval($sidebarItem['sortOrder']) > 1) {
 				
-				$query1 = 'shiftSideBarOrderUpRelative';
-				$query2 = 'shiftSideBarOrderUpByID';
-			} else if($data->action[4] == 'moveDown' && intval($sideBarItem['sortOrder']) < $rowCount) {
-				$query1 = 'shiftSideBarOrderDownRelative';
-				$query2 = 'shiftSideBarOrderDownByID';
+				$query1 = 'shiftSidebarOrderUpRelative';
+				$query2 = 'shiftSidebarOrderUpByID';
+			} else if($data->action[4] == 'moveDown' && intval($sidebarItem['sortOrder']) < $rowCount) {
+				$query1 = 'shiftSidebarOrderDownRelative';
+				$query2 = 'shiftSidebarOrderDownByID';
 			}
 			if(isset($query1))
 			{
 				$statement = $db->prepare($query1,'pages');
 				$statement->execute(array(
-					':sortOrder' => $sideBarItem['sortOrder'],
+					':sortOrder' => $sidebarItem['sortOrder'],
 					':pageId' => $pageId
 				));
 				$statement = $db->prepare($query2,'pages');
 				$statement->execute(array(
-					':id' => $sideBarItem['id']
+					':id' => $sidebarItem['id']
 				));
 			}
 			
@@ -117,9 +117,9 @@ function admin_pagesBuild($data,$db)
 	}
 	
 	// Get List Of All Sidebars
-	$statement = $db->prepare('getSideBarsByPage','pages');
+	$statement = $db->prepare('getSidebarsByPage','pages');
 	$statement->execute(array(':pageId' => $pageId));
-	$data->output['sideBarList'] = $statement->fetchAll();
+	$data->output['sidebarList'] = $statement->fetchAll();
 }
 
 function admin_pagesShow($data)
@@ -130,10 +130,10 @@ function admin_pagesShow($data)
 	} else {
 		theme_sidebarsTableHead($data);
 		$count=0;
-		foreach($data->output['sideBarList'] as $sideBar)
+		foreach($data->output['sidebarList'] as $sidebar)
 		{
-			$action = ($sideBar['enabled'] == 1) ? 'disable' : 'enable';
-			theme_sidebarsTableList($data,$sideBar,$count,$action);
+			$action = ($sidebar['enabled'] == 1) ? 'disable' : 'enable';
+			theme_sidebarsTableList($data,$sidebar,$count,$action);
 			$count++;
 		}
 		theme_sidebarsTableFoot();

@@ -54,7 +54,7 @@ function admin_blogsBuild($data,$db) {
 			$data->output['categoryForm']->sendArray[':id'] = $data->output['categoryItem']['id'];
 			$statement = $db->prepare('editCategory','blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
-			if(empty($data->output['secondSideBar'])) {
+			if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Category Item Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -68,7 +68,7 @@ function admin_blogsBuild($data,$db) {
 			}
 		} else {
 			// Invalid Data
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

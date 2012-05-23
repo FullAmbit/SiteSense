@@ -26,7 +26,7 @@ function admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Writers + Admin Only
 	**/
-	if(!checkPermission('mainMenu_access','core',$data)) {
+	if(!checkPermission('access','mainMenu',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
 			<h2>Insufficient Permissions</h2>

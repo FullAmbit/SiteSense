@@ -26,11 +26,11 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_sidebars_addQueries() {
+function sidebars_addQueries() {
 	return array(
 		'getSorted' => '
 			SELECT id
-			FROM !prefix!sideBars
+			FROM !prefix!sidebars
 			ORDER BY id
 		',
 		'getSortOrderById' => '
@@ -48,15 +48,15 @@ function admin_sidebars_addQueries() {
 			SET enabled = :enabled
 			WHERE id = :id
 		',
-		'getSideBarNameByName' => '
+		'getSidebarNameByName' => '
 			SELECT name FROM !prefix!sidebars
 			WHERE name = :name
 		',
-		'insertSideBarFile' => '
+		'insertSidebarFile' => '
 			INSERT INTO !prefix!sidebars
 			(name,shortName,enabled,fromFile,side) VALUES (:name,:shortName,false,true,"left")
 		',
-		'insertSideBar' => '
+		'insertSidebar' => '
 			INSERT INTO !prefix!sidebars
 			(name,shortName,enabled,fromFile,title,side,titleURL,rawContent,parsedContent) VALUES (:name,:shortName, true, false, :title, :side, :titleURL, :rawContent,:parsedContent)
 		',
@@ -73,7 +73,7 @@ function admin_sidebars_addQueries() {
 			DELETE FROM !prefix!sidebars
 			WHERE id = :id
 		',
-		'getAllSideBars' => '
+		'getAllSidebars' => '
 			SELECT * FROM !prefix!sidebars
 		',
 		'getAllOrdered' => '
@@ -85,11 +85,11 @@ function admin_sidebars_addQueries() {
 			WHERE id = :id
 		',
 		'getIdByShortName' => '
-			SELECT id FROM !prefix!sideBars
+			SELECT id FROM !prefix!sidebars
 			WHERE shortName = :shortName
 		',
 		'updateShortNameById' => '
-			UPDATE !prefix!sideBars
+			UPDATE !prefix!sidebars
 			SET shortName = :shortName
 			WHERE id = :id
 		',

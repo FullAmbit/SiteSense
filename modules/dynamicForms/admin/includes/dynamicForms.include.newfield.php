@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 
-function admin_formsBuild($data,$db) {
+function admin_dynamicFormsBuild($data,$db) {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -72,7 +72,7 @@ function admin_formsBuild($data,$db) {
 				$data->output['abortMessage'] = '<h2>Unable to save to database</h2>';
 				return;
 			}
-			if (empty($data->output['secondSideBar'])) {
+			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Field Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -88,7 +88,7 @@ function admin_formsBuild($data,$db) {
 			/*
 				invalid data, so we want to show the form again
 			*/
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -96,7 +96,7 @@ function admin_formsBuild($data,$db) {
 		}
 	}
 }
-function admin_formsShow($data) {
+function admin_dynamicFormsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

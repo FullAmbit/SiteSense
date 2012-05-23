@@ -77,7 +77,7 @@ function admin_blogsBuild($data,$db)
 				$data->output['commentItemForm']->sendArray[':id'] = $data->action[3];
 				//var_dump($data->output['commentItemForm']->sendArray);
 				$statement->execute($data->output['commentItemForm']->sendArray) or die('Saving Comment Item Failed');
-				if (empty($data->output['secondSideBar'])) {
+				if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Project Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -87,7 +87,7 @@ function admin_blogsBuild($data,$db)
 					</div>';
 				}
 			} else {
-				$data->output['secondSideBar']='
+				$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.

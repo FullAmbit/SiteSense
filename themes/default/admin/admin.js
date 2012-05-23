@@ -22,8 +22,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 /* used by all our admin forms to explain fields */
-var secondSideBar=document.getElementById('secondSideBar');
-var showDescription_saved=secondSideBar.innerHTML;
+var secondSidebar=document.getElementById('secondSidebar');
+var showDescription_saved=secondSidebar.innerHTML;
 function attachDescription(tagName) {
 	targetList=document.getElementsByTagName(tagName);
 	for (t=0; t<targetList.length; t++) {
@@ -31,10 +31,10 @@ function attachDescription(tagName) {
 			targetList[t].onfocus=function() {
 				tInner=document.getElementById('ns_'+this.id).innerHTML;
 			  moveTop=this.offsetTop+this.parentNode.offsetTop;
-			  secondSideBar.innerHTML='<div class="description" style="top:'+moveTop+'px;">'+tInner+'</div>';
+			  secondSidebar.innerHTML='<div class="description" style="top:'+moveTop+'px;">'+tInner+'</div>';
 			}
 			targetList[t].onblur=function() {
-				secondSideBar.innerHTML=showDescription_saved;
+				secondSidebar.innerHTML=showDescription_saved;
 			}
 		}
 	}

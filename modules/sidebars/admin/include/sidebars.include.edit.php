@@ -25,86 +25,86 @@
 common_include('libraries/forms.php');
 
 function admin_sidebarsBuild($data,$db) {
-    if(!checkPermission('sidebars_edit','core',$data)) {
+    if(!checkPermission('edit','sidebars',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
 	$aRoot=$data->linkRoot.'admin/sidebars/';
 	
-	// Check To See If SideBar Exists
-	$sideBarId = $data->action[3];
+	// Check To See If Sidebar Exists
+	$sidebarId = $data->action[3];
 
 	$statement=$db->prepare('getById','sidebars');
 	$statement->execute(array(
-		':id' => $sideBarId
+		':id' => $sidebarId
 	));
-	$data->output['sideBarItem'] = $item = $statement->fetch();
-	if($data->output['sideBarItem'] == FALSE)
+	$data->output['sidebarItem'] = $item = $statement->fetch();
+	if($data->output['sidebarItem'] == FALSE)
 	{
 		$data->output['pagesError'] = 'unknown function';
 		return;
 	}
 	// Load Form
-	$data->output['sideBarForm']=new formHandler('sideBars',$data,true);
+	$data->output['sidebarForm']=new formHandler('sidebars',$data,true);
 	// Populate With Data
-	foreach ($data->output['sideBarForm']->fields as $key => $value) {
+	foreach ($data->output['sidebarForm']->fields as $key => $value) {
 		if (
 			(!empty($value['params']['type'])) &&
 			($value['params']['type']=='checkbox')
 		) {
-			$data->output['sideBarForm']->fields[$key]['checked']=(
+			$data->output['sidebarForm']->fields[$key]['checked']=(
 				$item[$key] ? 'checked' : ''
 			);
 		} else {
 			
-			$data->output['sideBarForm']->fields[$key]['value']=$item[$key];
+			$data->output['sidebarForm']->fields[$key]['value']=$item[$key];
 		}
 	}
 	
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['sideBarForm']->fromForm))
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['sidebarForm']->fromForm))
 	{
-		$data->output['sideBarForm']->populateFromPostData();
+		$data->output['sidebarForm']->populateFromPostData();
 		
 		/**
 		 * Set Up Short Name Check (ONLY if different from currently existing
 		**/
-		$shortName = common_generateShortName($_POST[$data->output['sideBarForm']->formPrefix.'name']);
-		$data->output['sideBarForm']->sendArray[':shortName'] = $shortName;
+		$shortName = common_generateShortName($_POST[$data->output['sidebarForm']->formPrefix.'name']);
+		$data->output['sidebarForm']->sendArray[':shortName'] = $shortName;
 		
-		if($shortName == $data->output['sideBarItem']['shortName'])
+		if($shortName == $data->output['sidebarItem']['shortName'])
 		{
-			unset($data->output['sideBarForm']->fields['name']['cannotEqual']);
+			unset($data->output['sidebarForm']->fields['name']['cannotEqual']);
 		} else {
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-			$_POST[$data->output['sideBarForm']->formPrefix.'name'] = $shortName;
-			// Load All Existing SideBar ShortNames For Comparison
+			$_POST[$data->output['sidebarForm']->formPrefix.'name'] = $shortName;
+			// Load All Existing Sidebar ShortNames For Comparison
 			$statement = $db->prepare('getExistingShortNames','sidebars');
 			$statement->execute();
-			$sideBarList = $statement->fetchAll();
+			$sidebarList = $statement->fetchAll();
 			$existingShortNames = array();
-			foreach($sideBarList as $sideBarItem)
+			foreach($sidebarList as $sidebarItem)
 			{
-				$existingShortNames[] = $sideBarItem['shortName'];
+				$existingShortNames[] = $sidebarItem['shortName'];
 			}
-			$data->output['sideBarForm']->fields['name']['cannotEqual'] = $existingShortNames;
+			$data->output['sidebarForm']->fields['name']['cannotEqual'] = $existingShortNames;
 		}
 		
-		if ($data->output['sideBarForm']->validateFromPost()) {
+		if ($data->output['sidebarForm']->validateFromPost()) {
 			
 			//--Parsing--//
 			if($data->settings['useBBCode'] == '1')
 			{
 				common_loadPlugin($data,'bbcode');
-				$data->output['sideBarForm']->sendArray[':parsedContent'] = $data->plugins['bbcode']->parse($data->output['sideBarForm']->sendArray[':rawContent']);
+				$data->output['sidebarForm']->sendArray[':parsedContent'] = $data->plugins['bbcode']->parse($data->output['sidebarForm']->sendArray[':rawContent']);
 			} else {
-				$data->output['sideBarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sideBarForm']->sendArray[':rawContent']);
+				$data->output['sidebarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sidebarForm']->sendArray[':rawContent']);
 			}
 			
 			// Save TO DB
 			$statement=$db->prepare('updateById','sidebars');
-			$data->output['sideBarForm']->sendArray[':id'] = $data->action[3];
-			$statement->execute($data->output['sideBarForm']->sendArray);
+			$data->output['sidebarForm']->sendArray[':id'] = $data->action[3];
+			$statement->execute($data->output['sidebarForm']->sendArray);
 				
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
@@ -120,7 +120,7 @@ function admin_sidebarsBuild($data,$db) {
 					</a>
 				</div>';
 		} else {
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -134,7 +134,7 @@ function admin_sidebarsShow($data) {
 	} else if (!empty($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['sideBarForm']);
+		theme_buildForm($data->output['sidebarForm']);
 	}
 }
 ?>

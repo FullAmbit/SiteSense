@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_sidebarsBuild($data,$db) {
-    if(!checkPermission('sidebars_delete','core',$data)) {
+    if(!checkPermission('delete','sidebars',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
@@ -39,9 +39,9 @@ function admin_sidebarsBuild($data,$db) {
 		));
 		if ($item=$qHandle->fetch()) {
 			if ($item['fromFile']) {
-				$data->output['rejectError']='Locked SideBar Element';
-				$data->output['rejectText']='That sideBar element cannot be deleted from the admin panel. Either disable it, or delete it\'s associated module files.';
-			} else if (checkPermission('canDeleteSideBarItem','core',$data)) {
+				$data->output['rejectError']='Locked Sidebar Element';
+				$data->output['rejectText']='That sidebar element cannot be deleted from the admin panel. Either disable it, or delete it\'s associated module files.';
+			} else if (checkPermission('canDeleteSidebarItem','core',$data)) {
 				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
 						$qHandle=$db->prepare('deleteById','sidebars');
@@ -51,9 +51,9 @@ function admin_sidebarsBuild($data,$db) {
 						//--Delete Form, Page, and Module Setting For Sidebar--//
 						$vars = array(':sidebar' => $data->action[3]);
 						
-						$q1 = $db->prepare('deleteSideBarSettingBySideBar','dynamic-form');
-						$q2 = $db->prepare('deleteSideBarSettingBySideBar','modules');
-						$q3 = $db->prepare('deleteSideBarSettingBySideBar','pages');
+						$q1 = $db->prepare('deleteSidebarSettingBySidebar','dynamic-form');
+						$q2 = $db->prepare('deleteSidebarSettingBySidebar','modules');
+						$q3 = $db->prepare('deleteSidebarSettingBySidebar','pages');
 						
 						$q1->execute($vars);
 						$q2->execute($vars);
@@ -83,13 +83,13 @@ function admin_sidebarsShow($data) {
 	if (empty($data->output['rejectError'])) {
 		switch ($data->output['delete']) {
 			case 'deleted':
-				theme_sideBarsDeleteDeleted($data,$aRoot);
+				theme_sidebarsDeleteDeleted($data,$aRoot);
 			break;
 			case 'cancelled':
-				theme_sideBarsDeleteCancelled($aRoot);
+				theme_sidebarsDeleteCancelled($aRoot);
 			break;
 			default:
-				theme_sideBarsDeleteDefault($data,$aRoot);
+				theme_sidebarsDeleteDefault($data,$aRoot);
 			break;
 		}
 	} else {

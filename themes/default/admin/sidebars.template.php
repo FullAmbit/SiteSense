@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function theme_sideBarsDeleteDeleted($data,$aRoot) {
+function theme_sidebarsDeleteDeleted($data,$aRoot) {
 	echo '
 			<h2>Entry #',$data->action[3],' Deleted</h2>
 			<p>
@@ -34,7 +34,7 @@ function theme_sideBarsDeleteDeleted($data,$aRoot) {
 			';
 }
 
-function theme_sideBarsDeleteCancelled($aRoot) {
+function theme_sidebarsDeleteCancelled($aRoot) {
 	echo '
 			<h2>Deletion Cancelled</h2>
 			<p>
@@ -43,7 +43,7 @@ function theme_sideBarsDeleteCancelled($aRoot) {
 			</p>';
 }
 
-function theme_sideBarsDeleteDefault($data,$aRoot) {
+function theme_sidebarsDeleteDefault($data,$aRoot) {
 	echo '
 			<form action="',$aRoot,'delete/',$data->action[3],'" method="post" class="verifyForm">
 				<fieldset>
@@ -55,7 +55,7 @@ function theme_sideBarsDeleteDefault($data,$aRoot) {
 			</form>';
 }
 
-function theme_sideBarsListAddNewButton($aRoot) {
+function theme_sidebarsListAddNewButton($aRoot) {
 	echo '
 			<div class="panel buttonList">
 				<a href="',$aRoot,'add">
@@ -64,12 +64,12 @@ function theme_sideBarsListAddNewButton($aRoot) {
 			</div>';
 }
 
-function theme_sideBarsListNoSidebars() {
+function theme_sidebarsListNoSidebars() {
 	echo '
 			<p class="sidebarListNoSidebars">No sidebars exist</p>';
 }
 
-function theme_sideBarsListTableHead() {
+function theme_sidebarsListTableHead() {
 	echo '
 			<table class="sidebarList">
 				<caption>Manage Sidebars</caption>
@@ -82,7 +82,7 @@ function theme_sideBarsListTableHead() {
 				</thead><tbody>';
 }
 
-function theme_sideBarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count) {
+function theme_sidebarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count) {
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 				<td class="name">
@@ -100,7 +100,7 @@ function theme_sideBarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$co
 			</tr>';
 }
 
-function theme_sideBarsListTableFoot() {
+function theme_sidebarsListTableFoot() {
 	echo '
 				</tbody>
 			</table>';

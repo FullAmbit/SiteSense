@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_formsBuild($data,$db){
+function admin_dynamicFormsBuild($data,$db){
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -87,12 +87,12 @@ function admin_formsBuild($data,$db){
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
 }
-function admin_formsShow($data){
-	theme_formsListFieldsTableHead($data);
+function admin_dynamicFormsShow($data){
+	theme_dynamicFormsListFieldsTableHead($data);
 	$count=0;
 	foreach($data->output['fields'] as $field){
-		theme_formsListFieldsTableRow($data,$field,$count);
+		theme_dynamicFormsListFieldsTableRow($data,$field,$count);
 		$count++;
 	}
-	theme_formsListFieldsTableFoot();
+	theme_dynamicFormsListFieldsTableFoot();
 }

@@ -48,5 +48,5 @@ if($data->output['blogCategoryList']) {
 	echo '
 					</ul>';
 	}
-theme_sideBarBoxFooter();
+theme_sidebarBoxFooter();
 ?>

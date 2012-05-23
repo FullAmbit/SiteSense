@@ -23,12 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 if (!empty($data->output['pageContent']['children'])) {
-	theme_sideBarBoxHeader('Related Pages');
+	theme_sidebarBoxHeader('Related Pages');
 	echo '<ul class="childPages">';
 			foreach ($data->output['pageContent']['children'] as $item) {
 				echo '<li><a href="',$data->linkRoot.$data->output['pageContent']['shortName'].'/'.$item['shortName'],'">',$item['title'],'</a></li>';
 			}
 	echo '</ul>';
-	theme_sideBarBoxFooter();
+	theme_sidebarBoxFooter();
 }
 ?>

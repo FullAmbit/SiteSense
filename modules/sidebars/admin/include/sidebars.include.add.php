@@ -25,47 +25,47 @@
 common_include('libraries/forms.php');
 
 function admin_sidebarsBuild($data,$db) {
-    if(!checkPermission('sidebars_add','core',$data)) {
+    if(!checkPermission('add','sidebars',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
 	// Load Form
-	$data->output['sideBarForm'] = new formHandler('sideBars',$data,true);
+	$data->output['sidebarForm'] = new formHandler('sidebars',$data,true);
 	
-	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['sideBarForm']->fromForm)) {
-		$data->output['sideBarForm']->populateFromPostData();
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['sidebarForm']->fromForm)) {
+		$data->output['sidebarForm']->populateFromPostData();
 		/**
 		 * Set up Short Name Check
 		**/
-		$shortName = common_generateShortName($_POST[$data->output['sideBarForm']->formPrefix.'name']);
+		$shortName = common_generateShortName($_POST[$data->output['sidebarForm']->formPrefix.'name']);
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-		$data->output['sideBarForm']->sendArray[':shortName'] = $_POST[$data->output['sideBarForm']->formPrefix.'name'] = $shortName;
-		// Load All Existing SideBar ShortNames For Comparison
+		$data->output['sidebarForm']->sendArray[':shortName'] = $_POST[$data->output['sidebarForm']->formPrefix.'name'] = $shortName;
+		// Load All Existing Sidebar ShortNames For Comparison
 		$statement = $db->prepare('getExistingShortNames','sidebars');
 		$statement->execute();
-		$sideBarList = $statement->fetchAll();
+		$sidebarList = $statement->fetchAll();
 		$existingShortNames = array();
-		foreach($sideBarList as $sideBarItem)
+		foreach($sidebarList as $sidebarItem)
 		{
-			$existingShortNames[] = $sideBarItem['shortName'];
+			$existingShortNames[] = $sidebarItem['shortName'];
 		}
-		$data->output['sideBarForm']->fields['name']['cannotEqual'] = $existingShortNames;
+		$data->output['sidebarForm']->fields['name']['cannotEqual'] = $existingShortNames;
 		/*----------------*/
-		if($data->output['sideBarForm']->validateFromPost())
+		if($data->output['sidebarForm']->validateFromPost())
 		{
 			//--Parsing--//
 			if($data->settings['useBBCode'] == '1')
 			{
 				common_loadPlugin($data,'bbcode');
-				$data->output['sideBarForm']->sendArray[':parsedContent'] = $data->plugins['bbcode']->parse($data->output['sideBarForm']->sendArray[':rawContent']);
+				$data->output['sidebarForm']->sendArray[':parsedContent'] = $data->plugins['bbcode']->parse($data->output['sidebarForm']->sendArray[':rawContent']);
 			} else {
-				$data->output['sideBarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sideBarForm']->sendArray[':rawContent']);
+				$data->output['sidebarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sidebarForm']->sendArray[':rawContent']);
 			}
 			// Save To DB
-			$statement = $db->prepare('insertSideBar','sidebars');
-			$result = $statement->execute($data->output['sideBarForm']->sendArray);
-			$sideBarId = $db->lastInsertId();	
+			$statement = $db->prepare('insertSidebar','sidebars');
+			$result = $statement->execute($data->output['sidebarForm']->sendArray);
+			$sidebarId = $db->lastInsertId();
 			
 			if($result == FALSE)
 			{
@@ -76,7 +76,7 @@ function admin_sidebarsBuild($data,$db) {
 			$count = $db->countRows('sidebars');
 			$sortOrder = $count;
 			//---Pages---//
-			$pageQ = $db->prepare('createSideBarSetting','pages');
+			$pageQ = $db->prepare('createSidebarSetting','pages');
 			$statement = $db->prepare('getAllPageIds','pages');
 			$statement->execute();
 			$pageList = $statement->fetchAll();
@@ -85,7 +85,7 @@ function admin_sidebarsBuild($data,$db) {
 			{
 				$vars = array(
 					':pageId' => $pageItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -93,7 +93,7 @@ function admin_sidebarsBuild($data,$db) {
 				$pageQ->execute($vars);
 			}
 			//---Modules---//
-			$moduleQ = $db->prepare('createSideBarSetting','modules');
+			$moduleQ = $db->prepare('createSidebarSetting','modules');
 			$statement = $db->prepare('getAllModuleIds','modules');
 			$statement->execute();
 			$moduleList = $statement->fetchAll();
@@ -101,7 +101,7 @@ function admin_sidebarsBuild($data,$db) {
 			{
 				$vars = array(
 					':moduleId' => $moduleItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -109,7 +109,7 @@ function admin_sidebarsBuild($data,$db) {
 				$moduleQ->execute($vars);
 			}
 			//---Forms---//
-			$formQ = $db->prepare('createSideBarSetting','dynamicForms');
+			$formQ = $db->prepare('createSidebarSetting','dynamicForms');
 			$statement = $db->prepare('getAllFormIds','dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
@@ -117,7 +117,7 @@ function admin_sidebarsBuild($data,$db) {
 			{
 				$vars = array(
 					':formId' => $formItem['id'],
-					':sideBarId' => $sideBarId,
+					':sidebarId' => $sidebarId,
 					':enabled' => 0,
 					':sortOrder' => $sortOrder
 				);
@@ -132,15 +132,15 @@ function admin_sidebarsBuild($data,$db) {
 				</p>
 				<div class="panel buttonList">
 					<a href="'.$data->linkRoot.'admin/sidebars/add/">
-						Add New SideBar
+						Add New Sidebar
 					</a>
 					<a href="'.$data->linkRoot.'admin/sidebars/list/">
-						Return to SideBar List
+						Return to Sidebar List
 					</a>
 				</div>';
 		} else {
 			// Throw Form Error //
-			$data->output['secondSideBar']='
+			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
@@ -159,7 +159,7 @@ function admin_sidebarsShow($data)
 	{
 		echo $data->output['savedOkMessage'];
 	} else {
-		theme_buildForm($data->output['sideBarForm']);
+		theme_buildForm($data->output['sidebarForm']);
 	}
 }
 
