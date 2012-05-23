@@ -347,4 +347,23 @@ function hyphenToCamel($str,$ucfirst=false) {
     $parts[0]=$ucfirst ? ucfirst($parts[0]):lcfirst($parts[0]);
     return implode('',$parts);
 }
+
+function myDump($myVars){
+	$tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
+	if(is_array($myVars)){
+		$i=1;
+		echo '<br><br><u>Array with '.count($myVars).' elements</u>';
+		foreach($myVars as $key => $value){
+			echo '<br>'.$tab.'Array Element '.$i.': [<b><u>'.$key.'</u></b>] = ';
+			if(is_array($value))
+				echo var_dump($value);
+			else
+				echo $value;
+			$i++;
+		}
+	}else{
+		var_dump($myVars);
+	}
+	echo '<br><br>';
+}
 ?>
