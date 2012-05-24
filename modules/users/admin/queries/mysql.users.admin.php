@@ -79,7 +79,12 @@ function admin_users_addQueries() {
         'getListLimited' => '
 			SELECT * FROM !prefix!users
 			LIMIT :start, :count
-		',		'searchUsers_NotIncludingLevel' => '
+		',
+        'getListActivations' => '
+            SELECT userID from !prefix!activations
+            WHERE expires <= :expireTime
+        ',
+        'searchUsers_NotIncludingLevel' => '
 			SELECT * FROM !prefix!users
 			WHERE
 				name LIKE :name

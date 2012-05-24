@@ -44,7 +44,7 @@ function admin_dynamicFormsBuild($data,$db)
 
 	$form = $data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
-	$statement = $db->prepare('getEnabledPlugins','admin_plugins');
+	$statement = $db->prepare('getEnabledPlugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	
