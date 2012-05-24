@@ -353,7 +353,7 @@ if (
         <dt>Password:</dt><dd>',$newPassword,'</dd>
       </dl>
       <p>
-        Changing the password is recommended.
+        Changing the password is recommended. <a href="admin" class="error">Click here</a> to access the admin panel.
       </p>';
         }
     } else {

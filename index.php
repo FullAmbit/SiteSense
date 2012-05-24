@@ -162,7 +162,7 @@ final class dynamicPDO extends PDO {
 				}
 				return false;
 			}
-			
+			echo '<p class="success">Successfully created '.$tableName.' table!</p>';			
 			return true;
 			
 		}

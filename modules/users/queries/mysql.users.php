@@ -71,6 +71,10 @@ function users_addQueries() {
         'getUserNameByID' => '
 			SELECT name FROM !prefix!users WHERE id = :userID
 		',
+		'getListActivations' => '
+			SELECT userID from !prefix!activations
+			WHERE expires <= :expireTime
+		',
         'checkIpBan' => '
 			SELECT * FROM !prefix!banned WHERE ipAddress = :ip
 		',

@@ -73,6 +73,11 @@ function gallery_install($data,$drop=false)
 	
 	return NULL;
 }
+function gallery_uninstall($data) {
+		$data->dropTable('gallery_albums');
+		$data->dropTable('gallery_images');
+		$data->dropTable('gallery_comments');
+}
 
 function gallery_postInstall($data)
 {
