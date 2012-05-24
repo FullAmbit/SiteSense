@@ -36,14 +36,14 @@ img,fieldset {
 body {
 	font:normal 85%/140% arial,helvetica,sans-serif;
 	background-color:#ccc;
-	background-size: 100% 1200px;
+	background-size: 100% 900px;
 	background-repeat:repeat-x;
-	background-image: -moz-linear-gradient(#ffffff, #cccccc 1200px);
+	background-image: -moz-linear-gradient(#ffffff, #cccccc 900px);
 	background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#ccc));
-	background-image:-o-linear-gradient(#fff, #ccc 1200px);
-	background-image:-ms-linear-gradient(#fff, #ccc 1200px);
-	-cp-background-image:linear-gradient(#fff, #ddd 1200px);
-	background-image:linear-gradient(#fff, #ccc 1200px);
+	background-image:-o-linear-gradient(#fff, #ccc 900px);
+	background-image:-ms-linear-gradient(#fff, #ccc 900px);
+	-cp-background-image:linear-gradient(#fff, #ddd 900px);
+	background-image:linear-gradient(#fff, #ccc 900px);
 }
 #attribution {
   text-align:center;
