@@ -53,12 +53,16 @@ function admin_usersBuild($data,$db) {
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
+    $data->output['groupList'][]['groupName']='Administrators';
+    sort($data->output['groupList']);
+    
     // Load all groups by userID
     $statement=$db->prepare('getGroupsByUserID');
     $statement->execute(array(
         ':userID' =>  $data->action[3]
     ));
     $data->output['userGroupList']=$statement->fetchAll();
+
     // Load core permissions
     getPermissions($data,$db);
     // Get User Permissions
