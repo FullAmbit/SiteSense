@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_pagesCheckShortNameAndParent($db,$shortName,$parent) {
-	$statement=$db->prepare('getPageIdByShortNameAndParent','pages');
+	$statement=$db->prepare('getPageIdByShortNameAndParent','admin_pages');
 	$statement->execute(array(
 		':shortName' => $shortName,
 		':parent' => $parent
@@ -39,7 +39,7 @@ function admin_pageOptions($db, $Parent = -1, $Level = 0){ // Using a function i
 		$options[] = array('value' => 0, 'text' => 'Site Root');
 		$options = array_merge($options, admin_pageOptions($db, 0, 1));
 	}else{
-		$statement = $db->prepare('getPageListByParent', 'pages');
+		$statement = $db->prepare('getPageListByParent','admin_pages');
 		$statement->execute(array(':parent' => $Parent));
 		while($item = $statement->fetch()){
 			$options[] = array(
@@ -61,7 +61,7 @@ function admin_pagesBuild($data,$db) {
 
 	/* editing an existing from the database */
 	$data->output['pageForm']->caption='Editing Page '.$data->action[3];
-	$statement=$db->prepare('getPageById','pages');
+	$statement=$db->prepare('getPageById','admin_pages');
 	$statement->execute(array(
 		':id' => $data->action[3]
 	));
@@ -105,7 +105,7 @@ function admin_pagesBuild($data,$db) {
 		{
 			unset($data->output['pageForm']->fields['name']['cannotEqual']);
 		} else {
-			$statement = $db->prepare('getExistingShortNames','pages');
+			$statement = $db->prepare('getExistingShortNames','admin_pages');
 			$statement->execute();
 			$pageShortNameList = $statement->fetchAll();
 			foreach($pageShortNameList as $item)
@@ -131,7 +131,7 @@ function admin_pagesBuild($data,$db) {
 					$data->output['pageForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['pageForm']->sendArray[':rawContent']);
 				}
 				
-				$statement=$db->prepare('updatePageById','pages');
+				$statement=$db->prepare('updatePageById','admin_pages');
 				$data->output['pageForm']->sendArray[':id']=$data->action[3];
 				
 				$statement->execute($data->output['pageForm']->sendArray);

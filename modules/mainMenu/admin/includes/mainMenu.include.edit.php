@@ -33,7 +33,7 @@ function admin_mainMenuBuild($data,$db) {
 		$existing = false;
 	}else{
 		$existing = (int)$data->action[3];
-		$check = $db->prepare('getMenuItemById', 'mainMenu');
+		$check = $db->prepare('getMenuItemById','admin_mainMenu');
 		$check->execute(array(':id' => $existing));
 		if(($data->output['menuItem'] = $check->fetch()) === false){
 			$data->output['abort'] = true;
@@ -54,14 +54,14 @@ function admin_mainMenuBuild($data,$db) {
 			$newParent = $data->output['MenuItemForm']->sendArray[':parent'];
 			if($newParent !== $data->output['menuItem']['parent'])
 			{
-				$statement = $db->prepare('countItemsByParent','mainMenu');
+				$statement = $db->prepare('countItemsByParent','admin_mainMenu');
 				$statement->execute(array(':parent' => $newParent));
 				list($rowCount) = $statement->fetch();
 				
 				$data->output['MenuItemForm']->sendArray[':sortOrder'] = $rowCount + 1;
 				
 				// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-				$statement = $db->prepare('fixSortOrderGap','mainMenu');
+				$statement = $db->prepare('fixSortOrderGap','admin_mainMenu');
 				$statement->execute(array(  
 					':sortOrder' => $data->output['menuItem']['sortOrder'],
 					':parent' => $data->output['menuItem']['parent']
@@ -70,7 +70,7 @@ function admin_mainMenuBuild($data,$db) {
 			} else {
 				$data->output['MenuItemForm']->sendArray[':sortOrder'] = $data->output['menuItem']['sortOrder'];
 			}
-			$statement = $db->prepare('editMenuItem', 'mainMenu');
+			$statement = $db->prepare('editMenuItem','admin_mainMenu');
 			$data->output['MenuItemForm']->sendArray[':id'] = $existing;
 			$statement->execute($data->output['MenuItemForm']->sendArray) or die('Saving Menu Item failed');
 			if (empty($data->output['secondSidebar'])) {
@@ -107,7 +107,7 @@ function admin_mainMenuShow($data) {
 function admin_mainMenuOptions($data,$db,$parent = 0,$level = 0,$options = array())
 {
 	// Get All Items In Current Level
-	$statement = $db->prepare('getMenuItemByParent','mainMenu');
+	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
 	$statement->execute(array(
 		':parent' => $parent
 	));

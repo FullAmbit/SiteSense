@@ -32,7 +32,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}	
 	$data->output['delete'] = "";
 	// Check To See If The Field Exists
-	$check = $db->prepare('getFieldById','dynamicForms');
+	$check = $db->prepare('getFieldById','admin_dynamicForms');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['fieldItem'] = $check->fetch()) === FALSE)
 	{
@@ -48,7 +48,7 @@ function admin_dynamicFormsBuild($data,$db)
 		return;
 	}
 	// Get Form Information
-	$statement = $db->prepare('getFormById','dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->output['fieldItem']['form']));
 	list($data->output['formItem']) = $statement->fetchAll();
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])
@@ -56,12 +56,12 @@ function admin_dynamicFormsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
 			// Delete Form Field
-			$statement = $db->prepare('deleteField','dynamicForms');
+			$statement = $db->prepare('deleteField','admin_dynamicForms');
 			$statement->execute(array(
 				':id' => $data->output['fieldItem']['id']
 			));
 			// Fix Sort Order Gap
-			$statement = $db->prepare('fixFieldSortOrderGap','dynamicForms');
+			$statement = $db->prepare('fixFieldSortOrderGap','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $data->output['fieldItem']['form'],
 				':sortOrder' => $data->output['fieldItem']['sortOrder']

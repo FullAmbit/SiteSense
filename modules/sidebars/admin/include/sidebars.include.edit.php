@@ -35,7 +35,7 @@ function admin_sidebarsBuild($data,$db) {
 	// Check To See If Sidebar Exists
 	$sidebarId = $data->action[3];
 
-	$statement=$db->prepare('getById','sidebars');
+	$statement=$db->prepare('getById','admin_sidebars');
 	$statement->execute(array(
 		':id' => $sidebarId
 	));
@@ -79,7 +79,7 @@ function admin_sidebarsBuild($data,$db) {
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$_POST[$data->output['sidebarForm']->formPrefix.'name'] = $shortName;
 			// Load All Existing Sidebar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','sidebars');
+			$statement = $db->prepare('getExistingShortNames','admin_sidebars');
 			$statement->execute();
 			$sidebarList = $statement->fetchAll();
 			$existingShortNames = array();
@@ -102,7 +102,7 @@ function admin_sidebarsBuild($data,$db) {
 			}
 			
 			// Save TO DB
-			$statement=$db->prepare('updateById','sidebars');
+			$statement=$db->prepare('updateById','admin_sidebars');
 			$data->output['sidebarForm']->sendArray[':id'] = $data->action[3];
 			$statement->execute($data->output['sidebarForm']->sendArray);
 				

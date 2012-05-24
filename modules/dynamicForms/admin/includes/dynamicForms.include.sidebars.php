@@ -32,7 +32,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}	
 	$formId = (int)$data->action[3];
 	// Check if Form Exists
-	$statement = $db->prepare('getFormById','dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $formId));
 	if(($data->output['formItem'] = $statement->fetch()) === FALSE)
 	{
@@ -42,20 +42,20 @@ function admin_dynamicFormsBuild($data,$db)
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
 	$maxSidebarCount = $db->countRows('sidebars');
-	$statement = $db->prepare('countSidebarsByForm','dynamicForms');
+	$statement = $db->prepare('countSidebarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	list($rowCount) = $statement->fetch();
 	if($rowCount < $maxSidebarCount)
 	{
 		$i = $rowCount;
 		// Get A List Of All Sidebars
-		$statement = $db->prepare('getAllSidebars','sidebars');
+		$statement = $db->prepare('getAllSidebars','admin_sidebars');
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
 		foreach($sidebarList as $sidebarItem)
 		{
 			$i++;
-			$statement = $db->prepare('createSidebarSetting','dynamicForms');
+			$statement = $db->prepare('createSidebarSetting','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $formId,
 				':sidebarId' => $sidebarItem['id'],
@@ -69,18 +69,18 @@ function admin_dynamicFormsBuild($data,$db)
 	switch($data->action[4]){
 		case 'enable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('enableSidebar', 'dynamicForms');
+			$statement = $db->prepare('enableSidebar','admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'disable':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('disableSidebar', 'dynamicForms');
+			$statement = $db->prepare('disableSidebar','admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			break;
 		case 'moveDown':
 		case 'moveUp':
 			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSidebarSetting','dynamicForms');
+			$statement = $db->prepare('getSidebarSetting','admin_dynamicForms');
 			$statement->execute(array(':id' => $settingId));
 			if(($sidebarItem = $statement->fetch()) === FALSE)
 			{
@@ -110,7 +110,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}
 	
 	// Get List Of All Sidebars For This Form
-	$statement = $db->prepare('getSidebarsByForm','dynamicForms');
+	$statement = $db->prepare('getSidebarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	$data->output['sidebarList'] = $statement->fetchAll();
 }

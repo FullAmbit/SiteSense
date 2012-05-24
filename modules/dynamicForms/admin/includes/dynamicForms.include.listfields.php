@@ -35,7 +35,7 @@ function admin_dynamicFormsBuild($data,$db){
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$form = $statement->fetch();
 	if($form === false){
@@ -50,12 +50,12 @@ function admin_dynamicFormsBuild($data,$db){
 	{
 		case 'moveUp':
 		case 'moveDown':
-			$qHandle = $db->prepare('getFieldById','dynamicForms');
+			$qHandle = $db->prepare('getFieldById','admin_dynamicForms');
 			$qHandle->execute(array(':id' => $data->action[5]));
 			
 			if($fieldItem = $qHandle->fetch())
 			{				
-				$statement = $db->prepare('countFieldsByForm','dynamicForms');
+				$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
 				$statement->execute(array(':formId' => $form['id']));
 				list($rowCount) = $statement->fetch();
 				
@@ -83,7 +83,7 @@ function admin_dynamicFormsBuild($data,$db){
 		break;
 	}
 	
-	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
+	$statement = $db->prepare('getFieldsByForm','admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
 }

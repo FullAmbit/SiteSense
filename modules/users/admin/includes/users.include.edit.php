@@ -31,7 +31,7 @@ function getPermissions($data,$db) {
     }
 }
 function checkUserName($name,$db) {
-	$statement=$db->prepare('checkUserName','users');
+	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
 		':name' => $name
 	));
@@ -51,7 +51,7 @@ function admin_usersBuild($data,$db) {
     }
     // Load all groups
     $db->query('purgeExpiredGroups');
-    $statement=$db->query('getAllGroups','users');
+    $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
     // Load all groups by userID
     $statement=$db->prepare('getGroupsByUserID');
@@ -68,7 +68,7 @@ function admin_usersBuild($data,$db) {
     ));
     $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
     /*
-    $statement=$db->query('getAllGroups','users');
+    $statement=$db->query('getAllGroups','admin_users');
     $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
 
     foreach($groupList as $key => $value) {
@@ -92,7 +92,7 @@ function admin_usersBuild($data,$db) {
     // ---
     $data->output['userForm']=$form=new formHandler('users',$data,true);
 
-    $statement=$db->prepare('getById','users');
+    $statement=$db->prepare('getById','admin_users');
     $statement->execute(array(
         ':id' => $data->action[3]
     ));
@@ -311,12 +311,12 @@ function admin_usersBuild($data,$db) {
             unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
 			/* existing user, from form, must be save existing */
 			if ($_POST['viewUser_password']=='') {
-				$statement=$db->prepare('updateUserByIdNoPw','users');
+				$statement=$db->prepare('updateUserByIdNoPw','admin_users');
 				unset($data->output['userForm']->sendArray[':password']);
 				$data->output['userForm']->sendArray[':id']=$data->action[3];
 			} else {
 				$data->output['userForm']->sendArray[':password']=hash('sha256',$_POST['viewUser_password']);
-				$statement=$db->prepare('updateUserById','users');
+				$statement=$db->prepare('updateUserById','admin_users');
 				$data->output['userForm']->sendArray[':id']=$data->action[3];
 			}
 

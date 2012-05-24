@@ -33,7 +33,7 @@ function admin_pagesBuild($data,$db) {
 	$data->output['delete']='';
 	
 	// Check To See If The Menu Item Exists
-	$check = $db->prepare('getPageById','pages');
+	$check = $db->prepare('getPageById','admin_pages');
 	$check->execute(array(':id' => $data->action[3]));
 	$data->output['pageItem'] = $check->fetch();
 	
@@ -51,18 +51,18 @@ function admin_pagesBuild($data,$db) {
 			if (!empty($_POST['delete'])) {
 				
 				// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-				$statement = $db->prepare('fixSortOrderGap','pages');
+				$statement = $db->prepare('fixSortOrderGap','admin_pages');
 				$statement->execute(array(  
 					':sortOrder' => $data->output['pageItem']['sortOrder'],
 					':parent' => $data->output['pageItem']['parent']
 				));
 				
-				$qHandle=$db->prepare('deletePageById','pages');
+				$qHandle=$db->prepare('deletePageById','admin_pages');
 				$qHandle->execute(array(
 					':id' => $data->action[3]
 				));
 				$data->output['deleteCount']=$qHandle->rowCount();
-				$qHandle=$db->prepare('deletePageByParent','pages');
+				$qHandle=$db->prepare('deletePageByParent','admin_pages');
 				$qHandle->execute(array(
 					':id' => $data->action[3]
 				));

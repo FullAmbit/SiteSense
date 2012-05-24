@@ -35,12 +35,12 @@ function admin_messagesBuild($data,$db) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
 	}else{
-		$message = $db->prepare('getMessage', 'messages');
+		$message = $db->prepare('getMessage','admin_messages');
 		$message->execute(array(':id' => (int)$data->action[3]));
 		$message = $message->fetch();
 		$data->output['exists'] = ($message !== false && $message['deleted'] == 0);
 		if($data->action[4] == 'confirm'){
-			$messages = $db->prepare('deleteMessageById','messages');
+			$messages = $db->prepare('deleteMessageById','admin_messages');
 			$messages->execute(array(':id' => (int)$data->action[3]));
 			$data->output['success'] = ($messages->rowCount() == 1);
 		}

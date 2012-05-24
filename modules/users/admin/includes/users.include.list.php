@@ -54,9 +54,9 @@ function admin_usersBuild($data,$db) {
 		$data->output['userListCount']=0;
 		try {
 			if ($staff) {
-				$statement=$db->prepare('getListLimitedStaff','users');
+				$statement=$db->prepare('getListLimitedStaff','admin_users');
 			} else {
-				$statement=$db->prepare('getListLimited','users');
+				$statement=$db->prepare('getListLimited','admin_users');
 			}
 			$statement->bindParam(':start',$data->output['userListStart'],PDO::PARAM_INT);
 			$statement->bindParam(':count',$data->output['userListLimit'],PDO::PARAM_INT);

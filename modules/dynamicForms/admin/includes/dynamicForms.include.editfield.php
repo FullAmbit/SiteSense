@@ -36,7 +36,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFieldById', 'dynamicForms');
+	$statement = $db->prepare('getFieldById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['field'] = $field = $statement->fetch();
 	if($field === false){
@@ -44,7 +44,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
 		return;
 	}
-	$statement = $db->prepare('getFormById', 'dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $field['form']));
 	$dbform = $statement->fetch();
 	if($dbform === false){
@@ -60,7 +60,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
 			$form->sendArray[':id'] = $field['id'];
-			$statement = $db->prepare('editField', 'dynamicForms');
+			$statement = $db->prepare('editField','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die(var_dump($statement->errorInfo()));
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='

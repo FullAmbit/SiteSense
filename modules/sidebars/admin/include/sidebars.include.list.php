@@ -34,7 +34,7 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='moveDown')
 		) {
 			
-			$qHandle=$db->prepare('getSortOrderById','sidebars');
+			$qHandle=$db->prepare('getSortOrderById','admin_sidebars');
 			$qHandle->execute(array(
 				':id' => $data->action[4]
 			));
@@ -66,7 +66,7 @@ function admin_sidebarsBuild($data,$db) {
 			($data->action[3]=='enable') ||
 			($data->action[3]=='disable')
 		) {
-			$qHandle=$db->prepare('updateEnabledById','sidebars');
+			$qHandle=$db->prepare('updateEnabledById','admin_sidebars');
 			$qHandle->execute(array(
 				':enabled' => ($data->action[3]=='enable'),
 				':id' => $data->action[4]
@@ -74,12 +74,12 @@ function admin_sidebarsBuild($data,$db) {
 		} else */
 		if($data->action[3] == 'switch')	{
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getById','sidebars');
+				$statement=$db->prepare('getById','admin_sidebars');
 				$statement->execute(array(
 					':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
-					$statement=$db->prepare('updateSideById','sidebars');
+					$statement=$db->prepare('updateSideById','admin_sidebars');
 					$statement->execute(array(
 						':side' => ( $item['side']=='left' ? 'right' : 'left' ),
 						':id' => $item['id']
@@ -88,7 +88,7 @@ function admin_sidebarsBuild($data,$db) {
 			}
 		}
 	}
-	$qHandle=$db->prepare('getAllOrdered','sidebars');
+	$qHandle=$db->prepare('getAllOrdered','admin_sidebars');
 	$qHandle->execute();
 	$data->output['sidebars']=$qHandle->fetchAll();
 }

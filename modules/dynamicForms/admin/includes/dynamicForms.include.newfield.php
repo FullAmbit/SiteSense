@@ -37,7 +37,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	$formId = $data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$dbform = $statement->fetch();
 	if($dbform === false){
@@ -57,14 +57,14 @@ function admin_dynamicFormsBuild($data,$db) {
 			$form->sendArray[':form'] = $dbform['id'];
 			
 			//--Get SortOrder--//
-			$statement = $db->prepare('countFieldsByForm','dynamicForms');
+			$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
 			$statement->execute(array(':formId' => $formId));
 			list($rowCount) = $statement->fetch();
 			$sortOrder = $rowCount + 1;
 			$form->sendArray[':sortOrder'] = $sortOrder;
 			
 			
-			$statement = $db->prepare('newField', 'dynamicForms');
+			$statement = $db->prepare('newField','admin_dynamicForms');
 			$result = $statement->execute($form->sendArray);
 			if(!$result)
 			{

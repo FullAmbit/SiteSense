@@ -30,7 +30,7 @@ function admin_blogsBuild($data,$db) {
     }
 	$data->output["delete"] = "";
 	// Check To See If The Category Exists
-	$check = $db->prepare('getCategoryById','blogs');
+	$check = $db->prepare('getCategoryById','admin_blogs');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['categoryItem'] = $check->fetch()) === FALSE)	{
 		$data->output['abort'] = true;
@@ -39,13 +39,13 @@ function admin_blogsBuild($data,$db) {
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
 	if(!checkPermission('accessOthers','blogs',$data))	{
-		$check = $db->prepare('getBlogByIdAndOwner','blogs');
+		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->output['categoryItem']['blogId'],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','blogs');
+		$check = $db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(
 			':id' => $data->output['categoryItem']['blogId']
 		));
@@ -62,12 +62,12 @@ function admin_blogsBuild($data,$db) {
 		if(!empty($_POST['delete']))
 		{
 			// Delete Category From DB
-			$statement = $db->prepare('deleteCategory','blogs');
+			$statement = $db->prepare('deleteCategory','admin_blogs');
 			$statement->execute(array(
 				':id' => $data->output['categoryItem']['id']
 			));
 			// Set Category to ZERO For All Existing Posts Within Category
-			$statement = $db->prepare('updatePostsWithinCategory','blogs');
+			$statement = $db->prepare('updatePostsWithinCategory','admin_blogs');
 			$statement->execute(array(
 				':categoryId' => $data->output['categoryItem']['id']
 			));

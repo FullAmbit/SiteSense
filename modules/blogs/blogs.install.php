@@ -180,7 +180,7 @@ function blogs_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement=$data->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,

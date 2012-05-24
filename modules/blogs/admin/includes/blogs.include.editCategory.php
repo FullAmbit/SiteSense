@@ -30,13 +30,13 @@ function admin_blogsBuild($data,$db) {
         return;
     }
 	if(checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','blogs');
+		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','blogs');
+		$check = $db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(':id' => $data->action[3]));
 	}
 	// Check To See If The Blog Exists
@@ -52,7 +52,7 @@ function admin_blogsBuild($data,$db) {
 			// Get Short Name
 			$data->output['categoryForm']->sendArray[':shortName'] = preg_replace('/\W-/i','',str_replace(' ','-',strtolower($_POST[$data->output['categoryForm']->formPrefix.'name'])));
 			$data->output['categoryForm']->sendArray[':id'] = $data->output['categoryItem']['id'];
-			$statement = $db->prepare('editCategory','blogs');
+			$statement = $db->prepare('editCategory','admin_blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
 			if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='

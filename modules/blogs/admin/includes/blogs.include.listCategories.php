@@ -30,13 +30,13 @@ function admin_blogsBuild($data,$db) {
     }
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
 	if(!checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','blogs');
+		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','blogs');
+		$check = $db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(':id' => $data->action[3]));
 	}
 	// Check For Results
@@ -46,7 +46,7 @@ function admin_blogsBuild($data,$db) {
 		return;
 	}
 	// Get All Categories //
-	$statement = $db->prepare('getAllCategoriesByBlog','blogs');
+	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
 	$statement->execute(array(
 		':blogId' => $data->action[3]
 	));

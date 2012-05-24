@@ -26,14 +26,30 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function settings_addQueries() {
+function admin_messages_addQueries() {
 	return array(
-		'updateSettings' => "
-			UPDATE !prefix!settings
-			SET value= :value
-			WHERE name= :name
-			AND category= 'cms'
-		"
+        'getListLimited' => '
+			SELECT p.*, u1.name from_name, u2.name to_name FROM !prefix!user_pms p
+				INNER JOIN !prefix!users u1
+					ON u1.id = p.`from`
+				INNER JOIN !prefix!users u2
+					ON u2.id = p.`to`
+			ORDER BY sent DESC
+			LIMIT :start, :count
+		',
+        'getMessage' => '
+			SELECT p.*, u1.name from_name, u2.name to_name FROM !prefix!user_pms p
+				INNER JOIN !prefix!users u1
+					ON u1.id = p.`from`
+				INNER JOIN !prefix!users u2
+					ON u2.id = p.`to`
+			WHERE p.id = :id
+		',
+        'deleteMessageById' => '
+			UPDATE !prefix!user_pms
+			SET deleted = 1
+			WHERE id = :id
+		'
 	);
 }
 ?>

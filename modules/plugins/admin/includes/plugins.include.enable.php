@@ -44,7 +44,7 @@ function admin_pluginsBuild($data,$db){
 			if(function_exists($targetFunction))
 				$targetFunction($data,$db);
 			// Update this plugin in the database
-			$statement=$db->prepare('enableAndUpdate','plugins');
+			$statement=$db->prepare('enableAndUpdate','admin_plugins');
 			$statement->execute(array(
 				':name'				 => $data->action[3],
 				':isCDN'			 => isset($settings['isCDN']) ? $settings['isCDN'] : '0',
@@ -52,7 +52,7 @@ function admin_pluginsBuild($data,$db){
 			));
 		} else {
 			// Enable this plugin in the database
-			$statement=$db->prepare('enable','plugins');
+			$statement=$db->prepare('enable','admin_plugins');
 			$statement->execute(array(
 				':name' => $data->action[3]
 			));

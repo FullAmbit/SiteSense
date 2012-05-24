@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_blogPostsCheckShortName($db,$shortName) {
-	$statement=$db->prepare('getBlogPostIdByName','blogs');
+	$statement=$db->prepare('getBlogPostIdByName','admin_blogs');
 	$statement->execute(array(
 		':shortName' => $shortName
 	));
@@ -45,13 +45,13 @@ function admin_blogsBuild($data,$db) {
 	if (is_numeric($data->action[3])) {
 		//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
 		if(!checkPermission('accessOthers','blogs',$data)) {
-			$statement = $db->prepare('getBlogByIdAndOwner','blogs');
+			$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$statement->execute(array(
 				':id' => $data->action[3],
 				':owner' => $data->user['id']
 			));
 		} else {
-			$statement=$db->prepare('getBlogById','blogs');
+			$statement=$db->prepare('getBlogById','admin_blogs');
 			$statement->execute(array(
 				':id' => $data->action[3]
 			));
@@ -64,7 +64,7 @@ function admin_blogsBuild($data,$db) {
 		}
 		
 		//---Load Blog Post---//
-		$statement=$db->prepare('getBlogPostsById','blogs');
+		$statement=$db->prepare('getBlogPostsById','admin_blogs');
 			$statement->execute(array(
 				'id' => $data->action[4]
 			));
@@ -91,7 +91,7 @@ function admin_blogsBuild($data,$db) {
 	}
 	
 	// Get Blog Categories //
-	$statement = $db->prepare('getAllCategoriesByBlog','blogs');
+	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
 	$statement->execute(array(
 		':blogId' => $data->action[3]
 	));
@@ -114,7 +114,7 @@ function admin_blogsBuild($data,$db) {
 		{
 			unset($data->output['blogForm']->fields['name']['cannotEqual']);
 		} else {
-			$statement = $db->prepare('getExistingShortNames','blogs');
+			$statement = $db->prepare('getExistingShortNames','admin_blogs');
 			$statement->execute();
 			$postShortNameList = $statement->fetchAll();
 			foreach($postShortNameList as $item)
@@ -129,7 +129,7 @@ function admin_blogsBuild($data,$db) {
 		//---Validate All Form Fields---//
 		if ($data->output['blogForm']->validateFromPost()) {
 			
-			$statement=$db->prepare('updateBlogPostsById','blogs');
+			$statement=$db->prepare('updateBlogPostsById','admin_blogs');
 			$data->output['blogForm']->sendArray[':id']=$data->action[4];
 			
 			// HTML Special Chars

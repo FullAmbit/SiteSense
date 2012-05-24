@@ -37,7 +37,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFieldById', 'dynamicForms');
+	$statement = $db->prepare('getFieldById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['fieldItem'] = $statement->fetch();
 	if($data->output['fieldItem']  === false){
@@ -46,7 +46,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	// Get Options
-	$statement = $db->prepare('getOptionsByFieldId','dynamicForms');
+	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
 	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
 	$optionsSerialized = $statement->fetch();
 	$data->output['optionList'] = unserialize($optionsSerialized[0]);
@@ -77,7 +77,7 @@ function admin_dynamicFormsBuild($data,$db) {
 			$form->sendArray[':options'] = serialize($data->output['optionList']);
 			unset($form->sendArray[':text'],$form->sendArray[':value']);
 			
-			$statement = $db->prepare('updateOptions', 'dynamicForms');
+			$statement = $db->prepare('updateOptions','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die($statement->errorInfo());
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='

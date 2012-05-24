@@ -33,7 +33,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}	
 	$data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
-	$statement = $db->prepare('getEnabledPlugins','plugins');
+	$statement = $db->prepare('getEnabledPlugins','admin_plugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	
@@ -55,7 +55,7 @@ function admin_dynamicFormsBuild($data,$db)
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing Sidebar ShortNames For Comparison
-		$statement = $db->prepare('getExistingShortNames','dynamicForms');
+		$statement = $db->prepare('getExistingShortNames','admin_dynamicForms');
 		$statement->execute();
 		$formList = $statement->fetchAll();
 		$existingShortNames = array();
@@ -80,7 +80,7 @@ function admin_dynamicFormsBuild($data,$db)
 				$rowCount = $db->countRows('main_menu');
 				$sortOrder = $rowCount + 1;
 				
-				$statement = $db->prepare('newMenuItem','mainMenu');
+				$statement = $db->prepare('newMenuItem','admin_mainMenu');
 				$statement->execute(array(
 					':text' => $title,
 					':title' => $title,
@@ -109,7 +109,7 @@ function admin_dynamicFormsBuild($data,$db)
 			}
 			//------------//
 			// Save to DB //
-			$statement = $db->prepare('newForm','dynamicForms');
+			$statement = $db->prepare('newForm','admin_dynamicForms');
 			$result = $statement->execute($data->output['fromForm']->sendArray);
 			if($result)
 			{

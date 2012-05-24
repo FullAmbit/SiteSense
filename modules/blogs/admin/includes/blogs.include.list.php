@@ -28,7 +28,7 @@ function admin_blogsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $statement=$db->query('countBlogs','blogs');
+    $statement=$db->query('countBlogs','admin_blogs');
 	if ($count=$statement->fetch()) {
 		$data->output['blogStart']=(
 			is_numeric($data->action[3]) ?
@@ -39,13 +39,13 @@ function admin_blogsBuild($data,$db) {
 		$data->output['blogsCount']=$count['count'];
 		//---If Less Then Moderator, Load Only OWN Blog Posts
 		if(!checkPermission('accessOthers','blogs',$data)) {
-			$statement = $db->prepare('getBlogsByUser','blogs');
+			$statement = $db->prepare('getBlogsByUser','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
 			$statement->bindParam(':owner',$data->user['id'],PDO::PARAM_INT);
 			$statement->execute();
 		} else {
-			$statement=$db->prepare('getBlogsByOwner','blogs');
+			$statement=$db->prepare('getBlogsByOwner','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
 			$statement->execute();
@@ -62,8 +62,8 @@ function admin_blogsBuild($data,$db) {
 			iterating through it to pull our post counts
 			It's either that or run two queries...
 		*/
-		$statement=$db->prepare('countBlogPostsByBlogId','blogs');
-		$getBlogOwner=$db->prepare('pullUserInfoById','common');
+		$statement=$db->prepare('countBlogPostsByBlogId','admin_blogs');
+		$getBlogOwner=$db->prepare('pullUserInfoById');
 		/* we also can't foreach, as we need to actually CHANGE it's values */
 		for ($t=0; $t<count($data->output['blogs']); $t++) {
 			if ($data->output['blogs'][$t]['owner']==0) {

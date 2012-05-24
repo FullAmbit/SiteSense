@@ -36,7 +36,7 @@ function admin_messagesBuild($data,$db) {
 		$data->output['messageListStart'] = (int)$data->action[3];
 	}
 	$data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
-	$messages = $db->prepare('getListLimited','messages');
+	$messages = $db->prepare('getListLimited','admin_messages');
 	$messages->bindParam(':start', $data->output['messageListStart'], PDO::PARAM_INT);
 	$messages->bindParam(':count', $data->output['messageListLimit'], PDO::PARAM_INT);
 	$messages->execute();

@@ -68,6 +68,11 @@ final class dynamicPDO extends PDO {
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) {
         $target='modules/'.$moduleName.'/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+        $pos=strpos($moduleName,'admin_');
+        if(!($pos===false)) {
+            $moduleNameOnly=substr($moduleName,6);
+            $target='modules/'.$moduleNameOnly.'/admin/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.admin.php';
+        }
         if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
             $target='libraries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
         }
@@ -299,7 +304,7 @@ final class sitesense {
 
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
 		if($this->currentPage != 'admin' && !$this->banned){
-			$moduleQuery = $this->db->prepare('getModuleByShortName', 'modules');
+			$moduleQuery = $this->db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
             // Does this module exist, and is it enabled?
@@ -307,7 +312,7 @@ final class sitesense {
 				if($this->module !== false){ // Exists, but is disabled.
 					$this->currentPage = 'pageNotFound';
 				}else if(file_exists('modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')){ // Exists in the file system, but not in the db.
-					$statement = $this->db->prepare('newModule', 'modules');
+					$statement = $this->db->prepare('newModule','admin_modules');
 					$statement->execute(
 						array(
 							':name' => $this->currentPage,
@@ -366,7 +371,7 @@ final class sitesense {
 			}
 			// If we didn't set the currentPage above, the page was not found.
             if($this->currentPage != 'pageNotFound'){
-				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule', 'modules');
+				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule','admin_modules');
 				$sidebarQuery->execute(
 					array(
 						':module' => $this->module['id']
@@ -528,7 +533,7 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules','modules');
+		$moduleQuery = $this->db->query('getEnabledModules','admin_modules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
 			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
@@ -553,7 +558,7 @@ final class sitesense {
 			}
 		}
 		if ($this->currentPage=='admin' && !$this->banned) {
-			common_include('themes/default/admin/admin.template.php');
+			common_include('libraries/admin.template.php');
 			common_include('libraries/admin.php');
 		} else {
 
@@ -655,12 +660,15 @@ final class sitesense {
 		);
 	}
 	public function loadModuleTemplate($module) {
-		$targetInclude=$this->themeDir.$module.'.template.php';
-		$defaultInclude='themes/default/'.$module.'.template.php';
-		if (file_exists($targetInclude)) {
-			common_include($targetInclude);
-		}else if(file_exists($defaultInclude)){
-			common_include($defaultInclude);
+		$currentThemeInclude=$this->themeDir.$module.'.template.php';
+		$defaultThemeInclude='themes/default/'.$module.'.template.php';
+        $moduleThemeInclude='modules/'.$module.'/'.$module.'template.php';
+		if(file_exists($currentThemeInclude)) {
+			common_include($currentThemeInclude);
+		} elseif(file_exists($defaultThemeInclude)) {
+			common_include($defaultThemeInclude);
+		} elseif(file_exists($moduleThemeInclude)) {
+			common_include($moduleThemeInclude);
 		}
 	}
 	public function getUserIdByName($name) {

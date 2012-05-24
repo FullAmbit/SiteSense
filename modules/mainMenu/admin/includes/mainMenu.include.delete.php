@@ -38,7 +38,7 @@ function admin_mainMenuBuild($data,$db) {
 		return;
 	}
 	// Check To See If The Menu Item Exists
-	$check = $db->prepare('getMenuItemById','mainMenu');
+	$check = $db->prepare('getMenuItemById','admin_mainMenu');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['menuItem'] = $check->fetch()) === FALSE)
 	{
@@ -52,7 +52,7 @@ function admin_mainMenuBuild($data,$db) {
 		if(!empty($_POST['delete']))
 		{
 			// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-			$statement = $db->prepare('fixSortOrderGap','mainMenu');
+			$statement = $db->prepare('fixSortOrderGap','admin_mainMenu');
 			$statement->execute(array(  
 				':sortOrder' => $data->output['menuItem']['sortOrder'],
 				':parent' => $data->output['menuItem']['parent']
@@ -61,7 +61,7 @@ function admin_mainMenuBuild($data,$db) {
 			deleteChildren($db,$data->output['menuItem']);
 			/*=========================================================================*/
 			// Remove from database
-			$statement = $db->prepare('deleteMenuItemById','mainMenu');
+			$statement = $db->prepare('deleteMenuItemById','admin_mainMenu');
 			$statement->execute(array(':id' => $data->action[3]));
 			$data->output['delete']='deleted';
 		} else {
@@ -73,7 +73,7 @@ function admin_mainMenuBuild($data,$db) {
 function deleteChildren($db,$item)
 {
 	// First Retrieve The Children
-	$statement = $db->prepare('getMenuItemByParent','mainMenu');
+	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
 	$statement->execute(array(':parent' => $item['id']));
 	$children = $statement->fetchAll();
 	foreach($children as $child)
@@ -83,7 +83,7 @@ function deleteChildren($db,$item)
 	// Delete All With This Parent ID
 	if($item['parent'] !== '0')
 	{
-		$statement = $db->prepare('deleteItemsByParent','mainMenu');
+		$statement = $db->prepare('deleteItemsByParent','admin_mainMenu');
 		$statement->execute(array(':parent' => $item['parent']));
 	}
 }

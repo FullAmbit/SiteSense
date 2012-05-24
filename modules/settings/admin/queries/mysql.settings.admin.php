@@ -26,26 +26,14 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function dynamicURLs_addQueries() {
+function admin_settings_addQueries() {
 	return array(
-		'getAllUrlRemaps' => '
-			SELECT * FROM !prefix!url_remap ORDER BY id ASC
-		',
-		'getUrlRemapById' => '
-			SELECT * FROM !prefix!url_remap WHERE id = :id
-		',
-		'editUrlRemap' => '
-			UPDATE !prefix!url_remap
-			SET `match` = :match, `replace` = :replace
-			WHERE id = :id
-		',
-		'insertUrlRemap' => '
-			INSERT INTO !prefix!url_remap
-			SET `match` = :match, `replace` = :replace
-		',
-		'deleteUrlRemap' => '
-			DELETE FROM !prefix!url_remap WHERE id = :id
-		'
+		'updateSettings' => "
+			UPDATE !prefix!settings
+			SET value= :value
+			WHERE name= :name
+			AND category= 'cms'
+		"
 	);
 }
 ?>

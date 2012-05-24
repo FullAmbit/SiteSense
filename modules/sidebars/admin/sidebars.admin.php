@@ -38,9 +38,9 @@ function admin_buildContent($data,$db) {
 	
 	/* first add any that are in the directory but not in the database */
 	$files=glob('modules/*/sidebars/*.sidebar.php');
-	$statement=$db->prepare('getSidebarNameByName','sidebars');
+	$statement=$db->prepare('getSidebarNameByName','admin_sidebars');
 	
- 	$wHandle=$db->prepare('insertSidebarFile','sidebars');
+ 	$wHandle=$db->prepare('insertSidebarFile','admin_sidebars');
 	foreach ($files as $fileName) {
 		$targetName=substr(strrchr(str_replace('.sidebar.php','',$fileName),'/'),1);
 		$statement->execute(array(
@@ -57,8 +57,8 @@ function admin_buildContent($data,$db) {
 			$count = $db->countRows('sidebars');
 			$sortOrder = $count;
 			//---Pages---//
-			$pageQ = $db->prepare('createSidebarSetting','pages');
-			$statement = $db->prepare('getAllPageIds','pages');
+			$pageQ = $db->prepare('createSidebarSetting','admin_pages');
+			$statement = $db->prepare('getAllPageIds','admin_pages');
 			$statement->execute();
 			$pageList = $statement->fetchAll();
 		
@@ -74,8 +74,8 @@ function admin_buildContent($data,$db) {
 				$pageQ->execute($vars);
 			}
 			//---Modules---//
-			$moduleQ = $db->prepare('createSidebarSetting','modules');
-			$statement = $db->prepare('getAllModuleIds','modules');
+			$moduleQ = $db->prepare('createSidebarSetting','admin_modules');
+			$statement = $db->prepare('getAllModuleIds','admin_modules');
 			$statement->execute();
 			$moduleList = $statement->fetchAll();
 			foreach($moduleList as $moduleItem)
@@ -90,8 +90,8 @@ function admin_buildContent($data,$db) {
 				$moduleQ->execute($vars);
 			}
 			//---Forms---//
-			$formQ = $db->prepare('createSidebarSetting','dynamicForms');
-			$statement = $db->prepare('getAllFormIds','dynamicForms');
+			$formQ = $db->prepare('createSidebarSetting','admin_dynamicForms');
+			$statement = $db->prepare('getAllFormIds','admin_dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
 			foreach($formList as $formItem)
@@ -109,8 +109,8 @@ function admin_buildContent($data,$db) {
 		
 	}
 	/* now even tougher, remove any that are NOT listed */
-	$statement=$db->query('getFromFiles','sidebars');
-	$wHandle=$db->prepare('deleteById','sidebars');
+	$statement=$db->query('getFromFiles','admin_sidebars');
+	$wHandle=$db->prepare('deleteById','admin_sidebars');
 	$data->output['sidebars']=array();
 	while ($item = $statement->fetch()) {
 		$testName='modules/'.$item['name'].'/sidebars/'.$item['name'].'.sidebar.php';
@@ -121,16 +121,16 @@ function admin_buildContent($data,$db) {
 			//--Delete Form, Page, and Module Setting For Sidebar--//
 			$vars = array(':sidebar' => $item['id']);
 						
-			$q1 = $db->prepare('deleteSidebarSettingBySidebar','dynamicForms');
-			$q2 = $db->prepare('deleteSidebarSettingBySidebar','modules');
-			$q3 = $db->prepare('deleteSidebarSettingBySidebar','pages');
+			$q1 = $db->prepare('deleteSidebarSettingBySidebar','admin_dynamicForms');
+			$q2 = $db->prepare('deleteSidebarSettingBySidebar','admin_modules');
+			$q3 = $db->prepare('deleteSidebarSettingBySidebar','admin_pages');
 			
 			$q1->execute($vars);
 			$q2->execute($vars);
 			$q3->execute($vars);
 		}
 	}
-	$statement=$db->query('getAllOrdered','sidebars');
+	$statement=$db->query('getAllOrdered','admin_sidebars');
 	$data->output['sidebars']=$statement->fetchAll();
 	if (empty($data->action[2])) {
 		$data->action[2]='list';

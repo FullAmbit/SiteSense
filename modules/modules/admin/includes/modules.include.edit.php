@@ -33,7 +33,7 @@ function admin_modulesBuild($data,$db) {
 		$existing = false;
 	}else{
 		$existing = (int)$data->action[3];
-		$check = $db->prepare('getModuleById', 'modules');
+		$check = $db->prepare('getModuleById','admin_modules');
 		$check->execute(array(':id' => $existing));
 		if(($data->output['module'] = $check->fetch()) === false){
 			$data->output['abort'] = true;
@@ -54,10 +54,10 @@ function admin_modulesBuild($data,$db) {
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
 			if($existing){
-				$statement = $db->prepare('editModule', 'modules');
+				$statement = $db->prepare('editModule','admin_modules');
 				$form->sendArray[':id'] = $existing;
 			}else{
-				$statement = $db->prepare('newModule', 'modules');
+				$statement = $db->prepare('newModule','admin_modules');
 			}
 			$statement->execute($form->sendArray) or die('Saving module failed');
 			if (empty($data->output['secondSidebar'])) {

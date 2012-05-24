@@ -34,7 +34,7 @@ function admin_modulesBuild($data,$db){
 	} else {
 		if(!$data->action[4]) {
 			// Disable the module
-			$statement=$db->prepare('disableModule','modules');
+			$statement=$db->prepare('disableModule','admin_modules');
 			$statement->execute(array(
 				':shortName' => $data->action[3]
 			));

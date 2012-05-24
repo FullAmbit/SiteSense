@@ -35,20 +35,21 @@ function page_buildContent($data,$db) {
 	);
 	$data->output = array_merge($defaults, $data->output);
   if (checkPermission('access','core',$data)) {
-    if (empty($data->action[1])) {
-      common_include('modules/dashboard/admin/dashboard.admin.php');
-	  common_include('themes/default/admin/dashboard.template.php');
+    if(empty($data->action[1])) {
+        $module='dashboard';
     } else {
-      $target='modules/'.$data->action[1].'/admin/'.$data->action[1].'.admin.php';
-      if (file_exists($target)) {
-        common_include($target);
-		$db->loadModuleQueries('admin_'.$data->action[1]);
-		$theme = 'themes/default/admin/'.$data->action[1].'.template.php';
-		if( file_exists($theme) )
-			common_include($theme);
-      } else {
-        common_include('themes/default/admin/404.static.php');
-      }
+        $module=$data->action[1];
+    }
+    common_include('modules/'.$module.'/admin/'.$module.'.admin.php');
+    $currentThemeInclude=$data->themeDir.'admin/'.$module.'.template.php';
+    $defaultThemeInclude='themes/default/admin/'.$module.'.template.php';
+    $moduleThemeInclude='modules/'.$module.'/admin/'.$module.'.template.php';
+    if(file_exists($currentThemeInclude)) {
+        common_include($currentThemeInclude);
+    } elseif(file_exists($defaultThemeInclude)) {
+        common_include($defaultThemeInclude);
+    } elseif(file_exists($moduleThemeInclude)) {
+        common_include($moduleThemeInclude);
     }
     $files=glob('modules/*/admin/*.config.php');
     foreach ($files as $fileName) {

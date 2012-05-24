@@ -39,7 +39,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}
 	
 	// Check To See If The Field Exists
-	$check = $db->prepare('getFieldById','dynamicForms');
+	$check = $db->prepare('getFieldById','admin_dynamicForms');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['fieldItem'] = $check->fetch()) === FALSE)
 	{
@@ -55,7 +55,7 @@ function admin_dynamicFormsBuild($data,$db)
 		return;
 	}
 	// Get Options
-	$statement = $db->prepare('getOptionsByFieldId','dynamicForms');
+	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
 	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
 	$optionsSerialized = $statement->fetch();
 	$data->output['optionList'] = unserialize($optionsSerialized[0]);
@@ -76,7 +76,7 @@ function admin_dynamicFormsBuild($data,$db)
 			
 			$options = serialize($data->output['optionList']);
 			
-			$statement = $db->prepare('updateOptions','dynamicForms');
+			$statement = $db->prepare('updateOptions','admin_dynamicForms');
 			$statement->execute(array(':fieldId' => $data->output['fieldItem']['id'],':options' => $options));
 			
 			$data->output['delete']='deleted';

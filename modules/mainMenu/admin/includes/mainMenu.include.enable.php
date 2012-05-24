@@ -29,7 +29,7 @@ function admin_mainMenuBuild($data,$db) {
         return;
     }
 	// Check To See If The Project Exists
-	$check = $db->prepare('getMenuItemById','mainMenu');
+	$check = $db->prepare('getMenuItemById','admin_mainMenu');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['menuItem'] = $check->fetch()) === FALSE)
 	{
@@ -38,7 +38,7 @@ function admin_mainMenuBuild($data,$db) {
 		return;
 	}
 	// Disable
-	$statement = $db->prepare('enableOrDisableMenuItem','mainMenu');
+	$statement = $db->prepare('enableOrDisableMenuItem','admin_mainMenu');
 	$statement->execute(array(
 		':id' => $data->output['menuItem']['id'],
 		':enabled' => '1'

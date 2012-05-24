@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function modules_addQueries() {
+function admin_modules_addQueries() {
 	return array(
 		'getAllModuleIds' => '
 			SELECT id FROM !prefix!modules

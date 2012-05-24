@@ -34,7 +34,7 @@ function admin_usersBuild($data,$db)
 	}
 	
 	// Get User, Make Sure He / She Is Already Banned
-	$statement = $db->prepare('getById','users');
+	$statement = $db->prepare('getById','admin_users');
 	$statement->execute(array(
 		':id' => $userId
 	));
@@ -42,7 +42,7 @@ function admin_usersBuild($data,$db)
 	$data->output['userItem'] = $userItem = $statement->fetch();
 	
 	// Get The Ban Row
-	$statement = $db->prepare('getBanByUserId','users');
+	$statement = $db->prepare('getBanByUserId','admin_users');
 	$statement->execute(array(
 		':userId' => $userId
 	));
@@ -83,11 +83,11 @@ function admin_usersBuild($data,$db)
 			return;
 		}
 		// Unban The User (Delete Banning Row Should Do The Trick, And Update User Level!
-		$statement = $db->prepare('removeBanByUserId','users');
+		$statement = $db->prepare('removeBanByUserId','admin_users');
 		$r1 = $statement->execute(array(
 			':userId' => $userId
 		));
-		$update = $db->prepare('updateUserLevel','users');
+		$update = $db->prepare('updateUserLevel','admin_users');
 		$r2 = $update->execute(array(
 			':userId' => $userId,
 			':userLevel' => $banItem['userLevel']

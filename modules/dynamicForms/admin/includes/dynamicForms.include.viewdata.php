@@ -35,7 +35,7 @@ function admin_dynamicFormsBuild($data,$db){
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$form = $statement->fetch();
 	if($form === false){
@@ -44,13 +44,13 @@ function admin_dynamicFormsBuild($data,$db){
 		return;
 	}
 	$data->output['form'] = $form;
-	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
+	$statement = $db->prepare('getFieldsByForm','admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['fields'] = $statement->fetchAll();
-	$statement = $db->prepare('getRowsByForm', 'dynamicForms');
+	$statement = $db->prepare('getRowsByForm','admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$data->output['rows'] = $statement->fetchAll();
-	$statement = $db->prepare('getValuesByForm', 'dynamicForms');
+	$statement = $db->prepare('getValuesByForm','admin_dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$results = $statement->fetchAll();
 	$values = array();

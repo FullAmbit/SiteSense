@@ -32,13 +32,13 @@ function admin_blogsBuild($data,$db) {
 
 			if(!checkPermission('accessOthers','blogs',$data))
 			{
-				$qHandle=$db->prepare('getBlogByIdAndOwner','blogs');
+				$qHandle=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 				$qHandle->execute(array(
 					':id' => $data->action[3],
 					':owner' => $data->user['id']
 				));
 			} else {
-				$qHandle=$db->prepare('getBlogById','blogs');
+				$qHandle=$db->prepare('getBlogById','admin_blogs');
 				$qHandle->execute(array(
 					':id' => $data->action[3]
 				));
@@ -52,7 +52,7 @@ function admin_blogsBuild($data,$db) {
 				
 			if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
-					$statement=$db->prepare('deleteBlogPostById','blogs');
+					$statement=$db->prepare('deleteBlogPostById','admin_blogs');
 					$statement->execute(array(
 						':id' => $data->action[3]
 					));
