@@ -66,10 +66,10 @@ function admin_dynamicFormsBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Form Field Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/newfield/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/newfield/' . $data->output['form']['id'] . '">
 							Add New Field
 						</a>
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listfields/' . $data->output['form']['id'] . '">
 							Return to Field List
 						</a>
 					</div>';

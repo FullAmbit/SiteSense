@@ -237,20 +237,16 @@ function theme_leftSidebar($data) {
 		<div id="leftSidebar">';
 
 	if (count($data->sidebarList['left'])>0) {
-		
 		foreach($data->sidebarList['left'] as $sidebar) {
-			
-			if ($sidebar['name']!=$data->output['pageShortName']) {
-				if ($sidebar['fromFile']) {
-					require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
-				} else {
-					common_parseDynamicValues($data, $sidebar['titleURL']);
-					common_parseDynamicValues($data, $sidebar['parsedContent']);
-					theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
-					echo htmlspecialchars_decode($sidebar['parsedContent']);
-					theme_sidebarBoxFooter();
-				}
-			}
+		    if ($sidebar['fromFile']) {
+		    	require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
+		    } else {
+                common_parseDynamicValues($data, $sidebar['titleURL']);
+		    	common_parseDynamicValues($data, $sidebar['parsedContent']);
+		    	theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+		    	echo htmlspecialchars_decode($sidebar['parsedContent']);
+		    	theme_sidebarBoxFooter();
+		    }
 		}
 	}
 
@@ -270,17 +266,15 @@ function theme_rightSidebar($data) {
 
 	if (count($data->sidebarList)>0) {
 		foreach($data->sidebarList['right'] as $sidebar) {
-			if ($sidebar['name']!=$data->output['pageShortName']) {
-				if ($sidebar['fromFile']) {
-					require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
-				} else {
-					common_parseDynamicValues($data, $sidebar['titleURL']);
-					common_parseDynamicValues($data, $sidebar['parsedContent']);
-					theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
-					echo htmlspecialchars_decode($sidebar['parsedContent']);
-					theme_sidebarBoxFooter();
-				}
-			}
+		    if ($sidebar['fromFile']) {
+		    	require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
+		    } else {
+		    	common_parseDynamicValues($data, $sidebar['titleURL']);
+		    	common_parseDynamicValues($data, $sidebar['parsedContent']);
+		    	theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+		    	echo htmlspecialchars_decode($sidebar['parsedContent']);
+		    	theme_sidebarBoxFooter();
+		    }
 		}
 	}
 

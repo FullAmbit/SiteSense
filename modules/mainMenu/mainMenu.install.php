@@ -22,15 +22,32 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicForms_config($data,$db) {
-	//permission check for forms access
-	if (checkPermission('access','dynamicForms',$data)) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => $data->output['moduleShortName']['dynamicForms'].'/list',
-			'name'      => 'Dynamic Forms',
-			'sortOrder' => 5
-		);
-	}
+function mainMenu_settings() {
+	return array(
+		'name'      => 'mainMenu',
+		'shortName' => 'main-menu'
+	);
+}
+function mainMenu_install($data,$drop=false) {
+	$structures = array(
+        'main_menu' => array(
+            'id'           => SQR_IDKey,
+            'text'         => SQR_name,
+            'title'        => SQR_title,
+            'url'          => SQR_URL,
+            'side'         => SQR_side.' DEFAULT \'left\'',
+            'sortOrder'    => SQR_sortOrder.' DEFAULT \'1\'',
+            'enabled'      => SQR_boolean,
+            'parent'       => SQR_ID.' DEFAULT \'0\'',
+            'KEY `sortOrder` (`sortOrder`,`side`)'
+        )
+	);
+	if($drop)
+        mainMenu_uninstall($data);
+
+    $data->createTable('main_menu',$structures['main_menu'],false);
+}
+function mainMenu_uninstall($data) {
+	$data->dropTable('main_menu');
 }
 ?>

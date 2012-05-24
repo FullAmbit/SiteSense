@@ -24,8 +24,8 @@
 */
 function dynamicForms_settings() {
 	return array(
-		'name' => 'dynamicForms',
-		'shortName' => 'dynamicForms'
+		'name'      => 'dynamicForms',
+		'shortName' => 'dynamic-forms'
 	);
 }
 function dynamicForms_install($data,$drop=false) {
@@ -80,13 +80,9 @@ function dynamicForms_install($data,$drop=false) {
 			'value'                => 'TEXT NOT NULL'
 		)
 	);
-	if($drop) {
-		$data->dropTable('forms');
-		$data->dropTable('form_fields');
-		$data->dropTable('form_rows');
-		$data->dropTable('form_values');
-		$data->dropTable('form_sidebars');
-	}
+	if($drop)
+        dynamicForms_uninstall($data);
+
 	$data->createTable('forms',$structures['forms'],false);
 	$data->createTable('form_fields',$structures['form_fields'],false);
 	$data->createTable('form_rows',$structures['form_rows'],false);
@@ -122,5 +118,12 @@ function dynamicForms_install($data,$drop=false) {
         }
     }
 
+}
+function dynamicForms_uninstall($data) {
+    $data->dropTable('forms');
+    $data->dropTable('form_fields');
+    $data->dropTable('form_rows');
+    $data->dropTable('form_values');
+    $data->dropTable('form_sidebars');
 }
 ?>

@@ -22,15 +22,36 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicForms_config($data,$db) {
-	//permission check for forms access
-	if (checkPermission('access','dynamicForms',$data)) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => $data->output['moduleShortName']['dynamicForms'].'/list',
-			'name'      => 'Dynamic Forms',
-			'sortOrder' => 5
-		);
-	}
+function sidebars_settings() {
+	return array(
+		'name'      => 'sidebars',
+		'shortName' => 'sidebars'
+	);
+}
+function sidebars_install($data,$drop=false) {
+	$structures = array(
+        'sidebars' => array(
+            'id'            => SQR_IDKey,
+            'name'          => SQR_name,
+            'shortName'     => SQR_shortName,
+            'enabled'       => SQR_boolean,
+            'fromFile'      => SQR_boolean,
+            'title'         => 'VARCHAR(255)',
+            'titleURL'      => SQR_URL,
+            'rawContent'    => 'TEXT',
+            'parsedContent' => 'TEXT',
+            'side'          => SQR_side.' DEFAULT \'left\'',
+            'sortOrder'     => SQR_sortOrder,
+            'KEY `sortOrder` (`sortOrder`,`side`)'
+        )
+	);
+	if($drop)
+        sidebars_uninstall($data);
+
+	$data->createTable('sidebars',$structures['sidebars'],false);
+
+}
+function sidebars_uninstall($data) {
+    $data->dropTable('sidebars');
 }
 ?>

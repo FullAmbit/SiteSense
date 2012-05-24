@@ -85,10 +85,10 @@ function admin_dynamicFormsBuild($data,$db)
 			  $data->output['savedOkMessage']='
 				  <h2>Option Deleted Successfully</h2>
 				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/dynamic-forms/addoption/'.$data->output['fieldItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addoption/'.$data->output['fieldItem']['id'].'">
 						  Add New Option
 					  </a>
-					  <a href="'.$data->linkRoot.'admin/dynamic-forms/listoptions/'.$data->output['fieldItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listoptions/'.$data->output['fieldItem']['id'].'">
 						  Return to Options List
 					  </a>
 				  </div>';
@@ -100,7 +100,7 @@ function admin_dynamicFormsBuild($data,$db)
 }
 function admin_dynamicFormsShow($data)
 {
-	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
+	$aRoot=$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/';
 	if(empty($data->output['rejectError']))
 	{
 		switch($data->output['delete'])

@@ -22,8 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function pages_settings()
-{
+function pages_settings() {
 	return array(
 		'name'      => 'pages',
 		'shortName' => 'pages'
@@ -52,12 +51,12 @@ function pages_install($data,$drop=false) {
 			'UNIQUE KEY `module` (`page`,`sidebar`)'
 		)
 	);
-	if($drop) {
-		$data->dropTable('pages');
-		$data->dropTable('pages_sidebars');
-	}
+	if($drop)
+        pages_uninstall($data);
+
 	$data->createTable('pages',$structures['pages'],false);
 	$data->createTable('pages_sidebars',$structures['pages_sidebars'],false);
+
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
@@ -120,5 +119,9 @@ function pages_install($data,$drop=false) {
 			';
 		}
 	} else echo '<p class="exists">"pages database" already contains records</p>';
+}
+function pages_uninstall($data) {
+    $data->dropTable('pages');
+    $data->dropTable('pages_sidebars');
 }
 ?>

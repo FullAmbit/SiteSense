@@ -23,9 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='user';
-}
+
 function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','users');
 	$statement->execute(array(':name' => $name));

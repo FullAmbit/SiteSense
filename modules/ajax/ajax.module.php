@@ -22,8 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function ajax_buildContent(&$data,&$db)
-{
+function ajax_buildContent($data,$db) {
 	// URL Remapping (Taken from Common.PHP)
 	$newAction = $data->action;
 	$newAction = array_unique(array_slice($newAction,1));

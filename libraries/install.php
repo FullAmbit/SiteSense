@@ -152,24 +152,6 @@ if (
         }
     }
 
-    $data->createTable('banned',$structures['banned'],false);
-    $data->createTable('sessions',$structures['sessions'],false);
-    $data->createTable('sidebars',$structures['sidebars'],false);
-    $data->createTable('main_menu',$structures['main_menu'],false);
-    $data->createTable('activations',$structures['activations'],false);
-
-    // Create url_remap Table
-    $data->createTable('url_remap',$structures['url_remap'],false);
-
-    // Create Module Related Tables
-    $data->createTable('modules',$structures['modules'],false);
-    $data->createTable('module_sidebars',$structures['module_sidebars'],false);
-
-    // Create Permissions
-    $data->createTable('user_groups',$structures['user_groups'],false);
-    $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
-    $data->createTable('user_permissions',$structures['user_permissions'],false);
-
     // Install modules
     $coreModules = array(
         'dynamicForms',
@@ -180,10 +162,14 @@ if (
         'login',
         'logout',
         'register',
-        'users'
+        'users',
+        'mainMenu',
+        'sidebars',
+        'modules'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
+    $moduleSettings=array();
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module
         if(!file_exists($moduleInstallFile)) {
@@ -201,9 +187,18 @@ if (
                 if(!function_exists($targetFunction)) {
                     $data->output['rejectError']='Improper installation file';
                     $data->output['rejectText']='The module install function could not be found within the module installation file.';
-                } else if($moduleName=='users')
+                } elseif($moduleName=='users') {
                     $newPassword=$targetFunction($data,$drop);
-                else $targetFunction($data,$drop);
+                } else {
+                    $targetFunction($data,$drop);
+                }
+                $targetFunction=$moduleName.'_settings';
+                if(function_exists($targetFunction)) {
+                    $moduleSettings[$moduleName]=$targetFunction();
+                } else {
+                    $data->output['rejectError']='Improper installation file';
+                    $data->output['rejectText']='The module install function could not be found within the module installation file.';
+                }
             } else if ($drop) {
                 // Run the module uninstall procedure
                 $targetFunction=$moduleName.'_uninstall';
@@ -228,11 +223,17 @@ if (
     // Insert new modules into the database
     $insert=$data->prepare('newModule');
     foreach($fileModules as $fileModule) {
+        $shortName=$fileModule;
+        if(array_key_exists($fileModule,$moduleSettings)) {
+            if(array_key_exists('shortName',$moduleSettings[$fileModule])) {
+                $shortName=$moduleSettings[$fileModule]['shortName'];
+            }
+        }
         $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
         $insert->execute(
             array(
                 ':name' => $fileModule,
-                ':shortName' => $fileModule,
+                ':shortName' => $shortName,
                 ':enabled' => $enabled
             )
         );

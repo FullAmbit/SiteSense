@@ -23,9 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='gallery';
-}
+
 function page_buildContent($data,$db) {
 	//permission check for gallery access
 	if(!checkPermission('access','gallery',$data)) {

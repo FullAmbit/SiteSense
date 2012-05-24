@@ -22,30 +22,38 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function messages_settings() {
+function modules_settings() {
 	return array(
-		'name'      => 'messages',
-		'shortName' => 'messages'
+		'name'      => 'modules',
+		'shortName' => 'modules'
 	);
 }
-function messages_install($data,$drop=false) {
+function modules_install($data,$drop=false) {
 	$structures = array(
-			'user_pms'  => array(
-			'id'        => SQR_IDKey,
-			'from'      => SQR_ID,
-			'to'        => SQR_ID,
-			'message'   => 'TEXT NOT NULL',
-			'read'      => SQR_boolean.' DEFAULT \'0\'',
-			'deleted'   => SQR_boolean.' DEFAULT \'0\'',
-			'sent'      => SQR_added
-		)
+        'modules' => array(
+            'id'          => SQR_IDKey,
+            'name'        => SQR_name,
+            'shortName'   => SQR_shortName,
+            'enabled'     => SQR_boolean
+        ),
+        'module_sidebars' => array(
+            'id'          => SQR_IDKey,
+            'module'      => SQR_ID,
+            'sidebar'     => SQR_ID,
+            'enabled'     => SQR_boolean,
+            'sortOrder'   => SQR_sortOrder.' DEFAULT \'1\'',
+            'UNIQUE KEY `module` (`module`,`sidebar`)'
+        )
 	);
 	if($drop)
-        $data->dropTable('user_pms');
+        modules_uninstall($data);
 
-    $data->createTable('user_pms',$structures['user_pms'],false);
+    $data->createTable('modules',$structures['modules'],false);
+    $data->createTable('module_sidebars',$structures['module_sidebars'],false);
+
 }
-function messages_uninstall($data) {
-	$data->dropTable('user_pms');
+function modules_uninstall($data) {
+	$data->dropTable('modules');
+    $data->dropTable('module_sidebars');
 }
 ?>

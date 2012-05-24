@@ -77,7 +77,7 @@ function admin_dynamicFormsBuild($data,$db)
 }
 function admin_dynamicFormsShow($data)
 {
-	$aRoot = $data->linkRoot . 'admin/dynamic-forms/';
+	$aRoot = $data->linkRoot . 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/';
 	if($data->output['rejectText'])
 	{
 		theme_dynamicFormsDeleteReject($data,$aRoot);

@@ -269,7 +269,7 @@ function common_addQueries() {
 			ORDER BY name ASC
 		',
         'getEnabledModules' => '
-			SELECT * FROM !prefix!modules
+			SELECT name, shortName FROM !prefix!modules
 			WHERE enabled = 1
 			ORDER BY name ASC
 		',

@@ -22,15 +22,27 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicForms_config($data,$db) {
-	//permission check for forms access
-	if (checkPermission('access','dynamicForms',$data)) {
-		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
-			'command'   => $data->output['moduleShortName']['dynamicForms'].'/list',
-			'name'      => 'Dynamic Forms',
-			'sortOrder' => 5
-		);
-	}
+function dynamicURLs_settings() {
+	return array(
+		'name'      => 'dynamicURLs',
+		'shortName' => 'dynamic-urls'
+	);
+}
+function dynamicURLs_install($data,$drop=false) {
+	$structures = array(
+        'url_remap' => array(
+            'id'       => SQR_IDKey,
+            'match'    => 'VARCHAR(127) NOT NULL',
+            'replace'  => 'VARCHAR(127) NOT NULL'
+        )
+	);
+	if($drop)
+        dynamicURLs_uninstall($data);
+
+	$data->createTable('url_remap',$structures['url_remap'],false);
+
+}
+function dynamicURLs_uninstall($data) {
+    $data->dropTable('url_remap');
 }
 ?>

@@ -22,9 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='Personal Messages';
-}
 function page_buildContent($data,$db) {
 	if(!isset($data->user['id'])){
 		common_redirect_local($data, 'login');

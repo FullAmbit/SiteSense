@@ -23,9 +23,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-//common_include('plugins/campaignMonitor/campaignMonitor.api.php');
+
 function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='blogs';
 	$data->output['pageTitle']='Blog';
 }
 function page_buildContent($data,$db) {

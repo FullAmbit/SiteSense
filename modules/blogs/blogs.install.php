@@ -85,12 +85,9 @@ function blogs_install($data,$drop=false) {
 			'KEY `blogId` (`blogId`)'
 		)
 	);
-	if($drop) {
-		$data->dropTable('blogs');
-		$data->dropTable('blog_posts');
-		$data->dropTable('blog_comments');
-		$data->dropTable('blog_categories');
-	}
+	if($drop)
+        blogs_uninstall($data);
+
 	$data->createTable('blogs',$structures['blogs'],false);
 	$data->createTable('blog_posts',$structures['blog_posts'],false);
 	$data->createTable('blog_comments',$structures['blog_comments'],false);
@@ -227,5 +224,11 @@ function blogs_install($data,$drop=false) {
 			';
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
+}
+function blogs_uninstall($data) {
+    $data->dropTable('blogs');
+    $data->dropTable('blog_posts');
+    $data->dropTable('blog_comments');
+    $data->dropTable('blog_categories');
 }
 ?>

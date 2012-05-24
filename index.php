@@ -533,10 +533,11 @@ final class sitesense {
 			}
 		}
 		
-		$moduleQuery = $this->db->query('getEnabledModules','admin_modules');
+		$moduleQuery = $this->db->query('getEnabledModules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {
-			$filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
+			$this->output['moduleShortName'][$module['name']]=$module['shortName'];
+            $filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
 			if(file_exists($filename)){;
 				common_include($filename);
 				$targetFunction=$module['name'].'_startUp';

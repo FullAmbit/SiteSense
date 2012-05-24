@@ -37,7 +37,9 @@ function friends_install($data,$drop=false) {
 			'confirmed'    => SQR_boolean
 		)
 	);
-	if($drop) $data->dropTable('friends');
+	if($drop)
+        friends_uninstall($data);
+
 	$data->createTable('friends',$structures['friends'],false);
 }
 function friends_uninstall($data) {
