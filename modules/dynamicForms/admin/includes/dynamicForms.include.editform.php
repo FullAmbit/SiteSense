@@ -33,7 +33,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}	
 	// Check If Form Exists //	
 	$formId = $data->action[3];
-	$check = $db->prepare('getFormById', 'dynamicForms');
+	$check = $db->prepare('getFormById','admin_dynamicForms');
 	$check->execute(array(':id' => $formId));
 	if(($data->output['formItem'] = $check->fetch()) === FALSE)
 	{
@@ -44,7 +44,7 @@ function admin_dynamicFormsBuild($data,$db)
 
 	$form = $data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
-	$statement = $db->prepare('getEnabledPlugins','common');
+	$statement = $db->prepare('getEnabledPlugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
 	
@@ -72,7 +72,7 @@ function admin_dynamicFormsBuild($data,$db)
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
 			// Load All Existing Sidebar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','dynamicForms');
+			$statement = $db->prepare('getExistingShortNames','admin_dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
 			$existingShortNames = array();
@@ -88,7 +88,7 @@ function admin_dynamicFormsBuild($data,$db)
 			if($data->output['fromForm']->sendArray[':showOnMenu'] == 1)
 			{
 				$rowCount = $db->countRows('main_menu');
-				$saveMenuItem = $db->prepare('saveMenuItem','dynamicForms');
+				$saveMenuItem = $db->prepare('saveMenuItem','admin_dynamicForms');
 				$saveMenuItem->execute(array(
 					'name' => $data->output['fromForm']->sendArray[':name'],
 					'title' => $data->output['fromForm']->sendArray[':menuTitle'],
@@ -115,7 +115,7 @@ function admin_dynamicFormsBuild($data,$db)
 			}
 			//------------//
 			// Save To DB //
-			$statement = $db->prepare('editForm', 'dynamicForms');
+			$statement = $db->prepare('editForm','admin_dynamicForms');
 			
 			$data->output['fromForm']->sendArray[':id'] = $formId;
 			$statement->execute($data->output['fromForm']->sendArray);
@@ -124,10 +124,10 @@ function admin_dynamicFormsBuild($data,$db)
 				$data->output['savedOkMessage']='
 					<h2>Form Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/addform">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addform">
 							Add New Form
 						</a>
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/list/">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/list/">
 							Return to Form List
 						</a>
 					</div>';

@@ -33,12 +33,12 @@ function admin_dynamicURLsBuild($data,$db) {
 		$data->output['abort'] = true;
 		$data->output['abortremap'] = '<h2>No ID Given</h2>';
 	}else{
-		$remap = $db->prepare('getUrlRemapById', 'dynamicURLs');
+		$remap = $db->prepare('getUrlRemapById','admin_dynamicURLs');
 		$remap->execute(array(':id' => (int)$data->action[3]));
 		$remap = $remap->fetch();
 		$data->output['exists'] = $remap !== false;
 		if($data->action[4] == 'confirm'){
-			$remaps = $db->prepare('deleteUrlRemap','dynamicURLs');
+			$remaps = $db->prepare('deleteUrlRemap','admin_dynamicURLs');
 			$remaps->execute(array(':id' => (int)$data->action[3]));
 			$data->output['success'] = ($remaps->rowCount() == 1);
 		}

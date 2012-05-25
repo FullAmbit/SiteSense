@@ -31,14 +31,14 @@ function admin_mainMenuBuild($data,$db) {
     switch ($data->action[3]) {
 		case 'switch':
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getMenuItemById','mainMenu');
+				$statement=$db->prepare('getMenuItemById','admin_mainMenu');
 				$statement->execute(array(
 					':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
 					if($item['parent'] == '0')
 					{
-						$statement=$db->prepare('updateSideById','mainMenu');
+						$statement=$db->prepare('updateSideById','admin_mainMenu');
 						$statement->execute(array(
 							':side' => ( $item['side']=='left' ? 'right' : 'left' ),
 							':id' => $item['id']
@@ -50,7 +50,7 @@ function admin_mainMenuBuild($data,$db) {
 		case 'moveUp':
 		case 'moveDown':
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getMenuItemById','mainMenu');
+				$statement=$db->prepare('getMenuItemById','admin_mainMenu');
 				$statement->execute(array(
 					':id' => $data->action[4]
 				));
@@ -63,7 +63,7 @@ function admin_mainMenuBuild($data,$db) {
 					} else {
 						$item['sortOrder']+=3;
 					}
-					$statement=$db->prepare('updateOrderById','mainMenu');
+					$statement=$db->prepare('updateOrderById','admin_mainMenu');
 					$statement->execute(array(
 						':sortOrder' => $item['sortOrder'],
 						':id' => $item['id']
@@ -73,7 +73,7 @@ function admin_mainMenuBuild($data,$db) {
 					 * Get the total row count
 					 * If the object is at the bottom or top, do not sort
 					**/
-					$statement = $db->prepare('countItemsByParent','mainMenu');
+					$statement = $db->prepare('countItemsByParent','admin_mainMenu');
 					$statement->execute(array(':parent' => $item['parent']));
 					list($rowCount) = $statement->fetch();
 					
@@ -106,7 +106,7 @@ function admin_mainMenuBuild($data,$db) {
 		break;
 	}
 	//admin_mainMenuRebuild($data,$db);
-	$statement=$db->query('getMenuItemsOrdered','mainMenu');
+	$statement=$db->query('getMenuItemsOrdered','admin_mainMenu');
 	$data->output['menuList'] = $menuList = $statement->fetchAll();
 	$menuParents = array();
 	// Prepare Parent to Child Associative Array

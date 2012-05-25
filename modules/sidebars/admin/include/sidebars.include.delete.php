@@ -33,7 +33,7 @@ function admin_sidebarsBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		$qHandle=$db->prepare('getFromFileById','sidebars');
+		$qHandle=$db->prepare('getFromFileById','admin_sidebars');
 		$qHandle->execute(array(
 			':id' => $data->action[3]
 		));
@@ -44,7 +44,7 @@ function admin_sidebarsBuild($data,$db) {
 			} else if (checkPermission('canDeleteSidebarItem','core',$data)) {
 				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
-						$qHandle=$db->prepare('deleteById','sidebars');
+						$qHandle=$db->prepare('deleteById','admin_sidebars');
 						$qHandle->execute(array(
 							':id' => $data->action[3]
 						));
@@ -52,8 +52,8 @@ function admin_sidebarsBuild($data,$db) {
 						$vars = array(':sidebar' => $data->action[3]);
 						
 						$q1 = $db->prepare('deleteSidebarSettingBySidebar','dynamic-form');
-						$q2 = $db->prepare('deleteSidebarSettingBySidebar','modules');
-						$q3 = $db->prepare('deleteSidebarSettingBySidebar','pages');
+						$q2 = $db->prepare('deleteSidebarSettingBySidebar','admin_modules');
+						$q3 = $db->prepare('deleteSidebarSettingBySidebar','admin_pages');
 						
 						$q1->execute($vars);
 						$q2->execute($vars);

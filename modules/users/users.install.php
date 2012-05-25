@@ -22,15 +22,37 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function users_settings($data) {
+function users_settings() {
 	return array(
-		'name' => 'users',
+		'name'      => 'users',
 		'shortName' => 'users'
 	);
 }
 function users_install($data,$drop=false) {
 	$structures = array(
-		'users' => array(
+        'activations' => array(
+            'userId'              => SQR_IDKey,
+            'hash'                => 'VARCHAR(255)',
+            'expires'             => SQR_time
+        ),
+        'banned' => array(
+            'id'                  => SQR_IDKey,
+            'userId'              => SQR_ID,
+            'email'               => SQR_email,
+            'ipAddress'           => SQR_IP,
+            'timestamp'           => SQR_added,
+            'expiration'          => SQR_time,
+            'UNIQUE KEY `userId` (`userId`)'
+        ),
+        'sessions' => array(
+            'sessionId'           => 'VARCHAR(255) NOT NULL PRIMARY KEY',
+            'userId'              => SQR_ID,
+            'expires'             => SQR_time,
+            'ipAddress'           => SQR_IP,
+            'userAgent'           => 'VARCHAR(255)',
+            'KEY `userId` (`userId`,`expires`)'
+        ),
+        'users' => array(
 			'id'                  => SQR_IDKey,
 			'name'                => SQR_username,
 			'password'            => SQR_password,
@@ -41,11 +63,33 @@ function users_install($data,$drop=false) {
 			'contactEMail'        => SQR_email,
 			'publicEMail'         => SQR_email,
 			'emailVerified'       => SQR_boolean.' DEFAULT \'0\''
-		)
+		),
+        'user_groups' => array(
+            'userID'              => SQR_ID,
+            'groupName'           => SQR_name,
+            'expires'             => SQR_time
+        ),
+        'user_group_permissions' => array(
+            'groupName'           => SQR_name,
+            'permissionName'      => SQR_name
+        ),
+        'user_permissions' => array(
+            'userId'              => SQR_ID,
+            'permissionName'      => SQR_name,
+            'allow'               => SQR_boolean
+        )
 	);
 	if($drop)
-		$data->dropTable('users');
-	$data->createTable('users',$structures['users'],false);
+		users_uninstall($data);
+
+	$data->createTable('activations',$structures['activations'],false);
+    $data->createTable('banned',$structures['banned'],false);
+    $data->createTable('sessions',$structures['sessions'],false);
+    $data->createTable('users',$structures['users'],false);
+    $data->createTable('user_groups',$structures['user_groups'],false);
+    $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
+    $data->createTable('user_permissions',$structures['user_permissions'],false);
+
     // Set up default permission groups
     $defaultPermissionGroups=array(
         'Moderator' => array(
@@ -73,7 +117,7 @@ function users_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName','common');
+            $statement=$data->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
@@ -105,5 +149,14 @@ function users_install($data,$drop=false) {
 		}
 	} else echo '<p class="exists">"users database" already contains records</p>';
 	return $newPassword;
+}
+function users_uninstall($data) {
+    $data->dropTable('activations');
+    $data->dropTable('banned');
+    $data->dropTable('sessions');
+    $data->dropTable('users');
+    $data->dropTable('user_groups');
+    $data->dropTable('user_group_permissions');
+    $data->dropTable('user_permissions');
 }
 ?>

@@ -33,13 +33,13 @@ function admin_blogsBuild($data,$db)
     }
 	//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
 	if(!checkPermission('accessOthers','blogs',$data)) {
-		$statement = $db->prepare('getBlogByIdAndOwner','blogs');
+		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$statement=$db->prepare('getBlogById','blogs');
+		$statement=$db->prepare('getBlogById','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3]
 		));
@@ -53,7 +53,7 @@ function admin_blogsBuild($data,$db)
 	// Load Form //		
 	$data->output['blogForm']=new formHandler('blogsEditPosts',$data,true);
 	// Get Blog Categories //
-	$statement = $db->prepare('getAllCategoriesByBlog','blogs');
+	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
 	$statement->execute(array(
 		':blogId' => $data->action[3]
 	));
@@ -75,7 +75,7 @@ function admin_blogsBuild($data,$db)
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['blogForm']->sendArray[':shortName'] = $_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing Sidebar ShortNames For Comparison
-		$statement = $db->prepare('getExistingShortNames','blogs');
+		$statement = $db->prepare('getExistingShortNames','admin_blogs');
 		$statement->execute();
 		$postList = $statement->fetchAll();
 		$existingShortNames = array();
@@ -104,7 +104,7 @@ function admin_blogsBuild($data,$db)
 			$data->output['blogForm']->sendArray[':blogId']=$data->action[3];
 			$data->output['blogForm']->sendArray[':user']=$data->user['id'];
 			//--Save To DB--//
-			$statement=$db->prepare('insertBlogPost','blogs');
+			$statement=$db->prepare('insertBlogPost','admin_blogs');
 			$result = $statement->execute($data->output['blogForm']->sendArray);
 			
 			if($result == FALSE)

@@ -38,14 +38,14 @@ function admin_mainMenuBuild($data,$db) {
 		$data->output['MenuItemForm']->populateFromPostData();
 		if($data->output['MenuItemForm']->validateFromPost())
 		{
-			$statement = $db->prepare('countItemsByParent','mainMenu');
+			$statement = $db->prepare('countItemsByParent','admin_mainMenu');
 			$statement->execute(array(':parent' => $data->output['MenuItemForm']->sendArray[':parent']));
 			list($rowCount) = $statement->fetch();
 			$data->output['MenuItemForm']->sendArray[':sortOrder'] = $rowCount + 1;
 			
 			$data->output['MenuItemForm']->sendArray[':url'] = str_replace('|',$data->linkRoot,$data->output['MenuItemForm']->sendArray[':url']);
 			
-			$statement = $db->prepare('newMenuItem','mainMenu');
+			$statement = $db->prepare('newMenuItem','admin_mainMenu');
 			$statement->execute($data->output['MenuItemForm']->sendArray) or die('Saving Menu Item Failed');
 			if(empty($data->output['secondSidebar']))
 			{
@@ -79,7 +79,7 @@ function admin_mainMenuShow($data) {
 }
 function admin_mainMenuOptions($db,$parent = 0,$level = 0,$options = array()) {
 	// Get All Items In Current Level
-	$statement = $db->prepare('getMenuItemByParent','mainMenu');
+	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
 	$statement->execute(array(
 		':parent' => $parent
 	));

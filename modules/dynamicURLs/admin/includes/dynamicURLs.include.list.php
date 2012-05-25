@@ -29,7 +29,7 @@ function admin_dynamicURLsBuild($data,$db) {
         return;
     }
     $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
-	$messages = $db->query('getAllUrlRemaps','dynamicURLs');
+	$messages = $db->query('getAllUrlRemaps','admin_dynamicURLs');
 	$data->output['remapList'] = $messages->fetchAll();
 }
 function admin_dynamicURLsShow($data) {

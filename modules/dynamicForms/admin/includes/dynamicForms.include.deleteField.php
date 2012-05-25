@@ -32,7 +32,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}	
 	$data->output['delete'] = "";
 	// Check To See If The Field Exists
-	$check = $db->prepare('getFieldById','dynamicForms');
+	$check = $db->prepare('getFieldById','admin_dynamicForms');
 	$check->execute(array(':id' => $data->action[3]));
 	if(($data->output['fieldItem'] = $check->fetch()) === FALSE)
 	{
@@ -48,7 +48,7 @@ function admin_dynamicFormsBuild($data,$db)
 		return;
 	}
 	// Get Form Information
-	$statement = $db->prepare('getFormById','dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->output['fieldItem']['form']));
 	list($data->output['formItem']) = $statement->fetchAll();
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])
@@ -56,12 +56,12 @@ function admin_dynamicFormsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
 			// Delete Form Field
-			$statement = $db->prepare('deleteField','dynamicForms');
+			$statement = $db->prepare('deleteField','admin_dynamicForms');
 			$statement->execute(array(
 				':id' => $data->output['fieldItem']['id']
 			));
 			// Fix Sort Order Gap
-			$statement = $db->prepare('fixFieldSortOrderGap','dynamicForms');
+			$statement = $db->prepare('fixFieldSortOrderGap','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $data->output['fieldItem']['form'],
 				':sortOrder' => $data->output['fieldItem']['sortOrder']
@@ -73,10 +73,10 @@ function admin_dynamicFormsBuild($data,$db)
 			  $data->output['savedOkMessage']='
 				  <h2>Project screenshot Deleted Successfully</h2>
 				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/dynamic-forms/newfield/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/newfield/'.$data->output['formItem']['id'].'">
 						  Add New Field
 					  </a>
-					  <a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listfields/'.$data->output['formItem']['id'].'">
 						  Return to Fields List
 					  </a>
 				  </div>';
@@ -88,7 +88,7 @@ function admin_dynamicFormsBuild($data,$db)
 }
 function admin_dynamicFormsShow($data)
 {
-	$aRoot=$data->linkRoot.'admin/dynamic-forms/';
+	$aRoot=$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/';
 	if(empty($data->output['rejectError']))
 	{
 		switch($data->output['delete'])

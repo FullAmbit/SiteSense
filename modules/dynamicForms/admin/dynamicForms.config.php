@@ -26,9 +26,9 @@ function dynamicForms_config($data,$db) {
 	//permission check for forms access
 	if (checkPermission('access','dynamicForms',$data)) {
 		$data->admin['menu'][]=array(
-			'category'	=> 'Site Management',
-			'command' 	=> 'dynamic-forms/list',
-			'name'			=> 'Dynamic Forms',
+			'category'  => 'Site Management',
+			'command'   => $data->output['moduleShortName']['dynamicForms'].'/list',
+			'name'      => 'Dynamic Forms',
 			'sortOrder' => 5
 		);
 	}

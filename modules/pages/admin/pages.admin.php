@@ -23,9 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_pagesResort($db) {
-	$statement=$db->query('getPageListOrdered','pages');
+	$statement=$db->query('getPageListOrdered','admin_pages');
 	$list=$statement->fetchAll();
-	$statement=$db->prepare('updatePageSortOrderById','pages');
+	$statement=$db->prepare('updatePageSortOrderById','admin_pages');
 	$count=1;
 	foreach ($list as $item) {
 		if ($item['sortOrder']!=$count) {

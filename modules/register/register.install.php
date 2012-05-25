@@ -22,30 +22,15 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-/*
-	!table! = $tableName
-	!prefix! = dynamicPDO::tablePrefix
-*/
-function dynamicURLs_addQueries() {
-	return array(
-		'getAllUrlRemaps' => '
-			SELECT * FROM !prefix!url_remap ORDER BY id ASC
-		',
-		'getUrlRemapById' => '
-			SELECT * FROM !prefix!url_remap WHERE id = :id
-		',
-		'editUrlRemap' => '
-			UPDATE !prefix!url_remap
-			SET `match` = :match, `replace` = :replace
-			WHERE id = :id
-		',
-		'insertUrlRemap' => '
-			INSERT INTO !prefix!url_remap
-			SET `match` = :match, `replace` = :replace
-		',
-		'deleteUrlRemap' => '
-			DELETE FROM !prefix!url_remap WHERE id = :id
-		'
-	);
+function register_settings() {
+    return array(
+        'name'      => 'register',
+        'shortName' => 'register'
+    );
 }
+
+function register_install($data,$drop=false) {
+    return NULL;
+}
+
 ?>

@@ -22,9 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_getUniqueSettings($data) {
-	$data->output['pageShortName']='register';
-}
 function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
 	$statement=$db->prepare('getRegistrationEMail','register');
 	$statement->execute();

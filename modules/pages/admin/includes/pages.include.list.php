@@ -32,13 +32,13 @@ function admin_pagesBuild($data,$db) {
 
 	if ((($data->action[3]=='moveUp') || ($data->action[3]=='moveDown')) && is_numeric($data->action[4]))
 	{
-		$qHandle=$db->prepare('getPageById','pages');
+		$qHandle=$db->prepare('getPageById','admin_pages');
 		$qHandle->execute(array(
 			':id' => $data->action[4]
 		));
 		if($item = $qHandle->fetch())
 		{
-			$statement = $db->prepare('countPagesByParent','pages');
+			$statement = $db->prepare('countPagesByParent','admin_pages');
 			$statement->execute(array(':parent' => $item['parent']));
 			list($rowCount) = $statement->fetch();
 			
@@ -67,7 +67,7 @@ function admin_pagesBuild($data,$db) {
 }
 function admin_List($db, $Parent = 0, $Level = 0){ // Using a function is necessary here for recursion
 	$list = array();
-	$statement = $db->prepare('getPageListByParent', 'pages');
+	$statement = $db->prepare('getPageListByParent','admin_pages');
 	$statement->execute(array(':parent' => $Parent));
 	while($item = $statement->fetch()){
 		$item['level'] = $Level;

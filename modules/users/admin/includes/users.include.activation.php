@@ -37,14 +37,14 @@ function admin_usersBuild($data,$db) {
 	if(!empty($data->action[4]) && $data->action[4] == 'activate'){
 		$userId = (int)$data->action[5];
 		if($userId > 0){
-			$statement = $db->prepare('activate', 'users');
+			$statement = $db->prepare('activate','admin_users');
 			$statement->execute(array(':id' => $userId));
 		}
 	}
 	if (empty($data->output['abort'])) {
 		$data->output['userListLimit']=ADMIN_SHOWPERPAGE;
 		$data->output['userListCount']=0;
-		$statement=$db->prepare('getListActivations','users');
+		$statement=$db->prepare('getListActivations','admin_users');
 		$statement->bindParam(':start',$data->output['userListStart'],PDO::PARAM_INT);
 		$statement->bindParam(':count',$data->output['userListLimit'],PDO::PARAM_INT);
 		$statement->execute();

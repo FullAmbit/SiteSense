@@ -28,7 +28,7 @@ function admin_pluginsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $statement=$db->query('getAllPlugins','plugins');
+    $statement=$db->query('getAllPlugins','admin_plugins');
 	$data->output['plugins']=$statement->fetchAll();
 	// Build an array of the names of the plugins in the filesystem
 	$dirs=scandir('plugins');
@@ -39,7 +39,7 @@ function admin_pluginsBuild($data,$db) {
 		}
 	}
 	// Remove duplicate database entries
-	$delete=$db->prepare('deletePlugin','plugins');
+	$delete=$db->prepare('deletePlugin','admin_plugins');
 	foreach($data->output['plugins'] as $plugin) {
 		foreach($data->output['plugins'] as $key => $plugin2) {
 			if(isset($duplicatedPlugins))
@@ -60,7 +60,7 @@ function admin_pluginsBuild($data,$db) {
 		}
 	}
 	// Insert new plugins into the database
-	$insert=$db->prepare('newPlugin','plugins');
+	$insert=$db->prepare('newPlugin','admin_plugins');
 	foreach($filePlugins as $filePlugin) {
 		$found=false;
 		foreach($data->output['plugins'] as $dbPlugin) {

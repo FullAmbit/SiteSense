@@ -31,13 +31,13 @@ function admin_blogsBuild($data,$db) {
         return;
     }
     if(!checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','blogs');
+		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','blogs');
+		$check = $db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(':id' => $data->action[3]));
 	}
 	
@@ -56,7 +56,7 @@ function admin_blogsBuild($data,$db) {
 			// Get Short Name
 			$data->output['categoryForm']->sendArray[':shortName'] = common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
 			$data->output['categoryForm']->sendArray[':blogId'] = $data->output['blogItem']['id'];
-			$statement = $db->prepare('addCategory','blogs');
+			$statement = $db->prepare('addCategory','admin_blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
 			if(empty($data->output['secondSidebar']))
 			{

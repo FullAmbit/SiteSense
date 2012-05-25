@@ -40,7 +40,7 @@ function admin_buildContent($data,$db) {
 		$data->action[2]='list';
 	}
 	if ($data->action[2]=='list') {
-		$statement=$db->query('getAllUrlRemaps','dynamicURLs');
+		$statement=$db->query('getAllUrlRemaps','admin_dynamicURLs');
 		$data->output['urlremapList']=$statement->fetchAll();
 	}
 	$target='modules/dynamicURLs/admin/includes/dynamicURLs.include.'.$data->action[2].'.php';

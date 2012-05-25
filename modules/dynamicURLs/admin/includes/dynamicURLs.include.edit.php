@@ -30,7 +30,7 @@ function admin_dynamicURLsBuild($data,$db) {
         return;
     }
 	$remapId = (int)$data->action[3];
-	$check = $db->prepare('getUrlRemapById', 'dynamicURLs');
+	$check = $db->prepare('getUrlRemapById','admin_dynamicURLs');
 	$check->execute(array(
 		':id' => $remapId
 	));
@@ -50,7 +50,7 @@ function admin_dynamicURLsBuild($data,$db) {
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
 				
-			$statement = $db->prepare('editUrlRemap', 'dynamicURLs');
+			$statement = $db->prepare('editUrlRemap','admin_dynamicURLs');
 			$form->sendArray[':id'] = $remapId;
 			$result = $statement->execute($form->sendArray) ;
 			

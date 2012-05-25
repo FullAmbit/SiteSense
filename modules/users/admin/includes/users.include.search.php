@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function checkUserName($name,$db) {
-	$statement=$db->prepare('checkUserName','users');
+	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
 		':name' => $name
 	));
@@ -44,9 +44,9 @@ function admin_usersBuild($data,$db) {
 	) {
 		$data->output['userForm']->populateFromPostData();
 		if($data->output['userForm']->sendArray[':userLevel'] != "-100"){
-			$statement = $db->prepare('searchUsers_IncludingLevel', 'users');
+			$statement = $db->prepare('searchUsers_IncludingLevel','admin_users');
 		}else{
-			$statement = $db->prepare('searchUsers_NotIncludingLevel', 'users');
+			$statement = $db->prepare('searchUsers_NotIncludingLevel','admin_users');
 			unset($data->output['userForm']->sendArray[':userLevel']);
 		}
 		$statement->execute($data->output['userForm']->sendArray);

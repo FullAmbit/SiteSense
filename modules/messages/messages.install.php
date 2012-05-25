@@ -40,8 +40,10 @@ function messages_install($data,$drop=false) {
 			'sent'      => SQR_added
 		)
 	);
-	if($drop) $data->dropTable('user_pms');
-	$data->createTable('user_pms',$structures['user_pms'],false);
+	if($drop)
+        $data->dropTable('user_pms');
+
+    $data->createTable('user_pms',$structures['user_pms'],false);
 }
 function messages_uninstall($data) {
 	$data->dropTable('user_pms');

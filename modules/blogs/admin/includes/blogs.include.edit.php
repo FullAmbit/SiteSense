@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_blogsCheckShortName($db,$shortName) {
-	$statement=$db->prepare('getBlogIdByName','blogs');
+	$statement=$db->prepare('getBlogIdByName','admin_blogs');
 	$statement->execute(array(
 		':shortName' => $shortName
 	));
@@ -48,13 +48,13 @@ function admin_blogsBuild($data,$db) {
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
 	if(!checkPermission('accessOthers','blogs',$data)) {
-		$statement = $db->prepare('getBlogByIdAndOwner','blogs');
+		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$statement = $db->prepare('getBlogById','blogs');
+		$statement = $db->prepare('getBlogById','admin_blogs');
 		$statement->execute(array(':id' => $data->action[3]));
 	}
 	
@@ -74,8 +74,7 @@ function admin_blogsBuild($data,$db) {
 	 *	The owner of the blog defaults to the "blogger" if the userLevel = USERLEVEL_BLOGGER (< USERLEVEL_MODERATOR)
 	 *	If the user is >= USERLEVEL_MODERATOR, give a drop down list of blog owners
 	**/
-	if(checkPermission('ownerView','blogs',$data))
-	{
+	if(checkPermission('ownerView','blogs',$data)) {
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
 			'params' => array(
@@ -83,16 +82,6 @@ function admin_blogsBuild($data,$db) {
 			),
 			'value' => $data->user['id']
 		);
-		
-	} else {
-		$statement = $db->query('getBloggersByUserLevel','blogs');
-		$statement->execute();
-		while ($item=$statement->fetch()) {
-			$data->output['blogForm']->fields['owner']['options'][]=array(
-				'value' => $item['id'],
-				'text' => $item['name'].' - '.$languageText['userLevels'][$item['userLevel']]
-			);
-		}
 	}
 	
 	//--Fill out Form--//
@@ -125,7 +114,7 @@ function admin_blogsBuild($data,$db) {
 		{
 			unset($data->output['blogForm']->fields['name']['cannotEqual']);
 		} else {
-			$statement = $db->prepare('getExistingBlogShortNames','blogs');
+			$statement = $db->prepare('getExistingBlogShortNames','admin_blogs');
 			$statement->execute();
 			$blogShortNameList = $statement->fetchAll();
 			foreach($blogShortNameList as $item)
@@ -156,7 +145,7 @@ function admin_blogsBuild($data,$db) {
 			
 			// Save To DB
 			$data->output['blogForm']->sendArray[':id'] = $data->output['blogItem']['id'];
-			$statement=$db->prepare('updateBlogById','blogs');
+			$statement=$db->prepare('updateBlogById','admin_blogs');
 			$statement->execute($data->output['blogForm']->sendArray);
 			
 			$data->output['savedOkMessage']='

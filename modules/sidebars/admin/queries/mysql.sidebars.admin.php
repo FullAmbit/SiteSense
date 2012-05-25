@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function sidebars_addQueries() {
+function admin_sidebars_addQueries() {
 	return array(
 		'getSorted' => '
 			SELECT id

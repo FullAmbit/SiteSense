@@ -112,9 +112,9 @@ function installer_addQueries() {
 			VALUES
 			('default', 'default', 1)
 		",
-		"newModule" => "
+		'newModule' => '
 			INSERT INTO !prefix!modules (name,shortName,enabled) VALUES (:name,:shortName,:enabled)
-		",
+		',
 		'addPlugin' => '
 			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
 		',
@@ -122,102 +122,22 @@ function installer_addQueries() {
 }
 function installer_tableStructures() {
 	return array(
-		'activations' => array(
-			'userId'					 => SQR_IDKey,
-			'hash'						 => 'VARCHAR(255)',
-			'expires'					 => SQR_time
-		),
-		'banned' => array(
-			'id'							 => SQR_IDKey,
-			'userId'					 => SQR_ID,
-			'email'						 => SQR_email,
-			'ipAddress'				 => SQR_IP,
-			'timestamp'				 => SQR_added,
-			'expiration'			 => SQR_time,
-			'UNIQUE KEY `userId` (`userId`)'
-		),
-		'main_menu' => array(
-			'id'							 => SQR_IDKey,
-			'text'						 => SQR_name,
-			'title'						 => SQR_title,
-			'url'							 => SQR_URL,
-			'side'						 => SQR_side.' DEFAULT \'left\'',
-			'sortOrder'				 => SQR_sortOrder.' DEFAULT \'1\'',
-			'enabled'					 => SQR_boolean,
-			'parent'					 => SQR_ID.' DEFAULT \'0\'',
-			'KEY `sortOrder` (`sortOrder`,`side`)'
-		),
-		'modules' => array(
-			'id'							 => SQR_IDKey,
-			'name'						 => SQR_name,
-			'shortName'				 => SQR_shortName,
-			'enabled'					 => SQR_boolean
-		),
-		'module_sidebars' => array(
-			'id'							 => SQR_IDKey,
-			'module'					 => SQR_ID,
-			'sidebar'					 => SQR_ID,
-			'enabled'					 => SQR_boolean,
-			'sortOrder'				 => SQR_sortOrder.' DEFAULT \'1\'',
-			'UNIQUE KEY `module` (`module`,`sidebar`)'
-		),
-		'plugins' => array(
-			'id'							 => SQR_IDKey,
-			'name'						 => SQR_shortName,
-			'enabled'					 => SQR_boolean.' DEFAULT \'1\'',
-			'isCDN'						 => SQR_boolean.' DEFAULT \'0\'',
-			'isEditor'				 => SQR_boolean.' DEFAULT \'0\''
-		),
-		'plugins_modules' => array(
-			'plugin'							 => SQR_ID,
-			'module'							 => SQR_ID
-		),
-		'sessions' => array(
-			'sessionId'				 => 'VARCHAR(255) NOT NULL PRIMARY KEY',
-			'userId'					 => SQR_ID,
-			'expires'					 => SQR_time,
-			'ipAddress'				 => SQR_IP,
-			'userAgent'				 => 'VARCHAR(255)',
-			'KEY `userId` (`userId`,`expires`)'
-		),
 		'settings' => array(
-			'id'							 => SQR_IDKey,
-			'name'						 => SQR_shortName,
-			'category'				 => 'VARCHAR(31)',
-			'value'						 => 'MEDIUMTEXT'
+			'id'        => SQR_IDKey,
+			'name'      => SQR_shortName,
+			'category'  => 'VARCHAR(31)',
+			'value'     => 'MEDIUMTEXT'
 		),
-		'sidebars' => array(
-			'id'							 => SQR_IDKey,
-			'name'						 => SQR_name,
-			'shortName'				 => SQR_shortName,
-			'enabled'					 => SQR_boolean,
-			'fromFile'				 => SQR_boolean,
-			'title'						 => 'VARCHAR(255)',
-			'titleURL'				 => SQR_URL,
-			'rawContent'			 => 'TEXT',
-			'parsedContent'		 => 'TEXT',
-			'side'						 => SQR_side.' DEFAULT \'left\'',
-			'sortOrder'				 => SQR_sortOrder,
-			'KEY `sortOrder` (`sortOrder`,`side`)'
-		),
-		'url_remap' => array(
-			'id'							 => SQR_IDKey,
-			'match'						 => 'VARCHAR(127) NOT NULL',
-			'replace'					 => 'VARCHAR(127) NOT NULL'
-		),
-        'user_groups' => array(
-            'userID'         => SQR_ID,
-            'groupName'      => SQR_name,
-            'expires'      => SQR_time
+        'plugins' => array(
+            'id'        => SQR_IDKey,
+            'name'      => SQR_shortName,
+            'enabled'   => SQR_boolean.' DEFAULT \'1\'',
+            'isCDN'     => SQR_boolean.' DEFAULT \'0\'',
+            'isEditor'  => SQR_boolean.' DEFAULT \'0\''
         ),
-        'user_group_permissions' => array(
-            'groupName'             => SQR_name,
-            'permissionName'        => SQR_name
-        ),
-        'user_permissions' => array(
-            'userId'         => SQR_ID,
-            'permissionName' => SQR_name,
-            'allow'          => SQR_boolean
+        'plugins_modules' => array(
+            'plugin'    => SQR_ID,
+            'module'    => SQR_ID
         )
 	);
 }

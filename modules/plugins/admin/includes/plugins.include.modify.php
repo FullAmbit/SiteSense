@@ -34,10 +34,10 @@ function admin_pluginsBuild($data,$db) {
 		return;
 	}
 	// Check If It Exists
-	$statement=$db->prepare('getPluginByName','plugins');
+	$statement=$db->prepare('getPluginByName','admin_plugins');
 	$statement->execute(array(':name' => $data->action[3]));
 	$data->output['pluginItem']=$statement->fetch();
-	$statement=$db->prepare('getModulesEnabledForPlugin','plugins');
+	$statement=$db->prepare('getModulesEnabledForPlugin','admin_plugins');
 	$statement->execute(array(':plugin' => $data->output['pluginItem']['id']));
 	$appliedModules=$statement->fetchAll(PDO::FETCH_COLUMN, 0);
 	if(!$data->output['pluginItem']){
@@ -52,7 +52,7 @@ function admin_pluginsBuild($data,$db) {
 	// Load The Form
 	$data->output['pluginForm']=new formHandler('pluginEdit',$data,true);
 	// Load The List Of Modules
-	$statement = $db->prepare('getEnabledModules','modules');
+	$statement = $db->prepare('getEnabledModules','admin_modules');
 	$statement->execute();
 	$moduleList = $statement->fetchAll();
 	// Insert Modules Into FormHandler
@@ -88,7 +88,7 @@ function admin_pluginsBuild($data,$db) {
 			// Query
 			if(isset($enabledModules)) {
 				foreach($enabledModules as $enabledModule) {
-					$statement=$db->prepare('enablePluginForModule','plugins');
+					$statement=$db->prepare('enablePluginForModule','admin_plugins');
 					$statement->execute(array(
 						':plugin'		 => $data->output['pluginItem']['id'],
 						':module'		 => $enabledModule
@@ -98,7 +98,7 @@ function admin_pluginsBuild($data,$db) {
 			}
 			if(isset($disabledModules)) {
 				foreach($disabledModules as $disabledModule) {
-					$statement=$db->prepare('disablePluginForModule','plugins');
+					$statement=$db->prepare('disablePluginForModule','admin_plugins');
 					$statement->execute(array(
 						':plugin'		 => $data->output['pluginItem']['id'],
 						':module'		 => $disabledModule

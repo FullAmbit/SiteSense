@@ -49,7 +49,8 @@ function page_getUniqueSettings($data,$db) {
 		}
 	}
 	$data->output['found'] = $found;
-	if($found){
+    $data->output['404']=false;
+    if($found){
 		$statement = $db->prepare('getPagesByParent', 'pages');
 		$statement->execute(array('parent' => $current['id']));
 		$data->output['pageContent'] = $current;
@@ -86,12 +87,12 @@ function page_getUniqueSettings($data,$db) {
 				
 	} else if ($data->httpHeaders[0] === 'Content-Type: text/html; charset='.$data->settings['characterEncoding']) {
 		$data->httpHeaders[]='HTTP/1.1 404 Not Found';
-		$data->output['pageShortName']='404';
+		$data->output['404']=true;
 		$data->output['pageContent']['title']='HTTP/1.1 404 Not Found';
 	}
 }
 function page_content($data) {
-	if (@$data->output['pageShortName']=='404') {
+	if ($data->output['404']) {
 		theme_contentBoxHeader('HTTP/1.1 404 Not Found');
 		echo '
 			<p>

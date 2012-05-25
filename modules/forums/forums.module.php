@@ -23,24 +23,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 // First Function Called, Acts As An Abstraction Layer.
-function page_buildContent($data,$db)
-{
-	/* URL Abstraction
-	 * ---------------
-	 * topic_shortName is {topic_name}-{date}-{user}
-	 * 
-	 * Viewing A Topic
-	 * forums/{category_shortName}/{forum_shortName}/{topic_shortName}#{page_number}/
-	 *
-	 * 
-	 * Viewing A Forum
-	 * forums/{category_shortName}/{forum_shortName}/{page_number}/
-	 *
-	 * 
-	**/
-	
-	$categoryShortName = $data->action[1];
-		
+function page_buildContent($data,$db) {
+
 }
 
 // Last Function, Handles All Output

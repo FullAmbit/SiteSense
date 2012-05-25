@@ -42,7 +42,7 @@ function admin_sidebarsBuild($data,$db) {
 		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 		$data->output['sidebarForm']->sendArray[':shortName'] = $_POST[$data->output['sidebarForm']->formPrefix.'name'] = $shortName;
 		// Load All Existing Sidebar ShortNames For Comparison
-		$statement = $db->prepare('getExistingShortNames','sidebars');
+		$statement = $db->prepare('getExistingShortNames','admin_sidebars');
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
 		$existingShortNames = array();
@@ -63,7 +63,7 @@ function admin_sidebarsBuild($data,$db) {
 				$data->output['sidebarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sidebarForm']->sendArray[':rawContent']);
 			}
 			// Save To DB
-			$statement = $db->prepare('insertSidebar','sidebars');
+			$statement = $db->prepare('insertSidebar','admin_sidebars');
 			$result = $statement->execute($data->output['sidebarForm']->sendArray);
 			$sidebarId = $db->lastInsertId();
 			
@@ -76,8 +76,8 @@ function admin_sidebarsBuild($data,$db) {
 			$count = $db->countRows('sidebars');
 			$sortOrder = $count;
 			//---Pages---//
-			$pageQ = $db->prepare('createSidebarSetting','pages');
-			$statement = $db->prepare('getAllPageIds','pages');
+			$pageQ = $db->prepare('createSidebarSetting','admin_pages');
+			$statement = $db->prepare('getAllPageIds','admin_pages');
 			$statement->execute();
 			$pageList = $statement->fetchAll();
 		
@@ -93,8 +93,8 @@ function admin_sidebarsBuild($data,$db) {
 				$pageQ->execute($vars);
 			}
 			//---Modules---//
-			$moduleQ = $db->prepare('createSidebarSetting','modules');
-			$statement = $db->prepare('getAllModuleIds','modules');
+			$moduleQ = $db->prepare('createSidebarSetting','admin_modules');
+			$statement = $db->prepare('getAllModuleIds','admin_modules');
 			$statement->execute();
 			$moduleList = $statement->fetchAll();
 			foreach($moduleList as $moduleItem)
@@ -109,8 +109,8 @@ function admin_sidebarsBuild($data,$db) {
 				$moduleQ->execute($vars);
 			}
 			//---Forms---//
-			$formQ = $db->prepare('createSidebarSetting','dynamicForms');
-			$statement = $db->prepare('getAllFormIds','dynamicForms');
+			$formQ = $db->prepare('createSidebarSetting','admin_dynamicForms');
+			$statement = $db->prepare('getAllFormIds','admin_dynamicForms');
 			$statement->execute();
 			$formList = $statement->fetchAll();
 			foreach($formList as $formItem)

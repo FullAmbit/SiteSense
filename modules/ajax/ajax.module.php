@@ -22,15 +22,14 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function ajax_buildContent(&$data,&$db)
-{
+function ajax_buildContent($data,$db) {
 	// URL Remapping (Taken from Common.PHP)
 	$newAction = $data->action;
 	$newAction = array_unique(array_slice($newAction,1));
 				
 	$url = implode('/',$newAction);			
 			
-	$rewrite = $db->prepare('findReplacement','dynamicURLs');
+	$rewrite = $db->prepare('findReplacement','admin_dynamicURLs');
 	$rewrite->execute(array(':url' => $url));
 		
 	// We Got A ReMap
@@ -45,7 +44,7 @@ function ajax_buildContent(&$data,&$db)
 	// What Module Are We Calling?
 	$module = ($data->action[0]) ? $data->action[0] : 'default';
 	// Check If In Database And Enabled
-	$statement = $db->prepare('getModuleByShortName','modules');
+	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName' => $module));
 	$moduleData = $statement->fetch();
 	// Module Doesn't Exist, or not enabled
@@ -55,7 +54,7 @@ function ajax_buildContent(&$data,&$db)
 		return;
 	}
 	// Load Sidebars //
-	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'modules');
+	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'admin_modules');
 	$sidebarQuery->execute(array(
 		':module' => $moduleData['id']
 	));

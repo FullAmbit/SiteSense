@@ -29,7 +29,7 @@ function admin_dynamicFormsBuild($data,$db){
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
-	$statement = $db->query('getAllForms', 'dynamicForms');
+	$statement = $db->query('getAllForms','admin_dynamicForms');
 	$data->output['forms'] = $statement->fetchAll();
 }
 function admin_dynamicFormsShow($data){

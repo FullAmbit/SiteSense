@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function mainMenu_addQueries() {
+function admin_mainMenu_addQueries() {
 	return array(
 		'getSideById' => '
 			SELECT id,side

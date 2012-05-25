@@ -37,7 +37,7 @@ function admin_dynamicURLsBuild($data,$db) {
 		if ($form->validateFromPost())
 		{
 			
-			$statement = $db->prepare('insertUrlRemap', 'dynamicURLs');
+			$statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
 			$result = $statement->execute($form->sendArray);
 			if($result == FALSE)
 			{

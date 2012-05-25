@@ -47,7 +47,7 @@ function admin_modulesBuild($data,$db){
 			} else {
 				$moduleSettings=$targetFunction($db);
 				// Update this module in the database
-				$statement=$db->prepare('updateModule','modules');
+				$statement=$db->prepare('updateModule','admin_modules');
 				$statement->execute(
 					array(
 						':name' => $moduleSettings['name'],

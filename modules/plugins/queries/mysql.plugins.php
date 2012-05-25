@@ -26,76 +26,25 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function plugins_addQueries() {
-	return array(
-		'getAllPlugins' => '
-			SELECT * FROM !prefix!plugins ORDER BY name ASC
-		',
-		'newPlugin' => '
-			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
-		',
-		'getPluginById' => '
-			SELECT * FROM !prefix!plugins WHERE id = :pluginId LIMIT 1
-		',
-		'getPluginByName' => '
-			SELECT * FROM !prefix!plugins WHERE name = :name
-		',
-		'getModulesEnabledForPlugin' => '
-			SELECT !prefix!plugins_modules.module
-				FROM !prefix!plugins_modules
-				WHERE plugin = :plugin
-		',
-		'updatePluginModules' => '
-			UPDATE !prefix!plugins SET modules = :modules WHERE id = :pluginId
-		',
-		'enableAndUpdate' => '
-			UPDATE !prefix!plugins
-				SET
-					enabled = 1,
-					isCDN = :isCDN,
-					isEditor = :isEditor
-				WHERE
-					name = :name
-		',
-		'setPluginToCDN' => '
-			UPDATE !prefix!plugins SET isCDN = 1 WHERE id = :id LIMIT 1
-		',
-		'getCDNPlugins' => '
-			SELECT * FROM !prefix!plugins WHERE isCDN = 1 AND enabled = 1
-		',
-		'setPluginToEditor' => '
-			UPDATE !prefix!plugins SET isEditor = 1 WHERE id = :id LIMIT 1
-		',
-		'getEditorPlugins' => '
-			SELECT * FROM !prefix!plugins WHERE isEditor = 1 AND enabled = 1
-		',
-		'insertCMSSetting' => '
-			INSERT INTO !prefix!settings (name,category,value) VALUES (:name,"cms",:value)
-		',
-		'deletePlugin' => '
-			DELETE FROM !prefix!plugins WHERE id = :id
-		',
-		'enablePluginForModule' => '
-			INSERT INTO !prefix!plugins_modules
-				(plugin,module)
-			VALUES
-				(:plugin,:module)
-		',
-		'disablePluginForModule' => '
-			DELETE FROM !prefix!plugins_modules
-			WHERE plugin = :plugin
-			AND module = :module
-		',
-		'disable' => '
-			UPDATE !prefix!plugins
-			SET enabled = 0
-			WHERE name = :name
-		',
-		'enable' => '
-			UPDATE !prefix!plugins
-			SET enabled = 1
-			WHERE name = :name
-		'
-	);
+function plugins_addQueries(){
+    return array(
+        'getEnabledPlugins' => '
+          SELECT *
+          FROM !prefix!plugins
+          JOIN !prefix!plugins_modules
+          ON !prefix!plugins.id = !prefix!plugins_modules.plugin
+         ',
+        'getPluginByName' => '
+          SELECT *
+          FROM !prefix!plugins
+          WHERE name = :name
+        ',
+        'newPlugin' => '
+          INSERT INTO !prefix!plugins
+          (name,enabled)
+          VALUES
+          (:name,:enabled)
+         '
+    );
 }
 ?>

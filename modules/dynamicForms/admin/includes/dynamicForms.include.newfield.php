@@ -37,7 +37,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	$formId = $data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFormById', 'dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $data->action[3]));
 	$dbform = $statement->fetch();
 	if($dbform === false){
@@ -57,14 +57,14 @@ function admin_dynamicFormsBuild($data,$db) {
 			$form->sendArray[':form'] = $dbform['id'];
 			
 			//--Get SortOrder--//
-			$statement = $db->prepare('countFieldsByForm','dynamicForms');
+			$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
 			$statement->execute(array(':formId' => $formId));
 			list($rowCount) = $statement->fetch();
 			$sortOrder = $rowCount + 1;
 			$form->sendArray[':sortOrder'] = $sortOrder;
 			
 			
-			$statement = $db->prepare('newField', 'dynamicForms');
+			$statement = $db->prepare('newField','admin_dynamicForms');
 			$result = $statement->execute($form->sendArray);
 			if(!$result)
 			{
@@ -76,10 +76,10 @@ function admin_dynamicFormsBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Field Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/newfield/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/newfield/' . $data->output['form']['id'] . '">
 							Add New Field
 						</a>
-						<a href="'.$data->linkRoot.'admin/dynamic-forms/listfields/' . $data->output['form']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listfields/' . $data->output['form']['id'] . '">
 							Return to Field List
 						</a>
 					</div>';

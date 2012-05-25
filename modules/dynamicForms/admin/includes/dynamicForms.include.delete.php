@@ -34,7 +34,7 @@ function admin_dynamicFormsBuild($data,$db)
 	
 	// Check to see if the form exists
 	$formID = $data->action[3];
-	$statement = $db->prepare('getFormById','dynamicForms');
+	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $formID));
 	$data->output['formItem'] = $statement->fetch();
 	if($data->output['formItem'] == FALSE || $formID === FALSE)
@@ -49,24 +49,24 @@ function admin_dynamicFormsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
 			// Get A List of ROW IDs
-			$statement = $db->prepare('getRowsByForm','dynamicForms');
+			$statement = $db->prepare('getRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':form' => $formID));
 			$rowList = $statement->fetchAll();
 			foreach($rowList as $rowItem)
 			{
 				$rowID = $rowItem['id'];
 				// Delete All Values Part Of This Row
-				$statement = $db->prepare('deleteValueByRow','dynamicForms');
+				$statement = $db->prepare('deleteValueByRow','admin_dynamicForms');
 				$statement->execute(array(':rowID' => $rowID));
 			}
 			// Now Delete The Rows
-			$statement = $db->prepare('deleteRowsByForm','dynamicForms');
+			$statement = $db->prepare('deleteRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':formID' => $formID));
 			// Delete The Fields
-			$statement = $db->prepare('deleteFieldsByForm','dynamicForms');
+			$statement = $db->prepare('deleteFieldsByForm','admin_dynamicForms');
 			$statement->execute(array(':formID' => $formID));
 			// Delete The Form Itself
-			$statement = $db->prepare('deleteForm','dynamicForms');
+			$statement = $db->prepare('deleteForm','admin_dynamicForms');
 			$statement->execute(array(':id' => $formID));
 			
 			$data->output['delete'] = 'deleted';
@@ -77,7 +77,7 @@ function admin_dynamicFormsBuild($data,$db)
 }
 function admin_dynamicFormsShow($data)
 {
-	$aRoot = $data->linkRoot . 'admin/dynamic-forms/';
+	$aRoot = $data->linkRoot . 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/';
 	if($data->output['rejectText'])
 	{
 		theme_dynamicFormsDeleteReject($data,$aRoot);

@@ -66,15 +66,7 @@ function admin_blogsBuild($data,$db) {
             }
         }
 		*/
-        $statement = $db->query('getBloggersByUserLevel','blogs');
-		$statement->execute();
-		while ($item=$statement->fetch()) {
-			$data->output['blogForm']->fields['owner']['options'][]=array(
-				'value' => $item['id'],
-				'text' => $item['name']
-			);
-		}
-	}
+    }
 
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
 	{
@@ -83,7 +75,7 @@ function admin_blogsBuild($data,$db) {
 		$shortName = common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
 		$data->output['blogForm']->sendArray[':shortName'] = $shortName;
 		// We Need To Check And Make Sure This ShortName Isn't Taken
-		$statement = $db->prepare('getExistingBlogShortNames','blogs');
+		$statement = $db->prepare('getExistingBlogShortNames','admin_blogs');
 		$statement->execute();
 		$blogShortNameList = $statement->fetchAll();
 		$cannotEqual = array();
@@ -101,7 +93,7 @@ function admin_blogsBuild($data,$db) {
 			// "Picture" Is Not Used In The Query
 			unset($data->output['blogForm']->sendArray[':picture']);
 			// Save To Database
-			$statement=$db->prepare('insertBlog','blogs');
+			$statement=$db->prepare('insertBlog','admin_blogs');
 			$statement->execute($data->output['blogForm']->sendArray);
 			// Rename The TMP Folder To The Name Of The Blog Folder
 			if($data->cdn)
