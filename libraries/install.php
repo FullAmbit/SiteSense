@@ -157,7 +157,6 @@ if (
         'dynamicForms',
         'dynamicURLs',
         'default',
-        'blogs',
         'pages',
         'login',
         'logout',
@@ -165,11 +164,13 @@ if (
         'users',
         'mainMenu',
         'sidebars',
-        'modules'
+        'modules',
+        'blogs'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
     $moduleSettings=array();
+    rsort($uninstalledModuleFiles);
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module
         if(!file_exists($moduleInstallFile)) {

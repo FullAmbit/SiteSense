@@ -93,6 +93,36 @@ function blogs_install($db,$drop=false) {
 	$db->createTable('blog_comments',$structures['blog_comments'],false);
 	$db->createTable('blog_categories',$structures['blog_categories'],false);
 
+    // Add Blog Category Sidebar
+    $statement = $db->prepare('insertSidebar','admin_sidebars');
+    $statement->execute(array(
+        ':name'           => 'Blog Categories',
+        ':shortName'      => 'blog-categories',
+        ':title'          => 'Blog Categories',
+        ':side'           => 'left',
+        ':titleURL'       => 'blog-categories',
+        ':rawContent'     => '
+    <div class="buttonWrapper">
+        <a href="|rssLink|" class="greenButton">
+            <span>
+                <b></b>Subscribe
+                <i><!-- hover state precache --></i>
+            </span>
+        </a>
+    </div>
+    |block:blogs_categories|',
+        ':parsedContent'  => '
+    <div class="buttonWrapper">
+        <a href="|rssLink|" class="greenButton">
+            <span>
+                <b></b>Subscribe
+                <i><!-- hover state precache --></i>
+            </span>
+        </a>
+    </div>
+    |block:blogs_categories|'
+    ));
+
     // Set up default permission groups
     $defaultPermissionGroups=array(
          'Writer' => array(
