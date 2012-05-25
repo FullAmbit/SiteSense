@@ -29,7 +29,7 @@ function gallery_settings() {
 	);
 }
 
-function gallery_install($data,$drop=false) {
+function gallery_install($db,$drop=false) {
 	$structures = array(
 		'gallery_albums' => array(
 			'id' => 'int(11) NOT NULL AUTO_INCREMENT',
@@ -60,19 +60,19 @@ function gallery_install($data,$drop=false) {
 	);
 	
 	if($drop)
-        gallery_uninstall($data);
+        gallery_uninstall($db);
 
-	$data->createTable('gallery_albums',$structures['gallery_albums'],false);
-	$data->createTable('gallery_images',$structures['gallery_images'],false);
-	$data->createTable('gallery_comments',$structures['gallery_comments'],false);
+	$db->createTable('gallery_albums',$structures['gallery_albums'],false);
+	$db->createTable('gallery_images',$structures['gallery_images'],false);
+	$db->createTable('gallery_comments',$structures['gallery_comments'],false);
 	
 	return NULL;
 }
 
-function gallery_uninstall($data) {
-    $data->dropTable('gallery_albums');
-    $data->dropTable('gallery_images');
-    $data->dropTable('gallery_comments');
+function gallery_uninstall($db) {
+    $db->dropTable('gallery_albums');
+    $db->dropTable('gallery_images');
+    $db->dropTable('gallery_comments');
 }
 
 ?>

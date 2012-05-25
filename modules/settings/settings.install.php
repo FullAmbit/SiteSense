@@ -29,7 +29,7 @@ function settings_settings() {
     );
 }
 
-function settings_install($data,$drop=false) {
+function settings_install($db,$drop=false) {
     return NULL;
 }
 

@@ -28,7 +28,7 @@ function sidebars_settings() {
 		'shortName' => 'sidebars'
 	);
 }
-function sidebars_install($data,$drop=false) {
+function sidebars_install($db,$drop=false) {
 	$structures = array(
         'sidebars' => array(
             'id'            => SQR_IDKey,
@@ -46,12 +46,12 @@ function sidebars_install($data,$drop=false) {
         )
 	);
 	if($drop)
-        sidebars_uninstall($data);
+        sidebars_uninstall($db);
 
-	$data->createTable('sidebars',$structures['sidebars'],false);
+	$db->createTable('sidebars',$structures['sidebars'],false);
 
 }
-function sidebars_uninstall($data) {
-    $data->dropTable('sidebars');
+function sidebars_uninstall($db) {
+    $db->dropTable('sidebars');
 }
 ?>

@@ -29,7 +29,7 @@ function default_settings() {
     );
 }
 
-function default_install($data,$drop=false) {
+function default_install($db,$drop=false) {
     return NULL;
 }
 

@@ -28,10 +28,10 @@ function plugins_settings() {
 		'shortName' => 'plugins'
 	);
 }
-function plugins_install($data,$drop=false) {
+function plugins_install($db,$drop=false) {
     return NULL;
 }
-function plugins_uninstall($data) {
+function plugins_uninstall($db) {
 
 }
 ?>

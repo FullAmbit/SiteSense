@@ -29,7 +29,7 @@ function login_settings() {
     );
 }
 
-function login_install($data,$drop=false) {
+function login_install($db,$drop=false) {
     return NULL;
 }
 
