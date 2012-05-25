@@ -55,6 +55,10 @@ function users_addQueries() {
 		'checkUserName' => '
 			SELECT id FROM !prefix!users
 			WHERE name = :name
+		'getListActivations' => '
+			SELECT userID from !prefix!activations
+			WHERE expires <= :expireTime
+		',
 		'
 	);
 }

@@ -95,6 +95,8 @@ function theme_leftSidebar($data) {
 			$category='';
 			$x = 0;
 			foreach ($data->admin['menu'] as $menuItem) {
+				if(strstr($menuItem['command'],"-"))
+					$menuItem['command'] = hyphenToCamel($menuItem['command']);
 				$current=$menuItem['command']==$currentCompare;
 				if ($menuItem['category']!=$category) {
 					if (!empty($category)) {
