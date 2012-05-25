@@ -36,14 +36,16 @@ function page_buildContent($data,$db) {
 	$data->output = array_merge($defaults, $data->output);
   if (checkPermission('access','core',$data)) {
     if(empty($data->action[1])) {
-        $module='dashboard';
+        $module['name']='dashboard';
     } else {
-        $module=$data->action[1];
+        $moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
+        $moduleQuery->execute(array(':shortName' => $data->action[1]));
+        $module=$moduleQuery->fetch();
     }
-    common_include('modules/'.$module.'/admin/'.$module.'.admin.php');
-    $currentThemeInclude=$data->themeDir.'admin/'.$module.'.template.php';
-    $defaultThemeInclude='themes/default/admin/'.$module.'.template.php';
-    $moduleThemeInclude='modules/'.$module.'/admin/'.$module.'.template.php';
+    common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
+    $currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.template.php';
+    $defaultThemeInclude='themes/default/admin/'.$module['name'].'.template.php';
+    $moduleThemeInclude='modules/'.$module['name'].'/admin/'.$module['name'].'.template.php';
     if(file_exists($currentThemeInclude)) {
         common_include($currentThemeInclude);
     } elseif(file_exists($defaultThemeInclude)) {

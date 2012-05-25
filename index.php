@@ -538,7 +538,7 @@ final class sitesense {
 		foreach ($modules as $module) {
 			$this->output['moduleShortName'][$module['name']]=$module['shortName'];
             $filename = 'modules/'.$module['name'].'/'.$module['name'].'.startup.php';
-			if(file_exists($filename)){;
+			if(file_exists($filename)) {
 				common_include($filename);
 				$targetFunction=$module['name'].'_startUp';
 				if (function_exists($targetFunction)) {
