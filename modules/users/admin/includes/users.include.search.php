@@ -43,12 +43,7 @@ function admin_usersBuild($data,$db) {
 		($_POST['fromForm']==$data->output['userForm']->fromForm)
 	) {
 		$data->output['userForm']->populateFromPostData();
-		if($data->output['userForm']->sendArray[':userLevel'] != "-100"){
-			$statement = $db->prepare('searchUsers_IncludingLevel','admin_users');
-		}else{
-			$statement = $db->prepare('searchUsers_NotIncludingLevel','admin_users');
-			unset($data->output['userForm']->sendArray[':userLevel']);
-		}
+		$statement = $db->prepare('searchUsers','admin_users');
 		$statement->execute($data->output['userForm']->sendArray);
 		$data->output['userList'] = $statement->fetchAll();
 	}else{
@@ -61,9 +56,7 @@ function admin_usersShow($data) {
 	if($data->output['userList'] !== false){
 		theme_usersSearchTableHead();
 		foreach($data->output['userList'] as $key => $user) {
-			$userLevelText=$languageText['userLevels'][$user['userLevel']];
-			$userLevelClass='userLevel_'.common_camelBack($userLevelText);
-			theme_usersSearchTableRow($user['id'],$user['name'],'',$userLevelClass,$userLevelText,$ldata->inkRoot,$key);
+			theme_usersSearchTableRow($user['id'],$user['name'],'',$data->linkRoot,$key);
 		}
 		theme_usersSearchTableFoot();
 	}

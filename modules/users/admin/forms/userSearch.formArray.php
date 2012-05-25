@@ -27,11 +27,7 @@ $this->formPrefix='searchUser_';
 $this->caption='Searching Users';
 $this->submitTitle='Search';
 $this->fromForm='searchUser';
-global $languageText;
-$levelOptions = array(array('value' => '-100', 'text' => 'All'));
-foreach($languageText['userLevels'] as $value => $text){
-	$levelOptions[] = array('value' => $value, 'text' => $text);
-}
+
 $this->fields=array(
 	'name' => array(
 		'label' => 'Username',
@@ -52,12 +48,5 @@ $this->fields=array(
 			'type' => 'text',
 			'size' => 128
 		)
-	),
-	'userLevel' => array(
-		'label' => 'User Access Level',
-		'required' => false,
-		'tag' => 'select',
-		'value' => '-100',
-		'options' => $levelOptions,
-	),
+	)
 );

@@ -1,12 +1,8 @@
 <?php
 
-function latestPosts_getUniqueSettings($data,$attributes)
-{
-	common_include('modules/blogs/blogs.common.php');
-}
+function latestPosts_buildContent($data,$db,$attributes) {
+    common_include('modules/blogs/blogs.common.php');
 
-function latestPosts_buildContent($data,$db,$attributes)
-{
 	$count = ($attributes[0] < 1) ? $data->settings['showPerPage'] : $attributes[0];
 	$blogName = (isset($attributes[1])) ? $attributes[1] : $data->settings['defaultBlog'];
 	
@@ -14,11 +10,10 @@ function latestPosts_buildContent($data,$db,$attributes)
 	$data->output['postList'] = $result['postList'];
 }
 
-function latestPosts_content($data,$attributes)
-{
+function latestPosts_content($data,$attributes) {
+  if(!empty($data->output['postList'])) {
   echo '<div class="latestPostsBlockWrapper">';
-	foreach($data->output['postList'] as $postItem)
-	{
+	foreach($data->output['postList'] as $postItem) {
 		echo '
 			<h3 class="link">
         <span>
@@ -31,5 +26,8 @@ function latestPosts_content($data,$attributes)
 			',htmlspecialchars_decode($postItem['parsedSummary']);
 	}
 	echo '</div>';
+  } else {
+      echo 'Incorrect Parameters';
+  }
 }
 ?>

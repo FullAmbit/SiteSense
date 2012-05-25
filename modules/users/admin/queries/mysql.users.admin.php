@@ -84,7 +84,7 @@ function admin_users_addQueries() {
             SELECT userID from !prefix!activations
             WHERE expires <= :expireTime
         ',
-        'searchUsers_NotIncludingLevel' => '
+        'searchUsers' => '
 			SELECT * FROM !prefix!users
 			WHERE
 				name LIKE :name

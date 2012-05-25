@@ -104,9 +104,22 @@ function theme_header($data) {
 			$class[]='last';
 		}
 		$previousSide=$menuItem['side'];
-		if ($menuItem['url']==$data->output['pageShortName']) {
-			$class[]='current';
-		}
+
+        if(!empty($menuItem['url'])) {
+            $matched=0;
+            $count=0;
+            foreach(explode('/',$menuItem['url']) as $key => $value) {
+                $count++;
+                if($value==$data->action[$key]) {
+                    $matched++;
+                } else {
+                    break;
+                }
+            }
+            if($count==$matched) {
+                $class[]='current';
+            }
+        }
 		echo '<li',(
 			empty($class) ? '': ' class="'.implode(' ',$class).'"'
 		),(

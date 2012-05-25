@@ -44,13 +44,12 @@ function theme_usersSearchTableHead() {
 				<tr>
 					<th class="id">ID</th>
 					<th class="userName">Username</th>
-					<th class="userLevel">Access Level</th>
 					<th class="controls">Controls</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_usersSearchTableRow($userId,$userName,$userLevel,$userLevelClass,$userLevelText,$linkRoot,$key) {
+function theme_usersSearchTableRow($userId,$userName,$linkRoot,$key) {
 	echo '
 			<tr class="',($key%2==0 ? 'even' : 'odd'),'">
 				<td class="id">',$userId,'</td>
@@ -59,12 +58,8 @@ function theme_usersSearchTableRow($userId,$userName,$userLevel,$userLevelClass,
 						',$userName,'
 					</a>
 				</td>
-				<td class="userLevel ',$userLevelClass,'">',$userLevelText,'</td>
-				<td class="buttonList">',(
-			$userLevel==USERLEVEL_ADMIN ? '
+				<td class="buttonList">
 					<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
-					<a href="'.$linkRoot.'admin/users/ban/'.$userId.'">Ban</a>' :	''
-			),'
 				</td>
 			</tr>';
 }

@@ -107,6 +107,7 @@ function admin_pagesBuild($data,$db)
 			
 			
 			// Save To DB
+            $statement=$db->prepare('insertPage','admin_pages');
 			if($statement->execute($data->output['pageForm']->sendArray)) {
 				
 				

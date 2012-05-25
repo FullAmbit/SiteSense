@@ -45,12 +45,14 @@ function users_config($data,$db) {
 				'name'      => 'Search Users',
 				'sortOrder' => 3
 			);
-			$data->admin['menu'][]=array(
+			/* Disabled until feature completely built
+            $data->admin['menu'][]=array(
 				'category'  => 'User Management',
 				'command'   => 'users/activation',
 				'name'      => 'Activate Users',
 				'sortOrder' => 4
 			);
+			*/
 			$data->admin['menu'][]=array(
 				'category'  => 'User Management',
 				'command'   => 'users/permissions',

@@ -148,40 +148,35 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 	}
 	
 	// Any Blocks?
-	preg_match_all('/\|block:([a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
+	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);
 	$blockList = $matches[1];
 	
 	ob_start();
-	foreach($blockList as $key => $originalBlockName)
-	{
-		$blockName = common_generateShortName($originalBlockName);
-		
-		if(file_exists('blocks/'.$blockName.'.block.php'))
-		{
+	foreach($blockList as $key => $originalBlockName) {
+		$blockInfo=explode('_',$originalBlockName);
+
+		if(file_exists('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php')) {
 			
-			common_include('blocks/'.$blockName.'.block.php');
+			common_include('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php');
 			
 			$attributes = array(false);
 			$attributesString = $matches[2][$key];
 			$attributes = explode(',',$attributesString);
 			
-			$getUniqueSettings = $blockName.'_getUniqueSettings';
-			$buildContent = $blockName.'_buildContent';
-			$content = $blockName.'_content';
+			$getUniqueSettings = $blockInfo[1].'_getUniqueSettings';
+			$buildContent = $blockInfo[1].'_buildContent';
+			$content = $blockInfo[1].'_content';
 			
-			if(function_exists($getUniqueSettings))
-			{
+			if(function_exists($getUniqueSettings))	{
 				$getUniqueSettings($data,$attributes);
 			}
 			
-			if(function_exists($buildContent) && $db !== NULL)
-			{
+			if(function_exists($buildContent) && $db !== NULL) {
 				$buildContent($data,$db,$attributes);
 			}
 			
-			if(function_exists($content))
-			{
+			if(function_exists($content)) {
 				$content($data,$attributes);
 			}
 		}

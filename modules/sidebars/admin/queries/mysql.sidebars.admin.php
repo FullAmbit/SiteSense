@@ -52,6 +52,9 @@ function admin_sidebars_addQueries() {
 			SELECT name FROM !prefix!sidebars
 			WHERE name = :name
 		',
+        'getSidebarsNames' => '
+			SELECT name FROM !prefix!sidebars
+		',
 		'insertSidebarFile' => '
 			INSERT INTO !prefix!sidebars
 			(name,shortName,enabled,fromFile,side) VALUES (:name,:shortName,false,true,"left")
