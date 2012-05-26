@@ -22,41 +22,29 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->action=$data->linkRoot.'admin/users/search/';
-$this->formPrefix='searchUser_';
-$this->caption='Searching Users';
-$this->submitTitle='Search';
-$this->fromForm='searchUser';
-
-$this->fields=array(
-	'name' => array(
-		'label' => 'Username',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	),
-	'firstName' => array(
-		'label' => 'First Name',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	),
-	'lastName' => array(
-		'label' => 'Last Name',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	)
-);
+/*
+	!table! = $tableName
+	!prefix! = dynamicPDO::tablePrefix
+*/
+function plugins_addQueries(){
+    return array(
+        'getEnabledPlugins' => '
+          SELECT *
+          FROM !prefix!plugins
+          JOIN !prefix!plugins_modules
+          ON !prefix!plugins.id = !prefix!plugins_modules.plugin
+         ',
+        'getPluginByName' => '
+          SELECT *
+          FROM !prefix!plugins
+          WHERE name = :name
+        ',
+        'newPlugin' => '
+          INSERT INTO !prefix!plugins
+          (name,enabled)
+          VALUES
+          (:name,:enabled)
+         '
+    );
+}
+?>

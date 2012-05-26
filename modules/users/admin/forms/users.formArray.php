@@ -36,11 +36,11 @@ $this->fields=array(
 		'tag' => 'span',
 		'value' => (empty($data->output['userForm']['id']) ? '' : $data->output['userForm']['id'])
 	),
-	'fullName' => array(
+	'firstName' => array(
 		'label' => 'Full Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['userForm']['fullName']{0}) ? '' : $data->output['userForm']['fullName']),
+		'value' => (empty($data->output['userForm']['firstName']{0}) ? '' : $data->output['userForm']['firstName']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128,
@@ -50,6 +50,16 @@ $this->fields=array(
 				<b>Full Name</b> - The full name of the user.
 			</p>
 		'
+	),
+	'lastName' => array(
+		'label' => 'Last Name',
+		'required' => true,
+		'tag' => 'input',
+		'value' => (empty($data->output['userForm']['lastName']{0}) ? '' : $data->output['userForm']['lastName']),
+		'params' => array(
+			'type' => 'text',
+			'size' => 128,
+		)
 	),
 	'name' => array(
 		'label' => 'Username',

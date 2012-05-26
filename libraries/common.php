@@ -335,7 +335,9 @@ function checkPermission($permission,$module,$data) {
     }
     return $hasPermission;
 }
-
+function printFieldValue($fieldValue) {
+	return isset($fieldValue) ? $fieldValue : '';
+}
 function hyphenToCamel($str,$ucfirst=false) {
     $parts=explode('-',$str);
     $parts=$parts ? array_map('ucfirst',$parts):array($str);

@@ -28,11 +28,21 @@ $this->caption='Become Part of Where Future Stars Come Frumm...<b></b>';
 $this->submitTitle='Join Now';
 $this->fromForm='register';
 $this->fields=array(
-	'fullName' => array(
+	'firstName' => array(
 		'label' => 'Your Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['fullName']),
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['firstName']),
+		'params' => array(
+			'type' => 'text',
+			'size' => 64,
+			'maxlength' => 128
+		)
+	),
+	'lastName' => array(
+		'required' => true,
+		'tag' => 'input',
+		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastName']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 64,

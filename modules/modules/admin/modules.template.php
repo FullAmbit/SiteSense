@@ -104,8 +104,14 @@ function theme_modulesListTableFoot() {
 		</table>
 	';
 }
-function theme_modulesInstallSuccess() {
+function theme_modulesInstallSuccess($data=null) {
 	echo '<h2>Success!</h2><p>Module successfully installed!</p>';
+	echo 
+	'<div class="buttonList">
+		<a href="',$data->linkRoot,'admin/modules">
+			Return to the List of Modules
+		</a>
+	</div>';
 }
 function theme_disabledOfferUninstall($data) {
 	echo '<h2>Success!</h2><p>You have successfully disabled the module. 
@@ -122,7 +128,13 @@ function theme_disabledOfferUninstall($data) {
 		</a>
 	</div>';
 }
-function theme_disabled() {
+function theme_disabled($data) {
 	echo '<h2>Success!</h2><p>Module successfully disabled!</p>';
+	echo 
+	'<div class="buttonList">
+		<a href="',$data->linkRoot,'admin/modules">
+			Return to the List of Modules
+		</a>
+	</div>';
 }
 ?>

@@ -63,7 +63,7 @@ function admin_modulesShow($data) {
 		&& !$data->action[4]) {
 			theme_disabledOfferUninstall($data);
 		} else {
-			theme_disabled();
+			theme_disabled($data);
 		}
 	} else {
 		theme_rejectError($data);

@@ -22,41 +22,42 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->action=$data->linkRoot.'admin/users/search/';
-$this->formPrefix='searchUser_';
-$this->caption='Searching Users';
-$this->submitTitle='Search';
-$this->fromForm='searchUser';
-
-$this->fields=array(
-	'name' => array(
-		'label' => 'Username',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	),
-	'firstName' => array(
-		'label' => 'First Name',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	),
-	'lastName' => array(
-		'label' => 'Last Name',
-		'required' => false,
-		'tag' => 'input',
-		'value' => '%',
-		'params' => array(
-			'type' => 'text',
-			'size' => 128
-		)
-	)
-);
+/*
+	!table! = $tableName
+	!prefix! = dynamicPDO::tablePrefix
+*/
+function users_addQueries() {
+	return array(
+		'getAllUsers' => '
+			SELECT * FROM !prefix!users ORDER BY id ASC
+		',
+		'getById' => '
+			SELECT * FROM !prefix!users
+			WHERE id = :id
+		',
+		'updateUserByIdNoPw' => '
+			UPDATE !prefix!users
+			SET
+				firstName = :firstName,
+				lastName = :lastName,
+				contactEMail = :contactEMail,
+				publicEMail = :publicEMail
+			WHERE id = :id
+		',
+		'updateUserById' => '
+			UPDATE !prefix!users
+			SET
+				firstName = :firstName,
+				lastName = :lastName,
+				password = :password,
+				contactEMail = :contactEMail,
+				publicEMail = :publicEMail
+			WHERE id = :id
+		',
+		'checkUserName' => '
+			SELECT id FROM !prefix!users
+			WHERE name = :name
+		'
+	);
+}
+?>
