@@ -28,10 +28,10 @@ $this->caption='Add Your Comment';
 $this->submitTitle='Add My Comment';
 $this->fromForm='commentForm';
 $this->fields=array(
-	'author' => array(
+	'authorFirstName' => array(
 		'label' => 'Your Name',
 		'required' => true,
-		'value' => isset($data->user['fullName']) ? $data->user['fullName'] : '',
+		'value' => printFieldValue($data->user['firstName']),
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
@@ -42,6 +42,15 @@ $this->fields=array(
 				<b>Your Name</b> - Who are you?
 			</p>
 		'
+	),
+	'authorLastName' => array(
+		'required' => true,
+		'value' => printFieldValue($data->user['lastName']),
+		'tag' => 'input',
+		'params' => array(
+			'type' => 'text',
+			'size' => 64
+		)
 	),
 	'post' => array(
 		'params' => array(

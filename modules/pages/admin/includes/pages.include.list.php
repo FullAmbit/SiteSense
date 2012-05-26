@@ -51,12 +51,12 @@ function admin_pagesBuild($data,$db) {
 			}
 			if(isset($query1))
 			{
-				$statement = $db->prepare($query1,'pages');
+				$statement = $db->prepare($query1,'admin_pages');
 				$statement->execute(array(
 					':sortOrder' => $item['sortOrder'],
 					':parent' => $item['parent']
 				));
-				$statement = $db->prepare($query2,'pages');
+				$statement = $db->prepare($query2,'admin_pages');
 				$statement->execute(array(
 					':id' => $item['id']
 				));

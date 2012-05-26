@@ -58,7 +58,7 @@ final class dynamicPDO extends PDO {
 		$this->loadModuleQueries('common',true);
 	}
 	public function loadCommonQueryDefines($dieOnError=false) {
-		$target='libraries/queries/'.$this->sqlType.'.defines.php';
+		$target='libraries/queries/defines.'.$this->sqlType.'.php';
 		if (file_exists($target)) {
 			require_once($target);
 			return true;
@@ -66,15 +66,15 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - Common Query Defines Library File not found!<br>'.$target);
 		} else return false;
 	}
-	public function loadModuleQueries($moduleName,$dieOnError=false) {
-        $target='modules/'.$moduleName.'/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+	public function loadModuleQueries($moduleName,$dieOnError=false) { //not seeing the admin... so not know to go to admin directory
+        $target='modules/'.$moduleName.'/queries/'.$moduleName.'.'.$this->sqlType.'.php';
         $pos=strpos($moduleName,'admin_');
         if(!($pos===false)) {
             $moduleNameOnly=substr($moduleName,6);
-            $target='modules/'.$moduleNameOnly.'/admin/queries/'.$this->sqlType.'.'.$moduleNameOnly.'.admin.php';
+            $target='modules/'.$moduleNameOnly.'/admin/queries/'.$moduleNameOnly.'.admin.'.$this->sqlType.'.php';
         }
         if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
-            $target='libraries/queries/'.$this->sqlType.'.'.$moduleName.'.php';
+            $target='libraries/queries/'.$moduleName.'.'.$this->sqlType.'.php';
         }
         if (file_exists($target)) {
 			require_once($target);

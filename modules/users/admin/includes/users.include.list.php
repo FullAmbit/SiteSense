@@ -76,7 +76,7 @@ global $languageText;
 	theme_usersListTableHead($data->output['userList'],$data->output['userListStart']);
 	foreach($data->output['userList'] as $key => $user) {
 
-		theme_usersListTableRow($user['id'],$user['name'],$data->linkRoot,$key);
+		theme_usersListTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],$data->linkRoot,$key);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

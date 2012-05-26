@@ -44,24 +44,30 @@ function theme_usersSearchTableHead() {
 				<tr>
 					<th class="id">ID</th>
 					<th class="userName">Username</th>
+					<th class="firstName">First Name</th>
+					<th class="lastName">Last Name</th>
+					<th class="contactEmail">Contact Email</th>
 					<th class="controls">Controls</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_usersSearchTableRow($userId,$userName,$linkRoot,$key) {
+function theme_usersSearchTableRow($userId,$userName,$firstName,$lastName,$contactEMail,$linkRoot,$key) {
 	echo '
-			<tr class="',($key%2==0 ? 'even' : 'odd'),'">
-				<td class="id">',$userId,'</td>
-				<td class="userName">
-					<a href="'.$linkRoot.'admin/users/edit/',$userId,'">
-						',$userName,'
-					</a>
-				</td>
-				<td class="buttonList">
-					<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
-				</td>
-			</tr>';
+		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
+			<td class="id">',$userId,'</td>
+			<td class="userName">
+				<a href="'.$linkRoot.'admin/users/edit/',$userId,'">
+					',$userName,'
+				</a>
+			</td>
+			<td class="firstName">',$firstName,'</td>
+			<td class="lastName">',$lastName,'</td>
+			<td class="contactEmail">',$contactEMail,'</td>
+			<td class="buttonList">
+				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
+			</td>
+		</tr>';
 }
 
 function theme_usersSearchTableFoot() {
@@ -83,12 +89,15 @@ function theme_usersListTableHead($userList,$userListStart) {
 				<tr>
 					<th class="id">ID</th>
 					<th class="userName">Username</th>
+					<th class="firstName">First Name</th>
+					<th class="lastName">Last Name</th>
+					<th class="contactEmail">Contact Email</th>
 					<th class="controls">Controls</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_usersListTableRow($userId,$userName,$linkRoot,$key) {
+function theme_usersListTableRow($userId,$userName,$firstName,$lastName,$contactEMail,$linkRoot,$key) {
 	echo '';
     echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
@@ -98,6 +107,9 @@ function theme_usersListTableRow($userId,$userName,$linkRoot,$key) {
 					',$userName,'
 				</a>
 			</td>
+			<td class="firstName">',$firstName,'</td>
+			<td class="lastName">',$lastName,'</td>
+			<td class="contactEmail">',$contactEMail,'</td>
 			<td class="buttonList">
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
 			</td>
