@@ -29,7 +29,7 @@ function version_settings() {
     );
 }
 
-function version_install($data,$drop=false) {
+function version_install($db,$drop=false) {
     return NULL;
 }
 

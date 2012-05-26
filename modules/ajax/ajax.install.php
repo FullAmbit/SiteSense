@@ -29,7 +29,7 @@ function ajax_settings() {
     );
 }
 
-function ajax_install($data,$drop=false) {
+function ajax_install($db,$drop=false) {
     return NULL;
 }
 

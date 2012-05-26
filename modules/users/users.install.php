@@ -28,7 +28,7 @@ function users_settings() {
 		'shortName' => 'users'
 	);
 }
-function users_install($data,$drop=false) {
+function users_install($db,$drop=false) {
 	$structures = array(
         'activations' => array(
             'userId'              => SQR_IDKey,
@@ -81,15 +81,15 @@ function users_install($data,$drop=false) {
         )
 	);
 	if($drop)
-		users_uninstall($data);
+		users_uninstall($db);
 
-	$data->createTable('activations',$structures['activations'],false);
-    $data->createTable('banned',$structures['banned'],false);
-    $data->createTable('sessions',$structures['sessions'],false);
-    $data->createTable('users',$structures['users'],false);
-    $data->createTable('user_groups',$structures['user_groups'],false);
-    $data->createTable('user_group_permissions',$structures['user_group_permissions'],false);
-    $data->createTable('user_permissions',$structures['user_permissions'],false);
+	$db->createTable('activations',$structures['activations'],false);
+    $db->createTable('banned',$structures['banned'],false);
+    $db->createTable('sessions',$structures['sessions'],false);
+    $db->createTable('users',$structures['users'],false);
+    $db->createTable('user_groups',$structures['user_groups'],false);
+    $db->createTable('user_group_permissions',$structures['user_group_permissions'],false);
+    $db->createTable('user_permissions',$structures['user_permissions'],false);
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -118,7 +118,7 @@ function users_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName');
+            $statement=$db->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
@@ -129,12 +129,12 @@ function users_install($data,$drop=false) {
     }
     // ---
 	// Generate an admin account if this is a fresh installation
-	if($data->countRows('users')==0) {
+	if($db->countRows('users')==0) {
 		try {
 			$newPassword=common_randomPassword();
 			echo '
 				<h3>Attempting to add admin user</h3>';
-			$statement=$data->prepare('addUser','installer');
+			$statement=$db->prepare('addUser','installer');
 			$statement->execute(array(
 				':name' => 'admin',
 				':passphrase' => hash('sha256',$newPassword),
@@ -143,7 +143,7 @@ function users_install($data,$drop=false) {
 			echo '
 				<p>Administrator account automatically generated!</p>';
 		} catch(PDOException $e) {
-			$data->installErrors++;
+			$db->installErrors++;
 			echo '
 				<h3 class="error">Failed to create administrator account!</h3>
 				<pre>',$e->getMessage(),'</pre><br />';
@@ -151,13 +151,13 @@ function users_install($data,$drop=false) {
 	} else echo '<p class="exists">"users database" already contains records</p>';
 	return $newPassword;
 }
-function users_uninstall($data) {
-    $data->dropTable('activations');
-    $data->dropTable('banned');
-    $data->dropTable('sessions');
-    $data->dropTable('users');
-    $data->dropTable('user_groups');
-    $data->dropTable('user_group_permissions');
-    $data->dropTable('user_permissions');
+function users_uninstall($db) {
+    $db->dropTable('activations');
+    $db->dropTable('banned');
+    $db->dropTable('sessions');
+    $db->dropTable('users');
+    $db->dropTable('user_groups');
+    $db->dropTable('user_group_permissions');
+    $db->dropTable('user_permissions');
 }
 ?>

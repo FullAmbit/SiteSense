@@ -28,7 +28,7 @@ function blogs_settings() {
 		'shortName' => 'blogs'
 	);
 }
-function blogs_install($data,$drop=false) {
+function blogs_install($db,$drop=false) {
 	$structures = array(
 		'blogs' => array(
 			'id'                   => SQR_IDKey,
@@ -87,12 +87,42 @@ function blogs_install($data,$drop=false) {
 		)
 	);
 	if($drop)
-        blogs_uninstall($data);
+        blogs_uninstall($db);
 
-	$data->createTable('blogs',$structures['blogs'],false);
-	$data->createTable('blog_posts',$structures['blog_posts'],false);
-	$data->createTable('blog_comments',$structures['blog_comments'],false);
-	$data->createTable('blog_categories',$structures['blog_categories'],false);
+	$db->createTable('blogs',$structures['blogs'],false);
+	$db->createTable('blog_posts',$structures['blog_posts'],false);
+	$db->createTable('blog_comments',$structures['blog_comments'],false);
+	$db->createTable('blog_categories',$structures['blog_categories'],false);
+
+    // Add Blog Category Sidebar
+    $statement = $db->prepare('insertSidebar','admin_sidebars');
+    $statement->execute(array(
+        ':name'           => 'Blog Categories',
+        ':shortName'      => 'blog-categories',
+        ':title'          => 'Blog Categories',
+        ':side'           => 'left',
+        ':titleURL'       => 'blog-categories',
+        ':rawContent'     => '
+    <div class="buttonWrapper">
+        <a href="|rssLink|" class="greenButton">
+            <span>
+                <b></b>Subscribe
+                <i><!-- hover state precache --></i>
+            </span>
+        </a>
+    </div>
+    |block:blogs_categories|',
+        ':parsedContent'  => '
+    <div class="buttonWrapper">
+        <a href="|rssLink|" class="greenButton">
+            <span>
+                <b></b>Subscribe
+                <i><!-- hover state precache --></i>
+            </span>
+        </a>
+    </div>
+    |block:blogs_categories|'
+    ));
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -178,7 +208,7 @@ function blogs_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName');
+            $statement=$db->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
@@ -188,11 +218,11 @@ function blogs_install($data,$drop=false) {
         }
     }
     // ---
-	if ($data->countRows('blogs')==0) {
+	if ($db->countRows('blogs')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$data->exec('makeNewsBlog','installer');
+			$db->exec('makeNewsBlog','installer');
 			echo '
 				<div>
 					Home Page News Blog Generated!
@@ -207,18 +237,18 @@ function blogs_install($data,$drop=false) {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 	
-	$count=$data->countRows('blog_posts');
+	$count=$db->countRows('blog_posts');
 	if ($count==0) {
 		try {
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';
-			$statement=$data->query('makeWelcomePost','installer');
+			$statement=$db->query('makeWelcomePost','installer');
 			echo '
 				<div>
 					Home Page Welcome Post Generated!<br />
 				</div><br />';
 		} catch(PDOException $e) {
-			$data->installErrors++;
+			$db->installErrors++;
 			echo '
 				<p class="error">Failed to create Home Page Welcome Post!</p>
 				<pre>'.$e->getMessage().'</pre><br />
@@ -226,10 +256,10 @@ function blogs_install($data,$drop=false) {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 }
-function blogs_uninstall($data) {
-    $data->dropTable('blogs');
-    $data->dropTable('blog_posts');
-    $data->dropTable('blog_comments');
-    $data->dropTable('blog_categories');
+function blogs_uninstall($db) {
+    $db->dropTable('blogs');
+    $db->dropTable('blog_posts');
+    $db->dropTable('blog_comments');
+    $db->dropTable('blog_categories');
 }
 ?>

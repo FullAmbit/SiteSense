@@ -29,7 +29,7 @@ function forums_settings() {
     );
 }
 
-function forums_install($data,$drop=false) {
+function forums_install($db,$drop=false) {
     return NULL;
 }
 

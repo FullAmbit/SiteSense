@@ -28,7 +28,7 @@ function friends_settings() {
 		'shortName' => 'friends'
 	);
 }
-function friends_install($data,$drop=false) {	
+function friends_install($db,$drop=false) {	
 	$structures=array(
 		'friends' => array(
 			'id'           => SQR_IDKey,
@@ -38,11 +38,11 @@ function friends_install($data,$drop=false) {
 		)
 	);
 	if($drop)
-        friends_uninstall($data);
+        friends_uninstall($db);
 
-	$data->createTable('friends',$structures['friends'],false);
+	$db->createTable('friends',$structures['friends'],false);
 }
-function friends_uninstall($data) {
-	$data->dropTable('friends');
+function friends_uninstall($db) {
+	$db->dropTable('friends');
 }
 ?>

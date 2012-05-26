@@ -28,7 +28,7 @@ function messages_settings() {
 		'shortName' => 'messages'
 	);
 }
-function messages_install($data,$drop=false) {
+function messages_install($db,$drop=false) {
 	$structures = array(
 			'user_pms'  => array(
 			'id'        => SQR_IDKey,
@@ -41,11 +41,11 @@ function messages_install($data,$drop=false) {
 		)
 	);
 	if($drop)
-        $data->dropTable('user_pms');
+        $db->dropTable('user_pms');
 
-    $data->createTable('user_pms',$structures['user_pms'],false);
+    $db->createTable('user_pms',$structures['user_pms'],false);
 }
-function messages_uninstall($data) {
-	$data->dropTable('user_pms');
+function messages_uninstall($db) {
+	$db->dropTable('user_pms');
 }
 ?>

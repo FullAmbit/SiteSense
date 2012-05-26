@@ -29,7 +29,7 @@ function dashboard_settings() {
     );
 }
 
-function dashboard_install($data,$drop=false) {
+function dashboard_install($db,$drop=false) {
     return NULL;
 }
 

@@ -29,7 +29,7 @@ function account_settings() {
     );
 }
 
-function account_install($data,$drop=false) {
+function account_install($db,$drop=false) {
     return NULL;
 }
 

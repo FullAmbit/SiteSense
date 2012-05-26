@@ -29,7 +29,7 @@ function logout_settings() {
     );
 }
 
-function logout_install($data,$drop=false) {
+function logout_install($db,$drop=false) {
     return NULL;
 }
 

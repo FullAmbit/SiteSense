@@ -28,7 +28,7 @@ function dynamicForms_settings() {
 		'shortName' => 'dynamic-forms'
 	);
 }
-function dynamicForms_install($data,$drop=false) {
+function dynamicForms_install($db,$drop=false) {
 	$structures = array(
 		'forms' => array(
 			'id'                   => SQR_IDKey,
@@ -81,13 +81,13 @@ function dynamicForms_install($data,$drop=false) {
 		)
 	);
 	if($drop)
-        dynamicForms_uninstall($data);
+        dynamicForms_uninstall($db);
 
-	$data->createTable('forms',$structures['forms'],false);
-	$data->createTable('form_fields',$structures['form_fields'],false);
-	$data->createTable('form_rows',$structures['form_rows'],false);
-	$data->createTable('form_values',$structures['form_values'],false);
-	$data->createTable('form_sidebars',$structures['form_sidebars'],false);
+	$db->createTable('forms',$structures['forms'],false);
+	$db->createTable('form_fields',$structures['form_fields'],false);
+	$db->createTable('form_rows',$structures['form_rows'],false);
+	$db->createTable('form_values',$structures['form_values'],false);
+	$db->createTable('form_sidebars',$structures['form_sidebars'],false);
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -108,7 +108,7 @@ function dynamicForms_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName');
+            $statement=$db->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
@@ -119,11 +119,11 @@ function dynamicForms_install($data,$drop=false) {
     }
 
 }
-function dynamicForms_uninstall($data) {
-    $data->dropTable('forms');
-    $data->dropTable('form_fields');
-    $data->dropTable('form_rows');
-    $data->dropTable('form_values');
-    $data->dropTable('form_sidebars');
+function dynamicForms_uninstall($db) {
+    $db->dropTable('forms');
+    $db->dropTable('form_fields');
+    $db->dropTable('form_rows');
+    $db->dropTable('form_values');
+    $db->dropTable('form_sidebars');
 }
 ?>

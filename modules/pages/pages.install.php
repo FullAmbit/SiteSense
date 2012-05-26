@@ -28,7 +28,7 @@ function pages_settings() {
 		'shortName' => 'pages'
 	);
 }
-function pages_install($data,$drop=false) {
+function pages_install($db,$drop=false) {
 	$structures=array(
 		'pages' => array(
 			'id'              => SQR_IDKey,
@@ -52,10 +52,10 @@ function pages_install($data,$drop=false) {
 		)
 	);
 	if($drop)
-        pages_uninstall($data);
+        pages_uninstall($db);
 
-	$data->createTable('pages',$structures['pages'],false);
-	$data->createTable('pages_sidebars',$structures['pages_sidebars'],false);
+	$db->createTable('pages',$structures['pages'],false);
+	$db->createTable('pages_sidebars',$structures['pages_sidebars'],false);
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -76,7 +76,7 @@ function pages_install($data,$drop=false) {
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName');
+            $statement=$db->prepare('addPermissionByGroupName');
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
@@ -85,18 +85,18 @@ function pages_install($data,$drop=false) {
             );
         }
     }
-	if($data->countRows('pages')==0) {
+	if($db->countRows('pages')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$data->exec('makeRegistrationAgreement','installer');
+			$db->exec('makeRegistrationAgreement','installer');
 			echo '
 				<div>
 					Registration Agreement Page Generated!
 				</div><br />
 			';
 		} catch(PDOException $e) {
-			$data->installErrors++;
+			$db->installErrors++;
 			echo '
 				<h2>Failed to create registration agreement!</h2>
 				<pre>'.$e->getMessage().'</pre><br />
@@ -105,14 +105,14 @@ function pages_install($data,$drop=false) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$data->exec('makeRegistrationEMail','installer');
+			$db->exec('makeRegistrationEMail','installer');
 			echo '
 				<div>
 					Registration E-Mail Page Generated!
 				</div><br />
 			';
 		} catch(PDOException $e) {
-			$data->installErrors++;
+			$db->installErrors++;
 			echo '
 				<h2>Failed to create registration E-Mail!</h2>
 				<pre>'.$e->getMessage().'</pre><br />
@@ -120,8 +120,8 @@ function pages_install($data,$drop=false) {
 		}
 	} else echo '<p class="exists">"pages database" already contains records</p>';
 }
-function pages_uninstall($data) {
-    $data->dropTable('pages');
-    $data->dropTable('pages_sidebars');
+function pages_uninstall($db) {
+    $db->dropTable('pages');
+    $db->dropTable('pages_sidebars');
 }
 ?>

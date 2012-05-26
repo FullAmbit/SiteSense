@@ -28,7 +28,7 @@ function dynamicURLs_settings() {
 		'shortName' => 'dynamic-urls'
 	);
 }
-function dynamicURLs_install($data,$drop=false) {
+function dynamicURLs_install($db,$drop=false) {
 	$structures = array(
         'url_remap' => array(
             'id'       => SQR_IDKey,
@@ -37,12 +37,12 @@ function dynamicURLs_install($data,$drop=false) {
         )
 	);
 	if($drop)
-        dynamicURLs_uninstall($data);
+        dynamicURLs_uninstall($db);
 
-	$data->createTable('url_remap',$structures['url_remap'],false);
+	$db->createTable('url_remap',$structures['url_remap'],false);
 
 }
-function dynamicURLs_uninstall($data) {
-    $data->dropTable('url_remap');
+function dynamicURLs_uninstall($db) {
+    $db->dropTable('url_remap');
 }
 ?>
