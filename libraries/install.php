@@ -157,6 +157,7 @@ if (
         'dynamicForms',
         'dynamicURLs',
         'default',
+        'blogs',
         'pages',
         'login',
         'logout',
@@ -164,13 +165,12 @@ if (
         'users',
         'mainMenu',
         'sidebars',
-        'modules',
-        'blogs'
+        'settings',
+        'modules'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
     $moduleSettings=array();
-    rsort($uninstalledModuleFiles);
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module
         if(!file_exists($moduleInstallFile)) {
@@ -355,7 +355,7 @@ if (
         <dt>Password:</dt><dd>',$newPassword,'</dd>
       </dl>
       <p>
-        Changing the password is recommended.
+        Changing the password is recommended. <a href="admin" class="error">Click here</a> to login to the admin panel.
       </p>';
         }
     } else {

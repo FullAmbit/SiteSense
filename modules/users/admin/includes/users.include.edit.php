@@ -135,7 +135,8 @@ function admin_usersBuild($data,$db) {
                 case 'id':
                 case 'registeredIP':
                     $data->output['userForm']->fields[$key.'_hidden']['value']=$item[$key];
-                case 'fullName':
+                case 'firstName':
+                case 'lastName':
                 case 'name':
                 case 'contactEMail':
                 case 'publicEMail':

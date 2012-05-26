@@ -85,7 +85,7 @@ function blog_pageContent($data,$firstPagination=false,$secondPagination=false,$
 		{
 			if($userItem['id'] == $newsItem['user'])
 			{
-				$newsItem['authorName'] = $userItem['fullName'];
+				$newsItem['authorName'] = $userItem['firstName']." ".$userItem['lastName'];
 				break;
 			}
 		}

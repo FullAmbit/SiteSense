@@ -68,7 +68,7 @@ function admin_modulesBuild($data,$db){
 }
 function admin_modulesShow($data) {
 	if (empty($data->output['rejectError'])) {
-		theme_modulesInstallSuccess();
+		theme_modulesInstallSuccess($data);
 	} else {
 		theme_rejectError($data);
 	}

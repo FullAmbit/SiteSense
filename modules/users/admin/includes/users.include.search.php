@@ -56,7 +56,7 @@ function admin_usersShow($data) {
 	if($data->output['userList'] !== false){
 		theme_usersSearchTableHead();
 		foreach($data->output['userList'] as $key => $user) {
-			theme_usersSearchTableRow($user['id'],$user['name'],'',$data->linkRoot,$key);
+			theme_usersSearchTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],'',$data->linkRoot,$key);
 		}
 		theme_usersSearchTableFoot();
 	}

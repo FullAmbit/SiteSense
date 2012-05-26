@@ -25,11 +25,11 @@
 $this->caption='Editing Your Account';
 $this->submitTitle='Save Changes';
 $this->fields=array(
-	'fullName' => array(
+	'firstName' => array(
 		'label' => 'Full Name',
 		'required' => true,
 		'tag' => 'input',
-		'value' => $data->user['fullName'],
+		'value' => $data->user['firstName'],
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -39,6 +39,15 @@ $this->fields=array(
 				<b>Full Name</b>
 			</p>
 		'
+	),
+	'lastName' => array(
+		'required' => true,
+		'tag' => 'input',
+		'value' => $data->user['lastName'],
+		'params' => array(
+			'type' => 'text',
+			'size' => 128
+		)
 	),
 	'contactEMail' => array(
 		'label' => 'Contact E-Mail',
