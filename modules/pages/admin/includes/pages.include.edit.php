@@ -72,7 +72,7 @@ function admin_pagesBuild($data,$db) {
 		return false;
 	}
 	
-	$data->output['pageForm']= $form = new formHandler('pagesEdit',$data,true);
+	$data->output['pageForm']= $form = new formHandler('addEdit',$data,true);
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	// Unset Main Menu Options
 	unset($form->fields['showOnMenu']);
