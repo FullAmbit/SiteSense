@@ -161,6 +161,7 @@ if (
         'pages',
         'login',
         'logout',
+        'plugins',
         'register',
         'users',
         'mainMenu',

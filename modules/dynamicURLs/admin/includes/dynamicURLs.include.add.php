@@ -29,7 +29,7 @@ function admin_dynamicURLsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $form = $data->output['remapForm'] = new formHandler('dynamicURLs',$data,true);
+    $form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
