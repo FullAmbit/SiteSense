@@ -34,42 +34,42 @@ function page_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-  if (checkPermission('access','core',$data)) {
-    if(empty($data->action[1])) {
-        $module['name']='dashboard';
-    } else {
-        $moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
-        $moduleQuery->execute(array(':shortName' => $data->action[1]));
-        $module=$moduleQuery->fetch();
-    }
-    common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
-    $currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.template.php';
-    $defaultThemeInclude='themes/default/admin/'.$module['name'].'.template.php';
-    $moduleThemeInclude='modules/'.$module['name'].'/admin/'.$module['name'].'.template.php';
-    if(file_exists($currentThemeInclude)) {
-        common_include($currentThemeInclude);
-    } elseif(file_exists($defaultThemeInclude)) {
-        common_include($defaultThemeInclude);
-    } elseif(file_exists($moduleThemeInclude)) {
-        common_include($moduleThemeInclude);
-    }
-    $files=glob('modules/*/admin/*.config.php');
-    foreach ($files as $fileName) {
-      common_include($fileName);
-      $targetName=substr(strrchr(str_replace('.config.php','',$fileName),'/'),1);
-      $targetName=hyphenToCamel($targetName);
-      $targetFunction=$targetName.'_config';
-
-
-      if (function_exists($targetFunction)) {
-        $targetFunction($data,$db);
-      }
-    }
-    usort($data->admin['menu'],'admin_menuCmp');
-    if (function_exists('admin_buildContent')) {
-      admin_buildContent($data,$db);
-    }
-  }
+	if (checkPermission('access','core',$data)) {
+		if(empty($data->action[1])) {
+			$module['name']='dashboard';
+		} else {
+			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
+			$moduleQuery->execute(array(':shortName' => $data->action[1]));
+			$module=$moduleQuery->fetch();
+		}
+		common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
+		$currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.admin.template.php';
+		$defaultThemeInclude='themes/default/admin/'.$module['name'].'.admin.template.php';
+		$moduleThemeInclude='modules/'.$module['name'].'/admin/'.$module['name'].'.admin.template.php';
+		if(file_exists($moduleThemeInclude)) {
+			common_include($moduleThemeInclude);
+		} elseif(file_exists($currentThemeInclude)) {
+			common_include($currentThemeInclude);
+		} elseif(file_exists($defaultThemeInclude)) {
+			common_include($defaultThemeInclude);
+		}
+		$files=glob('modules/*/admin/*.admin.config.php');
+		foreach ($files as $fileName) {
+			common_include($fileName);
+			$strFind=array('.config.php','.admin');
+			$targetName=substr(strrchr(str_replace($strFind,'',$fileName),'/'),1);
+			$targetName=hyphenToCamel($targetName);
+			$targetFunction=$targetName.'_config';
+			
+			if (function_exists($targetFunction)) {
+				$targetFunction($data,$db);
+			}
+    	}
+		usort($data->admin['menu'],'admin_menuCmp');
+		if (function_exists('admin_buildContent')) {
+			admin_buildContent($data,$db);
+		}
+	}
 }
 
 function page_content($data) {

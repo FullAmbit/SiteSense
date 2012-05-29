@@ -41,7 +41,7 @@ function admin_dynamicURLsBuild($data,$db) {
 		return;
 	}
 	// Create The Form
-	$form = $data->output['remapForm'] = new formHandler('dynamicURLs',$data,true);
+	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	$form->caption = 'Editing URL Remap';
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))

@@ -94,7 +94,7 @@ function admin_usersBuild($data,$db) {
 
     }
     // ---
-    $data->output['userForm']=$form=new formHandler('users',$data,true);
+    $data->output['userForm']=$form=new formHandler('addEdit',$data,true);
 
     $statement=$db->prepare('getById','admin_users');
     $statement->execute(array(

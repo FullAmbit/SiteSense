@@ -32,7 +32,7 @@ function admin_pagesBuild($data,$db)
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
-	$data->output['pageForm']=new formHandler('pagesEdit',$data,true);
+	$data->output['pageForm']=new formHandler('addEdit',$data,true);
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	
 	if (($data->action[3]=='childOf') && is_numeric($data->action[4]))

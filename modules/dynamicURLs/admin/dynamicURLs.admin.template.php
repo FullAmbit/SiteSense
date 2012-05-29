@@ -84,12 +84,12 @@ function theme_dynamicURLsDeleteError($exists,$linkRoot) {
 
 function theme_dynamicURLsDeleteConfirm($action3,$linkRoot) {
 	echo '
-			<h2>Confirm Removal</h2>
-			<p>Are you sure that you want to remove this remap?</p>
-			<ul>
-				<li><a href="',$linkRoot, 'admin/dynamic-urls/delete/',$action3, '/confirm">Yes</a></li>
-				<li><a href="',$linkRoot, 'admin/dynamic-urls/list">No</a></li>
-			</ul>
+		<h2>Confirm Removal</h2>
+		<p>Are you sure that you want to remove this remap?</p>
+		<div class="buttonList">
+			<a href="',$linkRoot, 'admin/dynamic-urls/delete/',$action3, '/confirm">Yes, Confirm Delete</a>
+			<a href="',$linkRoot, 'admin/dynamic-urls/list">No, Cancel Delete</a>
+		</div>
 		';
 }
 

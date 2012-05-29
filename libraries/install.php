@@ -161,6 +161,7 @@ if (
         'pages',
         'login',
         'logout',
+        'plugins',
         'register',
         'users',
         'mainMenu',
@@ -356,7 +357,7 @@ if (
         <dt>Password:</dt><dd>',$newPassword,'</dd>
       </dl>
       <p>
-        Changing the password is recommended. <a href="admin" class="error">Click here</a> to login to the admin panel.
+        Changing the password is recommended. <a href="admin/users/edit/1/" class="error">Click here</a> to login to the admin panel.
       </p>';
         }
     } else {

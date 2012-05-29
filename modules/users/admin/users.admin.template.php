@@ -65,6 +65,7 @@ function theme_usersSearchTableRow($userId,$userName,$firstName,$lastName,$conta
 			<td class="lastName">',$lastName,'</td>
 			<td class="contactEmail">',$contactEMail,'</td>
 			<td class="buttonList">
+				<a href="'.$linkRoot.'admin/users/edit/'.$userId.'">Edit</a>
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
 			</td>
 		</tr>';
@@ -111,6 +112,7 @@ function theme_usersListTableRow($userId,$userName,$firstName,$lastName,$contact
 			<td class="lastName">',$lastName,'</td>
 			<td class="contactEmail">',$contactEMail,'</td>
 			<td class="buttonList">
+				<a href="'.$linkRoot.'admin/users/edit/'.$userId.'">Edit</a>
 				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
 			</td>
 		</tr>';

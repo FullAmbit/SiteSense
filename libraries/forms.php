@@ -83,7 +83,7 @@ class formHandler {
 
         if($admin) {
             $moduleName=array_search($data->action[1],$data->output['moduleShortName']);
-            $target='modules/'.$moduleName.'/admin/forms/'.$dataName.'.formArray.php';
+            $target='modules/'.$moduleName.'/admin/forms/'.$moduleName.'.admin.form.'.$dataName.'.php';
         } else {
             $moduleName=array_search($data->action[0],$data->ouput['moduleShortName']);
             $target='modules/'.$moduleName.'/forms/'.$dataName.'.formArray.php';

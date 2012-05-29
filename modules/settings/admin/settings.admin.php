@@ -32,7 +32,7 @@ function admin_buildContent($data,$db) {
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;
 	}
-	$data->output['settingsForm']=new formHandler('settings',$data,true);
+	$data->output['settingsForm']=new formHandler('edit',$data,true);
 	$getModules = $db->query('getEnabledModules','admin_modules');
 	$modules = $getModules->fetchAll();
 	// All Enabled Modules
