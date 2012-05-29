@@ -66,7 +66,7 @@ function admin_blogsBuild($data,$db) {
 		return;
 	}
 				
-	$data->output['blogForm']=new formHandler('blogsEdit',$data,true);
+	$data->output['blogForm']=new formHandler('edit',$data,true);
 	$data->output['blogForm']->caption = 'Edit Blog';
 	
 	

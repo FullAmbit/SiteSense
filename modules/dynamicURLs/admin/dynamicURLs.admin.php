@@ -43,7 +43,7 @@ function admin_buildContent($data,$db) {
 		$statement=$db->query('getAllUrlRemaps','admin_dynamicURLs');
 		$data->output['urlremapList']=$statement->fetchAll();
 	}
-	$target='modules/dynamicURLs/admin/includes/dynamicURLs.include.'.$data->action[2].'.php';
+	$target='modules/dynamicURLs/admin/includes/dynamicURLs.admin.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];

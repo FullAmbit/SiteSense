@@ -23,73 +23,35 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_blogPostsCheckShortName($db,$shortName) {
-	$statement=$db->prepare('getBlogPostIdByName','admin_blogs');
-	$statement->execute(array(
-		':shortName' => $shortName
-	));
-	if ($first=$statement->fetch()) {
-		return $first['id'];
-	} else return false;
-}
-function admin_blogsBuild($data,$db) {
-    if(!checkPermission('postEdit','blogs',$data)) {
+
+function admin_blogsBuild($data,$db)
+{
+    if(!checkPermission('postAdd','blogs',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-
-    global $languageText;
-	$aRoot=$data->linkRoot.'admin/blogs/';
-
-	if (is_numeric($data->action[3])) {
-		//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
-		if(!checkPermission('accessOthers','blogs',$data)) {
-			$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
-			$statement->execute(array(
-				':id' => $data->action[3],
-				':owner' => $data->user['id']
-			));
-		} else {
-			$statement=$db->prepare('getBlogById','admin_blogs');
-			$statement->execute(array(
-				':id' => $data->action[3]
-			));
-		}
-		if(($data->output['parentBlog']=$statement->fetch()) == FALSE) {
-			$data->output['savedOkMessage'] = '
-			<h2>Invalid Parameters</h2>
-			The blog you specified could not be found.';
-			return;
-		}
-		
-		//---Load Blog Post---//
-		$statement=$db->prepare('getBlogPostsById','admin_blogs');
-			$statement->execute(array(
-				'id' => $data->action[4]
-			));
-			if ($data->output['blogItem'] = $item = $statement->fetch()) {
-				// Load Form //		
-				$data->output['blogForm']=new formHandler('blogsEditPosts',$data,true);
-				//--Fill Up Fields--//
-				foreach ($data->output['blogForm']->fields as $key => $value) {
-					if (
-						(!empty($value['params']['type'])) &&
-						($value['params']['type']=='checkbox')
-					) {
-						$data->output['blogForm']->fields[$key]['checked']=(
-							$item[$key] ? 'checked' : ''
-						);
-					} else {
-						$data->output['blogForm']->fields[$key]['value']=html_entity_decode($item[$key]);
-					}
-				}
-			}
+	//---Load Parent Blog (Anything Below Moderators Can Only Load Their OWN Blog---//
+	if(!checkPermission('accessOthers','blogs',$data)) {
+		$statement = $db->prepare('getBlogByIdAndOwner','admin_blogs');
+		$statement->execute(array(
+			':id' => $data->action[3],
+			':owner' => $data->user['id']
+		));
 	} else {
-		$data->output['pagesError']='unknown function';
+		$statement=$db->prepare('getBlogById','admin_blogs');
+		$statement->execute(array(
+			':id' => $data->action[3]
+		));
+	}
+	$data->output['parentBlog'] = $statement->fetch();
+	if($data->output['parentBlog'] == FALSE)
+	{
+		$data->output['pagesError']=='unknown function';
 		return;
 	}
-	
+	// Load Form //		
+	$data->output['blogForm']=new formHandler('editPosts',$data,true);
 	// Get Blog Categories //
 	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
 	$statement->execute(array(
@@ -102,38 +64,32 @@ function admin_blogsBuild($data,$db) {
 		$data->output['blogForm']->fields['categoryId']['options'][$x]['text'] = $categoryItem['name'];
 		$x++;
 	}
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
+	// Handle Post Request
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
 	{
 		$data->output['blogForm']->populateFromPostData();
-		
+		/**
+		 * Set up Short Name Check
+		**/
 		$shortName = common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
-		$data->output['blogForm']->sendArray[':shortName'] = $shortName;
-		
-		// Only Run Unique Short Name Check If It's DIFFERENT
-		if($shortName == $data->output['blogItem']['shortName'])
+		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
+		$data->output['blogForm']->sendArray[':shortName'] = $_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
+		// Load All Existing Sidebar ShortNames For Comparison
+		$statement = $db->prepare('getExistingShortNames','admin_blogs');
+		$statement->execute();
+		$postList = $statement->fetchAll();
+		$existingShortNames = array();
+		foreach($postList as $postItem)
 		{
-			unset($data->output['blogForm']->fields['name']['cannotEqual']);
-		} else {
-			$statement = $db->prepare('getExistingShortNames','admin_blogs');
-			$statement->execute();
-			$postShortNameList = $statement->fetchAll();
-			foreach($postShortNameList as $item)
-			{
-				$cannotEqual[] = $item['shortName'];
-			}
-			$data->output['blogForm']->fields['name']['cannotEqual'] = $cannotEqual;
-			// Apply ShortName Convention To Name For Use In Comparison //
-			$_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
+			$existingShortNames[] = $postItem['shortName'];
 		}
-		
-		//---Validate All Form Fields---//
-		if ($data->output['blogForm']->validateFromPost()) {
-			
-			$statement=$db->prepare('updateBlogPostsById','admin_blogs');
-			$data->output['blogForm']->sendArray[':id']=$data->action[4];
-			
-			// HTML Special Chars
+		$data->output['blogForm']->fields['name']['cannotEqual'] = $existingShortNames;
+		/*----------------*/
+		if($data->output['blogForm']->validateFromPost())
+		{
+			//--Various Parsing--//
 			$data->output['blogForm']->sendArray[':title'] = htmlspecialchars($data->output['blogForm']->sendArray[':title']);
+			
 			if($data->settings['useBBCode'] == '1')
 			{
 				common_loadPlugin($data,'bbcode');
@@ -144,24 +100,34 @@ function admin_blogsBuild($data,$db) {
 				$data->output['blogForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['blogForm']->sendArray[':rawContent']);
 				$data->output['blogForm']->sendArray[':parsedSummary'] = htmlspecialchars($data->output['blogForm']->sendArray[':rawContent']);
 			}
-			
 			$data->output['blogForm']->sendArray[':tags'] = strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
-			//---Save To DB---//
-			$statement->execute($data->output['blogForm']->sendArray);
-				
+			$data->output['blogForm']->sendArray[':blogId']=$data->action[3];
+			$data->output['blogForm']->sendArray[':user']=$data->user['id'];
+			//--Save To DB--//
+			$statement=$db->prepare('insertBlogPost','admin_blogs');
+			$result = $statement->execute($data->output['blogForm']->sendArray);
+			
+			if($result == FALSE)
+			{
+				$data->output['pagesError']=='db error';
+				return;
+			}
+			$aRoot = $data->linkRoot.'admin/blogs/';
+			// Success ! //
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>
 					Auto generated short name was: '.$shortName.'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$aRoot.'editPosts/'.$data->action[3].'/new">
+					<a href="'.$aRoot.'addPost/'.$data->action[3].'/">
 						Add New Post to "'.$data->output['parentBlog']['name'].'"
 					</a>
 					<a href="'.$aRoot.'listPosts/'.$data->action[3].'">
 						Return to Page List
 					</a>
 				</div>';
+			
 		} else {
 			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
@@ -171,13 +137,18 @@ function admin_blogsBuild($data,$db) {
 		}
 	}
 }
+
 function admin_blogsShow($data) {
 	if ($data->output['pagesError']=='unknown function') {
 		admin_unknown();
+	} else if($data->output['pagesError'] == 'db error')
+	{
+		theme_databaseSaveError();
 	} else if (!empty($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {
 		theme_buildForm($data->output['blogForm']);
 	}
 }
+
 ?>

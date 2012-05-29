@@ -30,7 +30,7 @@ function admin_blogsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $data->output['blogForm'] = new formHandler('blogsEdit',$data,true);
+    $data->output['blogForm'] = new formHandler('edit',$data,true);
     if(!checkPermission('accessOthers','blogs',$data))	{
 		$data->output['blogForm']->fields['owner'] = array(
 			'tag' => 'input',
