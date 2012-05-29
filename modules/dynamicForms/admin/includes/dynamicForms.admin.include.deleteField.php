@@ -73,10 +73,10 @@ function admin_dynamicFormsBuild($data,$db)
 			  $data->output['savedOkMessage']='
 				  <h2>Project screenshot Deleted Successfully</h2>
 				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/newfield/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/newField/'.$data->output['formItem']['id'].'">
 						  Add New Field
 					  </a>
-					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listfields/'.$data->output['formItem']['id'].'">
+					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listFields/'.$data->output['formItem']['id'].'">
 						  Return to Fields List
 					  </a>
 				  </div>';

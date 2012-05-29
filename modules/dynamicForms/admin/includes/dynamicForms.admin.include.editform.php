@@ -124,7 +124,7 @@ function admin_dynamicFormsBuild($data,$db)
 				$data->output['savedOkMessage']='
 					<h2>Form Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addform">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addForm">
 							Add New Form
 						</a>
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/list/">
