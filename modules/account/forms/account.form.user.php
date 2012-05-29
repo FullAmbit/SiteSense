@@ -26,7 +26,7 @@ $this->caption='Editing Your Account';
 $this->submitTitle='Save Changes';
 $this->fields=array(
 	'firstName' => array(
-		'label' => 'Full Name',
+		'label' => 'First Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => $data->user['firstName'],
@@ -41,6 +41,7 @@ $this->fields=array(
 		'
 	),
 	'lastName' => array(
+		'label' => 'Last Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => $data->user['lastName'],

@@ -37,7 +37,7 @@ function admin_usersBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}
-	$data->output['userForm']=new formHandler('userSearch',$data,true);
+	$data->output['userForm']=new formHandler('search',$data,true);
 	if (
 		(!empty($_POST['fromForm'])) &&
 		($_POST['fromForm']==$data->output['userForm']->fromForm)

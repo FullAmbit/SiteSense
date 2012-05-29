@@ -53,7 +53,7 @@ function admin_usersBuild($data,$db) {
     // Load core permissions
     getPermissions($data,$db);
 
-    $data->output['userForm'] = $form = new formHandler('users',$data,true);
+    $data->output['userForm'] = $form = new formHandler('addEdit',$data,true);
 
 	unset($form->fields['registeredDate']);
 	unset($form->fields['registeredIP']);
