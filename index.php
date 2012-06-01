@@ -67,7 +67,15 @@ final class dynamicPDO extends PDO {
 		} else return false;
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) { //not seeing the admin... so not know to go to admin directory
+		
         $target='modules/'.$moduleName.'/queries/'.$moduleName.'.'.$this->sqlType.'.php';
+        // If StartUp Query File, Fix The Name
+		if(strpos($moduleName,'_startup'))
+		{
+			list($moduleNameOnly) = explode('_',$moduleName);
+			$target = 'modules/'.$moduleNameOnly.'/queries/'.$moduleNameOnly.'.'.$this->sqlType.'.startup.php';
+		}
+		// Check For Admin Query
         $pos=strpos($moduleName,'admin_');
         if(!($pos===false)) {
             $moduleNameOnly=substr($moduleName,6);
