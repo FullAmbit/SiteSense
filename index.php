@@ -198,7 +198,7 @@ final class sitesense {
 		$siteRoot,$domainName,$linkHome,$linkRoot,
 		$action,$currentPage,$module,$request,
 		$httpHeaders,
-		$metaList,$menuList,$sidebarList,$sidebars = array(),
+		$metaList,$menuList,$sidebarList = array(),
 		$menuSource,
 		$admin,
 		$compressionType,
@@ -385,7 +385,7 @@ final class sitesense {
 						':module' => $this->module['id']
 					)
 				);
-				$this->sidebars = $sidebarQuery->fetchAll();
+				$sidebars = $sidebarQuery->fetchAll();
 			}
 		}
 
@@ -410,12 +410,7 @@ final class sitesense {
 		$this->menuList['left']=$statement->fetchAll();
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
-		// Get Sidebars
-        $sidebars = $this->db->query('getSidebars');
-		foreach($sidebars as $sidebar) {
-			$this->sidebarList[$sidebar['side']][]=$sidebar;
-		}
-
+	
 		// Cookies and Sessions
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
@@ -611,6 +606,12 @@ final class sitesense {
 				page_buildContent($this,$this->db);
 			}
 		}
+		// Parse Sidebars Before Display
+		foreach($sidebars as $sidebar) {
+			common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
+			common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
+			$this->sidebarList[$sidebar['side']][]=$sidebar;
+		}
 		$this->db=null;
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
@@ -639,6 +640,7 @@ final class sitesense {
 		}
 		theme_header($this);
 		page_content($this);
+		
 		if(function_exists('theme_leftSidebar')) {
 			theme_leftSidebar($this);
 		}
@@ -647,27 +649,12 @@ final class sitesense {
 		}
 		theme_footer($this);
 	} /* __construct */
-	public function activateSidebar($name){
-		if(isset($this->sidebarList[$name])){
-			$this->sidebarList[$name]['display'] = true;
-			return true;
-		}else{
-			return false;
-		}
-	}
 
     //Anonymous Function Fix - adds support below 5.3
     public function arrayInterrater($item){
         return $item['display'];
     }
-	public function getActivatedSidebars(){
-		return array_filter(
-			$this->sidebarList,
-			function($item){
-                return arrayInterrater($item);
-			}
-		);
-	}
+
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
 		$defaultThemeInclude='themes/default/'.$module.'.template.php';

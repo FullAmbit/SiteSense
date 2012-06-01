@@ -151,11 +151,10 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);
 	$blockList = $matches[1];
-	
 	ob_start();
 	foreach($blockList as $key => $originalBlockName) {
 		$blockInfo=explode('_',$originalBlockName);
-
+		$target = 'modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php';
 		if(file_exists('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php')) {
 			
 			common_include('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php');
