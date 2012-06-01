@@ -658,7 +658,7 @@ final class sitesense {
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
 		$defaultThemeInclude='themes/default/'.$module.'.template.php';
-        $moduleThemeInclude='modules/'.$module.'/'.$module.'template.php';
+        $moduleThemeInclude='modules/'.$module.'/'.$module.'.template.php';
 		if(file_exists($currentThemeInclude)) {
 			common_include($currentThemeInclude);
 		} elseif(file_exists($defaultThemeInclude)) {
