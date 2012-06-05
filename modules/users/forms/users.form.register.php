@@ -22,14 +22,14 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->action=$data->linkRoot.'register';
+$this->action=$data->linkRoot.'users/register/';
 $this->formPrefix='register_';
 $this->caption='Become Part of Where Future Stars Come Frumm...<b></b>';
 $this->submitTitle='Join Now';
 $this->fromForm='register';
 $this->fields=array(
 	'firstName' => array(
-		'label' => 'Your Name',
+		'label' => 'First Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['firstName']),
@@ -40,6 +40,7 @@ $this->fields=array(
 		)
 	),
 	'lastName' => array(
+		'label' => 'Last Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastName']),

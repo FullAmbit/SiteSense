@@ -321,7 +321,6 @@ function getUserPermissions(&$db,&$user) {
         asort($user['permissions']);
     }
 }
-
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
 	// User is Admin, which is universal access, Return true
@@ -342,5 +341,10 @@ function hyphenToCamel($str,$ucfirst=false) {
     $parts=$parts ? array_map('ucfirst',$parts):array($str);
     $parts[0]=$ucfirst ? ucfirst($parts[0]):lcfirst($parts[0]);
     return implode('',$parts);
+}
+
+function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
+	$time = ($time == NULL) ? time() : $time;
+	return gmdate($format,$time);
 }
 ?>
