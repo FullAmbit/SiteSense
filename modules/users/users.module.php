@@ -24,11 +24,11 @@
 */
 common_include('libraries/forms.php');
 function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
-    $statement=$db->prepare('getRegistrationEMail','register');
+    $statement=$db->prepare('getRegistrationEMail','users');
     $statement->execute();
     if ($mailBody=$statement->fetchColumn()) {
         $mailBody = htmlspecialchars_decode($mailBody);
-        $activationLink='http://'.$_SERVER['SERVER_NAME'].$data->linkRoot.'register/activate/'.$userId.'/'.$hash;
+        $activationLink='http://'.$_SERVER['SERVER_NAME'].$data->linkRoot.'users/register/activate/'.$userId.'/'.$hash;
         $mailBody=str_replace(
             array(
                 '$siteName',
@@ -172,9 +172,10 @@ function build_register($data,$db) {
             } else {
                 unset($data->output['registerForm']->sendArray[':password2']);
                 unset($data->output['registerForm']->sendArray[':verifyEMail']);
-                $data->output['registerForm']->sendArray[':registeredDate']=time();
+                $data->output['registerForm']->sendArray[':registeredDate']=$data->output['registerForm']->sendArray[':lastAccess']=common_formatDatabaseTime();
                 $data->output['registerForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
-                $data->output['registerForm']->sendArray[':lastAccess']=time();
+                /**
+                 * Deprecated, we don't use USERLEVEL anymore. But we should still add a group for unactivated users.
                 // Do We Require Any Form Of Activation?
                 if($data->settings['verifyEmail'] == 0 && $data->settings['requireActivation'] == 0)
                 {
@@ -182,13 +183,15 @@ function build_register($data,$db) {
                 } else {
                     $data->output['registerForm']->sendArray[':userLevel'] = 0;
                 }
+                **/
                 $data->output['registerForm']->sendArray[':publicEMail']='';
                 $data->output['registerForm']->sendArray[':emailVerified'] = ($data->settings['verifyEmail'] == 1) ? 0 : 1;
                 $data->output['registerForm']->sendArray[':password']=hash(
                     'sha256',
                     $data->output['registerForm']->sendArray[':password']
                 );
-                $statement=$db->prepare('insertUser','register');
+                $statement=$db->prepare('insertUser','users');
+
                 $statement->execute($data->output['registerForm']->sendArray) or die('Saving user failed');
                 $userId = $db->lastInsertId();
                 $profileAlbum = $db->prepare('addAlbum', 'gallery');
@@ -198,7 +201,7 @@ function build_register($data,$db) {
                 // Do We Require E-Mail Verification??
                 if($data->settings['verifyEmail'] == 1)
                 {
-                    $statement=$db->prepare('insertActivationHash','register');
+                    $statement=$db->prepare('insertActivationHash','users');
                     $statement->execute(array(
                         ':userId' => $userId,
                         ':hash' => $hash,
@@ -303,7 +306,11 @@ function page_buildContent($data,$db)
 		$data->action[1] = 'default';
 	}
 	
-	switch($data->action[1]){
+	if(function_exists('build_'.$data->action[1])) {
+		call_user_func('build_'.$data->action[1],$data,$db);
+	}
+	
+	/**switch($data->action[1]){
 		case 'edit':
 			build_edit($data, $db);
 		break;
@@ -313,7 +320,10 @@ function page_buildContent($data,$db)
 		case 'activate':
 			build_activate($data,$db);
 		break;
-	}
+		case 'register':
+			build_register($data,$db);
+		break;
+	}**/
 }
 	
 function page_content($data){
@@ -340,7 +350,17 @@ function page_content($data){
         case 'logout':
             common_redirect_local($data, '');
         break;
-
+        case 'register':
+        	if ($data->output['showForm']) {
+        		theme_buildForm($data->output['registerForm']);
+        	} else {
+	        	theme_contentBoxHeader('Account Registration &amp; Activation');
+	        	foreach ($data->output['messages'] as $message) {
+		        	echo '<p>',$message,'</p>';
+		        }
+		        theme_contentBoxFooter();
+		    }
+        break;
 	}
 }
 ?>
