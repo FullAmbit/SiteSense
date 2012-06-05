@@ -30,7 +30,7 @@ function gallery_startup($data,$db) {
 		'module'	=> 'gallery'
 	);
     $data->permissions['friends']=array(
-        'access'   => 'Gallery access'
+        'access'               => 'Gallery access'
     );
 }
 ?>

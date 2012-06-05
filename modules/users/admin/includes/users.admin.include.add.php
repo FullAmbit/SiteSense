@@ -49,6 +49,8 @@ function admin_usersBuild($data,$db) {
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
+    $data->output['groupList'][]['groupName']='Administrators';
+    sort($data->output['groupList']);
 
     // Load core permissions
     getPermissions($data,$db);
@@ -107,6 +109,9 @@ function admin_usersBuild($data,$db) {
 			$data->output['userForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
 			$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
             foreach($data->permissions as $category => $permissions) {
+                if(!isset($permissions['permissions'])) {
+                    $permissions['permissions']='Manage Permissions';
+                }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
                         $submittedPermissions[':'.$category.'_'.$permissionName]=$data->output['userForm']->sendArray[':'.$category.'_'.$permissionName];
@@ -115,7 +120,7 @@ function admin_usersBuild($data,$db) {
                 }
             }
             $submittedGroups=array();
-            foreach($data->output['groupList'] as $key => $value) {
+            foreach($data->output['groupList'] as $value) {
                 if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
                     // User is still a member
                     // Check expiration
@@ -140,6 +145,9 @@ function admin_usersBuild($data,$db) {
             $userID=$statement->fetchAll();
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
+                if(!isset($permissions['permissions'])) {
+                    $permissions['permissions']='Manage Permissions';
+                }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
                         if($submittedPermissions[':'.$category.'_'.$permissionName]!=='Inherited') {
@@ -187,12 +195,20 @@ function admin_usersBuild($data,$db) {
                         $expires=604800;
                         break;
                 }
-                $statement=$db->prepare('addUserToPermissionGroup');
-                $statement->execute(array(
-                    ':userID'          => $userID[0]['id'],
-                    ':groupName'       => $groupName,
-                    ':expires'         => $expires
-                ));
+                if($expires==0) {
+                    $statement=$db->prepare('addUserToPermissionGroupNoExpires');
+                    $statement->execute(array(
+                        ':userID'          => $userID[0]['id'],
+                        ':groupName'       => $groupName
+                    ));
+                } else {
+                    $statement=$db->prepare('addUserToPermissionGroup');
+                    $statement->execute(array(
+                        ':userID'          => $userID[0]['id'],
+                        ':groupName'       => $groupName,
+                        ':expires'         => $expires
+                    ));
+                }
             }
 			if($result == FALSE) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';

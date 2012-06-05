@@ -101,7 +101,7 @@ function users_install($db,$drop=false) {
             'users_ban',
             'users_edit',
             'users_delete',
-            'users_permissions'
+            'users_groups'
         ),
         'Writer' => array(
             'users_access',

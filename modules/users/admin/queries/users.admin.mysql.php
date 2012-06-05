@@ -28,7 +28,7 @@
 */
 function admin_users_addQueries() {
 	return array(
-		'getAllUsers' => '
+        'getAllUsers' => '
 			SELECT * FROM !prefix!users ORDER BY id ASC
 		',
 		'getById' => '
@@ -150,6 +150,10 @@ function admin_users_addQueries() {
 			SELECT * FROM !prefix!user_groups
 			WHERE groupName = :groupName
 		',
+        'getGroupsByUserID' => '
+            SELECT groupName FROM !prefix!user_groups
+            WHERE userID = :userID
+        ',
         'getGroupName' => '
             SELECT groupName FROM !prefix!user_groups
             WHERE groupName = :groupName

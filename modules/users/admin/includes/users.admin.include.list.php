@@ -62,6 +62,17 @@ function admin_usersBuild($data,$db) {
 			$statement->bindParam(':count',$data->output['userListLimit'],PDO::PARAM_INT);
 			$statement->execute();
 			$data->output['userList']=$statement->fetchAll();
+            foreach($data->output['userList'] as $key => $value) {
+                $db->query('purgeExpiredGroups');
+                $statement=$db->prepare('getGroupsByUserID');
+                $statement->execute(array(
+                    ':userID'   => $value['id']
+                ));
+                $groups=$statement->fetchAll();
+                foreach($groups as $group) {
+                    $data->output['userList'][$key]['groups'][]=$group['groupName'];
+                }
+            }
 		} catch(PDOException $e) {
 			$data->output['abort']=true;
 			$data->output['abortMessage']='
@@ -75,8 +86,17 @@ function admin_usersShow($data) {
 global $languageText;
 	theme_usersListTableHead($data->output['userList'],$data->output['userListStart']);
 	foreach($data->output['userList'] as $key => $user) {
-
-		theme_usersListTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],$data->linkRoot,$key);
+        $admin=false;
+        if(isset($data->output['userList'][$key]['groups'])) {
+            if(in_array('Administrators',$data->output['userList'][$key]['groups'])) {
+                $admin=true;
+            }
+        }
+        $self=false;
+        if($data->user['id']==$user['id']) {
+            $self=true;
+        }
+		theme_usersListTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],$data->linkRoot,$key,$admin,$self);
 		
 	}
 	theme_usersListTableFoot($data->linkRoot);

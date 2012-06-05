@@ -150,69 +150,91 @@ $this->fields=array(
 		'compareFailMessage' => 'The passwords you entered do not match!'
 	)
 );
-foreach($data->output['groupList'] as $key => $value) {
-    $checked='';
-    $expires='Never';
-    if(isset($data->output['userGroupList'])) {
-        foreach($data->output['userGroupList'] as $subKey => $subValue) {
-            if($subValue['groupName']==$value['groupName']) {
-                // User must be already a member of the group
-                $checked='checked';
-                // Find out when the group expires
-                if($subValue['expires']==0) {
-                    $expires='Never';
-                } else {
-                    $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+foreach($data->output['groupList'] as $value) {
+    if(checkPermission($value,'userGroups',$data)) {
+        $checked='';
+        $expires='Never';
+        if(isset($data->output['userGroupList'])) {
+            foreach($data->output['userGroupList'] as $subKey => $subValue) {
+                if($subValue['groupName']==$value['groupName']) {
+                    // User must be already a member of the group
+                    $checked='checked';
+                    // Find out when the group expires
+                    if($subValue['expires']==0) {
+                        $expires='Never';
+                    } else {
+                        $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+                    }
                 }
             }
         }
-    }
-    $this->fields[$value['groupName']]=array(
-        'label'   => $value['groupName'],
-        'tag'     => 'input',
-        'group'   => 'User Groups',
-        'value'   => 'checked',
-        'checked' => $checked,
-        'params' => array(
-            'type' => 'checkbox'
-        )
-    );
-    $this->fields[$value['groupName'].'_expiration']=array(
-        'label' => 'Expires',
-        'tag' => 'span',
-        'value' => $expires,
+        $this->fields[$value['groupName']]=array(
+            'label'   => $value['groupName'],
+            'tag'     => 'input',
+            'group'   => 'User Groups',
+            'value'   => 'checked',
+            'checked' => $checked,
+            'params' => array(
+                'type' => 'checkbox'
+            )
+        );
+        $this->fields[$value['groupName'].'_expiration']=array(
+            'label' => 'Expires',
+            'tag' => 'span',
+            'value' => $expires,
 
-    );
-    $this->fields[$value['groupName'].'_update']=array(
-        'label'   => 'Update Expiration',
-        'tag'     => 'select',
-        'group'   => 'User Groups',
-        'options' => array(
-            'No change',
-            'Never',
-            '15 minutes',
-            '1 hour',
-            '2 hours',
-            '1 day',
-            '2 days',
-            '1 week'
-        ),
-        'value'   => 'No change'
-    );
+        );
+        $this->fields[$value['groupName'].'_update']=array(
+            'label'   => 'Update Expiration',
+            'tag'     => 'select',
+            'group'   => 'User Groups',
+            'options' => array(
+                'No change',
+                'Never',
+                '15 minutes',
+                '1 hour',
+                '2 hours',
+                '1 day',
+                '2 days',
+                '1 week'
+            ),
+            'value'   => 'No change'
+        );
+        if(isset($data->output['userForm']['permissions']['userGroups']['permissions']['allow'])) {
+            if($data->output['userForm']['permissions']['userGroups']['permissions']['allow']) {
+                $state='Allow';
+            } else {
+                $state='Forbid';
+            }
+        } else {
+            $state='Inherited';
+        }
+        $this->fields['userGroups_'.$value['groupName']]=array(
+            'label'   => 'Manage Membership',
+            'tag'     => 'select',
+            'group'   => 'User Groups',
+            'options' => array(
+                'Allow',
+                'Inherited',
+                'Forbid'
+            ),
+            'value'   => $state
+        );
+    }
 }
 foreach($data->permissions as $category => $permissions) {
-    foreach($permissions as $permissionName => $permissionDescription) {
-        if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {
-           if($data->output['userForm']['permissions'][$category][$permissionName]['allow']) {
-               $value='Allow';
-           } else {
-               $value='Forbid';
-           }
+    if(checkPermission('permissions',$category,$data)) {
+        if(isset($data->output['userForm']['permissions'][$category]['permissions']['allow'])) {
+            if($data->output['userForm']['permissions'][$category]['permissions']['allow']) {
+                $value='Allow';
+            } else {
+                $value='Forbid';
+            }
         } else {
             $value='Inherited';
         }
-        $this->fields[$category.'_'.$permissionName]=array(
-            'label'   => $permissionDescription,
+        $this->fields[$category.'_permissions']=array(
+            'label'   => 'Manage Permissions',
             'tag'     => 'select',
             'group'   => ucfirst($category).' Permissions',
             'options' => array(
@@ -222,5 +244,28 @@ foreach($data->permissions as $category => $permissions) {
             ),
             'value'   => $value
         );
+        foreach($permissions as $permissionName => $permissionDescription) {
+            if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {
+               if($data->output['userForm']['permissions'][$category][$permissionName]['allow']) {
+                   $value='Allow';
+               } else {
+                   $value='Forbid';
+               }
+            } else {
+                $value='Inherited';
+            }
+            $this->fields[$category.'_'.$permissionName]=array(
+                'label'   => $permissionDescription,
+                'tag'     => 'select',
+                'group'   => ucfirst($category).' Permissions',
+                'options' => array(
+                    'Allow',
+                    'Inherited',
+                    'Forbid'
+                ),
+                'value'   => $value
+            );
+        }
     }
 }
+?>
