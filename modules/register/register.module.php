@@ -75,8 +75,7 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
 }
 function page_buildContent($data,$db) {
 	
-	if(isset($data->user['id']))
-	{
+	if(isset($data->user['id'])) {
 		common_redirect_local($data, 'default');
 	}
 	
