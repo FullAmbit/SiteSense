@@ -107,7 +107,6 @@ function page_buildContent($data,$db) {
 		$catList = $statement->fetchAll();
 		foreach($catList as $catItem)
 		{
-			//var_dump($catItem);
 			$data->output['rssCategoryList'][$catItem['id']] = $catItem;
 		}
 		
@@ -217,15 +216,14 @@ function page_buildContent($data,$db) {
 		}
 		if(($data->output['newsList'][0]['allowComments'] == '1'))
 		{
-			$data->output['commentForm'] = new formHandler('blogcomment',$data);
+			$data->output['commentForm'] = new formHandler('comment',$data);
 			$data->output['commentForm']->fields['post']['value'] = $data->output['newsList'][0]['id'];
 			
-			if (($data->output['blogInfo']['commentsRequireLogin'] == 0 || isset($data->user['id'])) && isset($_POST['fromForm']) && ($_POST['fromForm']==$data->output['commentForm']->fromForm)){
+			if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->output['commentForm']->fromForm){
 				$data->output['commentForm']->populateFromPostData();
 				if ($data->output['commentForm']->validateFromPost())
 				{
 					$statement=$db->prepare('makeComment','blogs');
-					//$data->output['commentForm']->sendArray[':comment'] = htmlspecialchars($data->output['commentForm']->sendArray[':comment']);
 					
 					// BBCode Parsing //
 					if($data->settings['useBBCode'] == '1')
@@ -248,7 +246,8 @@ function page_buildContent($data,$db) {
 			}
 		}
 	}
-	// Call The Theme Functions And Generate The Post
+
+	// Call The Theme Functions And Generate The Posts
 	foreach($data->output['newsList'] as &$item)
 	{
 		$statement=$db->prepare('getApprovedCommentsByPost','blogs');

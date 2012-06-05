@@ -85,8 +85,8 @@ class formHandler {
             $moduleName=array_search($data->action[1],$data->output['moduleShortName']);
             $target='modules/'.$moduleName.'/admin/forms/'.$moduleName.'.admin.form.'.$dataName.'.php';
         } else {
-            $moduleName=array_search($data->action[0],$data->ouput['moduleShortName']);
-            $target='modules/'.$moduleName.'/forms/'.$moduleName.'.form.'.$dataName.'php';
+            $moduleName=array_search($data->action[0],$data->output['moduleShortName']);
+            $target='modules/'.$moduleName.'/forms/'.$moduleName.'.form.'.$dataName.'.php';
         }
 		require_once($target);
 		//And some defaults for the form items.
@@ -101,7 +101,7 @@ class formHandler {
 		);
         $hiddenFields=array();
         foreach($this->fields as $field => $fieldData){
-            if($fieldData['tag']=='span'){
+            if(isset($fieldData['tag']) && $fieldData['tag']=='span'){
                 $hiddenFields[$field.'_hidden']= array(
                     'tag' => 'input',
                     'params' => array(

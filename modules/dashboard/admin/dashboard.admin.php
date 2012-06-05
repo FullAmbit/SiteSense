@@ -22,6 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+
 function admin_buildContent($data,$db) {
 	$info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');
@@ -37,7 +38,7 @@ function admin_buildContent($data,$db) {
 	$info['Host OS']=PHP_OS;
 	$data->output['secondSidebar']='
 	<table class="sysInfo">
-		<caption>System Information</caption>
+		<caption>System kuhuhkuhkhku</caption>
 		';
 	foreach ($info as $title => $value) {
 		if (is_array($value)) {

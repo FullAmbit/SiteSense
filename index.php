@@ -22,6 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+ini_set("date.timezone","America/New_York");
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
@@ -607,10 +608,13 @@ final class sitesense {
 			}
 		}
 		// Parse Sidebars Before Display
-		foreach($sidebars as $sidebar) {
-			common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
-			common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
-			$this->sidebarList[$sidebar['side']][]=$sidebar;
+		if(isset($sidebars))
+		{
+			foreach($sidebars as $sidebar) {
+				common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
+				common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
+				$this->sidebarList[$sidebar['side']][]=$sidebar;
+			}
 		}
 		$this->db=null;
 		if ($this->compressionType) {

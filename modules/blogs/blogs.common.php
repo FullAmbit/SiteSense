@@ -79,7 +79,10 @@ function blog_pageContent($data,$firstPagination=false,$secondPagination=false,$
 			$data->localRoot.'/'
 		);
 	}
+	$count = count($data->output['newsList']);
+	
 	foreach ($data->output['newsList'] as $newsItem) {
+		
 		// What's The Author's Name? Scan The User's Array. Better Than Running A Crapton of Queries.
 		foreach($data->output['usersList'] as $userItem)
 		{
@@ -105,7 +108,7 @@ function blog_pageContent($data,$firstPagination=false,$secondPagination=false,$
 		);
 	}
 	if($summarize) {
-    theme_contentBoxFooter();
+    	theme_contentBoxFooter();
 	}
 }
 ?>
