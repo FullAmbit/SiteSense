@@ -79,262 +79,202 @@ function checkUserName($name,$db) {
 	$statement->execute(array(':name' => $name));
 	return $statement->fetchColumn();
 }
-function build_edit($data, $db){
-	$data->output['userForm'] = new formHandler('user', $data);
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)){
-		$data->output['userForm']->populateFromPostData();
-		if ($data->output['userForm']->validateFromPost()) {
-			unset($data->output['userForm']->sendArray[':password2']);
-			if ($data->output['userForm']->sendArray[':password']=='') {
-				$statement=$db->prepare('updateUserByIdNoPw','users');
-				unset($data->output['userForm']->sendArray[':password']);
-				$data->output['userForm']->sendArray[':id']=$data->user['id'];
-			} else {
-				$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
-				$statement=$db->prepare('updateUserById','users');
-				$data->output['userForm']->sendArray[':id']=$data->user['id'];
-			}
-			$statement->execute($data->output['userForm']->sendArray);
-			if (empty($data->output['secondSidebar'])) {
-				$data->output['savedOkMessage']='
+function page_buildContent($data,$db) {
+	switch($data->action[1]){
+		case 'edit':
+            $data->output['userForm'] = new formHandler('user', $data);
+            if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)){
+                $data->output['userForm']->populateFromPostData();
+                if ($data->output['userForm']->validateFromPost()) {
+                    unset($data->output['userForm']->sendArray[':password2']);
+                    if ($data->output['userForm']->sendArray[':password']=='') {
+                        $statement=$db->prepare('updateUserByIdNoPw','users');
+                        unset($data->output['userForm']->sendArray[':password']);
+                        $data->output['userForm']->sendArray[':id']=$data->user['id'];
+                    } else {
+                        $data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
+                        $statement=$db->prepare('updateUserById','users');
+                        $data->output['userForm']->sendArray[':id']=$data->user['id'];
+                    }
+                    $statement->execute($data->output['userForm']->sendArray);
+                    if (empty($data->output['secondSidebar'])) {
+                        $data->output['savedOkMessage']='
 						<h2>User Details Saved Successfully</h2>
 						<p>You will be redirected to your user page shortly.</p>
 					' . _common_timedRedirect($data->linkRoot . 'users');
-			}
-		} else {
-			/*
-			 invalid data, so we want to show the form again
-			*/
-			$data->output['secondSidebar']='
+                    }
+                } else {
+                    /*
+                  invalid data, so we want to show the form again
+                 */
+                    $data->output['secondSidebar']='
 					<h2>Error in Data</h2>
 					<p>
 						There were one or more errors. Please correct the fields with the red X next to them and try again.
 					</p>';
-			if ($data->output['userForm']->sendArray[':password'] != $data->output['userForm']->sendArray[':password2']) {
-				$data->output['secondSidebar'].='
+                    if ($data->output['userForm']->sendArray[':password'] != $data->output['userForm']->sendArray[':password2']) {
+                        $data->output['secondSidebar'].='
 					<p>
 						<strong>Password fields do not match!</strong>
 					</p>';
-				$data->output['userForm']->fields['password']['error']=true;
-				$data->output['userForm']->fields['password2']['error']=true;
-			}
-		}
-	} else {
-		$data->output['userForm']->caption='Editing User Details';
-		$statement=$db->prepare('getById','users');
-		$statement->execute(array(
-				':id' => $data->user['id']
-		));
-		if (false !== ($item = $statement->fetch())) {
-			foreach ($data->output['userForm']->fields as $key => $value) {
-				if (empty($value['params']['type'])){
-					$value['params']['type'] = '';
-					switch ($value['params']['type']) {
-						case 'checkbox':
-							$data->output['userForm']->fields[$key]['checked']=(
-							$item[$key] ? 'checked' : ''
-							);
-							break;
-						case 'password':
-							/* NEVER SEND PASSWORD TO A FORM!!! */
-							break;
-						default:
-							$data->output['userForm']->fields[$key]['value']=$item[$key];
-					}
-				}
-			}
-		}
-	}}
-	
-function build_default($data, $db) {
-}
-function build_activate($data, $db) {
-}
-function build_register($data,$db) {
-
-    if(isset($data->user['id'])) {
-        common_redirect_local($data, 'default');
-    }
-
-    require_once('libraries/forms.php');
-    $data->output['registerForm']=new formHandler('register',$data);
-    $data->output['showForm']=true;
-    $data->output['messages']=array();
-    if (
-        isset($_POST['fromForm']) &&
-        ($_POST['fromForm']==$data->output['registerForm']->fromForm)
-    ) {
-        $data->output['registerForm']->populateFromPostData();
-        if ($data->output['registerForm']->validateFromPost()) {
-            if ($data->getUserIdByName($data->output['registerForm']->sendArray[':name'])) {
-                $data->output['registerForm']->fields['name']['error']='true';
-                $data->output['registerForm']->fields['name']['errorList'][]='Name already exists';
+                        $data->output['userForm']->fields['password']['error']=true;
+                        $data->output['userForm']->fields['password2']['error']=true;
+                    }
+                }
             } else {
-                unset($data->output['registerForm']->sendArray[':password2']);
-                unset($data->output['registerForm']->sendArray[':verifyEMail']);
-                $data->output['registerForm']->sendArray[':registeredDate']=$data->output['registerForm']->sendArray[':lastAccess']=common_formatDatabaseTime();
-                $data->output['registerForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
-                /**
-                 * Deprecated, we don't use USERLEVEL anymore. But we should still add a group for unactivated users.
-                // Do We Require Any Form Of Activation?
-                if($data->settings['verifyEmail'] == 0 && $data->settings['requireActivation'] == 0)
-                {
-                    $data->output['registerForm']->sendArray[':userLevel'] = USERLEVEL_USER;
-                } else {
-                    $data->output['registerForm']->sendArray[':userLevel'] = 0;
-                }
-                **/
-                $data->output['registerForm']->sendArray[':publicEMail']='';
-                $data->output['registerForm']->sendArray[':emailVerified'] = ($data->settings['verifyEmail'] == 1) ? 0 : 1;
-                $data->output['registerForm']->sendArray[':password']=hash(
-                    'sha256',
-                    $data->output['registerForm']->sendArray[':password']
-                );
-                $statement=$db->prepare('insertUser','users');
-
-                $statement->execute($data->output['registerForm']->sendArray) or die('Saving user failed');
-                $userId = $db->lastInsertId();
-                $profileAlbum = $db->prepare('addAlbum', 'gallery');
-                $profileAlbum->execute(array(':user' => $userId, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
-                $hash=md5(common_randomPassword(32,32));
-
-                // Do We Require E-Mail Verification??
-                if($data->settings['verifyEmail'] == 1)
-                {
-                    $statement=$db->prepare('insertActivationHash','users');
-                    $statement->execute(array(
-                        ':userId' => $userId,
-                        ':hash' => $hash,
-                        ':expires' => time()+(14*24*360)
-                    ));
-                    sendActivationEMail($data,$db,$userId,$hash,$data->output['registerForm']->sendArray[':contactEMail']);
-                } else if($data->settings['requireActivation'] == 0)
-                {
-                    $data->output['messages'][]='
-						<p>
-							Your account has been registered.
-							<a href="'.$data->linkRoot.'login">Click here to Log in</a>
-						</p>';
-                } else if($data->settings['requireActivation'] == 1)
-                {
-                    $data->output['messages'][]='
-						<p>
-							Your account has been registered and is awaiting administrator approval.
-						</p>';
-                }
-
-                $data->output['showForm']=false;
-            }
-        }
-    } else {
-        switch ($data->action[1]) {
-            case 'activate':
-                $data->output['showForm']=false;
-                $userId=$data->action[2];
-                $hash=$data->action[3];
-                /*
-                We have to use a var for time so as to not have accounts
-                'slip through the cracks' waiting for the queries to execute
-            */
-                $expireTime=time();
-                $statement=$db->prepare('getExpiredActivations','register');
-                $statement->execute(array(':expireTime' => $expireTime));
-                $delStatement=$db->prepare('deleteUserById','register');
-                while ($user=$statement->fetch()) {
-                    $delStatement->execute(array(':userId' => $user['userId']));
-                }
-                $statement=$db->prepare('expireActivationHashes','register');
-                $statement->execute(array(':expireTime' => $expireTime));
-                $statement=$db->prepare('checkActivationHash','register');
+                $data->output['userForm']->caption='Editing User Details';
+                $statement=$db->prepare('getById','users');
                 $statement->execute(array(
-                    ':userId' => $userId,
-                    ':hash' => $hash
+                    ':id' => $data->user['id']
                 ));
-                if ($attemptExpires=$statement->fetchColumn()) {
-                    // Set Email Verified To True
-                    $statement = $db->prepare('updateEmailVerification','register');
-                    $statement->execute(array(
-                        ':userId' => $userId
-                    ));
-                    // If Email Verification Is Enough, Then Activate The User.
-                    if($data->settings['requireActivation'] == 0)
-                    {
-                        $statement=$db->prepare('activateUser','register');
-                        $statement->execute(array(
-                            ':userId' => $userId
-                        ));
+                if (false !== ($item = $statement->fetch())) {
+                    foreach ($data->output['userForm']->fields as $key => $value) {
+                        if (empty($value['params']['type'])){
+                            $value['params']['type'] = '';
+                            switch ($value['params']['type']) {
+                                case 'checkbox':
+                                    $data->output['userForm']->fields[$key]['checked']=(
+                                    $item[$key] ? 'checked' : ''
+                                    );
+                                    break;
+                                case 'password':
+                                    /* NEVER SEND PASSWORD TO A FORM!!! */
+                                    break;
+                                default:
+                                    $data->output['userForm']->fields[$key]['value']=$item[$key];
+                            }
+                        }
                     }
-                    $statement=$db->prepare('deleteActivation','register');
-                    $statement->execute(array(
-                        ':userId' => $userId,
-                        ':hash' => $hash
-                    ));
-                    if($data->settings['requireActivation'] == 0)
-                    {
-                        $data->output['messages'][]='
-							<p>
-								Your account has been activated.
-								<a href="'.$data->linkRoot.'login">Click here to Log in</a>
-							</p>
-						';
-                    } else {
-                        $data->output['messages'][]='
-							<p>
-								Your email address have been verified. Please wait for an administrator to review and activate your account.
-							</p>
-						';
-                    }
-                } else {
-                    $data->output['messages'][]='
-						<p>
-							That user ID or Security Code do not exist in our database. Activation Codes are removed after two weeks. Please try and resubmit your activation.
-						</p>
-					';
                 }
-                break;
-            case 'lostPassword':
-                /* lost password handler here */
-            default:
-                /* no default as yet, just show form */
-        }
-    }
-}
-
-function page_buildContent($data,$db)
-{
-	if(!isset($data->action[1])) {
-		$data->action[1] = 'default';
-	}
-	
-	if(function_exists('build_'.$data->action[1])) {
-		call_user_func('build_'.$data->action[1],$data,$db);
-	}
-	
-	/**switch($data->action[1]){
-		case 'edit':
-			build_edit($data, $db);
-		break;
-		case 'default':
-			build_default($data, $db);
-		break;
-		case 'activate':
-			build_activate($data,$db);
+            }
 		break;
 		case 'register':
-			build_register($data,$db);
-		break;
-	}**/
+            if(isset($data->user['id'])) {
+                common_redirect_local($data,'default');
+            }
+            require_once('libraries/forms.php');
+            $data->output['registerForm']=new formHandler('register',$data);
+            $data->output['showForm']=true;
+            $data->output['messages']=array();
+            if(isset($_POST['fromForm'])&&($_POST['fromForm']==$data->output['registerForm']->fromForm)) {
+                $data->output['registerForm']->populateFromPostData();
+                if($data->output['registerForm']->validateFromPost()) {
+                    if($data->getUserIdByName($data->output['registerForm']->sendArray[':name'])) {
+                        $data->output['registerForm']->fields['name']['error']='true';
+                        $data->output['registerForm']->fields['name']['errorList'][]='Name already exists';
+                    } else {
+                        unset($data->output['registerForm']->sendArray[':password2']);
+                        unset($data->output['registerForm']->sendArray[':verifyEMail']);
+                        $data->output['registerForm']->sendArray[':registeredDate']=$data->output['registerForm']->sendArray[':lastAccess']=common_formatDatabaseTime();
+                        $data->output['registerForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
+                        $data->output['registerForm']->sendArray[':publicEMail']='';
+                        $data->output['registerForm']->sendArray[':emailVerified']=($data->settings['verifyEmail'] == 1) ? 0 : 1;
+                        $data->output['registerForm']->sendArray[':password']=hash(
+                            'sha256',
+                            $data->output['registerForm']->sendArray[':password']
+                        );
+                        $statement=$db->prepare('insertUser','users');
+                        $statement->execute($data->output['registerForm']->sendArray) or die('Saving user failed');
+                        $userId = $db->lastInsertId();
+                        $profileAlbum = $db->prepare('addAlbum','gallery');
+                        $profileAlbum->execute(array(':user' => $userId,':name' => 'Profile Pictures',':shortName' => 'profile-pictures','allowComments' => 0));
+                        $hash=md5(common_randomPassword(32,32));
+                        // Do We Require E-Mail Verification??
+                        if($data->settings['verifyEmail'] == 1) {
+                            $statement=$db->prepare('insertActivationHash','users');
+                            $statement->execute(array(
+                                ':userId' => $userId,
+                                ':hash' => $hash,
+                                ':expires' => time()+(14*24*360)
+                            ));
+                            sendActivationEMail($data,$db,$userId,$hash,$data->output['registerForm']->sendArray[':contactEMail']);
+                        } else if($data->settings['requireActivation'] == 0) {
+                            $data->output['messages'][]='
+                                            <p>
+                                                Your account has been registered.
+                                                <a href="'.$data->linkRoot.'login">Click here to Log in</a>
+                                            </p>';
+                        } else if($data->settings['requireActivation'] == 1) {
+                            $data->output['messages'][]='
+                                            <p>
+                                                Your account has been registered and is awaiting administrator approval.
+                                            </p>';
+                        }
+                        $data->output['showForm']=false;
+                    }
+                }
+            } else {
+                switch ($data->action[2]) {
+                    case 'activate':
+                        $data->output['showForm']=false;
+                        $userId=$data->action[3];
+                        $hash=$data->action[4];
+                        /*
+                            We have to use a var for time so as to not have accounts
+                            'slip through the cracks' waiting for the queries to execute
+                        */
+                        $expireTime=time();
+                        $statement=$db->prepare('getExpiredActivations','register');
+                        $statement->execute(array(':expireTime' => $expireTime));
+                        $delStatement=$db->prepare('deleteUserById','register');
+                        while($user=$statement->fetch()) {
+                            $delStatement->execute(array(':userId' => $user['userId']));
+                        }
+                        $statement=$db->prepare('expireActivationHashes','register');
+                        $statement->execute(array(':expireTime' => $expireTime));
+                        $statement=$db->prepare('checkActivationHash','register');
+                        $statement->execute(array(
+                            ':userId' => $userId,
+                            ':hash' => $hash
+                        ));
+                        if($attemptExpires=$statement->fetchColumn()) {
+                            // Set Email Verified To True
+                            $statement = $db->prepare('updateEmailVerification','register');
+                            $statement->execute(array(
+                                ':userId' => $userId
+                            ));
+                            // If Email Verification Is Enough, Then Activate The User.
+                            if($data->settings['requireActivation'] == 0) {
+                                $statement=$db->prepare('activateUser','register');
+                                $statement->execute(array(
+                                    ':userId' => $userId
+                                ));
+                            }
+                            $statement=$db->prepare('deleteActivation','register');
+                            $statement->execute(array(
+                                ':userId' => $userId,
+                                ':hash' => $hash
+                            ));
+                            if($data->settings['requireActivation']==0) {
+                                $data->output['messages'][]='
+                                        <p>
+                                            Your account has been activated.
+                                            <a href="'.$data->linkRoot.'login">Click here to Log in</a>
+                                        </p>
+                                    ';
+                            } else {
+                                $data->output['messages'][]='
+                                        <p>
+                                            Your email address have been verified. Please wait for an administrator to review and activate your account.
+                                        </p>
+                                    ';
+                            }
+                        } else {
+                            $data->output['messages'][]='
+                                    <p>
+                                        That user ID or Security Code do not exist in our database. Activation Codes are removed after two weeks. Please try and resubmit your activation.
+                                    </p>
+                                ';
+                        }
+                    break; // case 'activate'
+                }
+            }
+	    break; // case 'register'
+	}
 }
-	
 function page_content($data){
 	$data->loadModuleTemplate('users');
 	switch($data->action[1]){
-		case 'default':
-		default:
-			theme_contentBoxHeader('User Control Panel');
-			theme_default($data);
-			theme_contentBoxFooter();
-		break;
 		case 'edit':
 			theme_contentBoxHeader('Editing User Details');
 			//theme_EditSettings($data);
