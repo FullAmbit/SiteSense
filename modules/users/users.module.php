@@ -82,7 +82,11 @@ function checkUserName($name,$db) {
 function page_buildContent($data,$db) {
 	switch($data->action[1]){
 		case 'edit':
-            $data->output['userForm'] = new formHandler('user', $data);
+			// Check If Logged In
+			if(!isset($data->user['id'])){
+				common_redirect_local($data, 'users/login/');
+			}
+            $data->output['userForm'] = new formHandler('edit', $data);
             if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)){
                 $data->output['userForm']->populateFromPostData();
                 if ($data->output['userForm']->validateFromPost()) {
@@ -101,7 +105,7 @@ function page_buildContent($data,$db) {
                         $data->output['savedOkMessage']='
 						<h2>User Details Saved Successfully</h2>
 						<p>You will be redirected to your user page shortly.</p>
-					' . _common_timedRedirect($data->linkRoot . 'users');
+					' . _common_timedRedirect($data->linkRoot . 'users/');
                     }
                 } else {
                     /*
@@ -276,10 +280,14 @@ function page_content($data){
 	$data->loadModuleTemplate('users');
 	switch($data->action[1]){
 		case 'edit':
-			theme_contentBoxHeader('Editing User Details');
-			//theme_EditSettings($data);
-			theme_buildForm($data->output['userForm']);
-			theme_contentBoxFooter();
+			if(isset($data->output['savedOkMessage'])) {
+				echo $data->output['savedOkMessage'];
+			} else {
+				theme_contentBoxHeader('Editing User Details');
+				//theme_EditSettings($data);
+				theme_buildForm($data->output['userForm']);
+				theme_contentBoxFooter();
+			}
 		break;
         case 'login':
             theme_contentBoxHeader('User Login');

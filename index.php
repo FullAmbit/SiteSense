@@ -417,7 +417,8 @@ final class sitesense {
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
 		// If a logged in user who is not banned is trying to logout...
         if (!$this->banned &&
-			($this->currentPage=='logout') &&
+			($this->currentPage=='users') &&
+			($this->action[1] == 'logout') &&
 			(!empty($_COOKIE[$userCookieName]))
 		) {	// Logout
             setCookie($userCookieName,'',0,$this->linkHome);
