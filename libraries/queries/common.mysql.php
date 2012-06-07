@@ -377,7 +377,7 @@ function common_addQueries() {
             (:name,:enabled)
         ',
         'findReplacement' => '
-            SELECT * FROM !prefix!url_remap WHERE :url RLIKE `match`
+            SELECT * FROM !prefix!url_remap WHERE !prefix!url_remap.match RLIKE :url
         '
     );
 }

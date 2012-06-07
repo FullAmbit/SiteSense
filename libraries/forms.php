@@ -76,6 +76,7 @@ class formHandler {
 		if($data !== false){
 			$this->action = $data->linkRoot . implode('/', array_filter($data->action));
 			$this->ajax = ($data->currentPage == 'ajax') ? true : false;
+			$this->ajaxLink = $data->linkRoot . 'ajax/' . implode('/', array_filter($data->action));
 		}
 		$this->randomName = substr(md5(rand() * time()),0,10);
 		$this->formPrefix = $dataName . '_';

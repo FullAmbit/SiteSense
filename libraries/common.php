@@ -156,9 +156,7 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 		$blockInfo=explode('_',$originalBlockName);
 		$target = 'modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php';
 		if(file_exists('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php')) {
-			
 			common_include('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php');
-			
 			$attributes = array(false);
 			$attributesString = $matches[2][$key];
 			$attributes = explode(',',$attributesString);

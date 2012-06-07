@@ -291,7 +291,7 @@ function page_content($data){
 		break;
         case 'login':
             theme_contentBoxHeader('User Login');
-            $data->loadModuleTemplate('loginForm');
+            $data->loadModuleTemplate('users');
             theme_loginForm($data);
             theme_contentBoxFooter();
         break;

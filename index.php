@@ -214,6 +214,9 @@ final class sitesense {
 	private $db;
 
     public function __construct() {
+    	
+    	// Database connection
+    	$this->db=new dynamicPDO();
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -227,12 +230,17 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		} 
 		$queryString=trim($queryString,'/'); 
-		// Break URL up into action array
-        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);
-
-        // Database connection
-    	$this->db=new dynamicPDO();
-
+    	$statement = $this->db->prepare("findReplacement");
+    	$statement->execute(array(':url' => $queryString));
+    	if(($row = $statement->fetch()) !== FALSE)
+    	{
+			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+    	}
+        
+        // Break URL up into action array
+        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
+          
+        
         // Install
         if ($this->action[0]=='install') {
 			$data=$this->db;
@@ -361,7 +369,7 @@ final class sitesense {
 							$this->module = $moduleQuery->fetch();
 						}else{
                             // Check to see if it is a page:
-							$statement = $this->db->prepare('getPageByShortNameAndParent', 'page');
+							$statement = $this->db->prepare('getPageByShortNameAndParent', 'pages');
 							$statement->execute(
 								array(
 									':shortName' => $this->currentPage,
@@ -591,22 +599,12 @@ final class sitesense {
 			$this->loadModuleTemplate($this->module['name']);
 		}
 		// Get the plugins for this module
-		
 		$statement=$this->db->query('getEnabledPlugins');
 		$plugins=$statement->fetchAll();
 		foreach($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
-		}
-		// Is this an AJAX request?
-		if($this->action[0]=='ajax') {
-            ajax_buildContent($this,$this->db);
-		} else {
-		// Nope, this is a normal page request
-			if (function_exists('page_buildContent')) {
-				page_buildContent($this,$this->db);
-			}
 		}
 		// Parse Sidebars Before Display
 		if(isset($sidebars))
@@ -617,6 +615,16 @@ final class sitesense {
 				$this->sidebarList[$sidebar['side']][]=$sidebar;
 			}
 		}
+		// Is this an AJAX request?
+		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
+            ajax_buildContent($this,$this->db);
+		} else {
+			// Nope, this is a normal page request
+			if (function_exists('page_buildContent')) {
+				page_buildContent($this,$this->db);
+			}
+		}
+		
 		$this->db=null;
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
@@ -643,6 +651,7 @@ final class sitesense {
 				);
 			}
 		}
+		
 		theme_header($this);
 		page_content($this);
 		

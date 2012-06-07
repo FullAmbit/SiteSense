@@ -23,6 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function page_buildContent($data,$db) {
+	if(!isset($data->user['id'])) {
+		common_redirect('users/register/',$data);
+	}
 	require_once('modules/blogs/blogs.common.php');
 	$db->loadModuleQueries('blogs');
 	$statement=$db->query('getAllNews');
