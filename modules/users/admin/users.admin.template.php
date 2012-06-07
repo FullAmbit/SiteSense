@@ -98,7 +98,7 @@ function theme_usersListTableHead($userList,$userListStart) {
 			</thead><tbody>';
 }
 
-function theme_usersListTableRow($userId,$userName,$firstName,$lastName,$contactEMail,$linkRoot,$key) {
+function theme_usersListTableRow($userId,$userName,$firstName,$lastName,$contactEMail,$linkRoot,$key,$admin,$self) {
 	echo '';
     echo '
 		<tr class="',($key%2==0 ? 'even' : 'odd'),'">
@@ -111,11 +111,17 @@ function theme_usersListTableRow($userId,$userName,$firstName,$lastName,$contact
 			<td class="firstName">',$firstName,'</td>
 			<td class="lastName">',$lastName,'</td>
 			<td class="contactEmail">',$contactEMail,'</td>
-			<td class="buttonList">
-				<a href="'.$linkRoot.'admin/users/edit/'.$userId.'">Edit</a>
-				<a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>
-			</td>
-		</tr>';
+			<td class="buttonList">';
+    if(!$admin) {
+		echo '<a href="'.$linkRoot.'admin/users/edit/'.$userId.'">Edit</a>
+			  <a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>';
+    } else {
+        if($self) {
+            echo '<a href="'.$linkRoot.'admin/users/edit/'.$userId.'">Edit</a>
+                  <a href="'.$linkRoot.'admin/users/delete/'.$userId.'">Delete</a>';
+        }
+    }
+    echo '</td></tr>';
 }
 
 function theme_usersListTableFoot($linkRoot) {

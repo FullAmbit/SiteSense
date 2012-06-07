@@ -41,21 +41,37 @@ $this->fields=array(
 	)
 );
 foreach($data->permissions as $category => $permissions) {
-    foreach($permissions as $permissionName => $permissionDescription) {
-        $this->fields[$category.'_'.$permissionName]=array(
-                'label'   => $permissionDescription,
-                'tag'     => 'input',
-                'group'   => ucfirst($category).' Permissions',
-                'value'   => '1',
-                'checked' => (
-                    isset($data->output['permissionGroup']['permissions'][$category])
-                    && in_array($permissionName,$data->output['permissionGroup']['permissions'][$category]))
-                    ? 'checked'
-                    : '',
-                'params' => array(
-                    'type' => 'checkbox'
-                )
+    if(checkPermission('permissions',$category,$data)) {
+        $this->fields[$category.'_permissions']=array(
+            'label'   => 'Manage Permissions',
+            'tag'     => 'input',
+            'group'   => ucfirst($category).' Permissions',
+            'value'   => '1',
+            'checked' => (
+                isset($data->output['permissionGroup']['permissions'][$category])
+                    && in_array('permissions',$data->output['permissionGroup']['permissions'][$category]))
+                ? 'checked'
+                : '',
+            'params' => array(
+                'type' => 'checkbox'
+            )
         );
+        foreach($permissions as $permissionName => $permissionDescription) {
+            $this->fields[$category.'_'.$permissionName]=array(
+                    'label'   => $permissionDescription,
+                    'tag'     => 'input',
+                    'group'   => ucfirst($category).' Permissions',
+                    'value'   => '1',
+                    'checked' => (
+                        isset($data->output['permissionGroup']['permissions'][$category])
+                        && in_array($permissionName,$data->output['permissionGroup']['permissions'][$category]))
+                        ? 'checked'
+                        : '',
+                    'params' => array(
+                        'type' => 'checkbox'
+                    )
+            );
+        }
     }
 }
 ?>

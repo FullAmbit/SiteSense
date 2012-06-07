@@ -31,7 +31,7 @@ function users_startup($data,$db) {
         'ban'                  => 'Ban Users',
         'edit'                 => 'Edit Users',
         'delete'               => 'Delete Users',
-        'permissions'          => 'Manage User Groups'
+        'groups'               => 'Manage User Groups'
     );
 }
 ?>

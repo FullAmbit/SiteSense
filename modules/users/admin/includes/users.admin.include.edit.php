@@ -49,6 +49,26 @@ function admin_usersBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
+    // Admin check
+    $admin=false;
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID'   => $data->action[3]
+    ));
+    $groups=$statement->fetchAll();
+    foreach($groups as $group) {
+        if($group['groupName']=='Administrators') {
+            $admin=true;
+        }
+    }
+    if($admin) {
+        // Admins can only edit themselves
+        if($data->user['id']!==$data->action[3]) {
+            $data->output['abort'] = true;
+            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            return;
+        }
+    }
     // Load all groups
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
@@ -188,6 +208,9 @@ function admin_usersBuild($data,$db) {
             ));
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
+                if(!isset($permissions['permissions'])) {
+                        $permissions['permissions']='Manage Permissions';
+                }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
                         if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {

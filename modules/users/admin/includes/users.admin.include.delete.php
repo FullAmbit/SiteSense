@@ -29,6 +29,26 @@ function admin_usersBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
+    // Admin check
+    $admin=false;
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID'   => $data->action[3]
+    ));
+    $groups=$statement->fetchAll();
+    foreach($groups as $group) {
+       if($group['groupName']=='Administrators') {
+           $admin=true;
+       }
+    }
+    if($admin) {
+        // Admins can only delete themselves
+        if($data->user['id']!==$data->action[3]) {
+            $data->output['abort'] = true;
+            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            return;
+        }
+    }
 	$data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
