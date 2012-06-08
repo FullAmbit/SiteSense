@@ -49,18 +49,12 @@ function page_buildContent($data,$db) {
 	define('LOGGEDIN', 1);
 	define('OWNER', 2);
 	$pageType = 'NotFound';
-	// The album/image belongs to a user, so find who it is!
-	if($data->action[1] === false){
-		//The user's own album
-		if(isset($data->user['id'])){
-			$data->output['user'] = $data->user;
-		}else{
-			$data->output['pageType'] = 'AccessDenied';
-			return;			
-		}
+
+	if($data->action[1] === FALSE){
+		$data->output['user'] = $data->user;
 	}else{
 		$userName = $data->action[1];
-		$statement = $db->prepare('getUserByName', 'users');
+		$statement = $db->prepare('getByName', 'users');
 		$statement->execute(array(':name' => $userName));
 		$data->output['user'] = $statement->fetch();
 		if($data->output['user'] === false){
@@ -69,6 +63,7 @@ function page_buildContent($data,$db) {
 			return;
 		}
 	}
+	
 	if(function_exists('theme_getGalleryHome')){
 		$data->output['galleryHome'] = theme_getGalleryHome($data);
 	}else{
@@ -96,6 +91,11 @@ function page_buildContent($data,$db) {
 					$loadAlbum = $data->action[4];
 					$pageType = 'AlbumDelete';
 					$minimumPermissions = OWNER;
+				break;
+				default:
+					$loadUserAlbums = true;
+					$pageType = 'default';
+				break;
 			}
 			break;
 		case 'image':
@@ -150,6 +150,7 @@ function page_buildContent($data,$db) {
 					}
 			}
 			break;
+		default:
 		case false:
 			$pageType = 'Default';
 			$loadUserAlbums = true;
@@ -165,15 +166,14 @@ function page_buildContent($data,$db) {
 	if($prePermissions > $permission){
 		$pageType = 'AccessDenied';
 	}else{
-		if($loadUserAlbums !== false){
-			
+		if($loadUserAlbums){
 			$statement = $db->prepare('getAlbumsByUser', 'gallery');
-			$statement->execute(array('user' => '11'));
+			$statement->execute(array(':userId' => $data->output['user']['id']));
 			$data->output['albums'] = $statement->fetchAll();
 		}
 		if(!is_null($loadAlbum)){
 			$statement = $db->prepare('getAlbumByUserAndShortName', 'gallery');
-			$statement->execute(array('user' => $data->output['user']['id'], 'shortName' => $loadAlbum));
+			$statement->execute(array(':userId' => $data->output['user']['id'], ':shortName' => $loadAlbum));
 			$album = $statement->fetch();
 			if($album === false){
 				$pageType = 'AlbumNotFound';
@@ -181,7 +181,7 @@ function page_buildContent($data,$db) {
 					'shortName' => $loadAlbum
 				);
 			}else{
-				if($permission == LOGGEDIN && $album['user'] == $data->user['id']){
+				if($permission == LOGGEDIN && $album['userId'] == $data->user['id']){
 					$permission = OWNER;
 				}
 				if($minimumPermissions > $permission){
@@ -222,7 +222,7 @@ function page_buildContent($data,$db) {
 function page_manageForms($data, $db){
 	switch($data->output['pageType']){
 		case 'AlbumAdd':
-			$form = $data->output['form'] = new formHandler('galleryAlbum', $data);
+			$form = $data->output['form'] = new formHandler('album', $data);
 			$form->action = $data->output['galleryHome'] . 'album/add';
 			if (isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();

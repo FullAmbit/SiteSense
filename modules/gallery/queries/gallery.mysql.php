@@ -29,14 +29,19 @@
 function gallery_addQueries() {
 	return array(
 		'getAlbumByUserAndShortName' => '
-			SELECT * FROM !prefix!gallery_albums
-			WHERE shortName = :shortName
-			AND user = :user
+			SELECT
+				*
+			FROM
+				!prefix!gallery_albums
+			WHERE
+				shortName = :shortName
+			AND
+				userId = :userId				
 		',
 		'getAlbumsByUser' => '
 			SELECT * FROM !prefix!gallery_albums
-			WHERE user = :user
-			ORDER BY ID DESC
+			WHERE userId = :userId
+			ORDER BY id DESC
 		',
 		'getImagesFromAlbum' => '
 			SELECT * FROM !prefix!gallery_images

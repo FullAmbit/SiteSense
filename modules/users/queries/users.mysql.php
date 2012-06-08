@@ -31,6 +31,14 @@ function users_addQueries() {
 		'getAllUsers' => '
 			SELECT * FROM !prefix!users ORDER BY id ASC
 		',
+		'getByName' => '
+			SELECT
+				*
+			FROM
+				!prefix!users 
+			WHERE
+				name = :name
+		',
 		'getById' => '
 			SELECT * FROM !prefix!users
 			WHERE id = :id

@@ -55,13 +55,13 @@ function page_buildContent($data,$db) {
 			case 'with':
 				// Send Message Form
 				require_once('libraries/forms.php');
-				$statement = $db->prepare('getUserByName', 'users');
+				$statement = $db->prepare('getByName', 'users');
 				$statement->execute(array(':name' => $data->action[2]));
 				$otherUser = $statement->fetch();
 				if($otherUser === false){
 					common_redirect_local($data, 'messages');
 				}
-				$data->output['sendForm'] = new formHandler('sendMessage', $data);
+				$data->output['sendForm'] = new formHandler('send', $data);
 				// Has the form been sent?
 				if (isset($_POST['fromForm']) && ($_POST['fromForm']==$data->output['sendForm']->fromForm)){
 					$data->output['sendForm']->populateFromPostData();

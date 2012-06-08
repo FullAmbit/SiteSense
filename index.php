@@ -228,18 +228,20 @@ final class sitesense {
 			 $queryString=substr($url,strlen($this->linkHome)-1); 
 			// be sure to ===0 since false trips ==0
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
-		} 
-		$queryString=trim($queryString,'/'); 
+		}
+		$queryString = trim($queryString,'/').'/';
+
     	$statement = $this->db->prepare("findReplacement");
     	$statement->execute(array(':url' => $queryString));
     	if(($row = $statement->fetch()) !== FALSE)
     	{
 			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
     	}
-        
+        	
         // Break URL up into action array
+        $queryString = trim($queryString,'/');
+        
         $this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
-          
         
         // Install
         if ($this->action[0]=='install') {
@@ -487,6 +489,11 @@ final class sitesense {
 							':id' => $user['id']
 						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
 
+						
+						/**
+						 *
+						 * Why is this code here?....
+						 * -------
 						//Load profile pictures
 						$profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
 						$profilePictures->execute(array(':user' => $this->user['id']));
@@ -494,11 +501,12 @@ final class sitesense {
 
 						//Load albums
 						$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
-						$albums->execute(array(':user' => $this->user['id']));
+						$albums->execute(array(':userId' => $this->user['id']));
 						$this->user['albums'] = $albums->fetchAll();
+                       
+                        **/
+                        
                         $this->loginResult=true;
-
-
 					}
 				}
 			}

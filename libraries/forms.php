@@ -68,7 +68,7 @@ class formHandler {
 		$randomName = '',
 		$contentAfter,
 		$ajax,
-		$disableAjax = FALSE,
+		$forceAjax = FALSE,
 		$filetypes;
 	function __construct($dataName,$data=false,$admin=false) {
 		
