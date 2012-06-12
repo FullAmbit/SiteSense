@@ -45,16 +45,16 @@ function gallery_addQueries() {
 		',
 		'getImagesFromAlbum' => '
 			SELECT * FROM !prefix!gallery_images
-			WHERE album = :album
+			WHERE albumId = :albumId
 		',
 		'getImageByAlbumAndName' => '
 			SELECT * FROM !prefix!gallery_images
-			WHERE album = :album
+			WHERE albumId = :albumId
 			AND shortName = :shortName
 		',
 		'getProfilePictureAlbum' => '
 			SELECT * FROM !prefix!gallery_albums
-			WHERE user = :user
+			WHERE userId = :userId
 			AND shortName = \'profile-pictures\'
 		',
 		'getImageComments' => '
@@ -66,20 +66,20 @@ function gallery_addQueries() {
 		'getProfilePictures' => '
 			SELECT i.*, a.shortName album_shortName
 			FROM !prefix!gallery_images i
-				INNER JOIN !prefix!galleryalbums a
+				INNER JOIN !prefix!gallery_albums a
 				ON
 					i.album = a.id
 			WHERE
-				a.user = :user
+				a.userId = :userId
 			AND
 				a.shortName = \'profile-pictures\'
 			ORDER BY ID DESC
 		',
 		'addAlbum' => '
 			INSERT INTO !prefix!gallery_albums
-			(name, shortName, allowComments, user)
+			(name, shortName, allowComments, userId)
 			VALUES
-			(:name, :shortName, :allowComments, :user) 
+			(:name, :shortName, :allowComments, :userId) 
 		',
 		'editAlbum' => '
 			UPDATE !prefix!gallery_albums
@@ -87,13 +87,13 @@ function gallery_addQueries() {
 				name = :name,
 				shortName = :shortName,
 				allowComments = :allowComments
-			WHERE id = :id
+			WHERE id = :id AND userId = :userId
 		',
 		'addImage' => '
 			INSERT INTO !prefix!gallery_images
-			(name, shortName, album, image, thumb, icon)
+			(name, shortName, albumId, image)
 			VALUES
-			(:name, :shortName, :album, :image, :thumb, :icon)
+			(:name, :shortName, :albumId, :image)
 		',
 		'editImage' => '
 			UPDATE !prefix!gallery_images

@@ -68,6 +68,7 @@ class formHandler {
 		$randomName = '',
 		$contentAfter,
 		$ajax,
+		$disableAjax = FALSE,
 		$forceAjax = FALSE,
 		$filetypes;
 	function __construct($dataName,$data=false,$admin=false) {
@@ -135,9 +136,17 @@ class formHandler {
 							$fileSize = $value['size'];
 							$fileName = $value['name'];
 							$fileType = $value['type'];
+							$errorCode = $value['error'];
 							$extension = substr($fileName, strrpos($fileName, '.') + 1); 
 							$basename = substr($fileName, 0, strrpos($fileName, '.'));
 							
+							// Error?
+							if($errorCode > 0)
+							{
+								$formField['errorList'][] = 'PHP File Upload Error: '.$errorCode;
+								continue;
+							}
+													
 							// Mandating Extension
 							if(isset($info['mandateExt']) && $info['mandateExt'] !== FALSE && !in_array($extension,$info['mandateExt']))
 							{
@@ -147,7 +156,7 @@ class formHandler {
 								//continue;
 							}
 							// Mandating File-Type
-							if(isset($info['mandateType']) && $info['mandateType'] !== FALSE && !in_array($fileType,$info['mandateType']))
+							if(isset($info['mandateType']) && $fileType !== '' && $info['mandateType'] !== FALSE && !in_array($fileType,$info['mandateType']))
 							{
 								$formField['error'] = true;
 								$validData = false;
@@ -170,6 +179,7 @@ class formHandler {
 							if(isset($info['path']))
 							{
 								$name = (isset($info['customName'])) ? $info['customName'] : $fileName;
+								$path = rtrim($info['path'],'/').'/'.$name.'.mp3';
 								move_uploaded_file($value['tmp_name'],rtrim($info['path'],'/').'/'.$name.'.mp3');
 							}
 						} 
@@ -381,6 +391,7 @@ class formHandler {
 									// Are We Using The CDN?
 									if($data->cdn)
 									{	
+										die("USING CDN");
 										$quality = (isset($info['quality'])) ? $info['quality'] : 85;
 										switch($extension){
 											case 'jpg': case 'jpeg': default:
@@ -398,11 +409,10 @@ class formHandler {
 										
 										continue;
 									}
-									
 									// Check If Directory Exists; If Not Create It
 									if(!is_dir($dir))
 									{
-										mkdir($dir);
+										mkdir($dir) or die("The path you specified is not writable : ".$dir);
 										chmod($dir,0777);
 									}
 									@chmod($dir,0777);

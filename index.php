@@ -550,7 +550,6 @@ final class sitesense {
 					':userAgent' => $_SERVER['HTTP_USER_AGENT']
 				));
 				$this->loginResult=true;
-
 			}
 		}
 		

@@ -111,6 +111,15 @@ function users_addQueries() {
 		',
         'updateEmailVerification' => '
 			UPDATE !prefix!users SET emailVerified = 1 WHERE id = :userId
+		',
+		'getNameById' => '
+			SELECT
+				name
+			FROM
+				!prefix!users 
+			WHERE
+				id = :userId
+			LIMIT 1
 		'
 	);
 }
