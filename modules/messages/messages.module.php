@@ -34,7 +34,7 @@ function page_buildContent($data,$db) {
 				$data->output['icons'] = array();
 				$otherUserIcons = $db->prepare('getProfilePictures', 'gallery');
 				foreach($data->output['messages'] as &$message){
-					$otherUserIcons->execute(array(':user' => $message['otheruser_id']));
+					$otherUserIcons->execute(array(':userId' => $message['otheruser_id']));
 					$icon = $otherUserIcons->fetch();
 					if($icon === false){
 						$message['icon'] = false;
