@@ -131,6 +131,8 @@ function admin_usersBuild($data,$db) {
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
+                unset($data->output['userForm']->sendArray[':userGroups_'.$value['groupName']]);
+
             }
             unset($data->output['userForm']->sendArray[':id_hidden']);
             unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
@@ -217,7 +219,7 @@ function admin_usersBuild($data,$db) {
 
 			$id = $db->lastInsertId();
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
-			$profileAlbum->execute(array(':user' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
+			$profileAlbum->execute(array(':userId' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
 
 			// All Is Good
 			$data->output['savedOkMessage']='
