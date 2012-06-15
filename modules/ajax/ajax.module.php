@@ -23,6 +23,10 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function ajax_buildContent($data,$db) {
+	// Are We Really Doing An AJAX Request...
+	if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'){
+		//common_redirect_local($data,'default/');
+  	}
 	// URL Remapping (Taken from Common.PHP)
 	$newAction = $data->action;
 	$newAction = array_unique(array_slice($newAction,1));
