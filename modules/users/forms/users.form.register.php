@@ -24,7 +24,7 @@
 */
 $this->action=$data->linkRoot.'users/register/';
 $this->formPrefix='register_';
-$this->caption='Become Part of Where Future Stars Come Frumm...<b></b>';
+
 $this->submitTitle='Join Now';
 $this->fromForm='register';
 $this->fields=array(
