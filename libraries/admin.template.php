@@ -248,7 +248,9 @@ function theme_buildForm($formData) {
             }
             $spanValue='';
             if(isset($formField['value'])) {
-                $spanValue=htmlspecialchars($formField['value']);
+                if(is_string($formField['value'])) {
+                    $spanValue=htmlspecialchars($formField['value']);
+                }
             }
             if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
                 $spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
@@ -301,38 +303,57 @@ function theme_buildForm($formData) {
 					echo '
 						>';
 					$optgroup = FALSE;
-					foreach ($formField['options'] as $key => $option) {
-						if (is_array($option)) {
-							if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
-							{
-								if($optgroup !== FALSE)
-								{
-									echo '
-									</optgroup>';
-								}
-								$optgroup = $option['optgroup'];
-								echo '
-							<optgroup label = "',$option['optgroup'],'">';
-							}
-							echo '
-							<option',(
-								($formField['value']==$option['value']) ?
-								' selected="selected"' :
-								''
-							),' value="',$option['value'],'">',$option['text'],'</option>';
-							if(!isset($formField['options'][$key+1]) && $optgroup)
-							{
-								echo '</optgroup>';
-							}
-						} else {
-							echo '
-							<option',(
-								($formField['value']==$option) ?
-								' selected="selected"' :
-								''
-							),'>',$option,'</option>';
-						}
-					}
+					if(!empty($formField['options'])) {
+                        foreach ($formField['options'] as $key => $option) {
+                            $selected='';
+                            if(empty($formField['value'])) {
+                                // Selected
+                                if(isset($formField['selected'])) {
+                                    if(is_array($formField['selected'])) {
+                                        foreach($formField['selected'] as $value) {
+                                            if($value==$option['value']) {
+                                                $selected=' selected="selected"';
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Return bad entry
+                                if($formField['value']==$option['value']) {
+                                    $selected=' selected="selected"';
+                                }
+                                if(is_array($formField['value'])) {
+                                    foreach($formField['value'] as $value) {
+                                        if($value==$option['value']) {
+                                            $selected=' selected="selected"';
+                                        }
+                                    }
+                                }
+                            }
+                            if (is_array($option)) {
+                                if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
+                                {
+                                    if($optgroup !== FALSE)
+                                    {
+                                        echo '
+                                        </optgroup>';
+                                    }
+                                    $optgroup = $option['optgroup'];
+                                    echo '
+                                <optgroup label = "',$option['optgroup'],'">';
+                                }
+                                echo '
+                                <option',$selected,' value="',$option['value'],'">',$option['text'],'</option>';
+                                if(!isset($formField['options'][$key+1]) && $optgroup)
+                                {
+                                    echo '</optgroup>';
+                                }
+                            } else {
+                                echo '
+                                <option',$selected,'>',$option,'</option>';
+                            }
+                        }
+                    }
 					echo '
 						</select>';
 				break;
