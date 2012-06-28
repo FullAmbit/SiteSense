@@ -28,6 +28,12 @@
 */
 function common_addQueries() {
     return array(
+    	'setTimeZone' => '
+    		SET time_zone = \'+0:00\'
+    	',
+    	'testRun' => '
+    		SELECT CURRENT_TIMESTAMP
+    	',
         'tableExists' => '
 			SHOW TABLES LIKE \'!prefix!!table!\'
 		',
