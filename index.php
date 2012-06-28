@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-ini_set("date.timezone","America/New_York");
+ini_set("date.timezone","Etc/GMT-0");
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
@@ -217,6 +217,9 @@ final class sitesense {
     	
     	// Database connection
     	$this->db=new dynamicPDO();
+    	
+    	// Set TimeZone To GMT/UTC (0:00)
+    	$this->db->query("setTimeZone");
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
