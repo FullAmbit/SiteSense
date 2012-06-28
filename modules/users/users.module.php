@@ -180,8 +180,6 @@ function page_buildContent($data,$db) {
                         $statement=$db->prepare('insertUser','users');
                         $statement->execute($data->output['registerForm']->sendArray) or die('Saving user failed');
                         $userId = $db->lastInsertId();
-                        $profileAlbum = $db->prepare('addAlbum','gallery');
-                        $profileAlbum->execute(array(':user' => $userId,':name' => 'Profile Pictures',':shortName' => 'profile-pictures','allowComments' => 0));
                         $hash=md5(common_randomPassword(32,32));
                         // Do We Require E-Mail Verification??
                         if($data->settings['verifyEmail'] == 1) {
