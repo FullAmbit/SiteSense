@@ -183,6 +183,14 @@ function page_buildContent($data,$db) {
                         $profileAlbum = $db->prepare('addAlbum','gallery');
                         $profileAlbum->execute(array(':user' => $userId,':name' => 'Profile Pictures',':shortName' => 'profile-pictures','allowComments' => 0));
                         $hash=md5(common_randomPassword(32,32));
+                        // Insert into group
+                        if($data->settings['defaultGroup']!=0) {
+							$statement=$db->prepare('addUserToPermissionGroupNoExpires');
+							$statement->execute(array(
+								':userID'          => $userId,
+								':groupName'       => $data->settings['defaultGroup']
+							));
+                        }
                         // Do We Require E-Mail Verification??
                         if($data->settings['verifyEmail'] == 1) {
                             $statement=$db->prepare('insertActivationHash','users');
