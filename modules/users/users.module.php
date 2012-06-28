@@ -187,7 +187,7 @@ function page_buildContent($data,$db) {
                             $statement->execute(array(
                                 ':userId' => $userId,
                                 ':hash' => $hash,
-                                ':expires' => time()+(14*24*360)
+                                ':expires' => date('Y-m-d H:i:s',(time()+(14*24*360)))
                             ));
                             sendActivationEMail($data,$db,$userId,$hash,$data->output['registerForm']->sendArray[':contactEMail']);
                         } else if($data->settings['requireActivation'] == 0) {
@@ -216,33 +216,33 @@ function page_buildContent($data,$db) {
                             'slip through the cracks' waiting for the queries to execute
                         */
                         $expireTime=time();
-                        $statement=$db->prepare('getExpiredActivations','register');
+                        $statement=$db->prepare('getExpiredActivations','users');
                         $statement->execute(array(':expireTime' => $expireTime));
-                        $delStatement=$db->prepare('deleteUserById','register');
+                        $delStatement=$db->prepare('deleteUserById','users');
                         while($user=$statement->fetch()) {
                             $delStatement->execute(array(':userId' => $user['userId']));
                         }
-                        $statement=$db->prepare('expireActivationHashes','register');
+                        $statement=$db->prepare('expireActivationHashes','users');
                         $statement->execute(array(':expireTime' => $expireTime));
-                        $statement=$db->prepare('checkActivationHash','register');
+                        $statement=$db->prepare('checkActivationHash','users');
                         $statement->execute(array(
                             ':userId' => $userId,
                             ':hash' => $hash
                         ));
                         if($attemptExpires=$statement->fetchColumn()) {
                             // Set Email Verified To True
-                            $statement = $db->prepare('updateEmailVerification','register');
+                            $statement = $db->prepare('updateEmailVerification','users');
                             $statement->execute(array(
                                 ':userId' => $userId
                             ));
                             // If Email Verification Is Enough, Then Activate The User.
                             if($data->settings['requireActivation'] == 0) {
-                                $statement=$db->prepare('activateUser','register');
+                                $statement=$db->prepare('activateUser','users');
                                 $statement->execute(array(
                                     ':userId' => $userId
                                 ));
                             }
-                            $statement=$db->prepare('deleteActivation','register');
+                            $statement=$db->prepare('deleteActivation','users');
                             $statement->execute(array(
                                 ':userId' => $userId,
                                 ':hash' => $hash

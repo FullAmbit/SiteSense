@@ -66,6 +66,11 @@ function users_addQueries() {
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
+		'activateUser' => '
+			UPDATE !prefix!users
+			SET activated=1
+			WHERE id=:userId
+		',
         // Register
         'insertUser' => '
 			INSERT INTO !prefix!users
