@@ -182,7 +182,7 @@ function page_buildContent($data,$db) {
                         $userId = $db->lastInsertId();
                         $hash=md5(common_randomPassword(32,32));
                         // Insert into group
-                        if($data->settings['defaultGroup']!=0) {
+                        if($data->settings['defaultGroup']!==0) {
 							$statement=$db->prepare('addUserToPermissionGroupNoExpires');
 							$statement->execute(array(
 								':userID'          => $userId,
