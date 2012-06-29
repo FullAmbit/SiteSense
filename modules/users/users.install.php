@@ -113,8 +113,7 @@ function users_install($db,$drop=false) {
 			'users_edit'
         ),
         'User' => array(
-            'users_access',
-            'users_edit'
+            'users_access'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {
