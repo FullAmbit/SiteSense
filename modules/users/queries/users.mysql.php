@@ -74,9 +74,9 @@ function users_addQueries() {
         // Register
         'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,password,firstName,lastName,registeredDate,registeredIP,lastAccess,contactEMail,publicEMail,emailVerified)
+			(name,password,firstName,lastName,registeredDate,registeredIP,lastAccess,contactEMail,publicEMail,emailVerified,timezone)
 			VALUES
-			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified)
+			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified,:timezone)
 		',
         'getRegistrationEMail' => '
 			SELECT parsedContent FROM !prefix!pages

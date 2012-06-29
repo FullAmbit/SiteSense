@@ -186,6 +186,16 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 	return $textToParse;
 }
 
+function common_parseTime($UTCTime,$offset,$includeZone = TRUE,$format = "M d Y G:i:s"){
+	$unixTime = (intval($UTCTime) > 100000) ? $UTCTime : strtotime($UTCTime);
+	$newTime = $unixTime + $offset;
+	if($includeZone){
+		$zone = $offset/3600;
+		$format .= (($zone) < 0) ? ' \G\M\T'.$zone : ' \G\M\T+'.$zone;
+	}
+	return date($format,$newTime);
+}
+
 function common_generateShortName($string)
 {
 	$string = preg_replace("/[^a-z0-9\-\s]/",'',str_replace(' ','-',strtolower($string)));

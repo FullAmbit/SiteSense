@@ -79,6 +79,9 @@ function checkUserName($name,$db) {
 	$statement->execute(array(':name' => $name));
 	return $statement->fetchColumn();
 }
+function page_getUniqueSettings($data){
+	$data->output['pageShortName']='SiteSense';
+}
 function page_buildContent($data,$db) {
 	switch($data->action[1]){
 		case 'edit':

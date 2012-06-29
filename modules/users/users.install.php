@@ -64,7 +64,8 @@ function users_install($db,$drop=false) {
 			'contactEMail'        => SQR_email,
 			'publicEMail'         => SQR_email,
 			'emailVerified'       => SQR_boolean.' DEFAULT \'0\'',
-			'activated'           => SQR_boolean.' DEFAULT \'0\''
+			'activated'           => SQR_boolean.' DEFAULT \'0\'',
+			'timezone'			  => 'MEDIUMINT(6) NOT NULL DEFAULT \'0\''
 		),
         'user_groups' => array(
             'userID'              => SQR_ID,
