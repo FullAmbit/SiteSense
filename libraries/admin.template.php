@@ -18,9 +18,9 @@
 * versions in the future. If you wish to customize SiteSense for your
 * needs please refer to http://www.sitesense.org for more information.
 *
-* @author     Full Ambit Media, LLC <pr@fullambit.com>
+* @author	  Full Ambit Media, LLC <pr@fullambit.com>
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
-* @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+* @license	  http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function theme_header($data) {
 	$data->admin['linkRoot']=$data->linkHome.'admin/';
@@ -242,19 +242,19 @@ function theme_buildForm($formData) {
 				$fieldClass[]='nsDesc';
 			}
 			$fieldClass=implode(' ',$fieldClass);
-            $checked='';
-            if((isset($formField['checked']) && $formField['checked']=='checked') || (isset($formField['label']) && isset($formData->sendArray[':'.$formField['label']]) && $formData->sendArray[':'.$formField['label']])) {
-                $checked='checked="checked"';
-            }
-            $spanValue='';
-            if(isset($formField['value'])) {
-                if(is_string($formField['value'])) {
-                    $spanValue=htmlspecialchars($formField['value']);
-                }
-            }
-            if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
-                $spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
-            }
+			$checked='';
+			if((isset($formField['checked']) && $formField['checked']=='checked') || (isset($formField['label']) && isset($formData->sendArray[':'.$formField['label']]) && $formData->sendArray[':'.$formField['label']])) {
+				$checked='checked="checked"';
+			}
+			$spanValue='';
+			if(isset($formField['value'])) {
+				if(is_string($formField['value'])) {
+					$spanValue=htmlspecialchars($formField['value']);
+				}
+			}
+			if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
+				$spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
+			}
 			echo '
 				<tr',($class ? ' class="'.$class.'"' : ''),'>
 					<th>
@@ -425,17 +425,17 @@ function theme_buildForm($formData) {
 	echo '
 			</table>
 			<div class="submitsAndHiddens">
-		    <input type="submit" class="submit" value="',$formData->submitTitle,'" />
-		    <input type="hidden" name="fromForm" id="fromForm" value="',$formData->fromForm,'" />
+			<input type="submit" class="submit" value="',$formData->submitTitle,'" />
+			<input type="hidden" name="fromForm" id="fromForm" value="',$formData->fromForm,'" />
   ';
 	foreach ($formData->fields as $formDataKey => $formField) {
 		if ($formField['params']['type']=='hidden') {
 			echo '
-		    <input type="hidden"
+			<input type="hidden"
 					name="',$formData->formPrefix.$formDataKey,'"
 					id="',$formData->formPrefix.$formDataKey,'"
-		    	value="',$formField['value'],'"
-		    />
+				value="',$formField['value'],'"
+			/>
 		  ';
 		}
 	}
@@ -535,7 +535,7 @@ function theme_rejectError($data) {
 
 function theme_accessDenied($login=false) {
 	echo '
-      <h2>Access Denied</h2>';
+	  <h2>Access Denied</h2>';
 	  
 	if( $login )
 		echo '<p>You must be logged in to access the administration panel.</p>';
@@ -544,8 +544,8 @@ function theme_accessDenied($login=false) {
 }
 
 function theme_fatalError($message) {
-      echo '
-      <h2>Fatal Error</h2>
-      <p>',$message,'</p>';
+	  echo '
+	  <h2>Fatal Error</h2>
+	  <p>',$message,'</p>';
 }
 ?>
