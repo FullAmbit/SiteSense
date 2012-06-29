@@ -304,56 +304,88 @@ function theme_buildForm($formData) {
 						>';
 					$optgroup = FALSE;
 					if(!empty($formField['options'])) {
-                        foreach ($formField['options'] as $key => $option) {
-                            $selected='';
-                            if(empty($formField['value'])) {
-                                // Selected
-                                if(isset($formField['selected'])) {
-                                    if(is_array($formField['selected'])) {
-                                        foreach($formField['selected'] as $value) {
-                                            if($value==$option['value']) {
-                                                $selected=' selected="selected"';
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                // Return bad entry
-                                if($formField['value']==$option['value']) {
-                                    $selected=' selected="selected"';
-                                }
-                                if(is_array($formField['value'])) {
-                                    foreach($formField['value'] as $value) {
-                                        if($value==$option['value']) {
-                                            $selected=' selected="selected"';
-                                        }
-                                    }
-                                }
-                            }
-                            if (is_array($option)) {
-                                if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
-                                {
-                                    if($optgroup !== FALSE)
-                                    {
-                                        echo '
-                                        </optgroup>';
-                                    }
-                                    $optgroup = $option['optgroup'];
-                                    echo '
-                                <optgroup label = "',$option['optgroup'],'">';
-                                }
-                                echo '
-                                <option',$selected,' value="',$option['value'],'">',$option['text'],'</option>';
-                                if(!isset($formField['options'][$key+1]) && $optgroup)
-                                {
-                                    echo '</optgroup>';
-                                }
-                            } else {
-                                echo '
-                                <option',$selected,'>',$option,'</option>';
-                            }
-                        }
-                    }
+						foreach ($formField['options'] as $key => $option) {
+							$selected='';
+							if(empty($formField['value'])) {
+								// Selected
+								if(isset($formField['selected'])) {
+									if(is_array($formField['selected'])) {
+										foreach($formField['selected'] as $value) {
+											if(is_array($option)) {
+												if($value==$option['value']) {
+													$selected=' selected="selected"';
+												}
+											} else {
+												if($value==$option) {
+													$selected=' selected="selected"';
+												}
+											}
+										}
+									} else {
+										if(is_array($option)) {
+											if($formField['selected']==$option['value']) {
+												$selected=' selected="selected"';
+											}
+										} else {
+											if($formField['selected']==$option) {
+												$selected=' selected="selected"';
+											}
+										}
+									}
+								}
+							} else {
+								// Return bad entry
+								if($formField['value']==$option['value']) {
+									$selected=' selected="selected"';
+								}
+								if(is_array($formField['value'])) {
+									foreach($formField['value'] as $value) {
+										if(is_array($option)) {
+											if($value==$option['value']) {
+												$selected=' selected="selected"';
+											}
+										} else {
+											if($value==$option) {
+												$selected=' selected="selected"';
+											}
+										}
+									}
+								} else {
+									if(is_array($option)) {
+										if($formField['value']==$option['value']) {
+											$selected=' selected="selected"';
+										}
+									} else {
+										if($formField['value']==$option) {
+											$selected=' selected="selected"';
+										}
+									}
+								}
+							}
+							if (is_array($option)) {
+								if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
+								{
+									if($optgroup !== FALSE)
+									{
+										echo '
+										</optgroup>';
+									}
+									$optgroup = $option['optgroup'];
+									echo '
+								<optgroup label = "',$option['optgroup'],'">';
+								}
+								echo '
+								<option',$selected,' value="',$option['value'],'">',$option['text'],'</option>';
+								if(!isset($formField['options'][$key+1]) && $optgroup)
+								{
+									echo '</optgroup>';
+								}
+							} else {
+								echo '
+								<option',$selected,'>',$option,'</option>';
+							}
+						}
+					}
 					echo '
 						</select>';
 				break;
