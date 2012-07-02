@@ -22,6 +22,8 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+
+$this->disableAjax = true;
 $this->caption='Add an image';
 $this->submitTitle='Add Image';
 $this->fields=array(

@@ -22,14 +22,14 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->action=$data->linkRoot.'register';
+$this->action=$data->linkRoot.'users/register/';
 $this->formPrefix='register_';
-$this->caption='Become Part of Where Future Stars Come Frumm...<b></b>';
+
 $this->submitTitle='Join Now';
 $this->fromForm='register';
 $this->fields=array(
 	'firstName' => array(
-		'label' => 'Your Name',
+		'label' => 'First Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['firstName']),
@@ -40,6 +40,7 @@ $this->fields=array(
 		)
 	),
 	'lastName' => array(
+		'label' => 'Last Name',
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastName']),
@@ -110,10 +111,26 @@ $this->fields=array(
 			'size' => 64,
 			'maxlength' => 128
 		),
-		'compareFailMessage' => 'The passwords you entered do not match!'	)
+		'compareFailMessage' => 'The passwords you entered do not match!'
+	),
+	'timezone' => array(
+		'label' => 'TimeZone',
+		'tag' => 'select',
+		'options' => array(
+		)
+	)
 );
 $this->extraMarkup.='
 	<p>
 		By clicking on the "Join Now" button above you are stating that you accept our <a href="'.$data->linkRoot.'Registration_Agreement">registration agreement</a>.
 	</p>
 ';
+
+$timezones = array(-12,-11,-10,-9.5,-9,-8,-7,-6,-5,-4.5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,12.75,13,14);
+foreach($timezones as $index => $zone){
+	$offset = $zone * 3600;
+	$this->fields['timezone']['options'][] = array(
+		'text' => 'GMT ' . (($zone < 0) ? $zone : '+'. $zone),
+		'value' => $offset
+	);
+}

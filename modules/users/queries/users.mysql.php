@@ -31,6 +31,14 @@ function users_addQueries() {
 		'getAllUsers' => '
 			SELECT * FROM !prefix!users ORDER BY id ASC
 		',
+		'getByName' => '
+			SELECT
+				*
+			FROM
+				!prefix!users 
+			WHERE
+				name = :name
+		',
 		'getById' => '
 			SELECT * FROM !prefix!users
 			WHERE id = :id
@@ -57,6 +65,66 @@ function users_addQueries() {
 		'checkUserName' => '
 			SELECT id FROM !prefix!users
 			WHERE name = :name
+		',
+		'activateUser' => '
+			UPDATE !prefix!users
+			SET activated=1
+			WHERE id=:userId
+		',
+        // Register
+        'insertUser' => '
+			INSERT INTO !prefix!users
+			(name,password,firstName,lastName,registeredDate,registeredIP,lastAccess,contactEMail,publicEMail,emailVerified,timezone)
+			VALUES
+			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified,:timezone)
+		',
+        'getRegistrationEMail' => '
+			SELECT parsedContent FROM !prefix!pages
+			WHERE shortName = \'registration-email\'
+		',
+        'insertActivationHash' => '
+			INSERT INTO !prefix!activations
+			(userId,hash,expires)
+			VALUES
+			(:userId,:hash,:expires)
+		',
+        'getExpiredActivations' => '
+			SELECT userID from !prefix!activations
+			WHERE expires <= :expireTime
+		',
+        'deleteUserById' => '
+			DELETE FROM !prefix!users
+			WHERE id = :userId
+		',
+        'expireActivationHashes' => '
+			DELETE FROM !prefix!activations
+			WHERE expires <= :expireTime
+		',
+        'checkActivationHash' => '
+			SELECT expires FROM !prefix!activations
+			WHERE
+				userId = :userId
+			AND
+				hash = :hash
+		',
+        'deleteActivation' => '
+			DELETE FROM !prefix!activations
+			WHERE
+				userId = :userId
+			AND
+				hash = :hash
+		',
+        'updateEmailVerification' => '
+			UPDATE !prefix!users SET emailVerified = 1 WHERE id = :userId
+		',
+		'getNameById' => '
+			SELECT
+				name
+			FROM
+				!prefix!users 
+			WHERE
+				id = :userId
+			LIMIT 1
 		'
 	);
 }

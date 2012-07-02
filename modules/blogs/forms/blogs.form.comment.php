@@ -29,7 +29,7 @@ $this->submitTitle='Add My Comment';
 $this->fromForm='commentForm';
 $this->fields=array(
 	'authorFirstName' => array(
-		'label' => 'Your Name',
+		'label' => 'First Name',
 		'required' => true,
 		'value' => printFieldValue($data->user['firstName']),
 		'tag' => 'input',
@@ -44,6 +44,7 @@ $this->fields=array(
 		'
 	),
 	'authorLastName' => array(
+		'label' => 'Last Name',
 		'required' => true,
 		'value' => printFieldValue($data->user['lastName']),
 		'tag' => 'input',

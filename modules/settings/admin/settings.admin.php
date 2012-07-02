@@ -32,6 +32,21 @@ function admin_buildContent($data,$db) {
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;
 	}
+	// Get all groups
+	$statement=$db->query('getAllGroups','admin_users');
+	$userGroups=$statement->fetchAll();
+	$userGroups[]['groupName']='Administrators';
+	sort($userGroups);
+	$data->output['userGroups'][]=array(
+		'text'  => 'Disable auto assigning of groups',
+		'value' => '0'
+	);
+	foreach($userGroups as $userGroup) {
+		$data->output['userGroups'][]=array(
+			'text'  => $userGroup['groupName'],
+			'value' => $userGroup['groupName']
+		);
+	}
 	$data->output['settingsForm']=new formHandler('edit',$data,true);
 	$getModules = $db->query('getEnabledModules','admin_modules');
 	$modules = $getModules->fetchAll();

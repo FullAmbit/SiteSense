@@ -151,15 +151,12 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);
 	$blockList = $matches[1];
-	
 	ob_start();
 	foreach($blockList as $key => $originalBlockName) {
 		$blockInfo=explode('_',$originalBlockName);
-
+		$target = 'modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php';
 		if(file_exists('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php')) {
-			
 			common_include('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php');
-			
 			$attributes = array(false);
 			$attributesString = $matches[2][$key];
 			$attributes = explode(',',$attributesString);
@@ -189,6 +186,16 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 	return $textToParse;
 }
 
+function common_parseTime($UTCTime,$offset,$includeZone = TRUE,$format = "M d Y G:i:s"){
+	$unixTime = (intval($UTCTime) > 100000) ? $UTCTime : strtotime($UTCTime);
+	$newTime = $unixTime + $offset;
+	if($includeZone){
+		$zone = $offset/3600;
+		$format .= (($zone) < 0) ? ' \G\M\T'.$zone : ' \G\M\T+'.$zone;
+	}
+	return date($format,$newTime);
+}
+
 function common_generateShortName($string)
 {
 	$string = preg_replace("/[^a-z0-9\-\s]/",'',str_replace(' ','-',strtolower($string)));
@@ -204,57 +211,57 @@ function common_include($includeName) {
 
 function loadPermissions($data) {
     $data->permissions['core']=array(
-        'access'            => 'Control panel access'
+        'access'        => 'Control panel access'
     );
 
     $data->permissions['dashboard']=array(
-        'access'  => 'Dashboard access'
+        'access'        => 'Dashboard access'
     );
 
     $data->permissions['mainMenu']=array(
-        'access'   => 'Main menu access',
-        'add'      => 'Add main menu items',
-        'delete'   => 'Delete main menu items',
-        'disable'  => 'Disable main menu items',
-        'edit'     => 'Edit main menu items',
-        'enable'   => 'Enable main menu items',
-        'list'     => 'List main menu items'
+        'access'        => 'Main menu access',
+        'add'           => 'Add main menu items',
+        'delete'        => 'Delete main menu items',
+        'disable'       => 'Disable main menu items',
+        'edit'          => 'Edit main menu items',
+        'enable'        => 'Enable main menu items',
+        'list'          => 'List main menu items'
     );
 
     $data->permissions['modules']=array(
-        'access'    => 'Modules access',
-        'disable'   => 'Disable modules',
-        'edit'      => 'Edit modules',
-        'enable'    => 'Enable modules',
-        'list'      => 'List modules'
+        'access'        => 'Modules access',
+        'disable'       => 'Disable modules',
+        'edit'          => 'Edit modules',
+        'enable'        => 'Enable modules',
+        'list'          => 'List modules'
     );
 
     $data->permissions['plugins']=array(
-        'access'    => 'Plugins access',
-        'edit'      => 'Edit plugins',
-        'disable'   => 'Disable plugins',
-        'enable'    => 'Enable plugins',
-        'list'      => 'List plugins'
+        'access'        => 'Plugins access',
+        'edit'          => 'Edit plugins',
+        'disable'       => 'Disable plugins',
+        'enable'        => 'Enable plugins',
+        'list'          => 'List plugins'
     );
 
     $data->permissions['settings']=array(
-        'access'   => 'Settings access'
+        'access'        => 'Settings access'
     );
 
     $data->permissions['sidebars']=array(
-        'access'   => 'Sidebar access',
-        'add'      => 'Add sidebars',
-        'delete'   => 'Delete sidebars',
-        'edit'     => 'Edit sidebars',
-        'list'     => 'List sidebars'
+        'access'        => 'Sidebar access',
+        'add'           => 'Add sidebars',
+        'delete'        => 'Delete sidebars',
+        'edit'          => 'Edit sidebars',
+        'list'          => 'List sidebars'
     );
 
     $data->permissions['dynamicURLs']=array(
-        'access'   => 'URL Remap Access',
-        'add'      => 'Add URL Remaps',
-        'delete'   => 'Delete URL Remaps',
-        'edit'     => 'Edit URL Remaps',
-        'list'     => 'List URL Remaps'
+        'access'        => 'URL Remap Access',
+        'add'           => 'Add URL Remaps',
+        'delete'        => 'Delete URL Remaps',
+        'edit'          => 'Edit URL Remaps',
+        'list'          => 'List URL Remaps'
     );
 }
 
@@ -322,7 +329,6 @@ function getUserPermissions(&$db,&$user) {
         asort($user['permissions']);
     }
 }
-
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
 	// User is Admin, which is universal access, Return true
@@ -343,5 +349,10 @@ function hyphenToCamel($str,$ucfirst=false) {
     $parts=$parts ? array_map('ucfirst',$parts):array($str);
     $parts[0]=$ucfirst ? ucfirst($parts[0]):lcfirst($parts[0]);
     return implode('',$parts);
+}
+
+function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
+	$time = ($time == NULL) ? time() : $time;
+	return gmdate($format,$time);
 }
 ?>

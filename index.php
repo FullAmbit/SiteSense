@@ -22,6 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+ini_set("date.timezone","Etc/GMT-0");
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
@@ -67,7 +68,15 @@ final class dynamicPDO extends PDO {
 		} else return false;
 	}
 	public function loadModuleQueries($moduleName,$dieOnError=false) { //not seeing the admin... so not know to go to admin directory
+		
         $target='modules/'.$moduleName.'/queries/'.$moduleName.'.'.$this->sqlType.'.php';
+        // If StartUp Query File, Fix The Name
+		if(strpos($moduleName,'_startup'))
+		{
+			list($moduleNameOnly) = explode('_',$moduleName);
+			$target = 'modules/'.$moduleNameOnly.'/queries/'.$moduleNameOnly.'.'.$this->sqlType.'.startup.php';
+		}
+		// Check For Admin Query
         $pos=strpos($moduleName,'admin_');
         if(!($pos===false)) {
             $moduleNameOnly=substr($moduleName,6);
@@ -136,9 +145,6 @@ final class dynamicPDO extends PDO {
 		$result=$this->query('countRows','common',$tableName);
 		return $result->fetchColumn();
 	}
-	public function lastInsertId() {
-		return parent::lastInsertId();
-	}
 	public function createTable($tableName,$structure,$verbose=false) {
     /*
         structure is an array of field names and definitions
@@ -195,7 +201,7 @@ final class sitesense {
 		$siteRoot,$domainName,$linkHome,$linkRoot,
 		$action,$currentPage,$module,$request,
 		$httpHeaders,
-		$metaList,$menuList,$sidebarList,$sidebars = array(),
+		$metaList,$menuList,$sidebarList = array(),
 		$menuSource,
 		$admin,
 		$compressionType,
@@ -210,6 +216,12 @@ final class sitesense {
 	private $db;
 
     public function __construct() {
+    	
+    	// Database connection
+    	$this->db=new dynamicPDO();
+    	
+    	// Set TimeZone To GMT/UTC (0:00)
+    	$this->db->query("setTimeZone");
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -221,14 +233,21 @@ final class sitesense {
 			 $queryString=substr($url,strlen($this->linkHome)-1); 
 			// be sure to ===0 since false trips ==0
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
-		} 
-		$queryString=trim($queryString,'/'); 
-		// Break URL up into action array
-        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);
+		}
+		$queryString = trim($queryString,'/').'/';
 
-        // Database connection
-    	$this->db=new dynamicPDO();
-
+    	$statement = $this->db->prepare("findReplacement");
+    	$statement->execute(array(':url' => $queryString));
+    	if(($row = $statement->fetch()) !== FALSE)
+    	{
+			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+    	}
+        	
+        // Break URL up into action array
+        $queryString = trim($queryString,'/');
+        
+        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
+        
         // Install
         if ($this->action[0]=='install') {
 			$data=$this->db;
@@ -357,7 +376,7 @@ final class sitesense {
 							$this->module = $moduleQuery->fetch();
 						}else{
                             // Check to see if it is a page:
-							$statement = $this->db->prepare('getPageByShortNameAndParent', 'page');
+							$statement = $this->db->prepare('getPageByShortNameAndParent', 'pages');
 							$statement->execute(
 								array(
 									':shortName' => $this->currentPage,
@@ -382,7 +401,7 @@ final class sitesense {
 						':module' => $this->module['id']
 					)
 				);
-				$this->sidebars = $sidebarQuery->fetchAll();
+				$sidebars = $sidebarQuery->fetchAll();
 			}
 		}
 
@@ -407,18 +426,14 @@ final class sitesense {
 		$this->menuList['left']=$statement->fetchAll();
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
-		// Get Sidebars
-        $sidebars = $this->db->query('getSidebars');
-		foreach($sidebars as $sidebar) {
-			$this->sidebarList[$sidebar['side']][]=$sidebar;
-		}
-
+	
 		// Cookies and Sessions
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
 		// If a logged in user who is not banned is trying to logout...
         if (!$this->banned &&
-			($this->currentPage=='logout') &&
+			($this->currentPage=='users') &&
+			($this->action[1] == 'logout') &&
 			(!empty($_COOKIE[$userCookieName]))
 		) {	// Logout
             setCookie($userCookieName,'',0,$this->linkHome);
@@ -479,6 +494,11 @@ final class sitesense {
 							':id' => $user['id']
 						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
 
+						
+						/**
+						 *
+						 * Why is this code here?....
+						 * -------
 						//Load profile pictures
 						$profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
 						$profilePictures->execute(array(':user' => $this->user['id']));
@@ -486,11 +506,12 @@ final class sitesense {
 
 						//Load albums
 						$albums = $this->db->prepare('getAlbumsByUser', 'gallery');
-						$albums->execute(array(':user' => $this->user['id']));
+						$albums->execute(array(':userId' => $this->user['id']));
 						$this->user['albums'] = $albums->fetchAll();
+                       
+                        **/
+                        
                         $this->loginResult=true;
-
-
 					}
 				}
 			}
@@ -534,7 +555,6 @@ final class sitesense {
 					':userAgent' => $_SERVER['HTTP_USER_AGENT']
 				));
 				$this->loginResult=true;
-
 			}
 		}
 		
@@ -591,7 +611,6 @@ final class sitesense {
 			$this->loadModuleTemplate($this->module['name']);
 		}
 		// Get the plugins for this module
-		
 		$statement=$this->db->query('getEnabledPlugins');
 		$plugins=$statement->fetchAll();
 		foreach($plugins as $plugin) {
@@ -599,15 +618,25 @@ final class sitesense {
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
 		}
+		// Parse Sidebars Before Display
+		if(isset($sidebars))
+		{
+			foreach($sidebars as $sidebar) {
+				common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
+				common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
+				$this->sidebarList[$sidebar['side']][]=$sidebar;
+			}
+		}
 		// Is this an AJAX request?
-		if($this->action[0]=='ajax') {
+		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
             ajax_buildContent($this,$this->db);
 		} else {
-		// Nope, this is a normal page request
+			// Nope, this is a normal page request
 			if (function_exists('page_buildContent')) {
 				page_buildContent($this,$this->db);
 			}
 		}
+		
 		$this->db=null;
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
@@ -634,8 +663,10 @@ final class sitesense {
 				);
 			}
 		}
+		
 		theme_header($this);
 		page_content($this);
+		
 		if(function_exists('theme_leftSidebar')) {
 			theme_leftSidebar($this);
 		}
@@ -644,31 +675,16 @@ final class sitesense {
 		}
 		theme_footer($this);
 	} /* __construct */
-	public function activateSidebar($name){
-		if(isset($this->sidebarList[$name])){
-			$this->sidebarList[$name]['display'] = true;
-			return true;
-		}else{
-			return false;
-		}
-	}
 
     //Anonymous Function Fix - adds support below 5.3
     public function arrayInterrater($item){
         return $item['display'];
     }
-	public function getActivatedSidebars(){
-		return array_filter(
-			$this->sidebarList,
-			function($item){
-                return arrayInterrater($item);
-			}
-		);
-	}
+
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
 		$defaultThemeInclude='themes/default/'.$module.'.template.php';
-        $moduleThemeInclude='modules/'.$module.'/'.$module.'template.php';
+        $moduleThemeInclude='modules/'.$module.'/'.$module.'.template.php';
 		if(file_exists($currentThemeInclude)) {
 			common_include($currentThemeInclude);
 		} elseif(file_exists($defaultThemeInclude)) {

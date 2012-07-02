@@ -90,7 +90,7 @@ function messages_addQueries() {
 			UPDATE !prefix!user_pms SET deleted = 1 WHERE id = :id AND `to` = :user
 		',
 		'sendMessage' => '
-			INSERT INTO !prefix!user_pms (`from`, `to`, message) VALUES (:from, :to, :message) 
+			INSERT INTO !prefix!user_pms (`from`,`to`,`message`) VALUES (:from, :to, :message) 
 		',
 		'setMessagesAsRead' => '
 			UPDATE !prefix!user_pms SET `read` = 1 WHERE `from` = :seconduser AND `to` = :firstuser

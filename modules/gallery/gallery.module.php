@@ -49,18 +49,13 @@ function page_buildContent($data,$db) {
 	define('LOGGEDIN', 1);
 	define('OWNER', 2);
 	$pageType = 'NotFound';
-	// The album/image belongs to a user, so find who it is!
-	if($data->action[1] === false){
-		//The user's own album
-		if(isset($data->user['id'])){
-			$data->output['user'] = $data->user;
-		}else{
-			$data->output['pageType'] = 'AccessDenied';
-			return;			
-		}
+
+	// If No User Specified, Then We're Browsing our Own
+	if($data->action[1] === FALSE){
+		$data->output['user'] = $data->user;
 	}else{
 		$userName = $data->action[1];
-		$statement = $db->prepare('getUserByName', 'users');
+		$statement = $db->prepare('getByName', 'users');
 		$statement->execute(array(':name' => $userName));
 		$data->output['user'] = $statement->fetch();
 		if($data->output['user'] === false){
@@ -69,6 +64,7 @@ function page_buildContent($data,$db) {
 			return;
 		}
 	}
+	
 	if(function_exists('theme_getGalleryHome')){
 		$data->output['galleryHome'] = theme_getGalleryHome($data);
 	}else{
@@ -96,6 +92,11 @@ function page_buildContent($data,$db) {
 					$loadAlbum = $data->action[4];
 					$pageType = 'AlbumDelete';
 					$minimumPermissions = OWNER;
+				break;
+				default:
+					$loadUserAlbums = true;
+					$pageType = 'default';
+				break;
 			}
 			break;
 		case 'image':
@@ -150,6 +151,7 @@ function page_buildContent($data,$db) {
 					}
 			}
 			break;
+		default:
 		case false:
 			$pageType = 'Default';
 			$loadUserAlbums = true;
@@ -165,15 +167,14 @@ function page_buildContent($data,$db) {
 	if($prePermissions > $permission){
 		$pageType = 'AccessDenied';
 	}else{
-		if($loadUserAlbums !== false){
-			
+		if($loadUserAlbums){
 			$statement = $db->prepare('getAlbumsByUser', 'gallery');
-			$statement->execute(array('user' => '11'));
+			$statement->execute(array(':userId' => $data->output['user']['id']));
 			$data->output['albums'] = $statement->fetchAll();
 		}
 		if(!is_null($loadAlbum)){
 			$statement = $db->prepare('getAlbumByUserAndShortName', 'gallery');
-			$statement->execute(array('user' => $data->output['user']['id'], 'shortName' => $loadAlbum));
+			$statement->execute(array(':userId' => $data->output['user']['id'], ':shortName' => $loadAlbum));
 			$album = $statement->fetch();
 			if($album === false){
 				$pageType = 'AlbumNotFound';
@@ -181,7 +182,7 @@ function page_buildContent($data,$db) {
 					'shortName' => $loadAlbum
 				);
 			}else{
-				if($permission == LOGGEDIN && $album['user'] == $data->user['id']){
+				if($permission == LOGGEDIN && $album['userId'] == $data->user['id']){
 					$permission = OWNER;
 				}
 				if($minimumPermissions > $permission){
@@ -189,12 +190,12 @@ function page_buildContent($data,$db) {
 				}else{
 					if($loadAlbumImages === true){
 						$statement = $db->prepare('getImagesFromAlbum', 'gallery');
-						$statement->execute(array('album' => $album['id']));
+						$statement->execute(array(':albumId' => $album['id']));
 						$data->output['images'] = $statement->fetchAll();
 					}
 					if(!is_null($loadImage)){
 						$statement = $db->prepare('getImageByAlbumAndName', 'gallery');
-						$statement->execute(array('album' => $album['id'], 'shortName' => $loadImage));
+						$statement->execute(array(':albumId' => $album['id'], ':shortName' => $loadImage));
 						$image = $statement->fetch();
 						if($image === false){
 							$pageType = 'ImageNotFound';
@@ -222,21 +223,21 @@ function page_buildContent($data,$db) {
 function page_manageForms($data, $db){
 	switch($data->output['pageType']){
 		case 'AlbumAdd':
-			$form = $data->output['form'] = new formHandler('galleryAlbum', $data);
+			$form = $data->output['form'] = new formHandler('album', $data);
 			$form->action = $data->output['galleryHome'] . 'album/add';
 			if (isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();
 				if($form->validateFromPost()){
-					$form->sendArray[':user'] = $data->user['id'];
+					$form->sendArray[':userId'] = $data->user['id'];
 					//does this album already exist?
 					$statement = $db->prepare('getAlbumByUserAndShortName', 'gallery');
-					$statement->execute(array(':user' => $form->sendArray[':user'], ':shortName' => $form->sendArray[':shortName']));
+					$statement->execute(array(':userId' => $form->sendArray[':userId'], ':shortName' => $form->sendArray[':shortName']));
 					//if so, append a number to the end, e.g. album/view/something-2
 					if($statement->fetch() !== false){
 						$i = 1;
 						do{
 							$i++;
-							$statement->execute(array(':user' => $form->sendArray[':user'], ':shortName' => $form->sendArray[':shortName'] . '-' . $i));
+							$statement->execute(array(':userId' => $form->sendArray[':userId'], ':shortName' => $form->sendArray[':shortName'] . '-' . $i));
 						}while($statement->fetch() !== false);
 						$form->sendArray[':shortName']  .= '-' . $i;
 					}
@@ -247,20 +248,22 @@ function page_manageForms($data, $db){
 			}
 			break;
 		case 'AlbumEdit':
-			$form = $data->output['form'] = new formHandler('galleryAlbum', $data);
+			$form = $data->output['form'] = new formHandler('album', $data);
 			$form->action = $data->output['galleryHome'] . 'album/edit/' . $data->output['album']['shortName'];
 			if (isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();
 				if($form->validateFromPost()){
+					// Load user Id into sendArray
+					$form->sendArray[':userId'] = $data->user['id'];
 					//does this album already exist?
 					$statement = $db->prepare('getAlbumByUserAndShortName', 'gallery');
-					$statement->execute(array(':user' => $form->sendArray[':user'], ':shortName' => $form->sendArray[':shortName']));
+					$statement->execute(array(':userId' => $form->sendArray[':userId'], ':shortName' => $form->sendArray[':shortName']));
 					//if so, append a number to the end, e.g. album/view/something-2
 					if(($album = $statement->fetch()) !== false && $album['id'] != $data->output['album']['id']){
 						$i = 1;
 						do{
 							$i++;
-							$statement->execute(array(':user' => $form->sendArray[':user'], ':shortName' => $form->sendArray[':shortName'] . '-' . $i));
+							$statement->execute(array(':userId' => $form->sendArray[':userId'], ':shortName' => $form->sendArray[':shortName'] . '-' . $i));
 						}while($statement->fetch() !== false);
 						$form->sendArray[':shortName']  .= '-' . $i;
 					}
@@ -272,24 +275,24 @@ function page_manageForms($data, $db){
 			}
 			break;
 		case 'ImageAdd':
-			$form = $data->output['form'] = new formHandler('galleryImageAdd', $data);
-			$form->action = $data->output['galleryHome'] . 'image/add/' . $data->output['album']['shortName'];
+			$form = $data->output['form'] = new formHandler('addImage', $data);
 			if (isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();
-				if($form->validateFromPost()){
-					$form->sendArray[':album'] = $data->output['album']['id'];
+				if($form->validateFromPost($data)){
+					$form->sendArray[':albumId'] = $data->output['album']['id'];
 					$form->sendArray[':image'] = $form->fields['image']['images']['full']['saveName'];
-					$form->sendArray[':thumb'] = $form->fields['image']['images']['thumb']['saveName'];
-					$form->sendArray[':icon'] = $form->fields['image']['images']['icon']['saveName'];
+					//$form->sendArray[':thumb'] = $form->fields['image']['images']['thumb']['saveName'];
+					//$form->sendArray[':icon'] = $form->fields['image']['images']['icon']['saveName'];
+					
 					$statement = $db->prepare('addImage', 'gallery');
 					$statement->execute($form->sendArray);
-					common_redirect($data->output['galleryHome'] . 'image/view/' . $data->output['album']['shortName'] . '/' . $form->sendArray[':shortName']);
+					$data->output['responseMessage'] = 'Your image has been uploaded. ' . common_generateLink($data,$data->output['galleryHome'].'image/view/'.$data->output['album']['shortName'].'/'.$form->sendArray[':shortName'],'Click here','image_view','/urgallery/'.$data->output['user']['name'].'/image/view/'.$data->output['album']['shortName'].'/'.$form->sendArray[':shortName'],NULL,true) . ' to view it.';
 				}else{
 				}
 			}
 			break;
 		case 'ImageEdit':
-			$form = $data->output['form'] = new formHandler('galleryImageEdit', $data);
+			$form = $data->output['form'] = new formHandler('editImage', $data);
 			$form->action = $data->output['galleryHome'] . 'image/edit/' . $data->output['album']['shortName'] . '/' . $data->output['image']['shortName'];
 			if (isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();
@@ -297,12 +300,13 @@ function page_manageForms($data, $db){
 					$statement = $db->prepare('editImage', 'gallery');
 					$form->sendArray[':id'] = $data->output['image']['id'];
 					$statement->execute($form->sendArray);
-					common_redirect($data->output['galleryHome'] . 'image/view/' . $data->output['album']['shortName'] . '/' . $form->sendArray[':shortName']);
+					
+					$data->output['responseMessage'] = 'Your changes has been saved. ' . common_generateLink($data,$data->output['galleryHome'].'image/view/'.$data->output['album']['shortName'].'/'.$form->sendArray[':shortName'],'Click here','image_view','/urgallery/'.$data->output['user']['name'].'/image/view/'.$data->output['album']['shortName'].'/'.$form->sendArray[':shortName'],NULL,true) . ' to return to your image.';
 				}
 			}
 			break;
 		case 'ImageView':
-			$form = $data->output['commentForm'] = new formHandler('galleryImageComment', $data);
+			$form = $data->output['commentForm'] = new formHandler('imageComment', $data);
 			$form->action = $data->output['galleryHome'] . 'image/view/' . $data->output['album']['shortName'] . '/' . $data->output['image']['shortName'];
 			if(isset($_POST['fromForm']) && ($_POST['fromForm']==$form->fromForm)){
 				$form->populateFromPostData();
@@ -311,7 +315,6 @@ function page_manageForms($data, $db){
 					$form->sendArray[':image'] = $data->output['image']['id'];
 					$statement = $db->prepare('addComment','gallery');
 					$statement->execute($data->output['commentForm']->sendArray);
-					common_redirect($data->output['galleryHome'] . 'image/view/' . $data->output['album']['shortName'] . '/' . $data->output['image']['shortName']);
 				}
 			}
 			break;
@@ -319,23 +322,24 @@ function page_manageForms($data, $db){
 			if($data->action[5] == 'confirm'){
 				$statement = $db->prepare('deleteAlbum','gallery');
 				$statement->execute(array(':id' => $data->output['album']['id']));
-				common_redirect_local($data, 'gallery');
+				//common_redirect_local($data, 'urgallery/');
 			}
 			break;
 		case 'ImageDelete':
 			if($data->action[6] == 'confirm'){
 				$statement = $db->prepare('deleteImage','gallery');
 				$statement->execute(array(':id' => $data->output['image']['id']));	
-				common_redirect($data->output['galleryHome'] . 'album/view/' . $data->output['album']['shortName']);
+				
+				$data->output['responseMessage'] = 'Your image has been deleted. Click ' . common_generateLink($data,$data->output['galleryHome'].'album/view/'.$data->output['album']['shortName'],'here','album_view','/urgallery/'.$data->output['user']['name'].'/album/view/'.$data->output['album']['shortName'],NULL,true) . ' to return to your album.'; 
 			}
 			break;
 		case 'ImageMakeProfile':
 			$statement = $db->prepare('getProfilePictureAlbum', 'gallery');
-			$statement->execute(array('user' => $data->user['id']));
+			$statement->execute(array(':userId' => $data->user['id']));
 			if(false === ($album = $statement->fetch())){
 				$statement = $db->prepare('addAlbum', 'gallery');
 				$statement->execute(array(
-					':user' => $data->user['id'],
+					':userId' => $data->user['id'],
 					':name' => 'Profile Pictures',
 					':allowComments' => 0,
 					':shortName' => 'profile-pictures'
@@ -343,15 +347,19 @@ function page_manageForms($data, $db){
 				$album = array('id' => $db->lastInsertId);
 			}
 			$statement = $db->prepare('addImage', 'gallery');
-			$statement->execute(array(
+			$result = $statement->execute(array(
 				':name' => $data->output['image']['name'],
 				':shortName' => $data->output['image']['shortName'],
-				':album' => $album['id'],
+				':albumId' => $album['id'],
 				':image' => $data->output['image']['image'],
-				':thumb' => $data->output['image']['thumb'],
-				':icon' => $data->output['image']['icon']
 			));
-			common_redirect($data->output['galleryHome'] . 'album/view/profile-pictures');
+			
+			if($result){
+				$data->output['responseMessage'] = 'The image has been added to your profile pictures. Click ' . common_generateLink($data,$data->output['galleryHome'].'album/view/profile-pictures','here','album_view','/urgallery/'.$data->output['user']['name'].'/album/view/profile-pictures',NULL,true) . ' to view your profile pictures.'; 	
+			}else{
+				$data->output['responseMessage'] = $data->output['responseMessage'] = 'There was an error in processing your request. Click ' . common_generateLink($data,$data->output['galleryHome'].'album/view/'.$data->output['album']['shortName'],'here','album_view','/urgallery/'.$data->output['user']['name'].'/album/view/'.$data->output['album']['shortName'],NULL,true) . ' to return to your album.'; 
+			}
+			
 		break;
 	}
 }

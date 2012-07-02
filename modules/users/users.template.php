@@ -25,7 +25,7 @@
 function theme_loginForm($data) {
 	if (!isset($data->user['id'])) {
 		echo '
-			<form action="',$data->linkRoot,'login"
+			<form action="',$data->linkRoot,'users/login"
 				method="post"
 				class="bigLoginForm"
 			>
@@ -54,7 +54,7 @@ function theme_loginForm($data) {
 					/>
 					<input type="hidden"
 						name="lastPage"
-						value="',$data->currentPage,'"
+						value="',$data->action[1],'"
 					/>
 					<label for="keepLogged">
 						Keep me Logged in:
@@ -70,10 +70,7 @@ function theme_loginForm($data) {
 				</div>
 			</form>';
 	} else {
-		if (
-			($_POST['lastPage']=='login') ||
-			($_POST['lastPage']=='logout')
-		) {
+		if (isset($_POST['lastPage']) && ($_POST['lastPage'] == 'login' || $_POST['lastPage'] == 'logout')) {
 			echo '
 			<p>You have successfully logged in.</p>';
 		} else {
@@ -81,7 +78,7 @@ function theme_loginForm($data) {
 			<p>You are already logged in as ',$data->user['name'],'</p>';
 		}
 		echo '
-			<p><a href="',$data->linkRoot,'logout">Log Out</a></p>';
+			<p><a href="',$data->linkRoot,'users/logout">Log Out</a></p>';
 	}
 }
 ?>

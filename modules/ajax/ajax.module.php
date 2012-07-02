@@ -23,13 +23,17 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function ajax_buildContent($data,$db) {
+	// Are We Really Doing An AJAX Request...
+	if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'){
+		//common_redirect_local($data,'default/');
+  	}
 	// URL Remapping (Taken from Common.PHP)
 	$newAction = $data->action;
 	$newAction = array_unique(array_slice($newAction,1));
 				
-	$url = implode('/',$newAction);			
-			
-	$rewrite = $db->prepare('findReplacement','admin_dynamicURLs');
+	$url = implode('/',$newAction);
+					
+	$rewrite = $db->prepare('findReplacement');
 	$rewrite->execute(array(':url' => $url));
 		
 	// We Got A ReMap
@@ -41,6 +45,7 @@ function ajax_buildContent($data,$db) {
 	array_pop($url);
 	$url = array_pad($url,12,false);
 	$data->action = $url;
+
 	// What Module Are We Calling?
 	$module = ($data->action[0]) ? $data->action[0] : 'default';
 	// Check If In Database And Enabled
@@ -62,13 +67,17 @@ function ajax_buildContent($data,$db) {
 	$data->sidebarList = array();
 	foreach($sidebars as $sidebar)
 	{
+		common_parseDynamicValues($data,$sidebar['titleUrl'],$db);
+		common_parseDynamicValues($data,$sidebar['parsedContent'],$db);
 		$data->sidebarList[$sidebar['side']][]=$sidebar;
 	}
 	
 	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------
 	common_include('modules/'.$module.'/'.$module.'.module.php');
 	$data->loadModuleTemplate($module);
-	page_getUniqueSettings($data);
+	if(function_exists('page_getUniqueSettings')) {
+		page_getUniqueSettings($data);
+	}
 	page_buildContent($data,$db);	
 }
 ?>

@@ -50,7 +50,8 @@ $settings=array(
         'version' => 'Pre-Alpha',
         'verifyEmail' => 1,
         'requireActivation' => 0,
-        'removeAttribution' => 0
+        'removeAttribution' => 0,
+        'defaultGroup' => 0
     )
 );
 echo '
@@ -279,46 +280,39 @@ if (
       // Admin has universal access by defaul, this list is commented just for reference on full list
 		'Administrators' => array(),
 		'Writer' => array(
-            'core_access',
+			'core_access',
+			'dashboard_access',
 
-            'dashboard_access',
+			'mainMenu_access',
+			'mainMenu_add',
+			'mainMenu_delete',
+			'mainMenu_disable',
+			'mainMenu_edit',
+			'mainMenu_enable',
+			'mainMenu_list',
 
-            'mainMenu_access',
-            'mainMenu_add',
-            'mainMenu_delete',
-            'mainMenu_disable',
-            'mainMenu_edit',
-            'mainMenu_enable',
-            'mainMenu_list',
+			'sidebars_access',
+			'sidebars_add',
+			'sidebars_delete',
+			'sidebars_edit',
+			'sidebars_list',
 
-            'sidebars_access',
-            'sidebars_add',
-            'sidebars_delete',
-            'sidebars_edit',
-            'sidebars_list',
-
-            'dynamicURLs_access',
-            'dynamicURLs_add',
-            'dynamicURLs_delete',
-            'dynamicURLs_edit',
-            'dynamicURLs_list'
+			'dynamicURLs_access',
+			'dynamicURLs_add',
+			'dynamicURLs_delete',
+			'dynamicURLs_edit',
+			'dynamicURLs_list'
 		),
 		'Moderator' => array(
-            'core_access',
-
-            'dashboard_access'
+			'core_access',
+			'dashboard_access'
 		),
 		'Blogger' => array(
-            'core_access',
-
-            'dashboard_access'
+			'core_access',
+			'dashboard_access'
 		),
-		'User' => array(
-            'core_access',
-
-            'dashboard_access'
-		)
-    );
+		'User' => array()
+	);
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         $statement=$data->prepare('addUserToPermissionGroupNoExpires');
         if($groupName=='Administrators') {

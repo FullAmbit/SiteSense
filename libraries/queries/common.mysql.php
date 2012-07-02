@@ -28,6 +28,12 @@
 */
 function common_addQueries() {
     return array(
+    	'setTimeZone' => '
+    		SET time_zone = \'+0:00\'
+    	',
+    	'testRun' => '
+    		SELECT CURRENT_TIMESTAMP
+    	',
         'tableExists' => '
 			SHOW TABLES LIKE \'!prefix!!table!\'
 		',
@@ -377,7 +383,7 @@ function common_addQueries() {
             (:name,:enabled)
         ',
         'findReplacement' => '
-            SELECT * FROM !prefix!url_remap WHERE :url RLIKE `match`
+            SELECT r.match,r.replace FROM !prefix!url_remap r WHERE :url RLIKE r.match
         '
     );
 }

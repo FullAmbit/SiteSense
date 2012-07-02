@@ -220,6 +220,18 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		',
 		'group' => 'Advanced Settings'
 	),
+	'defaultGroup' => array(
+		'label' => 'Default Registration Group',
+		'tag' => 'select',
+		'value' => $data->settings['defaultGroup'],
+		'options' => $data->output['userGroups'],
+		'description' => '
+			<p>
+				<b>Default Registration Group</b> - Determines which of group to put registered users under.
+			</p>
+		',
+		'group' => 'Registration Settings'
+	),
 	'verifyEmail' => array(
 		'label' => 'Verify EMail',
 		'tag' => 'select',

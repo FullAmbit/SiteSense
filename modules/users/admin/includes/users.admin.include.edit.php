@@ -49,6 +49,26 @@ function admin_usersBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
+    // Admin check
+    $admin=false;
+    $statement=$db->prepare('getGroupsByUserID');
+    $statement->execute(array(
+        ':userID'   => $data->action[3]
+    ));
+    $groups=$statement->fetchAll();
+    foreach($groups as $group) {
+        if($group['groupName']=='Administrators') {
+            $admin=true;
+        }
+    }
+    if($admin) {
+        // Admins can only edit themselves
+        if($data->user['id']!==$data->action[3]) {
+            $data->output['abort'] = true;
+            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            return;
+        }
+    }
     // Load all groups
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
@@ -188,6 +208,9 @@ function admin_usersBuild($data,$db) {
             ));
             // Insert Permissions
             foreach($data->permissions as $category => $permissions) {
+                if(!isset($permissions['permissions'])) {
+                        $permissions['permissions']='Manage Permissions';
+                }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
                         if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
@@ -302,6 +325,7 @@ function admin_usersBuild($data,$db) {
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
+                unset($data->output['userForm']->sendArray[':userGroups_'.$value['groupName']]);
             }
 
 			//--Don't Need These, User Already Exists--//
@@ -334,7 +358,7 @@ function admin_usersBuild($data,$db) {
 			
 			$id = $db->lastInsertId();
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
-			$profileAlbum->execute(array(':user' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
+			$profileAlbum->execute(array(':userId' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
 			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='

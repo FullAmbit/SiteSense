@@ -34,7 +34,7 @@ function page_buildContent($data,$db) {
 				$data->output['icons'] = array();
 				$otherUserIcons = $db->prepare('getProfilePictures', 'gallery');
 				foreach($data->output['messages'] as &$message){
-					$otherUserIcons->execute(array(':user' => $message['otheruser_id']));
+					$otherUserIcons->execute(array(':userId' => $message['otheruser_id']));
 					$icon = $otherUserIcons->fetch();
 					if($icon === false){
 						$message['icon'] = false;
@@ -55,13 +55,13 @@ function page_buildContent($data,$db) {
 			case 'with':
 				// Send Message Form
 				require_once('libraries/forms.php');
-				$statement = $db->prepare('getUserByName', 'users');
+				$statement = $db->prepare('getByName', 'users');
 				$statement->execute(array(':name' => $data->action[2]));
 				$otherUser = $statement->fetch();
 				if($otherUser === false){
 					common_redirect_local($data, 'messages');
 				}
-				$data->output['sendForm'] = new formHandler('sendMessage', $data);
+				$data->output['sendForm'] = new formHandler('send', $data);
 				// Has the form been sent?
 				if (isset($_POST['fromForm']) && ($_POST['fromForm']==$data->output['sendForm']->fromForm)){
 					$data->output['sendForm']->populateFromPostData();
