@@ -76,6 +76,11 @@ final class dynamicPDO extends PDO {
         if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
             $target='libraries/queries/'.$moduleName.'.'.$this->sqlType.'.php';
         }
+        $pos=strpos($moduleName,'_startup');
+        if(!($pos===false)) {
+            $moduleNameOnly=substr($moduleName,0,$pos);
+            $target='modules/'.$moduleNameOnly.'/queries/'.$moduleNameOnly.'.'.$this->sqlType.'.startup.php';
+        }
         if (file_exists($target)) {
 			require_once($target);
 			$loader=$moduleName.'_addQueries';
