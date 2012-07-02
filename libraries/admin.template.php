@@ -335,9 +335,6 @@ function theme_buildForm($formData) {
 								}
 							} else {
 								// Return bad entry
-								if($formField['value']==$option['value']) {
-									$selected=' selected="selected"';
-								}
 								if(is_array($formField['value'])) {
 									foreach($formField['value'] as $value) {
 										if(is_array($option)) {

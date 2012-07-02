@@ -140,9 +140,6 @@ final class dynamicPDO extends PDO {
 		$result=$this->query('countRows','common',$tableName);
 		return $result->fetchColumn();
 	}
-	public function lastInsertId() {
-		return parent::lastInsertId();
-	}
 	public function createTable($tableName,$structure,$verbose=false) {
     /*
         structure is an array of field names and definitions
