@@ -357,13 +357,13 @@ final class sitesense {
 						)
 					);
 					if($formStatement->fetch() !== false){ // It's a Form
-						$this->currentPage = 'dynamicForms';
-						array_unshift($this->action, 'pages');
+						$this->currentPage = 'dynamic-forms';
+						array_unshift($this->action, 'dynamic-forms');
 						$moduleQuery->execute(array(':shortName' => $this->currentPage));
 						$this->module = $moduleQuery->fetch();
 					}else{ // It's a Blog
-                        // Check to see if it is a blog:
-                        $blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
+						// Check to see if it is a blog:
+						$blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
 						$blogStatement->execute(
 							array(
 								':shortName' => $this->currentPage,
@@ -406,7 +406,6 @@ final class sitesense {
 		}
 
 		$this->action = array_merge($this->action,array_fill(0,10,false));
-		
 		$this->httpHeaders=array(
 				'Content-Type: text/html; charset='.$this->settings['characterEncoding']
 			);
@@ -596,7 +595,6 @@ final class sitesense {
 					$this->currentPage=$this->settings['hideContentGuests'];
 				}
 			}
-			
 			if($this->currentPage == 'pageNotFound' || $this->banned){
 				common_include('modules/pages/pages.module.php');
 			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {

@@ -86,12 +86,12 @@ function admin_mainMenuBuild($data,$db) {
 					}
 					if(isset($query1))
 					{
-						$statement = $db->prepare($query1,'mainMenu');
+						$statement = $db->prepare($query1,'admin_mainMenu');
 						$statement->execute(array(
 							':sortOrder' => $item['sortOrder'],
 							':parent' => $item['parent']
 						));
-						$statement = $db->prepare($query2,'mainMenu');
+						$statement = $db->prepare($query2,'admin_mainMenu');
 						$statement->execute(array(
 							':id' => $item['id']
 						));
