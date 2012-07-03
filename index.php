@@ -394,7 +394,7 @@ final class sitesense {
 				}
 			}
 			// If we didn't set the currentPage above, the page was not found.
-            if($this->currentPage != 'pageNotFound'){
+			if($this->currentPage != 'pageNotFound'){
 				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule','admin_modules');
 				$sidebarQuery->execute(
 					array(
@@ -616,15 +616,7 @@ final class sitesense {
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
 		}
-		// Parse Sidebars Before Display
-		if(isset($sidebars))
-		{
-			foreach($sidebars as $sidebar) {
-				common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
-				common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
-				$this->sidebarList[$sidebar['side']][]=$sidebar;
-			}
-		}
+		
 		// Is this an AJAX request?
 		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
             ajax_buildContent($this,$this->db);
@@ -634,6 +626,16 @@ final class sitesense {
 				page_buildContent($this,$this->db);
 			}
 		}
+		// Parse Sidebars Before Display
+		if(isset($sidebars))
+		{
+			foreach($sidebars as $sidebar) {
+				common_parseDynamicValues($this,$sidebar['titleUrl'],$this->db);
+				common_parseDynamicValues($this,$sidebar['parsedContent'],$this->db);
+				$this->sidebarList[$sidebar['side']][]=$sidebar;
+			}
+		}
+
 		
 		$this->db=null;
 		if ($this->compressionType) {

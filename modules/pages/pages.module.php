@@ -23,8 +23,11 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function page_getUniqueSettings($data,$db) {
-	if($data->banned)
-	{
+
+}
+
+function page_buildContent($data,$db) {
+	if($data->banned) {
 		$statement = $db->prepare('getPagesByShortName','pages');
 		$statement->execute(array(
 			':shortName' => 'banned'
@@ -32,7 +35,7 @@ function page_getUniqueSettings($data,$db) {
 		
 		$data->output['pageContent'] = $statement->fetch();
 		return;
-	} 
+	}
 	$statement = $db->prepare('getPageByShortNameAndParent', 'pages');
 	$current = array('id' => 0); //pseudo-page, root node.
 	$stages = array_filter(array_slice($data->action, 1));
@@ -49,46 +52,31 @@ function page_getUniqueSettings($data,$db) {
 		}
 	}
 	$data->output['found'] = $found;
-    $data->output['404']=false;
-    if($found){
+	$data->output['404']=false;
+	if($found){
 		$statement = $db->prepare('getPagesByParent', 'pages');
 		$statement->execute(array('parent' => $current['id']));
 		$data->output['pageContent'] = $current;
 		$data->output['pageShortName']= $current['title'];
 		$data->output['pageContent']['children']=$statement->fetchAll();
 		$data->output['pageTitle']=$data->output['pageContent']['title'];
-		
-		$data->output['pageContent']['parsedContent'] = htmlspecialchars_decode($data->output['pageContent']['parsedContent']);
-		common_parseDynamicValues($data,$data->output['pageContent']['parsedContent'],$db);
-		// Side Bars?<br />
-
-		$statement = $db->prepare('getEnabledSidebarsByPage','pages');
-		$statement->execute(array(':pageId' => $current['id']));
-		$sidebars = $statement->fetchAll();
-		$data->sidebarList = array();
-		foreach($sidebars as $sidebar)
-		{
-			/**$getSidebar->execute(array(':id' => $sidebar['sidebar']));
-			$item = $getSidebar->fetch();
-			if ($item['fromFile']) {
-				if (file_exists('sidebars/'.$item['name'].'.sidebar.php')) {
-					$data->sidebarList[$item['side']][]=$item;
-				} else {
-					$delete->execute(array(
-						':id' => $item['id']
-					));
-				}
-			} else {
-				$data->sidebarList[$item['side']][]=$item;
-			}**/
-			
-			$data->sidebarList[$sidebar['side']][] = $sidebar;
-		}
-				
 	} else if ($data->httpHeaders[0] === 'Content-Type: text/html; charset='.$data->settings['characterEncoding']) {
 		$data->httpHeaders[]='HTTP/1.1 404 Not Found';
 		$data->output['404']=true;
 		$data->output['pageContent']['title']='HTTP/1.1 404 Not Found';
+	}
+	$data->output['pageContent']['parsedContent'] = htmlspecialchars_decode($data->output['pageContent']['parsedContent']);
+	common_parseDynamicValues($data,$data->output['pageContent']['parsedContent'],$db);
+	$statement = $db->prepare('getEnabledSidebarsByPage','pages');
+	$statement->execute(array(':pageId' => $current['id']));
+	$sidebars = $statement->fetchAll();
+	$data->sidebarList = array();
+	if(isset($sidebars)) {
+		foreach($sidebars as $sidebar) {
+			common_parseDynamicValues($data,$sidebar['titleUrl'],$db);
+			common_parseDynamicValues($data,$sidebar['parsedContent'],$db);
+			$data->sidebarList[$sidebar['side']][]=$sidebar;
+		}
 	}
 }
 function page_content($data) {

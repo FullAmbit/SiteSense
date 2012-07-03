@@ -78,7 +78,7 @@ function page_buildContent($data,$db) {
 	$data->localRoot = $data->linkRoot.(in_array($data->output['blogInfo']['name'],$data->topLevelBlogs) 
 	? $data->output['blogInfo']['name'] 
 	: 'blogs/'.$data->output['blogInfo']['shortName']);
-	
+
 	$data->output['rssLink'] = isset($data->output['blogInfo']['rssOverride']{1}) ? $data->output['blogInfo']['rssOverride'] : $data->localRoot.'/rss';
 	
 	// If RSS Feed Skip All This

@@ -177,7 +177,6 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 				$content($data,$attributes);
 			}
 		}
-		
 		$buffer = ob_get_contents();
 		$textToParse = str_replace($matches[0][$key],$buffer,$textToParse);
 	}	
