@@ -106,9 +106,9 @@ function blogs_addQueries() {
 		',
         'makeComment' => '
 			INSERT INTO !prefix!blog_comments
-			(post, author, rawContent, parsedContent, email,loggedIP)
+			(post, authorFirstName, authorLastName, rawContent, parsedContent, email,loggedIP)
 			VALUES
-			(:post, :author, :rawContent, :parsedContent, :email,:loggedIP)
+			(:post, :authorFirstName, :authorLastName, :rawContent, :parsedContent, :email,:loggedIP)
 		',
         'getCommentsAwaitingApproval' =>'
 			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post

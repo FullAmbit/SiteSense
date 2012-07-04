@@ -391,7 +391,6 @@ class formHandler {
                                     // Are We Using The CDN?
                                     if($data->cdn)
                                     {
-                                        die("USING CDN");
                                         $quality = (isset($info['quality'])) ? $info['quality'] : 85;
                                         switch($extension){
                                             case 'jpg': case 'jpeg': default:

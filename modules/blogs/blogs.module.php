@@ -239,6 +239,7 @@ function page_buildContent($data,$db) {
 						
 					// Remove subscriptions; not stored in our database
 					unset($data->output['commentForm']->sendArray[':subscription']);
+					var_dump($data->output['commentForm']->sendArray);
 					$statement->execute($data->output['commentForm']->sendArray);
 					unset($data->output['commentForm']);
 					$data->output['commentSuccess'] = true;

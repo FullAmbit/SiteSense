@@ -36,7 +36,7 @@ function admin_blogsBuild($data,$db)
 	$statement->execute(array(':id' => $data->action[3]));
 	$data->output['commentItem'] = $statement->fetch();
 	
-	if(checkPermisison('commentDisapprove','blogs',$data))	{
+	if(checkPermission('commentDisapprove','blogs',$data)) {
 		$statement = $db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
 			':postId' => $data->output['commentItem']['post']

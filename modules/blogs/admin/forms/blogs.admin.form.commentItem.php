@@ -24,10 +24,18 @@
 */
 $this->submitTitle = 'Save Comment';
 $this->fields = array(
-	'author' => array(
-		'label' => 'Author',
+	'authorFirstName' => array(
+		'label' => 'First Name',
 		'tag' => 'input',
-		'value' => isset($data->output['commentItem']['author']) ? $data->output['commentItem']['author'] : '',
+		'value' => isset($data->output['commentItem']['authorFirstName']) ? $data->output['commentItem']['authorFirstName'] : '',
+		'params' => array(
+			'type' => 'text'
+		),
+	),
+	'authorLastName' => array(
+		'label' => 'Last Name',
+		'tag' => 'input',
+		'value' => isset($data->output['commentItem']['authorLastName']) ? $data->output['commentItem']['authorLastName'] : '',
 		'params' => array(
 			'type' => 'text'
 		),

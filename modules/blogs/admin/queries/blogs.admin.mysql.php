@@ -225,7 +225,7 @@ function admin_blogs_addQueries() {
 			ORDER BY `time` ASC
 		',
         'editCommentById' => '
-			UPDATE !prefix!blog_comments SET author = :author, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
+			UPDATE !prefix!blog_comments SET authorFirstName = :authorFirstName, authorLastName = :authorLastName, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
 		',
         'deleteCommentById' => '
 			DELETE FROM !prefix!blog_comments WHERE id = :id
@@ -237,9 +237,9 @@ function admin_blogs_addQueries() {
 		',
         'makeComment' => '
 			INSERT INTO !prefix!blog_comments
-			(post, author, content,email,loggedIP)
+			(post, authorFirstName, authorLastName, content,email,loggedIP)
 			VALUES
-			(:post, :author, :content,:email,:loggedIP)
+			(:post, :authorFirstName, :authorLastName, :content,:email,:loggedIP)
 		',
         'getCommentsAwaitingApproval' =>'
 			SELECT * FROM !prefix!blog_comments

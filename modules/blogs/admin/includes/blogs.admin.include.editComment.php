@@ -28,7 +28,7 @@ function admin_blogsBuild($data,$db)
 	if(is_numeric($data->action[3])) {
 		// Retrieve Comment
 		$statement = $db->prepare('getCommentById','admin_blogs');
-		$statement->execute(array(':blogId' => $data->action[3]));
+		$statement->execute(array(':id' => $data->action[3]));
 		if(($data->output['commentItem'] = $statement->fetch()) === FALSE)	{
 			$data->output['abort'] = true;
 			$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
