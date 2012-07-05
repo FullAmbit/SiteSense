@@ -603,7 +603,9 @@ function theme_buildForm($formData,$buffer = FALSE) {
 				<i>&raquo;</i> Indicates a required field',(
 	$formData->error ? ', <b>X</b> indicates a field with errors' : ''
 	),(
-	(strlen($formData->extraMarkup)==0) ? '' : $formData->extraMarkup
+	(strlen($formData->extraMarkup)==0) ? '' : '<div class="extraMarkup">
+        '.$formData->extraMarkup.'
+      <!-- .extraMarkup --></div>'
 	),'
 			<!-- .submitsAndHiddens --></div>
 		</form>';

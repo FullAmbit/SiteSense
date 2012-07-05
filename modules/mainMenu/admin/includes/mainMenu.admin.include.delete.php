@@ -25,7 +25,7 @@
 function admin_mainMenuBuild($data,$db) {
 	$data->output["delete"] = "";
 	// Make Sure We Have An ID
-	if(!empty($data->action[3]) || !is_numeric($data->action[3])) {
+	if(empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 		return;

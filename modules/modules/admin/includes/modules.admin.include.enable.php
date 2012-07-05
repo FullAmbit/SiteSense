@@ -23,24 +23,36 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function admin_modulesBuild($data,$db){
-    if(!checkPermission('enable','modules',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
-        return;
-    }
-    if(!$data->action[3]) {
+	if(!checkPermission('enable','modules',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+		return;
+	}
+	if(!$data->action[3]) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No module name was entered to be enabled';
 	} else {
+		$statement=$db->prepare('getModuleByShortName','admin_modules');
+		$statement->execute(
+			array(
+				':shortName' => $data->action[3]
+			)
+		);
+		$result=$statement->fetch();
+		if(empty($result)) {
+			$data->output['rejectError']='Error';
+			$data->output['rejectText']='Module Not Found';
+		}
+		$name=$result['name'];
 		// Include the install file for this module
-		$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
+		$targetInclude='modules/'.$name.'/'.$name.'.install.php';
 		if(!file_exists($targetInclude)) {
 			$data->output['rejectError']='Module installation file does not exist';
 			$data->output['rejectText']='The module installation could not be found.';
 		} else {
 			common_include($targetInclude);
 			// Get the module's settings
-			$targetFunction=$data->action[3].'_settings';
+			$targetFunction=$name.'_settings';
 			if(!function_exists($targetFunction)) {
 				$data->output['rejectError']='Improper installation file';
 				$data->output['rejectText']='The module settings function could not be found within the module installation file.';
@@ -57,7 +69,7 @@ function admin_modulesBuild($data,$db){
 				);
 				// Run the module installation procedure
 				$db->loadCommonQueryDefines(true);
-				$targetFunction=$data->action[3].'_install';
+				$targetFunction=$name.'_install';
 				if(!function_exists($targetFunction)) {
 					$data->output['rejectError']='Improper installation file';
 					$data->output['rejectText']='The module install function could not be found within the module installation file.';

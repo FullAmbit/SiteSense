@@ -101,5 +101,19 @@ $this->fields=array(
 		'params' => array(
 			'type' => 'checkbox'
 		)
-	)
+	),
+	'compareTo' => array(
+		'label' => 'Compare To',
+		'tag' => 'select',
+		'options' => $data->output['fieldList'],
+		'value' => isset($data->output['field']['compareTo']) ? $data->output['field']['compareTo'] : '',
+		'params' => array(
+			'type' => 'text',
+		),
+		'description' => '
+			<p>
+				<b>Compare To</b> - Does it match the selected field?
+			</p>
+		'
+	),
 );

@@ -111,7 +111,7 @@ function blogs_addQueries() {
 			(:post, :authorFirstName, :authorLastName, :rawContent, :parsedContent, :email,:loggedIP)
 		',
         'getCommentsAwaitingApproval' =>'
-			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post
+			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post AND APPROVED=0
 		'
     );
 }

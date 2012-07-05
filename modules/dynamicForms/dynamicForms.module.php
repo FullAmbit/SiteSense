@@ -72,6 +72,7 @@ function page_buildContent($data,$db) {
 				$f['params'] = array('type' => 'text');
 				$f['required'] = ($field['required'] == '0') ? false : true;
 				$f['validate'] = ($field['isEmail'] == '1') ? 'eMail' : '';
+				$f['eMailFailMessage'] = 'Invalid E-Mail Address';
 				break;
 			case 'textarea':
 				$f['tag'] = 'textarea';
@@ -104,7 +105,6 @@ function page_buildContent($data,$db) {
 			$rowId = $db->lastInsertId();
 			$statement = $db->prepare('newValue', 'dynamicForms');
 			$emailText = '';
-			var_dump($customForm->sendArray);
 			foreach($rawFields as $field){
 				$fieldId = $field['id'];
 				$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $customForm->sendArray[':'.$fieldId]));

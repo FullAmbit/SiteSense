@@ -27,6 +27,12 @@ $this->formPrefix='settings_';
 $this->caption='Global Settings';
 $this->submitTitle='Save Changes';
 $this->fromForm='settings';
+for($i=-12;$i<13;$i++) {
+	$data->output['timezone'][]=array(
+		'text'  => $i,
+		'value' => $i
+	);
+}
 $this->fields=array(
 	'siteTitle' => array(
 		'label' => 'Site Title',
@@ -60,6 +66,17 @@ $this->fields=array(
 		'options' => array(
 			'en','es','de'
 		),
+		'description' => '
+			<p>
+				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
+			</p>
+		'
+	),
+	'defaultTimeZone' => array(
+		'label' => 'Default Time Zone',
+		'tag' => 'select',
+		'value' => $data->settings['defaultTimeZone'],
+		'options' => $data->output['timeZones'],
 		'description' => '
 			<p>
 				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.

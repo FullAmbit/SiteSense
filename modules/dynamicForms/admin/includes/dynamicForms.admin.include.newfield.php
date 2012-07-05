@@ -46,14 +46,29 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 	$data->output['form'] = $dbform;
+	$data->output['fieldList'][]=array(
+		'text'  => 'Do Not Compare',
+		'value' => '0'
+	);
+	$statement = $db->prepare('getFieldsByForm','admin_dynamicForms');
+	$statement->execute(array(':form' => $data->action[3]));
+	$fieldList = $statement->fetchAll();
+	foreach($fieldList as $field) {
+		$data->output['fieldList'][]=array(
+			'text'  => $field['name'],
+			'value' => $field['id']
+		);
+	}
 	$form = $data->output['fromForm'] = new formHandler('formfields',$data,true);
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		$form->caption = 'New Form Field';
 		$form->populateFromPostData();
-		
 		if ($form->validateFromPost()) {
-			
+			if($form->sendArray[':isEmail'] && $form->sendArray[':type']!=='textbox') {
+				$form->fields['isEmail']['error']=true;
+				$form->fields['isEmail']['errorList'][]='Can only validate emails for textboxes.';
+				return;
+			}
 			$form->sendArray[':form'] = $dbform['id'];
 			
 			//--Get SortOrder--//
@@ -66,8 +81,7 @@ function admin_dynamicFormsBuild($data,$db) {
 			
 			$statement = $db->prepare('newField','admin_dynamicForms');
 			$result = $statement->execute($form->sendArray);
-			if(!$result)
-			{
+			if(!$result) {
 				$data->output['abort'] = true;
 				$data->output['abortMessage'] = '<h2>Unable to save to database</h2>';
 				return;

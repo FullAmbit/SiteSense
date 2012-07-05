@@ -27,7 +27,7 @@ function dynamicURLs_config($data,$db) {
     $data->admin['menu'][]=array(
       'category'  => 'Site Management',
       'command'   => 'dynamic-URLs/list',
-      'name'      => 'Dynamic URLs',
+      'name'      => 'URL Routing',
       'sortOrder' => 9
     );
   }

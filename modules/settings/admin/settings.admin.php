@@ -23,6 +23,30 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+function populateTimeZones($data) {
+	$currentTime=time();
+	$times=array();
+	$start=$currentTime-date('G',$currentTime)*3600;
+	for($i=0;$i<24*60;$i+=15) {
+		$times[date('g:i A',$start+$i*60)]=array();
+	}
+	$timezones=DateTimeZone::listIdentifiers();
+	foreach($timezones AS $timezone) {
+		$dt=new DateTime('@'.$currentTime);
+		$dt->setTimeZone(new DateTimeZone($timezone));
+		$time=$dt->format('g:i A');
+		$times[$time][]=$timezone;
+	}
+	$timeZones=array_filter($times);
+	foreach($timeZones as $time => $timeZoneList) {
+		foreach($timeZoneList as $timeZone) {
+			$data->output['timeZones'][]=array(
+				'text'  => $time.' - '.$timeZone,
+				'value' => $timeZone
+			);
+		}
+	}
+}
 function admin_buildContent($data,$db) {
 	/**
 	 *	Permission: Accessible by administrator only
@@ -32,6 +56,8 @@ function admin_buildContent($data,$db) {
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;
 	}
+	// Poulate Time Zone List
+	populateTimeZones($data);
 	// Get all groups
 	$statement=$db->query('getAllGroups','admin_users');
 	$userGroups=$statement->fetchAll();

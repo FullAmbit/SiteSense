@@ -28,7 +28,7 @@ function dynamicForms_config($data,$db) {
 		$data->admin['menu'][]=array(
 			'category'  => 'Site Management',
 			'command'   => $data->output['moduleShortName']['dynamicForms'].'/list',
-			'name'      => 'Dynamic Forms',
+			'name'      => 'Forms',
 			'sortOrder' => 5
 		);
 	}

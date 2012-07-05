@@ -397,11 +397,15 @@ function theme_buildForm($formData) {
 					echo '
 					/>';
 			}
-			if ($formField['compareFailed']) {
+			if (count($formField['errorList'])>0) {
 				echo '
-						<div class="compareFailed">
-							',$formField['compareFailMessage'],'
-						</div>';
+					<ul class="errorMessages">';
+				foreach ($formField['errorList'] as $message) {
+					echo '
+						<li>',$message,'</li>';
+				}
+				echo '
+					</ul>';
 			}
 			// Content After/
 			if(!empty($formField['contentAfter']))

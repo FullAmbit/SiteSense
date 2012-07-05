@@ -22,7 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-ini_set("date.timezone","Etc/GMT-0");
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
@@ -235,25 +234,23 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		}
 		$queryString = trim($queryString,'/').'/';
-    	$statement = $this->db->prepare("findReplacement");
-    	$statement->execute(array(':url' => $queryString));
-    	if($row=$statement->fetch()) {
-        $queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
-    	}
-        // Break URL up into action array
-        $queryString = trim($queryString,'/');
-        
-        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
-        
-        // Install
-        if ($this->action[0]=='install') {
+		$statement = $this->db->prepare("findReplacement");
+		$statement->execute(array(':url' => $queryString));
+		if($row=$statement->fetch()) {
+		$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+		}
+		// Break URL up into action array
+		$queryString = trim($queryString,'/');
+		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
+		// Install
+		if ($this->action[0]=='install') {
 			$data=$this->db;
 			require_once('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
 		// Load settings
-        $statement=$this->db->query('getSettings');
-        while ($row=$statement->fetch()) {
+		$statement=$this->db->query('getSettings');
+		while ($row=$statement->fetch()) {
 			if ($row['category']=='cms') {
 				$this->settings[$row['name']]=$row['value'];
 			} else {
@@ -261,7 +258,9 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-
+		// Set TimeZone
+		date_default_timezone_set($this->settings['defaultTimeZone']);
+		ini_set('date.timezone', $this->settings['defaultTimeZone']);
 		// Append attributions
 		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? '|attribution|' : '';
 
