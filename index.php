@@ -235,14 +235,11 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		}
 		$queryString = trim($queryString,'/').'/';
-
     	$statement = $this->db->prepare("findReplacement");
     	$statement->execute(array(':url' => $queryString));
-    	if(($row = $statement->fetch()) !== FALSE)
-    	{
-			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+    	if($row=$statement->fetch()) {
+        $queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
     	}
-        	
         // Break URL up into action array
         $queryString = trim($queryString,'/');
         
@@ -254,7 +251,6 @@ final class sitesense {
 			require_once('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
-
 		// Load settings
         $statement=$this->db->query('getSettings');
         while ($row=$statement->fetch()) {
@@ -327,7 +323,7 @@ final class sitesense {
         $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
-		if($this->currentPage != 'admin' && !$this->banned){
+		if($this->currentPage != 'admin' && !$this->banned) {
 			$moduleQuery = $this->db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
@@ -348,49 +344,6 @@ final class sitesense {
 					$moduleQuery->execute(array(':shortName' => $this->currentPage));
 					$this->currentPage = 'pageNotFound'; // Still show a page-not-found because it will be disabled by default.
 					$this->module = $moduleQuery->fetch();
-				}else{ // Not a module, but could it be a form, blog or a page.
-					// Check to see if it is a form:
-                    $formStatement = $this->db->prepare('getTopLevelFormByShortName', 'dynamicForms'); //Form
-					$formStatement->execute(
-						array(
-							':shortName' => $this->currentPage,
-						)
-					);
-					if($formStatement->fetch() !== false){ // It's a Form
-						$this->currentPage = 'dynamic-forms';
-						array_unshift($this->action, 'dynamic-forms');
-						$moduleQuery->execute(array(':shortName' => $this->currentPage));
-						$this->module = $moduleQuery->fetch();
-					}else{ // It's a Blog
-						// Check to see if it is a blog:
-						$blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
-						$blogStatement->execute(
-							array(
-								':shortName' => $this->currentPage,
-							)
-						);
-						if($blogStatement->fetch() !== false){
-							$this->currentPage = 'blogs';
-							array_unshift($this->action, 'blogs');
-							$moduleQuery->execute(array(':shortName' => $this->currentPage));
-							$this->module = $moduleQuery->fetch();
-						}else{
-                            // Check to see if it is a page:
-							$statement = $this->db->prepare('getPageByShortNameAndParent', 'pages');
-							$statement->execute(
-								array(
-									':shortName' => $this->currentPage,
-									':parent' => 0
-								)
-							);
-							if($statement->fetch() !== false){// It's a Page
-								$this->currentPage = 'page';
-								array_unshift($this->action, 'page');
-								$moduleQuery->execute(array(':shortName' => $this->currentPage));
-								$this->module = $moduleQuery->fetch();
-							}
-						}
-					}
 				}
 			}
 			// If we didn't set the currentPage above, the page was not found.
@@ -609,8 +562,13 @@ final class sitesense {
 			$this->loadModuleTemplate($this->module['name']);
 		}
 		// Get the plugins for this module
-		$statement=$this->db->query('getEnabledPlugins');
+		$statement=$this->db->prepare('getEnabledPluginsByModule');
+		$statement->execute(array(
+			':moduleID' => $this->module['id']
+		));
 		$plugins=$statement->fetchAll();
+		//var_dump($this->module['id']);
+		//var_dump($plugins);
 		foreach($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];

@@ -60,7 +60,6 @@ function admin_pagesBuild($data,$db) {
 	}
 
 	/* editing an existing from the database */
-	$data->output['pageForm']->caption='Editing Page '.$data->action[3];
 	$statement=$db->prepare('getPageById','admin_pages');
 	$statement->execute(array(
 		':id' => $data->action[3]
@@ -73,6 +72,8 @@ function admin_pagesBuild($data,$db) {
 	}
 	
 	$data->output['pageForm']= $form = new formHandler('addEdit',$data,true);
+		$data->output['pageForm']->caption='Editing Page "'.$data->output['pageItem']['title'].'"';
+
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	// Unset Main Menu Options
 	unset($form->fields['showOnMenu']);
@@ -115,12 +116,17 @@ function admin_pagesBuild($data,$db) {
 			$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
 			// Apply ShortName Convention To Name For Use In Comparison //
 			$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
+			$statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+      $statement->execute(array(
+        ':match' => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
+        ':newMatch'   => '^'.$shortName.'(/.*)?$',
+        ':replace' => 'pages/'.$shortName.'\1'
+      ));
 		}
 	
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost()) {
 			if (is_numeric($data->action[3])) {
-				
 				// Parse
 				if($data->settings['useBBCode'] == '1')
 				{

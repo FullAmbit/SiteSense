@@ -103,7 +103,7 @@ $this->fields=array(
 			</p>
 		'
 	),
-	'menuText' => array(
+	'menuTitle' => array(
 		'label' => 'Menu Link Text',
 		'tag' => 'input',
 		'params' => array(

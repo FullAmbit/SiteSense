@@ -62,6 +62,13 @@ function admin_pagesBuild($data,$db)
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost())
 		{
+      if($data->output['pageForm']->sendArray[':parent']==0) {
+            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'pages/'.$shortName.'\1'
+            ));
+      }
 			// Get Sort Order
 			$statement = $db->prepare('countPagesByParent','admin_pages');
 			$statement->execute(array(':parent' => $data->output['pageForm']->sendArray[':parent']));

@@ -365,11 +365,17 @@ function common_addQueries() {
         'deleteSidebarSettingBySidebar' => '
 			DELETE FROM !prefix!module_sidebars WHERE sidebar = :sidebar
 		',
-        'getEnabledPlugins' => '
-            SELECT *
+        'getEnabledPluginsByModule' => '
+            SELECT !prefix!plugins.name
             FROM !prefix!plugins
             JOIN !prefix!plugins_modules
             ON !prefix!plugins.id = !prefix!plugins_modules.plugin
+            AND !prefix!plugins_modules.module = :moduleID
+        ',
+        'getEnabledPlugins' => '
+          SELECT *
+          FROM !prefix!plugins
+          WHERE enabled = 1
         ',
         'getPluginByName' => '
             SELECT *

@@ -113,6 +113,7 @@ function admin_blogsBuild($data,$db) {
 		if($shortName == $data->output['blogItem']['shortName'])
 		{
 			unset($data->output['blogForm']->fields['name']['cannotEqual']);
+			$newShortName=false;
 		} else {
 			$statement = $db->prepare('getExistingBlogShortNames','admin_blogs');
 			$statement->execute();
@@ -124,10 +125,34 @@ function admin_blogsBuild($data,$db) {
 			$data->output['blogForm']->fields['name']['cannotEqual'] = $cannotEqual;
 			// Apply ShortName Convention To Name For Use In Comparison //
 			$_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
+			$newShortName=true;
 		}
 		//--Validate All The Form Information--//
 		if ($data->output['blogForm']->validateFromPost($data)) {
-			
+      if(intval($data->output['blogForm']->sendArray[':topLevel'])!==intval($data->output['blogItem']['topLevel'])) {
+        switch($data->output['blogForm']->sendArray[':topLevel']) {
+          case 0:
+            $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match' => '^'.$data->output['blogItem']['shortName'].'(/.*)?$'
+            ));
+          break;
+          case 1:
+            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'blogs/'.$shortName.'\1'
+            ));
+          break;
+        }
+      } elseif($newShortName) {
+            $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match' => '^'.$data->output['blogItem']['shortName'].'(/.*)?$',
+              ':newMatch'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'blogs/'.$shortName.'\1'
+            ));
+      }
 			// Rename To New Shortname
 			if($data->cdn)
 			{

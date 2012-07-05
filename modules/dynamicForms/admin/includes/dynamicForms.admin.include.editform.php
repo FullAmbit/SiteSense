@@ -44,10 +44,9 @@ function admin_dynamicFormsBuild($data,$db)
 
 	$form = $data->output['fromForm'] = new formHandler('forms',$data,true);
 	// Load List Of Plugins
-	$statement = $db->prepare('getEnabledPlugins');
+	$statement=$db->query('getEnabledPlugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
-	
 	foreach($pluginList as $pluginItem)
 	{
 		$option['text'] = $pluginItem['name'];
@@ -68,6 +67,7 @@ function admin_dynamicFormsBuild($data,$db)
 		if($shortName == $data->output['formItem']['shortName'])
 		{
 			unset($data->output['fromForm']->fields['name']['cannotEqual']);
+			$newShortName=false;
 		} else {
 			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
 			$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
@@ -81,9 +81,34 @@ function admin_dynamicFormsBuild($data,$db)
 				$existingShortNames[] = $formItem['shortName'];
 			}
 			$data->output['fromForm']->fields['name']['cannotEqual'] = $existingShortNames;
+			$newShortName=true;
 		}
 		// Validate All Form Fields
 		if ($data->output['fromForm']->validateFromPost()) {
+      if(intval($data->output['fromForm']->sendArray[':topLevel'])!==intval($data->output['formItem']['topLevel'])) {
+        switch($data->output['fromForm']->sendArray[':topLevel']) {
+          case 0:
+            $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
+            ));
+          break;
+          case 1:
+            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'dynamic-forms/'.$shortName.'\1'
+            ));
+          break;
+        }
+      } elseif($newShortName) {
+            $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
+              ':newMatch'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'dynamic-forms/'.$shortName.'\1'
+            ));
+      }
 			// Save Menu Item //
 			if($data->output['fromForm']->sendArray[':showOnMenu'] == 1)
 			{

@@ -104,6 +104,7 @@ function page_buildContent($data,$db) {
 			$rowId = $db->lastInsertId();
 			$statement = $db->prepare('newValue', 'dynamicForms');
 			$emailText = '';
+			var_dump($customForm->sendArray);
 			foreach($rawFields as $field){
 				$fieldId = $field['id'];
 				$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $customForm->sendArray[':'.$fieldId]));
@@ -125,15 +126,10 @@ function page_buildContent($data,$db) {
 				$processedFields[$fieldId] = $field;
 			}
 			// API Hook
-			if(isset($form['api']{1}) && $form['api'] !== NULL)
-			{
-				if(!is_object($data->plugins[$form['api']]))
-				{
-					common_loadPlugin($data,$form['api']);
-				}
-				if(method_exists($data->plugins[$form['api']],'runFromCustomForm'))
-				{
-					$data->plugins[$form['api']]->runFromCustomForm($data,$db,$processedFields,$customForm->sendArray);
+			if(isset($form['api']{1}) && $form['api'] !== NULL) {
+        common_loadPlugin($data,$form['api']);
+				if(method_exists($data->plugins[$form['api']],'runFromCustomForm')) {
+          $data->plugins[$form['api']]->runFromCustomForm($processedFields,$customForm->sendArray);
 				}
 			}
 			// Are We E-Mailing This?

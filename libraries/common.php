@@ -28,7 +28,7 @@ function killHacker($reason) {
           <p>Hacking attempt detected - ',$reason,'</p>'; 
      die; 
 } 
-function common_loadPlugin(&$data,$name)
+function common_loadPlugin($data,$name)
 {
 	if(isset($data->plugins[$name])) {
 		return true;

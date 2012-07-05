@@ -90,6 +90,15 @@ function admin_blogsBuild($data,$db) {
 		// Validate Form
 		if($data->output['blogForm']->validateFromPost($data))
 		{
+				switch($data->output['blogForm']->sendArray[':topLevel']) {
+          case 1:
+            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'blogs/'.$shortName.'\1'
+            ));
+          break;
+        }
 			// "Picture" Is Not Used In The Query
 			unset($data->output['blogForm']->sendArray[':picture']);
 			// Save To Database

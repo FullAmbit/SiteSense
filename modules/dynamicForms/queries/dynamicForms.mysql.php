@@ -40,9 +40,6 @@ function dynamicForms_addQueries() {
 		'getFormByShortName' => '
 			SELECT * FROM !prefix!forms WHERE shortName = :shortName AND enabled = 1
 		', 
-		'getTopLevelFormByShortName' => '
-			SELECT * FROM !prefix!forms WHERE shortName = :shortName and topLevel = 1
-		', 
 		'getFieldById' => '
 			SELECT * FROM !prefix!form_fields WHERE id = :id
 		',
@@ -53,7 +50,7 @@ function dynamicForms_addQueries() {
 			SELECT * FROM !prefix!form_values WHERE id = :id
 		',
 		'getFieldsByForm' => '
-			SELECT * FROM !prefix!form_fields WHERE form = :form ORDER BY sortOrder ASC
+			SELECT * FROM !prefix!form_fields WHERE form = :form AND enabled = 1 ORDER BY sortOrder ASC
 		',
 		'getRowsByForm' => '
 			SELECT * FROM !prefix!form_rows WHERE form = :form ORDER BY ID DESC

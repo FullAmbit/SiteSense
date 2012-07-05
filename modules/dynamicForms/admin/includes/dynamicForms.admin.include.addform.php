@@ -68,6 +68,15 @@ function admin_dynamicFormsBuild($data,$db)
 		// Run And Validate All Fields //
 		if($data->output['fromForm']->validateFromPost())
 		{
+		    switch($data->output['fromForm']->sendArray[':topLevel']) {
+          case 1:
+            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match'   => '^'.$shortName.'(/.*)?$',
+              ':replace' => 'dynamic-forms/'.$shortName.'\1'
+            ));
+          break;
+        }
 			/**
 			 *	Are We Saving A Menu Item?
 			 *	--------------------------
@@ -75,7 +84,7 @@ function admin_dynamicFormsBuild($data,$db)
 			if($data->output['fromForm']->sendArray[':showOnMenu'])
 			{
 				//----Build The Menu Item----//
-				$title = (isset($data->output['fromForm']->sendArray[':menuText']{1})) ? $data->output['fromForm']->sendArray[':menuText'] : $data->output['fromForm']->sendArray[':name'];
+				$title = (isset($data->output['fromForm']->sendArray[':menuTitle']{1})) ? $data->output['fromForm']->sendArray[':menuTitle'] : $data->output['fromForm']->sendArray[':name'];
 				// Sort Order
 				$rowCount = $db->countRows('main_menu');
 				$sortOrder = $rowCount + 1;
@@ -92,7 +101,7 @@ function admin_dynamicFormsBuild($data,$db)
 				
 				$menuId = $db->lastInsertId();
 			}
-			unset($data->output['fromForm']->sendArray[':menuText'],$data->output['fromForm']->sendArray[':showOnMenu']);
+			unset($data->output['fromForm']->sendArray[':menuTitle'],$data->output['fromForm']->sendArray[':showOnMenu']);
 			//----------------------------//
 			//----Parse---//
 			if($data->settings['useBBCode'] == '1')
