@@ -29,18 +29,26 @@
 function users_addQueries() {
 	return array(
 		'getAllUsers' => '
-			SELECT * FROM !prefix!users ORDER BY id ASC
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users ORDER BY id ASC
 		',
 		'getByName' => '
 			SELECT
-				*
+				*,
+				UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+				UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
 			FROM
 				!prefix!users 
 			WHERE
 				name = :name
 		',
 		'getById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE id = :id
 		',
 		'updateUserByIdNoPw' => '
@@ -101,7 +109,8 @@ function users_addQueries() {
 			WHERE expires <= :expireTime
 		',
         'checkActivationHash' => '
-			SELECT expires FROM !prefix!activations
+			SELECT UNIX_TIMESTAMP(CONCAT(expires,"+00:00")) AS expires
+			FROM !prefix!activations
 			WHERE
 				userId = :userId
 			AND

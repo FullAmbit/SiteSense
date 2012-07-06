@@ -29,10 +29,10 @@
 function admin_users_addQueries() {
 	return array(
         'getAllUsers' => '
-			SELECT * FROM !prefix!users ORDER BY id ASC
+			SELECT *,UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess FROM !prefix!users ORDER BY id ASC
 		',
 		'getById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess FROM !prefix!users
 			WHERE id = :id
 		',
 		'updateUserByIdNoPw' => '
@@ -59,27 +59,42 @@ function admin_users_addQueries() {
 			WHERE name = :name
 		',
         'getUserById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE id = :userId
 		',
         'getUserByName' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+		    UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE name = :name
 		',
         'getAllUsers' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 		',
         'getUserNameByID' => '
 			SELECT name FROM !prefix!users WHERE id = :userID
 		',
         'checkIpBan' => '
-			SELECT * FROM !prefix!banned WHERE ipAddress = :ip
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(timestamp,"+00:00")) AS timestamp,
+			UNIX_TIMESTAMP(CONCAT(expiration,"+00:00")) AS expiration
+			FROM !prefix!banned WHERE ipAddress = :ip
 		',
         'removeBan' => '
 			DELETE FROM !prefix!banned WHERE id = :id LIMIT 1
 		',
         'getListLimited' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			LIMIT :start, :count
 		',
         'getListActivations' => '
@@ -87,7 +102,10 @@ function admin_users_addQueries() {
             WHERE expires <= :expireTime
         ',
         'searchUsers' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE
 				name LIKE :name
 				AND
@@ -96,7 +114,10 @@ function admin_users_addQueries() {
 				lastName LIKE :lastName
 		',
         'getById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE id = :id
 		',
         'updateUserByIdNoPw' => '
@@ -147,7 +168,9 @@ function admin_users_addQueries() {
 			FROM !prefix!user_group_permissions
 		',
         'getPermissionsByGroupName' => '
-			SELECT * FROM !prefix!user_groups
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(expires,"+00:00")) AS expires
+			FROM !prefix!user_groups
 			WHERE groupName = :groupName
 		',
         'getGroupsByUserID' => '

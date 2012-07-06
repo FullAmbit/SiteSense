@@ -35,7 +35,7 @@ function messages_addQueries() {
 				msg.message last_message,
 				IF(msg.`from` = :user, \'out\', \'in\') last_direction,
 				IF(msg.`from` = :user, 1, msg.`read`) last_read,
-				msg.sent last_sent,
+				UNIX_TIMESTAMP(CONCAT(msg.sent,"+00:00")) last_sent,
 				otheruser.name otheruser_name,
 				otheruser.id otheruser_id
 			FROM
@@ -68,7 +68,7 @@ function messages_addQueries() {
 			SELECT COUNT(*) FROM !prefix!user_pms WHERE `to` = :user AND `read` = 0
 		',
 		'getMessagesBetweenUsers' => '
-			SELECT pm.id pm_id, message, sent, userfrom.name from_name, userto.name to_name, userfrom.id from_id, userto.id to_id
+			SELECT pm.id pm_id, message,UNIX_TIMESTAMP(CONCAT(sent,"+00:00")) AS sent, userfrom.name from_name, userto.name to_name, userfrom.id from_id, userto.id to_id
 				FROM !prefix!user_pms pm
 			INNER JOIN
 				!prefix!users userto

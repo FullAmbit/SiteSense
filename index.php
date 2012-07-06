@@ -220,7 +220,7 @@ final class sitesense {
     	$this->db=new dynamicPDO();
     	
     	// Set TimeZone To GMT/UTC (0:00)
-    	$this->db->query("setTimeZone");
+    	$this->db->query('setTimeZone');
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -234,7 +234,7 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		}
 		$queryString = trim($queryString,'/').'/';
-		$statement = $this->db->prepare("findReplacement");
+		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString));
 		if($row=$statement->fetch()) {
 		$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
@@ -420,7 +420,7 @@ final class sitesense {
 						$this->user['sessions']=$session;
 						// Push expiration ahead
 						$expires=time()+$this->settings['userSessionTimeOut'];
-						$session['expires']=strtotime($session['expires']);
+						$session['expires']=$session['expires'];
 						if ($expires<$session['expires']) {
 							/*
 								If the current expiration is ahead of our calculated one,

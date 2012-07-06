@@ -136,7 +136,7 @@ function admin_usersBuild($data,$db) {
                         'never' :
                         gmdate(
                             'd F Y - G:i:s',
-                            strtotime($item[$key])
+                            $item[$key]
                         )
                     );
                     $data->output['userForm']->fields[$key.'_hidden']['value']=$data->output['userForm']->fields[$key]['value'];
@@ -147,7 +147,7 @@ function admin_usersBuild($data,$db) {
 						'never' :
 						gmdate(
 							'd F Y - G:i:s',
-							strtotime($item[$key])
+							$item[$key]
 						)
 					);
                     $data->output['userForm']->fields[$key.'_hidden']['value']=$data->output['userForm']->fields[$key]['value'];

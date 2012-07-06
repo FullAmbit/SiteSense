@@ -251,7 +251,7 @@ function theme_blogsListCommentsPendingTableRow($data,$item,$count) {
 	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.substr($item['parsedContent'],0,128) 	 . '</td>
-				<td class="time">'.$item['time'].'</td>
+				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
 				<td class="loggedIP">'.$item['loggedIP'].'</td>
 				<td class="buttonList">
 					<a href="'.$data->linkRoot.'admin/blogs/approveComment/'.$item['id'].'" title="Approve Comment">Approve</a>
@@ -287,7 +287,7 @@ function theme_blogsListCommentsApprovedTableRow($data,$item,$count) {
 	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.$item['parsedContent'].'</td>
-				<td class="time">'.$item['time'].'</td>
+				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
 				<td class="loggedIP">'.$item['loggedIP'].'</td>
 				<td class="buttonList">
 					<a href="'.$data->linkRoot.'admin/blogs/disapproveComment/'.$item['id'].'" title="Disapprove Comment">Disapprove</a>
@@ -322,7 +322,7 @@ function theme_blogsListCommentsDisapprovedTableRow($data,$item,$count) {
 	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.substr($item['parsedContent'],0,128) 	 . '</td>
-				<td class="time">'.$item['time'].'</td>
+				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
 				<td class="loggedIP">'.$item['loggedIP'].'</td>
 				<td class="buttonList">
 					<a href="'.$data->linkRoot.'admin/blogs/approveComment/'.$item['id'].'" title="Approve Comment">Approve</a>
@@ -376,7 +376,7 @@ function theme_blogsListsPostsTableHead($data) {
 }
 
 function theme_blogsListPostsTableRow($item,$aRoot,$count) {
-	echo '
+    echo '
 		<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 			<td class="title">
 				<a href="',$aRoot,'editPosts/',$item['blogId'],'/',$item['id'],'">

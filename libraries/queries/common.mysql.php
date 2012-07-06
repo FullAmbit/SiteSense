@@ -50,11 +50,16 @@ function common_addQueries() {
 			WHERE expires < CURRENT_TIMESTAMP
 		',
         'getSessionById' => '
-			SELECT * FROM !prefix!sessions
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(expires,"+00:00")) AS expires
+			FROM !prefix!sessions
 			WHERE sessionId = :sessionId
 		',
         'pullUserInfoById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE id = :userId
 		',
         'getUserIdByName' => '
@@ -72,7 +77,9 @@ function common_addQueries() {
 			WHERE id = :id
 		',
         'checkPassword' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess FROM !prefix!users
 			WHERE name = :name
 			AND password = :passphrase
 		',
@@ -209,7 +216,8 @@ function common_addQueries() {
             AND groupName = :groupName
 		',
         'getGroupsByUserID' => '
-			SELECT *
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(expires,"+00:00")) AS expires
 			FROM !prefix!user_groups
 			WHERE userID = :userID
 		',

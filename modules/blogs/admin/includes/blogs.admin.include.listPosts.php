@@ -83,8 +83,6 @@ function admin_blogsShow($data) {
 		theme_blogsListsPostsTableHead($data);
 		$count=0;
 		foreach ($data->output['blogPosts'] as $item) {
-			$item['postTime']=strtotime($item['postTime']);
-			$item['modifiedTime']=strtotime($item['modifiedTime']);
 			theme_blogsListPostsTableRow($item,$aRoot,$count);
 			$count++;
 		}

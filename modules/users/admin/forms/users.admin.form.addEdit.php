@@ -163,7 +163,7 @@ foreach($data->output['groupList'] as $value) {
                     if($subValue['expires']==0) {
                         $expires='Never';
                     } else {
-                        $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+                        $expires=gmdate('d F Y - G:i:s',$subValue['expires']);
                     }
                 }
             }

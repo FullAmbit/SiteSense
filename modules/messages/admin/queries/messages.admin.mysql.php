@@ -29,7 +29,7 @@
 function admin_messages_addQueries() {
 	return array(
         'getListLimited' => '
-			SELECT p.*, u1.name from_name, u2.name to_name FROM !prefix!user_pms p
+			SELECT p.*,UNIX_TIMESTAMP(CONCAT(p.sent,"+00:00")) AS sent,u1.name from_name, u2.name to_name FROM !prefix!user_pms p
 				INNER JOIN !prefix!users u1
 					ON u1.id = p.`from`
 				INNER JOIN !prefix!users u2
@@ -38,7 +38,7 @@ function admin_messages_addQueries() {
 			LIMIT :start, :count
 		',
         'getMessage' => '
-			SELECT p.*, u1.name from_name, u2.name to_name FROM !prefix!user_pms p
+			SELECT p.*,UNIX_TIMESTAMP(CONCAT(p.sent,"+00:00")) AS sent, u1.name from_name, u2.name to_name FROM !prefix!user_pms p
 				INNER JOIN !prefix!users u1
 					ON u1.id = p.`from`
 				INNER JOIN !prefix!users u2

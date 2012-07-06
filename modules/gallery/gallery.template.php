@@ -63,7 +63,7 @@ function theme_galleryImageView($data){
 					<blockquote>
 						',$Comment['content'],'
 						<cite>
-							Posted by ',$Comment['user_name'],' on ', date('F j, Y \a\t g:i a', strtotime($Comment['time'])),'
+							Posted by ',$Comment['user_name'],' on ', date('F j, Y \a\t g:i a', $Comment['time']),'
 						</cite>
 					</blockquote>
 				</li>
@@ -104,7 +104,7 @@ function theme_galleryAlbumView($data){
 				<li>
 					<p><a href="', $data->output['galleryHome'], 'image/view/', $data->output['album']['shortName'], '/', $image['shortName'], '">', $image['name'], '</a></p>
 					<img src="', $data->linkRoot, 'images/gallery/thumbs/', $image['thumb'], '" />
-					<p>Submitted: ', date('d/m/Y', strtotime($image['time'])), '</p>
+					<p>Submitted: ', date('d/m/Y', $image['time']), '</p>
 				</li>
 			';
 		}
