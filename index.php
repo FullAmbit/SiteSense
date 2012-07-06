@@ -300,6 +300,7 @@ final class sitesense {
 
         // Direct to Homepage
         if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
+        $url=trim($url,'/');
         if (($url=='') ||
             ($url=='index.php') ||
             ($url=='index.html') ||
