@@ -23,6 +23,30 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+function populateTimeZones($data) {
+    $currentTime=time();
+    $times=array();
+    $start=$currentTime-date('G',$currentTime)*3600;
+    for($i=0;$i<24*60;$i+=15) {
+        $times[date('g:i A',$start+$i*60)]=array();
+    }
+    $timezones=DateTimeZone::listIdentifiers();
+    foreach($timezones AS $timezone) {
+        $dt=new DateTime('@'.$currentTime);
+        $dt->setTimeZone(new DateTimeZone($timezone));
+        $time=$dt->format('g:i A');
+        $times[$time][]=$timezone;
+    }
+    $timeZones=array_filter($times);
+    foreach($timeZones as $time => $timeZoneList) {
+        foreach($timeZoneList as $timeZone) {
+            $data->output['timeZones'][]=array(
+                'text'  => $time.' - '.$timeZone,
+                'value' => $timeZone
+            );
+        }
+    }
+}
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions
@@ -114,6 +138,8 @@ function admin_usersBuild($data,$db) {
 
     }
     // ---
+    // Poulate Time Zone List
+    populateTimeZones($data);
     $data->output['userForm']=$form=new formHandler('addEdit',$data,true);
 
     $statement=$db->prepare('getById','admin_users');
@@ -158,6 +184,7 @@ function admin_usersBuild($data,$db) {
                 case 'firstName':
                 case 'lastName':
                 case 'name':
+                case 'timeZone':
                 case 'contactEMail':
                 case 'publicEMail':
 					$data->output['userForm']->fields[$key]['value']=$item[$key];
@@ -168,9 +195,7 @@ function admin_usersBuild($data,$db) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = 'The user you specified could not be found';
 	}
-	
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)) {
 		/*
 			we came from the form, so repopulate it and set up our
 			sendArray at the same time.
@@ -339,8 +364,8 @@ function admin_usersBuild($data,$db) {
             unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
             unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
 			/* existing user, from form, must be save existing */
-			if ($_POST['viewUser_password']=='') {
-				$statement=$db->prepare('updateUserByIdNoPw','admin_users');
+            if ($_POST['viewUser_password']=='') {
+                $statement=$db->prepare('updateUserByIdNoPw','admin_users');
 				unset($data->output['userForm']->sendArray[':password']);
 				$data->output['userForm']->sendArray[':id']=$data->action[3];
 			} else {
@@ -348,7 +373,6 @@ function admin_usersBuild($data,$db) {
 				$statement=$db->prepare('updateUserById','admin_users');
 				$data->output['userForm']->sendArray[':id']=$data->action[3];
 			}
-
 			$result = $statement->execute($data->output['userForm']->sendArray);
 			
 			if($result == FALSE) {

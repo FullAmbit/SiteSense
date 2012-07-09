@@ -108,7 +108,7 @@ $this->fields=array(
 	'publicEMail' => array(
 		'label' => 'Public E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
+		'value' => (empty($data->output['userForm']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -148,7 +148,19 @@ $this->fields=array(
 			</p>
 		',
 		'compareFailMessage' => 'The passwords you entered do not match!'
-	)
+	),
+    'timeZone' => array(
+        'label' => 'Default Time Zone',
+        'required' => true,
+        'tag' => 'select',
+        'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
+        'options' => $data->output['timeZones'],
+        'description' => '
+			<p>
+				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
+			</p>
+		'
+    )
 );
 foreach($data->output['groupList'] as $value) {
     if(checkPermission($value,'userGroups',$data)) {

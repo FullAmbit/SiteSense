@@ -258,7 +258,7 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-		// Set TimeZone
+		// Set Default TimeZone
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);
 		// Append attributions
@@ -416,6 +416,11 @@ final class sitesense {
 					if ($user=$statement->fetch()) {
 
 						$this->user=$user;
+                        // Set User TimeZone
+                        if(!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
+                            date_default_timezone_set($this->user['timeZone']);
+                            ini_set('date.timezone', $this->user['timeZone']);
+                        }
                         // Load permissions
                         getUserPermissions($this->db,$this->user);
 						$this->user['sessions']=$session;
@@ -480,6 +485,11 @@ final class sitesense {
 			));
 			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
 				$this->user=$user;
+                // Set User TimeZone
+                if(!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
+                    date_default_timezone_set($this->user['timeZone']);
+                    ini_set('date.timezone', $this->user['timeZone']);
+                }
                 // Load permissions
                 getUserPermissions($this->db,$this->user);
 				// Purge existing sessions containing user ID

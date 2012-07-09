@@ -33,15 +33,15 @@ function admin_buildContent($data,$db) {
 		$data->action[2]='list';
 	}
 	$target='modules/dynamicForms/admin/includes/dynamicForms.admin.include.'.$data->action[2].'.php';
-	if (file_exists($target)) {
-		common_include($target);
+    if (file_exists($target)) {
+        common_include($target);
 		$data->output['function']=$data->action[2];
 	}
 	if (function_exists('admin_dynamicFormsBuild')) admin_dynamicFormsBuild($data,$db);
 	$data->output['pageTitle']='Dynamic Forms';
 }
 function admin_content($data) {
-	if ($data->output['abort']) {
+    if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {

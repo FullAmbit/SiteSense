@@ -35,25 +35,6 @@ function admin_users_addQueries() {
 			SELECT *,UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess FROM !prefix!users
 			WHERE id = :id
 		',
-		'updateUserByIdNoPw' => '
-			UPDATE !prefix!users
-			SET
-				firstName = :firstName,
-				lastName = :lastName,
-				contactEMail = :contactEMail,
-				publicEMail = :publicEMail
-			WHERE id = :id
-		',
-		'updateUserById' => '
-			UPDATE !prefix!users
-			SET
-				firstName = :firstName,
-				lastName = :lastName,
-				password = :password,
-				contactEMail = :contactEMail,
-				publicEMail = :publicEMail
-			WHERE id = :id
-		',
 		'checkUserName' => '
 			SELECT id FROM !prefix!users
 			WHERE name = :name
@@ -123,29 +104,31 @@ function admin_users_addQueries() {
         'updateUserByIdNoPw' => '
 			UPDATE !prefix!users
 			SET
-				name = :name,
-				firstName = :firstName,
-				lastName = :lastName,
+				firstName    = :firstName,
+				lastName     = :lastName,
+				`name`       = :name,
 				contactEMail = :contactEMail,
-				publicEMail = :publicEMail
+				publicEMail  = :publicEMail,
+				timeZone     = :timeZone
 			WHERE id = :id
 		',
         'updateUserById' => '
 			UPDATE !prefix!users
 			SET
-				name = :name,
-				firstName = :firstName,
-				lastName = :lastName,
-				password = :password,
+				firstName    = :firstName,
+				lastName     = :lastName,
+				password     = :password,
+				`name`       = :name,
 				contactEMail = :contactEMail,
-				publicEMail = :publicEMail
+				publicEMail  = :publicEMail,
+				timeZone     = :timeZone
 			WHERE id = :id
 		',
         'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,firstName,lastName,password,registeredIP,contactEMail,publicEMail)
+			( name, firstName, lastName, password, registeredIP, contactEMail, publicEMail, timeZone)
 			VALUES
-			(:name,:firstName,:lastName,:password,:registeredIP,:contactEMail,:publicEMail)
+			(:name,:firstName,:lastName,:password,:registeredIP,:contactEMail,:publicEMail,:timeZone)
 		',
         'checkUserName' => '
 			SELECT id FROM !prefix!users

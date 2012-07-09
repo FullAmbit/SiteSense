@@ -23,6 +23,30 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+function populateTimeZones($data) {
+    $currentTime=time();
+    $times=array();
+    $start=$currentTime-date('G',$currentTime)*3600;
+    for($i=0;$i<24*60;$i+=15) {
+        $times[date('g:i A',$start+$i*60)]=array();
+    }
+    $timezones=DateTimeZone::listIdentifiers();
+    foreach($timezones AS $timezone) {
+        $dt=new DateTime('@'.$currentTime);
+        $dt->setTimeZone(new DateTimeZone($timezone));
+        $time=$dt->format('g:i A');
+        $times[$time][]=$timezone;
+    }
+    $timeZones=array_filter($times);
+    foreach($timeZones as $time => $timeZoneList) {
+        foreach($timeZoneList as $timeZone) {
+            $data->output['timeZones'][]=array(
+                'text'  => $time.' - '.$timeZone,
+                'value' => $timeZone
+            );
+        }
+    }
+}
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions
@@ -54,7 +78,8 @@ function admin_usersBuild($data,$db) {
 
     // Load core permissions
     getPermissions($data,$db);
-
+    // Poulate Time Zone List
+    populateTimeZones($data);
     $data->output['userForm'] = $form = new formHandler('addEdit',$data,true);
 
 	unset($form->fields['registeredDate']);
@@ -86,8 +111,7 @@ function admin_usersBuild($data,$db) {
 		}
 
 		// Did it validate?!?
-		if (($form->validateFromPost()))
-		{
+		if (($form->validateFromPost())) {
 			// Make Sure We Have A Password..
 			if (empty($data->output['userForm']->sendArray[':password']))
 			{
@@ -220,7 +244,6 @@ function admin_usersBuild($data,$db) {
 			$id = $db->lastInsertId();
 			$profileAlbum = $db->prepare('addAlbum', 'gallery');
 			$profileAlbum->execute(array(':userId' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
-
 			// All Is Good
 			$data->output['savedOkMessage']='
 					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>

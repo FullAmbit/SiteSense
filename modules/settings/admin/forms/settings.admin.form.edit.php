@@ -27,12 +27,6 @@ $this->formPrefix='settings_';
 $this->caption='Global Settings';
 $this->submitTitle='Save Changes';
 $this->fromForm='settings';
-for($i=-12;$i<13;$i++) {
-	$data->output['timezone'][]=array(
-		'text'  => $i,
-		'value' => $i
-	);
-}
 $this->fields=array(
 	'siteTitle' => array(
 		'label' => 'Site Title',
