@@ -42,6 +42,7 @@ class customFormHandler extends formHandler{
 			'class' => '',
 			'value' => '',
 			'compareFailed' => false,
+			'type' => false,
 			'errorList' => array()
 		);
 		foreach($this->fields as &$field){
@@ -614,6 +615,269 @@ class formHandler {
 				$this->sendArray[$subKey] = array_key_exists($this->formPrefix.$key, $_POST) ? $_POST[$this->formPrefix.$key] : '';
 				$this->fields[$key]['value']=$this->sendArray[$subKey];
 			}
+		}
+	}
+	
+	function build($buffer=FALSE){
+		if($buffer)	{
+			ob_start();
+		}
+		//var_dump($this);
+		echo '
+			<form
+				method="post"
+				action="',rtrim($this->action,'/').'/','"
+				id="',$this->formPrefix,'form"
+				enctype="multipart/form-data"
+				class="commonForm"
+			>';
+		if ($this->error) {
+			echo '
+				<div class="errorBox">',$this->errorText,'</div>';
+		}
+		echo '
+				<div class="fieldsetWrapper"><fieldset>',(
+		isset($this->caption) ? '
+					<legend><span>'.$this->caption.'</span></legend>' :
+			''
+		);
+		foreach ($this->fields as $thisKey => $formField) {
+			if ($formField['params']['type']!='hidden') {
+				$class=array();
+				if ($formField['tag']=='input') {
+					if (!empty($formField['params']['type'])) {
+						$class[]='type_'.$formField['params']['type'];
+					}
+				} else $class[]='type_'.$formField['tag'];
+				if (!empty($formField['divClasses'])) {
+					$class=array_merge($class,$formField['divClasses']);
+				}
+				$class=implode(' ',$class);
+				if (empty($formField['classes'])) {
+					$fieldClass=array();
+				} else {
+					$fieldClass=$formField['classes'];
+				}
+				if ($formField['required']) {
+					$fieldClass[]='required';
+				}
+				if ($formField['error']) {
+					$fieldClass[]='error';
+				}
+				if (!empty($formField['description'])) {
+					$fieldClass[]='nsDesc';
+				}
+				$fieldClass=implode(' ',$fieldClass);
+				echo '
+					<div',(
+				$class ? ' class="'.$class.'"' : ''
+				),'>
+						<label for="',$this->formPrefix.$thisKey,'">',$formField['label'],' ',(
+				$formField['error'] ? '<b>X</b>' : (
+				$formField['required'] ? (
+				empty($_POST['fromForm']) ?
+					'<i>&raquo;</i>' :
+					'<span>&radic;</span>'
+				) : ''
+				)
+				),'</label>
+						<div>
+							<',$formField['tag'],'
+								id="',$this->formPrefix,$thisKey,'"',(
+				($formField['tag']=='span') ? '' : '
+								name="'.$this->formPrefix.$thisKey.'"'
+				),(
+				$fieldClass ? '
+								class="'.$fieldClass.'"' : ''
+				),(
+				empty($formField['checked']) ?	'' : '
+								checked="checked"'
+				);
+				if (!empty($formField['params'])) {
+					foreach ($formField['params'] as $attribute => $value) {
+						echo '
+							',$attribute,'="',$value,'"';
+					}
+				}
+				switch ($formField['tag']) {
+					case 'textarea':
+						echo '>',htmlspecialchars_decode($formField['value']),'</textarea>';
+						if (isset($formField['useEditor'])) {
+							echo '
+	<script type="text/javascript"><!--
+		CKEDITOR.replace(\'',$this->formPrefix,$thisKey,'\', {
+			customConfig:CMSBasePath+"ckeditor/paladin/config.js"
+		});
+	--></script>';
+						}
+						break;
+					case 'select':
+						echo '>';
+						if($formField['type']=='timezone'){
+						    $currentTime=time();
+						    $times=array();
+						    $start=$currentTime-date('G',$currentTime)*3600;
+						    for($i=0;$i<24*60;$i+=15) {
+						        $times[date('g:i A',$start+$i*60)]=array();
+						    }
+						    $timezones=DateTimeZone::listIdentifiers();
+						    foreach($timezones AS $timezone) {
+						        $dt=new DateTime('@'.$currentTime);
+						        $dt->setTimeZone(new DateTimeZone($timezone));
+						        $time=$dt->format('g:i A');
+						        $times[$time][]=$timezone;
+						    }
+						    $timeZones=array_filter($times);
+						    foreach($timeZones as $time => $timeZoneList) {
+						        foreach($timeZoneList as $timeZone) {
+						        	echo '<option value="',$timeZone,'">',$time.'-'.$timeZone.'</option>';
+						        }
+						    }
+						}else{
+							$optgroup = FALSE;
+							if(!empty($formField['options'])) {
+								foreach ($formField['options'] as $key => $option) {
+									$selected='';
+									if(empty($formField['value'])) {
+										// Selected
+										if(isset($formField['selected'])) {
+											if(is_array($formField['selected'])) {
+												foreach($formField['selected'] as $value) {
+													if(is_array($option)) {
+														if($value==$option['value']) {
+															$selected=' selected="selected"';
+														}
+													} else {
+														if($value==$option) {
+															$selected=' selected="selected"';
+														}
+													}
+												}
+											} else {
+												if(is_array($option)) {
+													if($formField['selected']==$option['value']) {
+														$selected=' selected="selected"';
+													}
+												} else {
+													if($formField['selected']==$option) {
+														$selected=' selected="selected"';
+													}
+												}
+											}
+										}
+									} else {
+										// Return bad entry
+										if($formField['value']==$option['value']) {
+											$selected=' selected="selected"';
+										}
+										if(is_array($formField['value'])) {
+											foreach($formField['value'] as $value) {
+												if(is_array($option)) {
+													if($value==$option['value']) {
+														$selected=' selected="selected"';
+													}
+												} else {
+													if($value==$option) {
+														$selected=' selected="selected"';
+													}
+												}
+											}
+										} else {
+											if(is_array($option)) {
+												if($formField['value']==$option['value']) {
+													$selected=' selected="selected"';
+												}
+											} else {
+												if($formField['value']==$option) {
+													$selected=' selected="selected"';
+												}
+											}
+										}
+									}
+									if (is_array($option)) {
+										if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
+										{
+											if($optgroup !== FALSE)
+											{
+												echo '
+												</optgroup>';
+											}
+											$optgroup = $option['optgroup'];
+											echo '
+										<optgroup label = "',$option['optgroup'],'">';
+										}
+										echo '
+										<option',$selected,' value="',$option['value'],'">',$option['text'],'</option>';
+										if(!isset($formField['options'][$key+1]) && $optgroup)
+										{
+											echo '</optgroup>';
+										}
+									} else {
+										echo '
+										<option',$selected,'>',$option,'</option>';
+									}
+								}
+							}
+						}
+						echo '
+							</select>';
+						break;
+					case 'span':
+						echo '>',htmlspecialchars($formField['value']),'</span>';
+						break;
+					default:
+						if (!empty($formField['value'])) {
+							echo '
+								value="',htmlspecialchars($formField['value']),'"';
+						}
+						echo '
+							/>';
+				}
+				echo '
+						</div>';
+				if (count($formField['errorList'])>0) {
+					echo '
+						<ul class="errorMessages">';
+					foreach ($formField['errorList'] as $message) {
+						echo '
+							<li>',$message,'</li>';
+					}
+					echo '
+						</ul>';
+				}
+				echo '
+					</div>';
+			}
+		}
+		echo '
+				</fieldset></div>
+				<div class="submitsAndHiddens">
+					<input type="submit" class="submit" value="',$this->submitTitle,'" />
+					<input type="hidden" name="fromForm" id="fromForm" value="',$this->fromForm,'" />';
+		foreach ($this->fields as $thisKey => $formField) {
+			if ($formField['params']['type']=='hidden') {
+				echo '
+				<input type="hidden"
+						name="',$this->formPrefix.$thisKey,'"
+						id="',$this->formPrefix.$thisKey,'"
+					value="',$formField['value'],'"
+				/>';
+			}
+		}
+		echo '
+					<i>&raquo;</i> Indicates a required field',(
+		$this->error ? ', <b>X</b> indicates a field with errors' : ''
+		),(
+		(strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">
+	        '.$this->extraMarkup.'
+	      <!-- .extraMarkup --></div>'
+		),'
+				<!-- .submitsAndHiddens --></div>
+			</form>';
+	
+		if($buffer)	{
+			$contents = ob_get_clean();
+			return $contents;
 		}
 	}
 }

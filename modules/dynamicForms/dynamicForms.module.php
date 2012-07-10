@@ -91,15 +91,50 @@ function page_buildContent($data,$db) {
 				$f['required'] = ($field['required'] == '0') ? false : true;
 				$f['options'] = unserialize($field['options']);
 				$f['validate'] = ($field['isEmail'] == '1') ? 'eMail' : '';
+			case 'timezone':
+				$f['tag'] = 'select';
+				$f['required'] = ($field['required'] == '0') ? false : true;
+				$f['type'] = 'timezone';
+				break;
+			case 'password':
+				$f['tag'] = 'input';
+				$f['params'] = array('type' => 'password');
+				$f['required'] = ($field['required'] == '0') ? false : true;
 		}
 		$rawForm[$f['name']] = $f;
 	}
-	$customForm = $data->output['customform'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false,$data->action[1]);
-	$customForm->submitTitle = $data->output['form']['submitTitle'];
-	$customForm->caption = $data->output['form']['name'];
-	if (isset($_POST['fromForm']) && ($_POST['fromForm'] == $customForm->fromForm)){
-		$customForm->populateFromPostData();
-		if ($customForm->validateFromPost()) {
+	
+	$moduleList = array_flip($data->output['moduleShortName']);
+	$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false,$data->action[1]);
+	$data->output['customForm']->submitTitle = $data->output['form']['submitTitle'];
+	$data->output['customForm']->caption = $data->output['form']['name'];
+	if(isset($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['customForm']->fromForm)){
+		$data->output['customForm']->populateFromPostData();
+		// Validate Form
+		if($data->output['customForm']->validateFromPost()) {
+			// Validate Using Module Hooks
+			foreach($rawFields as $field){
+				$fieldId = $field['id'];
+				$fieldValue = $data->output['customForm']->sendArray[':'.$fieldId];
+				// Is This Field Hooked And Is The Module Enabled?
+				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
+					$moduleName = $moduleList[$field['moduleHook']];
+					$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
+					common_include($target);
+					// Check To See What Function We Can Run
+					$fieldCamelCase = common_camelBack($field['name']);
+					$fieldFunction = $moduleName.'_validate'.$fieldCamelCase;
+					$generalFunction = $moduleName.'_validateDynamicFormField';
+					if(function_exists($fieldFunction)){
+						$fieldFunction($data,$db,$field,$fieldValue);
+					}else{
+						$generalFunction($data,$db,$field,$fieldValue);
+					}
+				}
+			}
+		}
+		// No Errors...Start Saving...
+		if($data->output['customForm']->error==FALSE){
 			$newRow = $db->prepare('newRow', 'dynamicForms');
 			$newRow->execute(array(':form' => $form['id']));
 			$rowId = $db->lastInsertId();
@@ -107,40 +142,55 @@ function page_buildContent($data,$db) {
 			$emailText = '';
 			foreach($rawFields as $field){
 				$fieldId = $field['id'];
-				$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $customForm->sendArray[':'.$fieldId]));
-				$emailText .= $field['name'] . ': ' . $customForm->sendArray[':'.$fieldId] . "\n";
-				/**
-				// If the user wanted to be subscribed
-				if($field['isNewsletterSignup'] == 1)
-				{
-					echo "WE GOT ONE";
-					// API Call To E-Mail Service
-					$wrap = new CS_REST_Subscribers('c92ba413fde76b3823c1cc9726a72f15', 'bd0fce03de47562ece19f1b2b1106ebd');
-					$result = $wrap->add(array(
-						'EmailAddress' => $data->output['commentForm']->sendArray[':email'],
-						'Name' => $data->output['commentForm']->sendArray[':commenter'],
-						'Resubscribe' => true
-					));
+				$fieldValue = $data->output['customForm']->sendArray[':'.$fieldId];
+				// Is This Field Hooked And Is The Module Enabled?
+				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
+					$moduleName = $moduleList[$field['moduleHook']];
+					$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
+					common_include($target);
+					// Check To See What Function We Can Run
+					$fieldCamelCase = common_camelBack($field['name']);
+					$fieldFunction = $moduleName.'_save'.$fieldCamelCase;
+					$generalFunction = $moduleName.'_saveDynamicFormField';
+					if(function_exists($fieldFunction)){
+						$fieldFunction($data,$db,$fieldCamelCase,$fieldValue);
+					} else {
+						$generalFunction($data,$db,$fieldCamelCase,$fieldValue);
+					}					
+				} else {
+					$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $fieldValue));
+					$emailText .= $field['name'] . ': ' . $data->output['customForm']->sendArray[':'.$fieldId] . "\n";
+					/**
+					// If the user wanted to be subscribed
+					if($field['isNewsletterSignup'] == 1)
+					{
+						echo "WE GOT ONE";
+						// API Call To E-Mail Service
+						$wrap = new CS_REST_Subscribers('c92ba413fde76b3823c1cc9726a72f15', 'bd0fce03de47562ece19f1b2b1106ebd');
+						$result = $wrap->add(array(
+							'EmailAddress' => $data->output['commentForm']->sendArray[':email'],
+							'Name' => $data->output['commentForm']->sendArray[':commenter'],
+							'Resubscribe' => true
+						));
+					}
+					**/
+					$processedFields[$fieldId] = $field;
 				}
-				**/
-				$processedFields[$fieldId] = $field;
 			}
 			// API Hook
 			if(isset($form['api']{1}) && $form['api'] !== NULL) {
-        common_loadPlugin($data,$form['api']);
+				common_loadPlugin($data,$form['api']);
 				if(method_exists($data->plugins[$form['api']],'runFromCustomForm')) {
-          $data->plugins[$form['api']]->runFromCustomForm($processedFields,$customForm->sendArray);
+					$data->plugins[$form['api']]->runFromCustomForm($processedFields,$data->output['customForm']->sendArray);
 				}
 			}
 			// Are We E-Mailing This?
-			if(isset($form['eMail']{0}))
-			{
+			if(isset($form['eMail']{0})){
 				$subject = $form['name'] . ' - Form Data';	
 				$from = 'no-reply@fullambit.com';
 				$header='From: '. $from . "\r\n";
 				$recepients = explode(',',$form['eMail']);
-				foreach($recepients as $index => $to)
-				{
+				foreach($recepients as $index => $to){
 					mail($to,$subject,wordwrap($emailText,70),$header);
 				}
 			}
@@ -148,6 +198,7 @@ function page_buildContent($data,$db) {
 		}
 	}
 }
+
 function page_content($data) {
 	if(isset($data->action['error'])){
 		switch($data->action['error']){	
@@ -160,14 +211,13 @@ function page_content($data) {
 				return;
 		}
 	}else if(isset($data->output['success'])){
-		
-	theme_contentBoxHeader($data->output['form']['name']);
+		theme_contentBoxHeader($data->output['form']['name']);
 		echo $data->output['success'];
-	theme_contentBoxFooter();
+		theme_contentBoxFooter();
 	}else{
 		theme_contentBoxHeader($data->output['form']['name']);
 		echo htmlspecialchars_decode($data->output['form']['parsedContentBefore']);
-		theme_buildForm($data->output['customform']);
+		$data->output['customForm']->build();
 		echo htmlspecialchars_decode($data->output['form']['parsedContentAfter']);
 		theme_contentBoxFooter();
 	}

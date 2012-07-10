@@ -134,6 +134,21 @@ function users_addQueries() {
 			WHERE
 				id = :userId
 			LIMIT 1
+		',
+		'createUserRow' => '
+			INSERT INTO
+				!prefix!users 
+				(name)
+			VALUES
+				(:name)
+		',
+		'updateUserField' => '
+			UPDATE
+				!prefix!users 
+			SET 
+				:fieldName = :fieldValue 
+			WHERE
+				id = :userID
 		'
 	);
 }
