@@ -34,9 +34,8 @@ function admin_dynamicURLsBuild($data,$db) {
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
 		$form->populateFromPostData();
-		if ($form->validateFromPost())
-		{
-			
+		if ($form->validateFromPost()) {
+            $form->sendArray[':sortOrder']=admin_sortOrder_new($db,'url_remap','sortOrder');
 			$statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
 			$result = $statement->execute($form->sendArray);
 			if($result == FALSE)

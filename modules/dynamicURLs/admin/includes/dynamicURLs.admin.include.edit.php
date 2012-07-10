@@ -44,12 +44,10 @@ function admin_dynamicURLsBuild($data,$db) {
 	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	$form->caption = 'Editing URL Remap';
 	
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
-				
 			$statement = $db->prepare('editUrlRemap','admin_dynamicURLs');
 			$form->sendArray[':id'] = $remapId;
 			$result = $statement->execute($form->sendArray) ;

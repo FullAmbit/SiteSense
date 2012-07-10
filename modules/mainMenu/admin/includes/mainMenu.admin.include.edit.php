@@ -52,21 +52,8 @@ function admin_mainMenuBuild($data,$db) {
 		if ($data->output['MenuItemForm']->validateFromPost()) {
 			// Are We Updating Sort-Order Based Off Parent?
 			$newParent = $data->output['MenuItemForm']->sendArray[':parent'];
-			if($newParent !== $data->output['menuItem']['parent'])
-			{
-				$statement = $db->prepare('countItemsByParent','admin_mainMenu');
-				$statement->execute(array(':parent' => $newParent));
-				list($rowCount) = $statement->fetch();
-				
-				$data->output['MenuItemForm']->sendArray[':sortOrder'] = $rowCount + 1;
-				
-				// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-				$statement = $db->prepare('fixSortOrderGap','admin_mainMenu');
-				$statement->execute(array(  
-					':sortOrder' => $data->output['menuItem']['sortOrder'],
-					':parent' => $data->output['menuItem']['parent']
-				));
-				
+			if($newParent !== $data->output['menuItem']['parent']) {
+				$data->output['MenuItemForm']->sendArray[':sortOrder'] = admin_sortOrder_new($db,'main_menu','sortOrder','parent',$newParent);
 			} else {
 				$data->output['MenuItemForm']->sendArray[':sortOrder'] = $data->output['menuItem']['sortOrder'];
 			}

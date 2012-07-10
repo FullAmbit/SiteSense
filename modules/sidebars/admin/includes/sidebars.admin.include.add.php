@@ -62,6 +62,7 @@ function admin_sidebarsBuild($data,$db) {
 			} else {
 				$data->output['sidebarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sidebarForm']->sendArray[':rawContent']);
 			}
+            $data->output['sidebarForm']->sendArray[':sortOrder']=admin_sortOrder_new($db,'sidebars');
 			// Save To DB
 			$statement = $db->prepare('insertSidebar','admin_sidebars');
 			$result = $statement->execute($data->output['sidebarForm']->sendArray);
@@ -72,9 +73,7 @@ function admin_sidebarsBuild($data,$db) {
 				$data->output['error'] = TRUE;
 				return;
 			}
-			// Generate Settings For Pages, Forms, and Modules
-			$count = $db->countRows('sidebars');
-			$sortOrder = $count;
+            $sortOrder=$data->output['sidebarForm']->sendArray[':sortOrder'];
 			//---Pages---//
 			$pageQ = $db->prepare('createSidebarSetting','admin_pages');
 			$statement = $db->prepare('getAllPageIds','admin_pages');

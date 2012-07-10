@@ -90,6 +90,8 @@ function theme_sidebarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$co
 				</td>
 				<td>',$item['side'],'</td>
 				<td class="buttonList">
+				    <a href="',$aRoot,'list/moveUp/',$item['id'],'" title="Move Up">&uArr;</a>
+					<a href="',$aRoot,'list/moveDown/',$item['id'],'" title="Move Down">&dArr;</a>
 					',(
 						$item['fromFile'] ?
 						'' :

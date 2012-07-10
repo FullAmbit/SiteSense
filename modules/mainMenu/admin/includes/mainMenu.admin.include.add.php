@@ -38,11 +38,8 @@ function admin_mainMenuBuild($data,$db) {
 		$data->output['MenuItemForm']->populateFromPostData();
 		if($data->output['MenuItemForm']->validateFromPost())
 		{
-			$statement = $db->prepare('countItemsByParent','admin_mainMenu');
-			$statement->execute(array(':parent' => $data->output['MenuItemForm']->sendArray[':parent']));
-			list($rowCount) = $statement->fetch();
-			$data->output['MenuItemForm']->sendArray[':sortOrder'] = $rowCount + 1;
-			
+			$data->output['MenuItemForm']->sendArray[':sortOrder'] =
+                admin_sortOrder_new($db,'main_menu','sortOrder','parent',$data->output['MenuItemForm']->sendArray[':parent']);
 			$data->output['MenuItemForm']->sendArray[':url'] = str_replace('|',$data->linkRoot,$data->output['MenuItemForm']->sendArray[':url']);
 			
 			$statement = $db->prepare('newMenuItem','admin_mainMenu');
@@ -52,11 +49,11 @@ function admin_mainMenuBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Menu Item Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/main-menu/edit/">
+						<a href="'.$data->linkRoot.'admin/main-menu/add/">
 							Add New Menu Item
 						</a>
 						<a href="'.$data->linkRoot.'admin/main-menu/list/">
-							Return to MenuItem List
+							Return to Menu Item List
 						</a>
 					</div>';
 			}
