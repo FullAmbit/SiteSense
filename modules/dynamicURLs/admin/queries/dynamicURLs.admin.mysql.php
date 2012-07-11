@@ -36,6 +36,10 @@ function admin_dynamicURLs_addQueries() {
 			SELECT * FROM !prefix!url_remap WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
+        'getUrlRemapByMatch' => '
+			SELECT * FROM !prefix!url_remap WHERE `match` = :match
+			ORDER BY sortOrder ASC
+		',
 		'editUrlRemap' => '
 			UPDATE !prefix!url_remap
 			SET `match` = :match, `replace` = :replace
@@ -43,7 +47,7 @@ function admin_dynamicURLs_addQueries() {
 		',
 		'insertUrlRemap' => '
 			INSERT INTO !prefix!url_remap
-			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder
+			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder, `regex`=:regex
 		',
 		'deleteUrlRemap' => '
 			DELETE FROM !prefix!url_remap WHERE id = :id

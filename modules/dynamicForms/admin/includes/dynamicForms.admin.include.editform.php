@@ -94,11 +94,13 @@ function admin_dynamicFormsBuild($data,$db)
             ));
           break;
           case 1:
-            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-            $statement->execute(array(
-              ':match'   => '^'.$shortName.'(/.*)?$',
-              ':replace' => 'dynamic-forms/'.$shortName.'\1'
-            ));
+              $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+              $statement->execute(array(
+                  ':match'     => '^'.$shortName.'(/.*)?$',
+                  ':replace'   => 'dynamic-forms/'.$shortName.'\1',
+                  ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                  ':regex'     => 0
+              ));
           break;
         }
       } elseif($newShortName) {

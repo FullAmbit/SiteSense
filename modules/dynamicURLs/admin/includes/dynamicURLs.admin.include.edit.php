@@ -40,6 +40,12 @@ function admin_dynamicURLsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
 		return;
 	}
+    if(!$data->output['urlremap']['regex']) {
+        // Standard Mode
+        $data->output['urlremap']['match']=str_replace('^','',$data->output['urlremap']['match']);
+        $data->output['urlremap']['match']=str_replace('(/.*)?$','',$data->output['urlremap']['match']);
+        $data->output['urlremap']['replace']=str_replace('\1','',$data->output['urlremap']['replace']);
+    }
 	// Create The Form
 	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	$form->caption = 'Editing URL Remap';
@@ -48,12 +54,25 @@ function admin_dynamicURLsBuild($data,$db) {
 		// Populate The Send Array
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
-			$statement = $db->prepare('editUrlRemap','admin_dynamicURLs');
-			$form->sendArray[':id'] = $remapId;
-			$result = $statement->execute($form->sendArray) ;
+			if(!$data->output['urlremap']['regex']) {
+                // Remove
+                $form->sendArray[':match']=str_replace('^','',$form->sendArray[':match']);
+                $form->sendArray[':match']=str_replace('(/.*)?$','',$form->sendArray[':match']);
+                $form->sendArray[':replace']=str_replace('\1','',$form->sendArray[':replace']);
+                // Trim Forward Slashes + Whitespace from Beginning and End
+                $form->sendArray[':match']=trim($form->sendArray[':match']);
+                $form->sendArray[':replace']=trim($form->sendArray[':replace']);
+                $form->sendArray[':match']=trim($form->sendArray[':match'],'/');
+                $form->sendArray[':replace']=trim($form->sendArray[':replace'],'/');
+                // Add Regex
+                $form->sendArray[':match']='^'.$form->sendArray[':match'].'(/.*)?$';
+                $form->sendArray[':replace']=$form->sendArray[':replace'].'\1';
+            }
+            $statement = $db->prepare('editUrlRemap','admin_dynamicURLs');
+            $form->sendArray[':id'] = $remapId;
+            $result = $statement->execute($form->sendArray) ;
 			
-			if($result == FALSE)
-			{
+			if($result == FALSE) {
 				$data->output['abort'] = true;
 				$data->output['abortMessage'] = 'There was an error in saving to the database';
 				return;

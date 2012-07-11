@@ -138,11 +138,26 @@ function admin_blogsBuild($data,$db) {
             ));
           break;
           case 1:
-            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-            $statement->execute(array(
-              ':match'   => '^'.$shortName.'(/.*)?$',
-              ':replace' => 'blogs/'.$shortName.'\1'
-            ));
+              $modifiedShortName='^'.$shortName.'(/.*)?$';
+              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+              $statement->execute(array(
+                      ':match' => $modifiedShortName
+                  )
+              );
+              $result=$statement->fetch();
+              if($result===false) {
+                  $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                  $statement->execute(array(
+                      ':match'     => $modifiedShortName,
+                      ':replace'   => 'pages/'.$shortName.'\1',
+                      ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                      ':regex'     => 0
+                  ));
+              } else {
+                  $data->output['pageForm']->fields['name']['error']=true;
+                  $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                  return;
+              }
           break;
         }
       } elseif($newShortName) {
