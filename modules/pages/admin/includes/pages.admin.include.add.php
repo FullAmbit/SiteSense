@@ -70,12 +70,9 @@ function admin_pagesBuild($data,$db)
             ));
       }
 			// Get Sort Order
-			$statement = $db->prepare('countPagesByParent','admin_pages');
-			$statement->execute(array(':parent' => $data->output['pageForm']->sendArray[':parent']));
-			list($rowCount) = $statement->fetch();
-			
-			$data->output['pageForm']->sendArray[':sortOrder'] = $rowCount + 1;
-			
+			$data->output['pageForm']->sendArray[':sortOrder']=
+                admin_sortOrder_new($db,'pages','sortOrder','parent',$data->output['pageForm']->sendArray[':parent']);
+
 			// Parse
 			if($data->settings['useBBCode'] == '1')
 			{

@@ -51,7 +51,7 @@ function admin_sidebarsBuild($data,$db) {
 						//--Delete Form, Page, and Module Setting For Sidebar--//
 						$vars = array(':sidebar' => $data->action[3]);
 						
-						$q1 = $db->prepare('deleteSidebarSettingBySidebar','dynamic-form');
+						$q1 = $db->prepare('deleteSidebarSettingBySidebar','admin_dynamicForms');
 						$q2 = $db->prepare('deleteSidebarSettingBySidebar','admin_modules');
 						$q3 = $db->prepare('deleteSidebarSettingBySidebar','admin_pages');
 						

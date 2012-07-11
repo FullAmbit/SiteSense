@@ -30,38 +30,8 @@ function admin_pagesBuild($data,$db) {
 		return;
 	}
 
-	if ((($data->action[3]=='moveUp') || ($data->action[3]=='moveDown')) && is_numeric($data->action[4]))
-	{
-		$qHandle=$db->prepare('getPageById','admin_pages');
-		$qHandle->execute(array(
-			':id' => $data->action[4]
-		));
-		if($item = $qHandle->fetch())
-		{
-			$statement = $db->prepare('countPagesByParent','admin_pages');
-			$statement->execute(array(':parent' => $item['parent']));
-			list($rowCount) = $statement->fetch();
-			
-			if($data->action[3] == 'moveUp' && intval($item['sortOrder']) > 1) {
-				$query1 = 'shiftOrderUpRelative';
-				$query2 = 'shiftOrderUpByID';
-			} else if($data->action[3] == 'moveDown' && intval($item['sortOrder']) < $rowCount) {
-				$query1 = 'shiftOrderDownRelative';
-				$query2 = 'shiftOrderDownByID';
-			}
-			if(isset($query1))
-			{
-				$statement = $db->prepare($query1,'admin_pages');
-				$statement->execute(array(
-					':sortOrder' => $item['sortOrder'],
-					':parent' => $item['parent']
-				));
-				$statement = $db->prepare($query2,'admin_pages');
-				$statement->execute(array(
-					':id' => $item['id']
-				));
-			}
-		}
+	if ((($data->action[3]=='moveUp') || ($data->action[3]=='moveDown')) && is_numeric($data->action[4])) {
+        admin_sortOrder_move($db,'pages',$data->action[3],$data->action[4],'sortOrder','parent');
 	}
 	$data->output['pagesList'] = admin_List($db);
 }

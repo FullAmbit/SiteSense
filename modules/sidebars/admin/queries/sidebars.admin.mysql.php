@@ -47,6 +47,7 @@ function admin_sidebars_addQueries() {
 			UPDATE !prefix!sidebars
 			SET enabled = :enabled
 			WHERE id = :id
+			ORDER BY sortOrder ASC
 		',
 		'getSidebarNameByName' => '
 			SELECT name FROM !prefix!sidebars
@@ -54,6 +55,7 @@ function admin_sidebars_addQueries() {
 		',
         'getSidebarsNames' => '
 			SELECT name FROM !prefix!sidebars
+			ORDER BY sortOrder ASC
 		',
 		'insertSidebarFile' => '
 			INSERT INTO !prefix!sidebars
@@ -61,7 +63,7 @@ function admin_sidebars_addQueries() {
 		',
 		'insertSidebar' => '
 			INSERT INTO !prefix!sidebars
-			(name,shortName,enabled,fromFile,title,side,titleURL,rawContent,parsedContent) VALUES (:name,:shortName, true, false, :title, :side, :titleURL, :rawContent,:parsedContent)
+			(name,shortName,enabled,fromFile,title,side,titleURL,rawContent,parsedContent,sortOrder) VALUES (:name,:shortName, true, false, :title, :side, :titleURL, :rawContent,:parsedContent,:sortOrder)
 		',
 		'getFromFiles' => '
 			SELECT * FROM !prefix!sidebars
@@ -78,10 +80,11 @@ function admin_sidebars_addQueries() {
 		',
 		'getAllSidebars' => '
 			SELECT * FROM !prefix!sidebars
+			ORDER BY sortOrder ASC
 		',
 		'getAllOrdered' => '
 			SELECT * FROM !prefix!sidebars
-			ORDER BY id ASC
+			ORDER BY sortOrder ASC
 		',
 		'getById' => '
 			SELECT * FROM !prefix!sidebars

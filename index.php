@@ -31,7 +31,7 @@ final class dynamicPDO extends PDO {
     private $tablePrefix;
 	private $sqlType;
 	private $queries;
-	private $qSearch=array('!prefix!','!table!');
+	private $qSearch=array('!prefix!','!table!','!column1!','!column2!');
 
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
@@ -98,7 +98,7 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - '.$moduleName.' Queries Library File not found!<br>'.$target);
 		} else return false;
 	}
-	private function prepQuery($queryName,$module,$tableName) {
+	private function prepQuery($queryName,$module,$tableName,$column1,$column2) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
             $this->loadModuleQueries($module);
@@ -108,26 +108,28 @@ final class dynamicPDO extends PDO {
 				$this->qSearch,
 				array(
 					$this->tablePrefix,
-					$tableName
+					$tableName,
+                    $column1,
+                    $column2
 				),
 				$this->queries[$module][$queryName]
 			);
 		} else return false;
 	}
-	public function query($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function query($queryName,$module='common',$tableName='',$column1='',$column2='') {
+		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::query($query);
 		} else {
 			return false;
 		}
 	}
-	public function exec($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::exec($query);
 		} else return false;
 	}
-	public function prepare($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::prepare($query);
 		} else return false;
 	}

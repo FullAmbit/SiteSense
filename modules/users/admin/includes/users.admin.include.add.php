@@ -23,6 +23,8 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
+// Copyright (C) 2012 Nathan Wong
+// See 'acknowledgment.txt' for more details
 function populateTimeZones($data) {
     $currentTime=time();
     $times=array();
@@ -47,6 +49,7 @@ function populateTimeZones($data) {
         }
     }
 }
+// End Credit
 function getPermissions($data,$db) {
     $targetFunction='loadPermissions';
     // Get core permissions

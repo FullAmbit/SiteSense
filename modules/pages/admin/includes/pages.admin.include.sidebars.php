@@ -47,15 +47,13 @@ function admin_pagesBuild($data,$db)
 	$statement = $db->prepare('countSidebarsByPage','admin_pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();
-	if($rowCount < $maxSidebarCount)
-	{
-		$i = $rowCount;
+	if($rowCount < $maxSidebarCount) {
+        $i = $rowCount;
 		// Get A List Of All Sidebars
 		$statement = $db->prepare('getAllSidebars','admin_sidebars');
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
-		foreach($sidebarList as $sidebarItem)
-		{
+		foreach($sidebarList as $sidebarItem) {
 			$i++;
 			$statement = $db->prepare('createSidebarSetting','admin_pages');
 			$statement->execute(array(

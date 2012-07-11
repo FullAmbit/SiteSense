@@ -48,8 +48,10 @@ function theme_dynamicURLsListTableRow($remap,$linkRoot,$key) {
 			<td class="match">', $remap['match'], '</td>
 			<td class="replacement">', $remap['replace'], '</td>
 			<td class="buttonList">
-				<a href="'.$linkRoot.'admin/dynamic-urls/edit/'.$remap['id'].'">Modify</a>
-				<a href="'.$linkRoot.'admin/dynamic-urls/delete/'.$remap['id'].'">Delete</a>
+			    <a href="',$linkRoot,'admin/dynamic-urls/list/moveUp/',$remap['id'],'" title="Move Up">&uArr;</a>
+		        <a href="',$linkRoot,'admin/dynamic-urls/list/moveDown/',$remap['id'],'" title="Move Down">&dArr;</a>
+				<a href="',$linkRoot,'admin/dynamic-urls/edit/',$remap['id'],'">Modify</a>
+				<a href="',$linkRoot,'admin/dynamic-urls/delete/',$remap['id'],'">Delete</a>
 			</td>
 		</tr>';
 }

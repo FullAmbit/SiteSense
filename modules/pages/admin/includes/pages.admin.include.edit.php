@@ -136,10 +136,14 @@ function admin_pagesBuild($data,$db) {
 				} else {
 					$data->output['pageForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['pageForm']->sendArray[':rawContent']);
 				}
-				
+                $newParent = $data->output['pageForm']->sendArray[':parent'];
+                if($newParent !== $data->output['pageItem']['parent']) {
+                    $data->output['pageForm']->sendArray[':sortOrder'] = admin_sortOrder_new($db,'pages','sortOrder','parent',$newParent);
+                } else {
+                    $data->output['pageForm']->sendArray[':sortOrder'] = $data->output['pageItem']['sortOrder'];
+                }
 				$statement=$db->prepare('updatePageById','admin_pages');
 				$data->output['pageForm']->sendArray[':id']=$data->action[3];
-				
 				$statement->execute($data->output['pageForm']->sendArray);
 			}
 			
