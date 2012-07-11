@@ -94,22 +94,50 @@ function admin_dynamicFormsBuild($data,$db)
             ));
           break;
           case 1:
-              $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+              $modifiedShortName='^'.$shortName.'(/.*)?$';
+              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
               $statement->execute(array(
-                  ':match'     => '^'.$shortName.'(/.*)?$',
-                  ':replace'   => 'dynamic-forms/'.$shortName.'\1',
-                  ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                  ':regex'     => 0
-              ));
+                      ':match' => $modifiedShortName
+                  )
+              );
+              $result=$statement->fetch();
+              if($result===false) {
+                  $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                  $statement->execute(array(
+                      ':match'     => $modifiedShortName,
+                      ':replace'   => 'dynamic-forms/'.$shortName.'\1',
+                      ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                      ':regex'     => 0
+                  ));
+              } else {
+                  $data->output['fromForm']->fields['name']['error']=true;
+                  $data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                  return;
+              }
           break;
         }
       } elseif($newShortName) {
-            $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
-            $statement->execute(array(
-              ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
-              ':newMatch'   => '^'.$shortName.'(/.*)?$',
-              ':replace' => 'dynamic-forms/'.$shortName.'\1'
-            ));
+          if($data->output['fromForm']->sendArray[':topLevel']) {
+              $modifiedShortName='^'.$shortName.'(/.*)?$';
+              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+              $statement->execute(array(
+                      ':match' => $modifiedShortName
+                  )
+              );
+              $result=$statement->fetch();
+              if($result===false) {
+                  $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+                  $statement->execute(array(
+                      ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
+                      ':newMatch'   => '^'.$shortName.'(/.*)?$',
+                      ':replace' => 'dynamic-forms/'.$shortName.'\1'
+                  ));
+              } else {
+                  $data->output['fromForm']->fields['name']['error']=true;
+                  $data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                  return;
+              }
+          }
       }
 			// Save Menu Item //
 			if($data->output['fromForm']->sendArray[':showOnMenu'] == 1)

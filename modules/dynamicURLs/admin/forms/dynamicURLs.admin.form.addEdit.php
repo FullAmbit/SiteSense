@@ -42,6 +42,7 @@ $this->fields=array(
 	),
 	'replace' => array(
 		'label' => 'Replacement',
+        'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['urlremap']['replace']) ? $data->output['urlremap']['replace'] : '',
 		'params' => array(

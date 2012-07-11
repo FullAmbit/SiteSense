@@ -116,12 +116,25 @@ function admin_pagesBuild($data,$db) {
 			$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
 			// Apply ShortName Convention To Name For Use In Comparison //
 			$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
-			$statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
-      $statement->execute(array(
-        ':match' => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
-        ':newMatch'   => '^'.$shortName.'(/.*)?$',
-        ':replace' => 'pages/'.$shortName.'\1'
-      ));
+            $modifiedShortName='^'.$shortName.'(/.*)?$';
+            $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+                    ':match' => $modifiedShortName
+                )
+            );
+            $result=$statement->fetch();
+            if($result===false) {
+                $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+                $statement->execute(array(
+                    ':match'    => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
+                    ':newMatch' => '^'.$shortName.'(/.*)?$',
+                    ':replace'  => 'pages/'.$shortName.'\1'
+                ));
+            } else {
+                $data->output['pageForm']->fields['name']['error']=true;
+                $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                return;
+            }
 		}
 	
 		// Validate Form

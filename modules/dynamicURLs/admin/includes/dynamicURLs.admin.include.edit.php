@@ -73,9 +73,9 @@ function admin_dynamicURLsBuild($data,$db) {
             $result = $statement->execute($form->sendArray) ;
 			
 			if($result == FALSE) {
-				$data->output['abort'] = true;
-				$data->output['abortMessage'] = 'There was an error in saving to the database';
-				return;
+                $data->output['remapForm']->fields['match']['error']=true;
+                $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
+                return;
 			}
 			
 			if (empty($data->output['secondSidebar'])) {
