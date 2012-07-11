@@ -105,6 +105,7 @@ function page_buildContent($data,$db) {
 	}
 	
 	$moduleList = array_flip($data->output['moduleShortName']);
+	$hookedModules = array();
 	$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false,$data->action[1]);
 	$data->output['customForm']->submitTitle = $data->output['form']['submitTitle'];
 	$data->output['customForm']->caption = $data->output['form']['name'];
@@ -119,6 +120,7 @@ function page_buildContent($data,$db) {
 				// Is This Field Hooked And Is The Module Enabled?
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
+					$hookedModules[] = $moduleName;
 					$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
 					common_include($target);
 					// Check To See What Function We Can Run
@@ -135,9 +137,6 @@ function page_buildContent($data,$db) {
 		}
 		// No Errors...Start Saving...
 		if($data->output['customForm']->error==FALSE){
-			$newRow = $db->prepare('newRow', 'dynamicForms');
-			$newRow->execute(array(':form' => $form['id']));
-			$rowId = $db->lastInsertId();
 			$statement = $db->prepare('newValue', 'dynamicForms');
 			$emailText = '';
 			foreach($rawFields as $field){
@@ -146,8 +145,6 @@ function page_buildContent($data,$db) {
 				// Is This Field Hooked And Is The Module Enabled?
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
-					$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
-					common_include($target);
 					// Check To See What Function We Can Run
 					$fieldCamelCase = common_camelBack($field['name']);
 					$fieldFunction = $moduleName.'_save'.$fieldCamelCase;
@@ -158,6 +155,12 @@ function page_buildContent($data,$db) {
 						$generalFunction($data,$db,$fieldCamelCase,$fieldValue);
 					}					
 				} else {
+					// Do We Have A Row Yet For This New Custom Form Data?
+					if(!isset($rowId)){
+						$newRow = $db->prepare('newRow', 'dynamicForms');
+						$newRow->execute(array(':form' => $form['id']));
+						$rowId = $db->lastInsertId();
+					}
 					$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $fieldValue));
 					$emailText .= $field['name'] . ': ' . $data->output['customForm']->sendArray[':'.$fieldId] . "\n";
 					/**
@@ -175,6 +178,13 @@ function page_buildContent($data,$db) {
 					}
 					**/
 					$processedFields[$fieldId] = $field;
+				}
+			}
+			// Call Hooks After Processing / Saving Form Fields
+			foreach($hookedModules as $moduleName){
+				$function = $moduleName.'_afterForm';
+				if(function_exists($function)){
+					$function($data,$db);
 				}
 			}
 			// API Hook
