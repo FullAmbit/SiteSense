@@ -108,7 +108,7 @@ final class dynamicPDO extends PDO {
 				$this->qSearch,
 				array(
 					$this->tablePrefix,
-					$tableName,
+                    $this->tablePrefix.$tableName,
                     $column1,
                     $column2
 				),
