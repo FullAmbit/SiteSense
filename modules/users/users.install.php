@@ -69,7 +69,7 @@ function users_install($db,$drop=false) {
 		),
 		'users_dynamic_fields' => array(
 			'id'                  => SQR_ID,
-			'userId'              => SQD_ID,
+			'userId'              => SQR_ID,
 			'name'                => 'VARCHAR(255) NOT NULL',
 			'value'               => 'VARCHAR(255) NOT NULL'
 		),
