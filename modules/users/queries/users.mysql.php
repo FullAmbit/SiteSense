@@ -134,6 +134,38 @@ function users_addQueries() {
 			WHERE
 				id = :userId
 			LIMIT 1
+		',
+		'createUserRow' => '
+			INSERT INTO
+				!prefix!users 
+				(name)
+			VALUES
+				(:name)
+		',
+		'updateUserField' => '
+			UPDATE
+				!prefix!users 
+			SET 
+				!column1! = :fieldValue 
+			WHERE
+				name = :name
+		',
+		'updateIPDateAndAccess' => '
+			UPDATE
+				!prefix!users
+			SET 
+				registeredIP = :registeredIP,
+				registeredDate = :registeredDate,
+				lastAccess = :lastAccess
+			WHERE
+				id = :userID
+		',
+		'addDynamicUserField' => '
+			INSERT INTO
+				!prefix!users_dynamic_fields
+				(userId,name,value)
+			VALUES
+				(:userId,:name,:value)
 		'
 	);
 }

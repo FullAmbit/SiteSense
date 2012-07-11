@@ -65,7 +65,13 @@ function users_install($db,$drop=false) {
 			'publicEMail'         => SQR_email,
 			'emailVerified'       => SQR_boolean.' DEFAULT \'0\'',
 			'activated'           => SQR_boolean.' DEFAULT \'0\'',
-			'timeZone'			  => 'MEDIUMINT(6) NOT NULL DEFAULT \'0\''
+			'timeZone'			  => 'VARCHAR(63) DEFAULT NULL'
+		),
+		'users_dynamic_fields' => array(
+			'id'                  => SQR_ID,
+			'userId'              => SQD_ID,
+			'name'                => 'VARCHAR(255) NOT NULL',
+			'value'               => 'VARCHAR(255) NOT NULL'
 		),
         'user_groups' => array(
             'userID'              => SQR_ID,

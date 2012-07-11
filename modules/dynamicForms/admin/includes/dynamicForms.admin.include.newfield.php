@@ -78,9 +78,9 @@ function admin_dynamicFormsBuild($data,$db) {
 			list($rowCount) = $statement->fetch();
 			$sortOrder = $rowCount + 1;
 			$form->sendArray[':sortOrder'] = $sortOrder;
+						
 			*/
             $form->sendArray[':sortOrder']=admin_sortOrder_new($db,'form_fields','sortOrder','form',$formId);
-			
 			$statement = $db->prepare('newField','admin_dynamicForms');
 			$result = $statement->execute($form->sendArray);
 			if(!$result) {
