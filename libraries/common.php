@@ -264,7 +264,7 @@ function loadPermissions($data) {
     );
 }
 
-function getUserPermissions(&$db,&$user) {
+function getUserPermissions($db,&$user) {
     $user['permissions']=array();
     // Group Permissions
     // Purge expired Groups
@@ -288,12 +288,11 @@ function getUserPermissions(&$db,&$user) {
 	// Finds out if user is Admin with universal access
     $statement=$db->prepare('isUserAdmin');
     $statement->execute(array(
-        ':userID' => $user['id'],
+        ':userID' => $user['id']
     ));
     $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
 	if(isset($userAdmin[0]))
 		$user['isAdmin']=1;
-
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
         ':userID' => $user['id']
@@ -323,7 +322,6 @@ function getUserPermissions(&$db,&$user) {
             $suffix = substr($permission,$separator+1);
             $user['permissions'][$prefix][] = $suffix;
         }
-
         // Clean up
         asort($user['permissions']);
     }

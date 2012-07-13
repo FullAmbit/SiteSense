@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function users_config($data,$db) {
+function users_admin_config($data,$db) {
 	if (checkPermission('access','users',$data)) {
 		if (checkPermission('add','users',$data)) {
 			$data->admin['menu'][]=array(

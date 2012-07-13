@@ -24,7 +24,7 @@
 */
 define('ADMIN_SHOWPERPAGE',16);
 require_once('libraries/admin.common.php');
-function page_buildContent($data,$db) {
+function admin_buildContent($data,$db) {
 	$db->loadModuleQueries('admin',true);
 	//Preload default values into $data->output:
 	$defaults = array(
@@ -42,7 +42,8 @@ function page_buildContent($data,$db) {
 			$moduleQuery->execute(array(':shortName' => $data->action[1]));
 			$module=$moduleQuery->fetch();
 		}
-		common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
+		$data->currentModule=$module['name'];
+        common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
 		$currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.admin.template.php';
 		$defaultThemeInclude='themes/default/admin/'.$module['name'].'.admin.template.php';
 		$moduleThemeInclude='modules/'.$module['name'].'/admin/'.$module['name'].'.admin.template.php';
@@ -59,26 +60,28 @@ function page_buildContent($data,$db) {
 			$strFind=array('.config.php','.admin');
 			$targetName=substr(strrchr(str_replace($strFind,'',$fileName),'/'),1);
 			$targetName=hyphenToCamel($targetName);
-			$targetFunction=$targetName.'_config';
+			$targetFunction=$targetName.'_admin_config';
 			
 			if (function_exists($targetFunction)) {
 				$targetFunction($data,$db);
 			}
     	}
 		usort($data->admin['menu'],'admin_menuCmp');
-		if (function_exists('admin_buildContent')) {
-			admin_buildContent($data,$db);
+		$buildContent=$data->currentModule.'_admin_buildContent';
+        if (function_exists($buildContent)) {
+            $buildContent($data,$db);
 		}
 	}
 }
 
-function page_content($data) {
+function admin_content($data) {
     if (!checkPermission('access','core',$data)) {
       theme_accessDenied(true);
       theme_loginForm($data);
     } else {
         if (function_exists('admin_content')) {
-          admin_content($data);
+            $content=$data->currentModule.'_admin_content';
+            $content($data);
         } else {
           theme_fatalError('The requested admin.php module is not installed.');
         }

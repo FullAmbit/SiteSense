@@ -133,6 +133,15 @@ final class dynamicPDO extends PDO {
 			return parent::prepare($query);
 		} else return false;
 	}
+    public function fetch() {
+
+    }
+    public function fetchColumn() {
+
+    }
+    public function fetchObject() {
+
+    }
 	public function tableExists($tableName) {
 		try {
 			$statement=$this->query('tableExists','common',$tableName);
@@ -561,14 +570,17 @@ final class sitesense {
 				}
 			}
 			if($this->currentPage == 'pageNotFound' || $this->banned){
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {
-				common_include($targetInclude);
+                common_include($targetInclude);
 			} else {
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}
-			if (function_exists('page_getUniqueSettings')) {
-				page_getUniqueSettings($this,$this->db);
+            $getUnqiueSettings=$this->module['name'].'_getUnqiueSettings';
+			if (function_exists($getUnqiueSettings)) {
+                $getUnqiueSettings($this,$this->db);
 			}
 			$this->loadModuleTemplate('common');
 			$this->loadModuleTemplate($this->module['name']);
@@ -592,8 +604,13 @@ final class sitesense {
             ajax_buildContent($this,$this->db);
 		} else {
 			// Nope, this is a normal page request
-			if (function_exists('page_buildContent')) {
-				page_buildContent($this,$this->db);
+
+            $buildContent=$this->module['name'].'_buildContent';
+            if($this->currentPage=='admin') {
+                $buildContent='admin_buildContent';
+            }
+            if (function_exists($buildContent)) {
+                $buildContent($this,$this->db);
 			}
 		}
 		// Parse Sidebars Before Display
@@ -635,7 +652,11 @@ final class sitesense {
 		}
 		
 		theme_header($this);
-		page_content($this);
+        $content=$this->module['name'].'_content';
+        if($this->currentPage=='admin') {
+            $content='admin_content';
+        }
+        $content($this);
 		
 		if(function_exists('theme_leftSidebar')) {
 			theme_leftSidebar($this);

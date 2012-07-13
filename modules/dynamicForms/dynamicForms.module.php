@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_buildContent($data,$db) {
+function dynamicForms_buildContent($data,$db) {
 	require_once('libraries/forms.php');
 	$form = false;
 	if ($data->action[1] !== false){
@@ -209,7 +209,7 @@ function page_buildContent($data,$db) {
 	}
 }
 
-function page_content($data) {
+function dynamicForms_content($data) {
 	if(isset($data->action['error'])){
 		switch($data->action['error']){	
 			case 'notFound':

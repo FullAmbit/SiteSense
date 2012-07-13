@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildContent($data,$db) {
+function sidebars_admin_buildContent($data,$db) {
 	if(!checkPermission('access','sidebars',$data))	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
@@ -45,7 +45,7 @@ function admin_buildContent($data,$db) {
 	if (function_exists('admin_sidebarsBuild')) admin_sidebarsBuild($data,$db);
 	$data->output['pageTitle']='Sidebars';
 }
-function admin_content($data) {
+function sidebars_admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {

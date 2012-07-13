@@ -22,11 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_getUniqueSettings($data,$db) {
+function pages_getUniqueSettings($data,$db) {
 
 }
 
-function page_buildContent($data,$db) {
+function pages_buildContent($data,$db) {
 	if($data->banned) {
 		$statement = $db->prepare('getPagesByShortName','pages');
 		$statement->execute(array(
@@ -60,13 +60,13 @@ function page_buildContent($data,$db) {
 		$data->output['pageShortName']= $current['title'];
 		$data->output['pageContent']['children']=$statement->fetchAll();
 		$data->output['pageTitle']=$data->output['pageContent']['title'];
+        $data->output['pageContent']['parsedContent'] = htmlspecialchars_decode($data->output['pageContent']['parsedContent']);
+        common_parseDynamicValues($data,$data->output['pageContent']['parsedContent'],$db);
 	} else if ($data->httpHeaders[0] === 'Content-Type: text/html; charset='.$data->settings['characterEncoding']) {
 		$data->httpHeaders[]='HTTP/1.1 404 Not Found';
 		$data->output['404']=true;
 		$data->output['pageContent']['title']='HTTP/1.1 404 Not Found';
 	}
-	$data->output['pageContent']['parsedContent'] = htmlspecialchars_decode($data->output['pageContent']['parsedContent']);
-	common_parseDynamicValues($data,$data->output['pageContent']['parsedContent'],$db);
 	$statement = $db->prepare('getEnabledSidebarsByPage','pages');
 	$statement->execute(array(':pageId' => $current['id']));
 	$sidebars = $statement->fetchAll();
@@ -79,7 +79,7 @@ function page_buildContent($data,$db) {
 		}
 	}
 }
-function page_content($data) {
+function pages_content($data) {
 	if ($data->output['404']) {
 		theme_contentBoxHeader('HTTP/1.1 404 Not Found');
 		echo '

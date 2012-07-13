@@ -47,7 +47,7 @@ function populateTimeZones($data) {
 		}
 	}
 }
-function admin_buildContent($data,$db) {
+function settings_admin_buildContent($data,$db) {
 	/**
 	 *	Permission: Accessible by administrator only
 	**/
@@ -201,7 +201,7 @@ function admin_buildContent($data,$db) {
 	}
 	$data->output['pageTitle']='Global Settings';
 }
-function admin_content($data) {
+function settings_admin_content($data) {
 	if(isset($data->output['rejectError']))
 	{
 		theme_rejectError($data);

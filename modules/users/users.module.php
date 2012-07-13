@@ -103,11 +103,12 @@ function checkUserName($name,$db) {
 	$statement->execute(array(':name' => $name));
 	return $statement->fetchColumn();
 }
-function page_getUniqueSettings($data){
+function users_getUniqueSettings($data){
 	$data->output['pageShortName']='SiteSense';
 }
-function page_buildContent($data,$db) {
-	switch($data->action[1]){
+function users_buildContent($data,$db) {
+    populateTimeZones($data);
+    switch($data->action[1]){
 		case 'edit':
 			// Check If Logged In
 			if(!isset($data->user['id'])){
@@ -309,7 +310,7 @@ function page_buildContent($data,$db) {
 	    break; // case 'register'
 	}
 }
-function page_content($data){
+function users_content($data){
 	$data->loadModuleTemplate('users');
 	switch($data->action[1]){
 		case 'edit':

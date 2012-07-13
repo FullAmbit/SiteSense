@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-function blogs_config($data,$db) {
+function blogs_admin_config($data,$db) {
 	if (checkPermission('access','blogs',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => 'Site Management',
