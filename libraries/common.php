@@ -352,4 +352,30 @@ function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
 	$time = ($time == NULL) ? time() : $time;
 	return gmdate($format,$time);
 }
+function common_timeDiff($start,$end) {
+		$diff=$end-$start;
+		if($diff%86400<=0) $days=$diff/86400;
+		if($diff%86400>0) {
+			$rest=($diff%86400);
+			$days=($diff-$rest)/86400;
+     	if($rest%3600>0) {
+				$rest1=($rest%3600);
+				$hrs=($rest-$rest1)/3600;
+        if($rest1%60>0) {
+					$rest2=($rest1%60);
+          $mins=($rest1-$rest2)/60;
+          $secs=$rest2;
+        } else $mins=$rest1/60;
+     	} else $hrs=$rest/3600;
+		}
+		if($days>0) $days=$days.'D ';
+    else $days=false;
+		if(isset($hrs)) $hrs=$hrs.'H ';
+    else $hrs=false;
+		if(isset($mins)) $mins=$mins.'M ';
+    else $mins=false;
+		if(isset($secs)) $secs=$secs.'S';
+    else $secs=1;
+		return $days.$hrs.$mins.$secs;
+	}
 ?>
