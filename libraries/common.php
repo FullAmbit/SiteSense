@@ -354,6 +354,9 @@ function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
 }
 function common_timeDiff($start,$end) {
 		$diff=$end-$start;
+		$hrs=0;
+		$mins=0;
+		$secs=0;
 		if($diff%86400<=0) $days=$diff/86400;
 		if($diff%86400>0) {
 			$rest=($diff%86400);
@@ -368,14 +371,20 @@ function common_timeDiff($start,$end) {
         } else $mins=$rest1/60;
      	} else $hrs=$rest/3600;
 		}
-		if($days>0) $days=$days.'D ';
+		if($days==1) $days=$days.' Day';
+		elseif($days>1) $days=$days.' Days';
     else $days=false;
-		if(isset($hrs)) $hrs=$hrs.'H ';
+    if($hrs==1) $hrs=$hrs.' Hour';
+		elseif($hrs>1) $hrs=$hrs.' Hours';
     else $hrs=false;
-		if(isset($mins)) $mins=$mins.'M ';
+		if($mins==1) $mins=$mins.' Minute';
+		elseif($mins>1) $mins=$mins.' Minutes';
     else $mins=false;
-		if(isset($secs)) $secs=$secs.'S';
-    else $secs=1;
-		return $days.$hrs.$mins.$secs;
+		if($secs>1) $secs=$secs.' Seconds';
+    else $secs='1 Second!';
+    if($days) return $days;
+    elseif($hrs) return $hrs;
+    elseif($mins) return $mins;
+		else return $secs;
 	}
 ?>
