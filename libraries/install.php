@@ -50,7 +50,8 @@ $settings=array(
         'version' => 'Pre-Alpha',
         'verifyEmail' => 1,
         'requireActivation' => 0,
-        'removeAttribution' => 0
+        'removeAttribution' => 0,
+        'defaultTimeZone' => 0
     )
 );
 echo '
