@@ -30,19 +30,21 @@ function dynamicURLs_settings() {
 }
 function dynamicURLs_install($db,$drop=false) {
 	$structures = array(
-        'url_remap' => array(
-            'id'       => SQR_IDKey,
-            'match'    => 'VARCHAR(127) NOT NULL',
-            'replace'  => 'VARCHAR(127) NOT NULL'
-        )
+		'url_remap' => array(
+			'id'        => SQR_IDKey,
+			'match'     => 'VARCHAR(127) NOT NULL UNIQUE',
+			'replace'   => 'VARCHAR(127) NOT NULL',
+            'regex'     => SQR_boolean,
+            'sortOrder' => SQR_sortOrder
+		)
 	);
 	if($drop)
-        dynamicURLs_uninstall($db);
+		dynamicURLs_uninstall($db);
 
 	$db->createTable('url_remap',$structures['url_remap'],false);
 
 }
 function dynamicURLs_uninstall($db) {
-    $db->dropTable('url_remap');
+	$db->dropTable('url_remap');
 }
 ?>

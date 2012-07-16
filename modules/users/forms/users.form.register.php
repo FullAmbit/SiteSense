@@ -111,10 +111,19 @@ $this->fields=array(
 			'size' => 64,
 			'maxlength' => 128
 		),
-		'compareFailMessage' => 'The passwords you entered do not match!'	)
+		'compareFailMessage' => 'The passwords you entered do not match!'
+	),
+    'timeZone' => array(
+        'label' => 'Time Zone',
+        'required' => true,
+        'tag' => 'select',
+        'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
+        'options' => $data->output['timeZones']
+    )
 );
 $this->extraMarkup.='
 	<p>
 		By clicking on the "Join Now" button above you are stating that you accept our <a href="'.$data->linkRoot.'Registration_Agreement">registration agreement</a>.
 	</p>
 ';
+?>

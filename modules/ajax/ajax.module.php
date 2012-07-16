@@ -75,9 +75,11 @@ function ajax_buildContent($data,$db) {
 	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------
 	common_include('modules/'.$module.'/'.$module.'.module.php');
 	$data->loadModuleTemplate($module);
-	if(function_exists('page_getUniqueSettings')) {
-		page_getUniqueSettings($data);
+	$getUniqueSettings=$module.'_getUniqueSettings';
+    if(function_exists($getUniqueSettings)) {
+        $getUniqueSettings($data);
 	}
-	page_buildContent($data,$db);	
+    $buildContent=$module.'_buildContent';
+    $buildContent($data,$db);
 }
 ?>

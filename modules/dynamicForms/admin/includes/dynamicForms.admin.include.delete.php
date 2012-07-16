@@ -48,6 +48,13 @@ function admin_dynamicFormsBuild($data,$db)
 	{
 		if(!empty($_POST['delete']))
 		{
+      if($data->output['formItem']['topLevel']) {
+        $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+        $statement->execute(array(
+          ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
+          
+        ));
+      }
 			// Get A List of ROW IDs
 			$statement = $db->prepare('getRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':form' => $formID));

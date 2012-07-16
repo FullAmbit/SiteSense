@@ -41,7 +41,7 @@ function admin_pagesResort($db) {
 		}
 	}
 }
-function admin_buildContent($data,$db) {
+function pages_admin_buildContent($data,$db) {
 	//permission check for pages access
 	if(!checkPermission('access','pages',$data)) {
 		$data->output['abort'] = true;
@@ -60,7 +60,7 @@ function admin_buildContent($data,$db) {
 	if (function_exists('admin_pagesBuild')) admin_pagesBuild($data,$db);
 	$data->output['pageTitle']='Static Pages';
 }
-function admin_content($data) {
+function pages_admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {

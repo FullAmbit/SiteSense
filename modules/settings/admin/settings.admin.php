@@ -23,7 +23,31 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_buildContent($data,$db) {
+function populateTimeZones($data) {
+	$currentTime=time();
+	$times=array();
+	$start=$currentTime-date('G',$currentTime)*3600;
+	for($i=0;$i<24*60;$i+=15) {
+		$times[date('g:i A',$start+$i*60)]=array();
+	}
+	$timezones=DateTimeZone::listIdentifiers();
+	foreach($timezones AS $timezone) {
+		$dt=new DateTime('@'.$currentTime);
+		$dt->setTimeZone(new DateTimeZone($timezone));
+		$time=$dt->format('g:i A');
+		$times[$time][]=$timezone;
+	}
+	$timeZones=array_filter($times);
+	foreach($timeZones as $time => $timeZoneList) {
+		foreach($timeZoneList as $timeZone) {
+			$data->output['timeZones'][]=array(
+				'text'  => $time.' - '.$timeZone,
+				'value' => $timeZone
+			);
+		}
+	}
+}
+function settings_admin_buildContent($data,$db) {
 	/**
 	 *	Permission: Accessible by administrator only
 	**/
@@ -31,6 +55,23 @@ function admin_buildContent($data,$db) {
 		$data->output['rejectError'] = 'Insufficient Permissions';
 		$data->output['rejectText'] = 'You do not have the permissions to access this area.';
 		return;
+	}
+	// Poulate Time Zone List
+	populateTimeZones($data);
+	// Get all groups
+	$statement=$db->query('getAllGroups','admin_users');
+	$userGroups=$statement->fetchAll();
+	$userGroups[]['groupName']='Administrators';
+	sort($userGroups);
+	$data->output['userGroups'][]=array(
+		'text'  => 'Disable auto assigning of groups',
+		'value' => '0'
+	);
+	foreach($userGroups as $userGroup) {
+		$data->output['userGroups'][]=array(
+			'text'  => $userGroup['groupName'],
+			'value' => $userGroup['groupName']
+		);
 	}
 	$data->output['settingsForm']=new formHandler('edit',$data,true);
 	$getModules = $db->query('getEnabledModules','admin_modules');
@@ -160,7 +201,7 @@ function admin_buildContent($data,$db) {
 	}
 	$data->output['pageTitle']='Global Settings';
 }
-function admin_content($data) {
+function settings_admin_content($data) {
 	if(isset($data->output['rejectError']))
 	{
 		theme_rejectError($data);

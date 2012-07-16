@@ -44,6 +44,21 @@ function admin_dynamicFormsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
 		return;
 	}
+	$data->output['fieldList'][]=array(
+		'text'  => 'Do Not Compare',
+		'value' => '0'
+	);
+	$statement = $db->prepare('getFieldsByForm','admin_dynamicForms');
+	$statement->execute(array(':form' => $field['form']));
+	$fieldList = $statement->fetchAll();
+	foreach($fieldList as $value) {
+		if($value['id']!=$data->action[3]) {
+			$data->output['fieldList'][]=array(
+				'text'  => $value['name'],
+				'value' => $value['id']
+			);
+		}
+	}
 	$statement = $db->prepare('getFormById','admin_dynamicForms');
 	$statement->execute(array(':id' => $field['form']));
 	$dbform = $statement->fetch();
@@ -59,6 +74,11 @@ function admin_dynamicFormsBuild($data,$db) {
 		$form->caption = 'New Custom Form';
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
+			if($form->sendArray[':isEmail'] && $form->sendArray[':type']!=='textbox') {
+				$form->fields['isEmail']['error']=true;
+				$form->fields['isEmail']['errorList'][]='Can only validate emails for textboxes.';
+				return;
+			}
 			$form->sendArray[':id'] = $field['id'];
 			$statement = $db->prepare('editField','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die(var_dump($statement->errorInfo()));

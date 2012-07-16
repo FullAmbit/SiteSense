@@ -59,7 +59,10 @@ function admin_blogs_addQueries() {
 			WHERE blogId = :id
 		',
         'getBlogPostsById' => '
-			SELECT * FROM !prefix!blog_posts
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts
 			WHERE id = :id
 		',
         'deleteBlogPostById' => '
@@ -172,11 +175,13 @@ function admin_blogs_addQueries() {
 			WHERE blogID = :id
 		',
         'getBlogPostsByBlogIdLimited' => '
-			SELECT *
-				FROM !prefix!blog_posts
-				WHERE blogId = :blogId
-				ORDER BY postTime DESC
-				LIMIT :blogStart, :blogLimit
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts
+			WHERE blogId = :blogId
+			ORDER BY postTime DESC
+			LIMIT :blogStart, :blogLimit
 		',
         'getAllCategories' => '
 			SELECT *
@@ -211,21 +216,21 @@ function admin_blogs_addQueries() {
 			SELECT shortName FROM !prefix!blogs
 		',
         'getCommentById' => '
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments
 			WHERE id = :id
 		',
         'getApprovedCommentsByPost' => '
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments
 			WHERE post = :post AND approved = 1
 			ORDER BY `time` ASC
 		',
         'getDisapprovedCommentsByPost' => '
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments
 			WHERE post = :post AND approved = -1
 			ORDER BY `time` ASC
 		',
         'editCommentById' => '
-			UPDATE !prefix!blog_comments SET author = :author, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
+			UPDATE !prefix!blog_comments SET authorFirstName = :authorFirstName, authorLastName = :authorLastName, rawContent = :rawContent, parsedContent = :parsedContent, email = :email WHERE id = :id
 		',
         'deleteCommentById' => '
 			DELETE FROM !prefix!blog_comments WHERE id = :id
@@ -237,12 +242,12 @@ function admin_blogs_addQueries() {
 		',
         'makeComment' => '
 			INSERT INTO !prefix!blog_comments
-			(post, author, content,email,loggedIP)
+			(post, authorFirstName, authorLastName, content,email,loggedIP)
 			VALUES
-			(:post, :author, :content,:email,:loggedIP)
+			(:post, :authorFirstName, :authorLastName, :content,:email,:loggedIP)
 		',
         'getCommentsAwaitingApproval' =>'
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments
 			WHERE post = :post AND approved = 0
 			ORDER BY `time` ASC
 		',

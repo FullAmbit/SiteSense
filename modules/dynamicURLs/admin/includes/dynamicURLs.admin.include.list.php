@@ -28,6 +28,9 @@ function admin_dynamicURLsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
+    if($data->action[3]=='moveUp' || $data->action[3]=='moveDown') {
+        admin_sortOrder_move($db,'url_remap',$data->action[3],$data->action[4]);
+    }
     $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
 	$messages = $db->query('getAllUrlRemaps','admin_dynamicURLs');
 	$data->output['remapList'] = $messages->fetchAll();

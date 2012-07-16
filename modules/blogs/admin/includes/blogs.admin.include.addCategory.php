@@ -47,7 +47,7 @@ function admin_blogsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>The blog ID does not exist in database</h2>';
 		return;
 	}
-	$data->output['categoryForm'] = new formHandler('blogCategory',$data,true);
+	$data->output['categoryForm'] = new formHandler('category',$data,true);
 	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['categoryForm']->fromForm))
 	{
 		$data->output['categoryForm']->populateFromPostData();

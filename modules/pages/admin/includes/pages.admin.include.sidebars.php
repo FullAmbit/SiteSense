@@ -47,22 +47,18 @@ function admin_pagesBuild($data,$db)
 	$statement = $db->prepare('countSidebarsByPage','admin_pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();
-	if($rowCount < $maxSidebarCount)
-	{
-		$i = $rowCount;
+	if($rowCount < $maxSidebarCount) {
 		// Get A List Of All Sidebars
 		$statement = $db->prepare('getAllSidebars','admin_sidebars');
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
-		foreach($sidebarList as $sidebarItem)
-		{
-			$i++;
+		foreach($sidebarList as $sidebarItem) {
 			$statement = $db->prepare('createSidebarSetting','admin_pages');
 			$statement->execute(array(
 				':pageId' => $pageId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => $i
+				':sortOrder' => admin_sortOrder_new($db,'pages_sidebars','sortOrder','page',$pageId)
 			));
 		}
 	}
@@ -81,39 +77,8 @@ function admin_pagesBuild($data,$db)
 			break;
 		case 'moveDown':
 		case 'moveUp':
-			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSidebarSetting','admin_pages');
-			$statement->execute(array(':id' => $settingId));
-			if(($sidebarItem = $statement->fetch()) === FALSE)
-			{
-				continue;
-			}
-			// Get The Current Count
-			$statement = $db->prepare('countSidebarsByPage','admin_pages');
-			$statement->execute(array(':pageId' => $pageId));
-			list($rowCount) = $statement->fetch();
-			if($data->action[4] == 'moveUp' && intval($sidebarItem['sortOrder']) > 1) {
-				
-				$query1 = 'shiftSidebarOrderUpRelative';
-				$query2 = 'shiftSidebarOrderUpByID';
-			} else if($data->action[4] == 'moveDown' && intval($sidebarItem['sortOrder']) < $rowCount) {
-				$query1 = 'shiftSidebarOrderDownRelative';
-				$query2 = 'shiftSidebarOrderDownByID';
-			}
-			if(isset($query1))
-			{
-				$statement = $db->prepare($query1,'pages');
-				$statement->execute(array(
-					':sortOrder' => $sidebarItem['sortOrder'],
-					':pageId' => $pageId
-				));
-				$statement = $db->prepare($query2,'pages');
-				$statement->execute(array(
-					':id' => $sidebarItem['id']
-				));
-			}
-			
-		break;
+            admin_sortOrder_move($db,'pages_sidebars',$data->action[4],$data->action[5],'sortOrder','page');
+		    break;
 	}
 	
 	// Get List Of All Sidebars

@@ -24,7 +24,7 @@
 */
 
 //configures admin's left menu bar configurations - category, order, name, etc.
-function pages_config($data,$db) {
+function pages_admin_config($data,$db) {
 	if (checkPermission('access','pages',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',

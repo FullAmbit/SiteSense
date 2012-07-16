@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function blog_buildContent($data,$db) {
+function blogs_buildContent($data,$db) {
 	$statement=$db->prepare('countBlogPosts','blogs');
 	$statement->bindValue(':blogId',$data->output['blogInfo']['id']);
 	$statement->execute();

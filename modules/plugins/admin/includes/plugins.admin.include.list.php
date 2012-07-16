@@ -69,11 +69,32 @@ function admin_pluginsBuild($data,$db) {
 			}
 		}
 		if(!$found) {
+            $isCDN=0;
+            $isEditor=0;
+            $filename = 'plugins/'.$filePlugin.'/install.php';
+            if(file_exists($filename)) {
+                common_include($filename);
+                $targetFunction=$filePlugin.'_settings';
+                if (function_exists($targetFunction)) {
+                    $settings=$targetFunction();
+                    if(isset($settings['isCDN'])) {
+                        if($settings['isCDN']==1) {
+                            $isCDN=1;
+                        }
+                    }
+                    if(isset($settings['isEditor'])) {
+                        if($settings['isEditor']==1) {
+                            $isEditor=1;
+                        }
+                    }
+                }
+                }
 			$insert->execute(
 				array(
-					':name' => $filePlugin,
-					':shortName' => $filePlugin,
-					':enabled' => 0
+					':name'     => $filePlugin,
+					':enabled'  => 0,
+                    'isCDN'     => $isCDN,
+                    'isEditor'  => $isEditor
 				)
 			);
 		}

@@ -29,23 +29,14 @@ function admin_blogsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-	if(checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
-		$check->execute(array(
-			':id' => $data->action[3],
-			':owner' => $data->user['id']
-		));
-	} else {
-		$check = $db->prepare('getBlogById','admin_blogs');
-		$check->execute(array(':id' => $data->action[3]));
-	}
-	// Check To See If The Blog Exists
-	if(($data->output['blogItem'] = $check->fetch()) === FALSE)	{
+	$check = $db->prepare('getCategoryById','admin_blogs');
+	$check->execute(array(':id' => $data->action[3]));
+	if(($data->output['categoryItem'] = $check->fetch()) === FALSE)	{
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
 	}
-	$data->output['categoryForm'] = new formHandler('blogCategory',$data,true);
+	$data->output['categoryForm'] = new formHandler('category',$data,true);
 	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['categoryForm']->fromForm)) {
 		$data->output['categoryForm']->populateFromPostData();
 		if($data->output['categoryForm']->validateFromPost()) {
@@ -58,10 +49,10 @@ function admin_blogsBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Category Item Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/blogs/addCategory/'.$data->output['blogItem']['id'].'">
+						<a href="'.$data->linkRoot.'admin/blogs/addCategory/'.$data->output['categoryItem']['blogId'].'">
 							Add New Category
 						</a>
-						<a href="'.$data->linkRoot.'admin/blogs/listCategories/'.$data->output['blogItem']['id'].'">
+						<a href="'.$data->linkRoot.'admin/blogs/listCategories/'.$data->output['categoryItem']['blogId'].'">
 							Return to Categories List
 						</a>
 					</div>';

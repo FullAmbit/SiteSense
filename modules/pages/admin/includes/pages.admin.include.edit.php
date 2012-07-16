@@ -60,7 +60,6 @@ function admin_pagesBuild($data,$db) {
 	}
 
 	/* editing an existing from the database */
-	$data->output['pageForm']->caption='Editing Page '.$data->action[3];
 	$statement=$db->prepare('getPageById','admin_pages');
 	$statement->execute(array(
 		':id' => $data->action[3]
@@ -73,6 +72,8 @@ function admin_pagesBuild($data,$db) {
 	}
 	
 	$data->output['pageForm']= $form = new formHandler('addEdit',$data,true);
+		$data->output['pageForm']->caption='Editing Page "'.$data->output['pageItem']['title'].'"';
+
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	// Unset Main Menu Options
 	unset($form->fields['showOnMenu']);
@@ -115,12 +116,30 @@ function admin_pagesBuild($data,$db) {
 			$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
 			// Apply ShortName Convention To Name For Use In Comparison //
 			$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
+            $modifiedShortName='^'.$shortName.'(/.*)?$';
+            $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+                    ':match' => $modifiedShortName
+                )
+            );
+            $result=$statement->fetch();
+            if($result===false) {
+                $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+                $statement->execute(array(
+                    ':match'    => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
+                    ':newMatch' => '^'.$shortName.'(/.*)?$',
+                    ':replace'  => 'pages/'.$shortName.'\1'
+                ));
+            } else {
+                $data->output['pageForm']->fields['name']['error']=true;
+                $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                return;
+            }
 		}
 	
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost()) {
 			if (is_numeric($data->action[3])) {
-				
 				// Parse
 				if($data->settings['useBBCode'] == '1')
 				{
@@ -130,10 +149,14 @@ function admin_pagesBuild($data,$db) {
 				} else {
 					$data->output['pageForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['pageForm']->sendArray[':rawContent']);
 				}
-				
+                $newParent = $data->output['pageForm']->sendArray[':parent'];
+                if($newParent !== $data->output['pageItem']['parent']) {
+                    $data->output['pageForm']->sendArray[':sortOrder'] = admin_sortOrder_new($db,'pages','sortOrder','parent',$newParent);
+                } else {
+                    $data->output['pageForm']->sendArray[':sortOrder'] = $data->output['pageItem']['sortOrder'];
+                }
 				$statement=$db->prepare('updatePageById','admin_pages');
 				$data->output['pageForm']->sendArray[':id']=$data->action[3];
-				
 				$statement->execute($data->output['pageForm']->sendArray);
 			}
 			

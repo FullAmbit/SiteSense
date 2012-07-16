@@ -34,18 +34,51 @@ function admin_dynamicURLsBuild($data,$db) {
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
 		$form->populateFromPostData();
-		if ($form->validateFromPost())
-		{
-			
-			$statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
-			$result = $statement->execute($form->sendArray);
-			if($result == FALSE)
-			{
-				$data->output['abort'] = true;
-				$data->output['abortMessage'] = 'There was an error in saving to the database';
-				return;
-			}
-			
+		if ($form->validateFromPost()) {
+            if(!$form->sendArray[':regex']) {
+                // Standard
+                $form->sendArray[':match']=str_replace('^','',$form->sendArray[':match']);
+                $form->sendArray[':match']=str_replace('(/.*)?$','',$form->sendArray[':match']);
+                $form->sendArray[':replace']=str_replace('\1','',$form->sendArray[':replace']);
+                // Trim Forward Slashes + Whitespace from Beginning and End
+                $form->sendArray[':match']=trim($form->sendArray[':match']);
+                $form->sendArray[':replace']=trim($form->sendArray[':replace']);
+                $form->sendArray[':match']=trim($form->sendArray[':match'],'/');
+                $form->sendArray[':replace']=trim($form->sendArray[':replace'],'/');
+                // Add Regex
+                $form->sendArray[':match']='^'.$form->sendArray[':match'].'(/.*)?$';
+                $form->sendArray[':replace']=$form->sendArray[':replace'].'\1';
+
+                $modifiedMatch=$form->sendArray[':match'];
+                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+                $statement->execute(array(
+                        ':match' => $modifiedMatch
+                    )
+                );
+                $result=$statement->fetch();
+                if($result===false) {
+                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                    $statement->execute(array(
+                        ':match'     => $modifiedMatch,
+                        ':replace'   => $form->sendArray[':replace'],
+                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                        ':regex'     => 0
+                    ));
+                } else {
+                    $data->output['remapForm']->fields['match']['error']=true;
+                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different match.';
+                    return;
+                }
+            } else {
+                $form->sendArray[':sortOrder']=admin_sortOrder_new($db,'url_remap','sortOrder');
+                $statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
+                $result = $statement->execute($form->sendArray);
+                if($result == FALSE) {
+                    $data->output['remapForm']->fields['match']['error']=true;
+                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
+                    return;
+                }
+            }
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Remap Saved Successfully</h2>

@@ -29,18 +29,26 @@
 function users_addQueries() {
 	return array(
 		'getAllUsers' => '
-			SELECT * FROM !prefix!users ORDER BY id ASC
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users ORDER BY id ASC
 		',
 		'getByName' => '
 			SELECT
-				*
+				*,
+				UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+				UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
 			FROM
 				!prefix!users 
 			WHERE
 				name = :name
 		',
 		'getById' => '
-			SELECT * FROM !prefix!users
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(registeredDate,"+00:00")) AS registeredDate,
+			UNIX_TIMESTAMP(CONCAT(lastAccess,"+00:00")) AS lastAccess
+			FROM !prefix!users
 			WHERE id = :id
 		',
 		'updateUserByIdNoPw' => '
@@ -66,12 +74,17 @@ function users_addQueries() {
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
+		'activateUser' => '
+			UPDATE !prefix!users
+			SET activated=1
+			WHERE id=:userId
+		',
         // Register
         'insertUser' => '
 			INSERT INTO !prefix!users
-			(name,password,firstName,lastName,registeredDate,registeredIP,lastAccess,contactEMail,publicEMail,emailVerified)
+			(name, password, firstName, lastName, registeredDate, registeredIP, lastAccess, contactEMail, publicEMail, emailVerified, timeZone)
 			VALUES
-			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified)
+			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified,:timeZone)
 		',
         'getRegistrationEMail' => '
 			SELECT parsedContent FROM !prefix!pages
@@ -96,7 +109,8 @@ function users_addQueries() {
 			WHERE expires <= :expireTime
 		',
         'checkActivationHash' => '
-			SELECT expires FROM !prefix!activations
+			SELECT UNIX_TIMESTAMP(CONCAT(expires,"+00:00")) AS expires
+			FROM !prefix!activations
 			WHERE
 				userId = :userId
 			AND
@@ -120,6 +134,38 @@ function users_addQueries() {
 			WHERE
 				id = :userId
 			LIMIT 1
+		',
+		'createUserRow' => '
+			INSERT INTO
+				!prefix!users 
+				(name)
+			VALUES
+				(:name)
+		',
+		'updateUserField' => '
+			UPDATE
+				!prefix!users 
+			SET 
+				!column1! = :fieldValue 
+			WHERE
+				name = :name
+		',
+		'updateIPDateAndAccess' => '
+			UPDATE
+				!prefix!users
+			SET 
+				registeredIP = :registeredIP,
+				registeredDate = :registeredDate,
+				lastAccess = :lastAccess
+			WHERE
+				id = :userID
+		',
+		'addDynamicUserField' => '
+			INSERT INTO
+				!prefix!users_dynamic_fields
+				(userId,name,value)
+			VALUES
+				(:userId,:name,:value)
 		'
 	);
 }

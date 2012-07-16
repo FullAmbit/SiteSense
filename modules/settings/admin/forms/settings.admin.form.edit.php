@@ -66,6 +66,17 @@ $this->fields=array(
 			</p>
 		'
 	),
+	'defaultTimeZone' => array(
+		'label' => 'Default Time Zone',
+		'tag' => 'select',
+		'value' => $data->settings['defaultTimeZone'],
+		'options' => $data->output['timeZones'],
+		'description' => '
+			<p>
+				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
+			</p>
+		'
+	),
 	'homepage' => array(
 		'label' => 'Homepage',
 		'tag' => 'select',
@@ -219,6 +230,18 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 			</p>
 		',
 		'group' => 'Advanced Settings'
+	),
+	'defaultGroup' => array(
+		'label' => 'Default Registration Group',
+		'tag' => 'select',
+		'value' => $data->settings['defaultGroup'],
+		'options' => $data->output['userGroups'],
+		'description' => '
+			<p>
+				<b>Default Registration Group</b> - Determines which of group to put registered users under.
+			</p>
+		',
+		'group' => 'Registration Settings'
 	),
 	'verifyEmail' => array(
 		'label' => 'Verify EMail',

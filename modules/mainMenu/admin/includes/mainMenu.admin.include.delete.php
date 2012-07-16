@@ -25,7 +25,7 @@
 function admin_mainMenuBuild($data,$db) {
 	$data->output["delete"] = "";
 	// Make Sure We Have An ID
-	if(!empty($data->action[3]) || !is_numeric($data->action[3])) {
+	if(empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 		return;
@@ -40,23 +40,14 @@ function admin_mainMenuBuild($data,$db) {
 	// Check To See If The Menu Item Exists
 	$check = $db->prepare('getMenuItemById','admin_mainMenu');
 	$check->execute(array(':id' => $data->action[3]));
-	if(($data->output['menuItem'] = $check->fetch()) === FALSE)
-	{
+	if(($data->output['menuItem'] = $check->fetch()) === FALSE) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
 	}
 	// Delete Project
-	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3])
-	{
-		if(!empty($_POST['delete']))
-		{
-			// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
-			$statement = $db->prepare('fixSortOrderGap','admin_mainMenu');
-			$statement->execute(array(  
-				':sortOrder' => $data->output['menuItem']['sortOrder'],
-				':parent' => $data->output['menuItem']['parent']
-			));
+	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
+		if(!empty($_POST['delete'])) {
 			// Delete All Children //
 			deleteChildren($db,$data->output['menuItem']);
 			/*=========================================================================*/

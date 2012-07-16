@@ -110,7 +110,10 @@ function admin_dynamicForms_addQueries() {
 			)
 		',
 		'newField' => '
-			INSERT INTO !prefix!form_fields (form, name, type,description,enabled,required,apiFieldToMapTo,sortOrder,isEmail) VALUES (:form, :name, :type,:description,:enabled,:required,:apiFieldToMapTo,:sortOrder,:isEmail)
+			INSERT INTO !prefix!form_fields
+			(form, name, type, description, enabled, required, moduleHook, apiFieldToMapTo, sortOrder, isEmail, compareTo)
+			VALUES
+			(:form,:name,:type,:description,:enabled,:required,:moduleHook,:apiFieldToMapTo,:sortOrder,:isEmail,:compareTo)
 		',
 		'newRow' => '
 			INSERT INTO !prefix!form_rows (form) VALUES (:form)
@@ -138,7 +141,17 @@ function admin_dynamicForms_addQueries() {
 			WHERE id = :id
 		',
 		'editField' => '
-			UPDATE !prefix!form_fields SET name = :name, description = :description, type = :type, enabled = :enabled, required = :required, apiFieldToMapTo = :apiFieldToMapTo, isEmail = :isEmail WHERE id = :id
+			UPDATE !prefix!form_fields SET 
+			name            = :name,
+			description     = :description,
+			type            = :type,
+			enabled         = :enabled,
+			required        = :required,
+			apiFieldToMapTo = :apiFieldToMapTo,
+			moduleHook      = :moduleHook,
+			isEmail         = :isEmail,
+			compareTo       = :compareTo
+			WHERE id        = :id
 		',
 		'editValue' => '
 			UPDATE !prefix!form_values SET value = :value WHERE id = :id

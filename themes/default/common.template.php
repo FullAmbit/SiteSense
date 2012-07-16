@@ -105,21 +105,21 @@ function theme_header($data) {
 		}
 		$previousSide=$menuItem['side'];
 
-        if(!empty($menuItem['url'])) {
-            $matched=0;
-            $count=0;
-            foreach(explode('/',$menuItem['url']) as $key => $value) {
-                $count++;
-                if($value==$data->action[$key]) {
-                    $matched++;
-                } else {
-                    break;
-                }
-            }
-            if($count==$matched) {
-                $class[]='current';
-            }
-        }
+		if(!empty($menuItem['url'])) {
+			$matched=0;
+			$count=0;
+			foreach(explode('/',$menuItem['url']) as $key => $value) {
+				$count++;
+				if($value==$data->action[$key]) {
+					$matched++;
+				} else {
+					break;
+				}
+			}
+			if($count==$matched) {
+				$class[]='current';
+			}
+		}
 		echo '<li',(
 			empty($class) ? '': ' class="'.implode(' ',$class).'"'
 		),(
@@ -167,7 +167,7 @@ function theme_contentBoxHeader($heading,$headingURL='',$date=0) {
 						<h2',(empty($headingURL) ? '' : ' class="link"'),'>
 							',(
 								($date!=0) ?
-								'<span>'.date('d F Y H:i T',strtotime($date)).'<span> - </span></span>' :
+								'<span>'.date('d F Y H:i T',$date).'<span> - </span></span>' :
 								''
 							),(
 								empty($headingURL) ?
@@ -251,15 +251,15 @@ function theme_leftSidebar($data) {
 
 	if (count($data->sidebarList['left'])>0) {
 		foreach($data->sidebarList['left'] as $sidebar) {
-		    if ($sidebar['fromFile']) {
-		    	require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
-		    } else {
-                common_parseDynamicValues($data, $sidebar['titleURL']);
-		    	common_parseDynamicValues($data, $sidebar['parsedContent']);
-		    	theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
-		    	echo htmlspecialchars_decode($sidebar['parsedContent']);
-		    	theme_sidebarBoxFooter();
-		    }
+			if ($sidebar['fromFile']) {
+				require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
+			} else {
+				common_parseDynamicValues($data, $sidebar['titleURL']);
+				common_parseDynamicValues($data, $sidebar['parsedContent']);
+				theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+				echo htmlspecialchars_decode($sidebar['parsedContent']);
+				theme_sidebarBoxFooter();
+			}
 		}
 	}
 
@@ -279,15 +279,15 @@ function theme_rightSidebar($data) {
 
 	if (count($data->sidebarList)>0) {
 		foreach($data->sidebarList['right'] as $sidebar) {
-		    if ($sidebar['fromFile']) {
-		    	require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
-		    } else {
-		    	common_parseDynamicValues($data, $sidebar['titleURL']);
-		    	common_parseDynamicValues($data, $sidebar['parsedContent']);
-		    	theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
-		    	echo htmlspecialchars_decode($sidebar['parsedContent']);
-		    	theme_sidebarBoxFooter();
-		    }
+			if ($sidebar['fromFile']) {
+				require_once('modules/sidebars/'.$sidebar['name'].'.sidebar.php');
+			} else {
+				common_parseDynamicValues($data, $sidebar['titleURL']);
+				common_parseDynamicValues($data, $sidebar['parsedContent']);
+				theme_sidebarBoxHeader($sidebar['title'],$sidebar['titleURL']);
+				echo htmlspecialchars_decode($sidebar['parsedContent']);
+				theme_sidebarBoxFooter();
+			}
 		}
 	}
 
@@ -375,11 +375,11 @@ function theme_accountSettings($data) {
 
 function theme_buildForm($formData,$buffer = FALSE) {
 
-    if($buffer)	{
-        ob_start();
-    }
-    //var_dump($formData);
-    echo '
+	if($buffer)	{
+		ob_start();
+	}
+	//var_dump($formData);
+	echo '
 		<form
 			method="post"
 			action="',rtrim($formData->action,'/').'/','"
@@ -387,164 +387,232 @@ function theme_buildForm($formData,$buffer = FALSE) {
 			enctype="multipart/form-data"
 			class="commonForm"
 		>';
-    if ($formData->error) {
-        echo '
+	if ($formData->error) {
+		echo '
 			<div class="errorBox">',$formData->errorText,'</div>';
-    }
-    echo '
+	}
+	echo '
 			<div class="fieldsetWrapper"><fieldset>',(
-    isset($formData->caption) ? '
+	isset($formData->caption) ? '
 				<legend><span>'.$formData->caption.'</span></legend>' :
-        ''
-    );
-    foreach ($formData->fields as $formDataKey => $formField) {
-        if ($formField['params']['type']!='hidden') {
-            $class=array();
-            if ($formField['tag']=='input') {
-                if (!empty($formField['params']['type'])) {
-                    $class[]='type_'.$formField['params']['type'];
-                }
-            } else $class[]='type_'.$formField['tag'];
-            if (!empty($formField['divClasses'])) {
-                $class=array_merge($class,$formField['divClasses']);
-            }
-            $class=implode(' ',$class);
-            if (empty($formField['classes'])) {
-                $fieldClass=array();
-            } else {
-                $fieldClass=$formField['classes'];
-            }
-            if ($formField['required']) {
-                $fieldClass[]='required';
-            }
-            if ($formField['error']) {
-                $fieldClass[]='error';
-            }
-            if (!empty($formField['description'])) {
-                $fieldClass[]='nsDesc';
-            }
-            $fieldClass=implode(' ',$fieldClass);
-            echo '
+		''
+	);
+	foreach ($formData->fields as $formDataKey => $formField) {
+		if ($formField['params']['type']!='hidden') {
+			$class=array();
+			if ($formField['tag']=='input') {
+				if (!empty($formField['params']['type'])) {
+					$class[]='type_'.$formField['params']['type'];
+				}
+			} else $class[]='type_'.$formField['tag'];
+			if (!empty($formField['divClasses'])) {
+				$class=array_merge($class,$formField['divClasses']);
+			}
+			$class=implode(' ',$class);
+			if (empty($formField['classes'])) {
+				$fieldClass=array();
+			} else {
+				$fieldClass=$formField['classes'];
+			}
+			if ($formField['required']) {
+				$fieldClass[]='required';
+			}
+			if ($formField['error']) {
+				$fieldClass[]='error';
+			}
+			if (!empty($formField['description'])) {
+				$fieldClass[]='nsDesc';
+			}
+			$fieldClass=implode(' ',$fieldClass);
+			echo '
 				<div',(
-            $class ? ' class="'.$class.'"' : ''
-            ),'>
+			$class ? ' class="'.$class.'"' : ''
+			),'>
 					<label for="',$formData->formPrefix.$formDataKey,'">',$formField['label'],' ',(
-            $formField['error'] ? '<b>X</b>' : (
-            $formField['required'] ? (
-            empty($_POST['fromForm']) ?
-                '<i>&raquo;</i>' :
-                '<span>&radic;</span>'
-            ) : ''
-            )
-            ),'</label>
+			$formField['error'] ? '<b>X</b>' : (
+			$formField['required'] ? (
+			empty($_POST['fromForm']) ?
+				'<i>&raquo;</i>' :
+				'<span>&radic;</span>'
+			) : ''
+			)
+			),'</label>
 					<div>
 						<',$formField['tag'],'
 							id="',$formData->formPrefix,$formDataKey,'"',(
-            ($formField['tag']=='span') ? '' : '
+			($formField['tag']=='span') ? '' : '
 							name="'.$formData->formPrefix.$formDataKey.'"'
-            ),(
-            $fieldClass ? '
+			),(
+			$fieldClass ? '
 							class="'.$fieldClass.'"' : ''
-            ),(
-            empty($formField['checked']) ?	'' : '
+			),(
+			empty($formField['checked']) ?	'' : '
 							checked="checked"'
-            );
-            if (!empty($formField['params'])) {
-                foreach ($formField['params'] as $attribute => $value) {
-                    echo '
+			);
+			if (!empty($formField['params'])) {
+				foreach ($formField['params'] as $attribute => $value) {
+					echo '
 						',$attribute,'="',$value,'"';
-                }
-            }
-            switch ($formField['tag']) {
-                case 'textarea':
-                    echo '>',htmlspecialchars_decode($formField['value']),'</textarea>';
-                    if (isset($formField['useEditor'])) {
-                        echo '
+				}
+			}
+			switch ($formField['tag']) {
+				case 'textarea':
+					echo '>',htmlspecialchars_decode($formField['value']),'</textarea>';
+					if (isset($formField['useEditor'])) {
+						echo '
 <script type="text/javascript"><!--
 	CKEDITOR.replace(\'',$formData->formPrefix,$formDataKey,'\', {
 		customConfig:CMSBasePath+"ckeditor/paladin/config.js"
 	});
 --></script>';
-                    }
-                    break;
-                case 'select':
-                    echo '
+					}
+					break;
+				case 'select':
+					echo '
 						>';
-
-                    foreach ($formField['options'] as $key => $option) {
-                        if (is_array($option)) {
-                            echo '
-							<option',(
-                            ($formField['value']==$option['value']) ?
-                                ' selected="selected"' :
-                                ''
-                            ),' value="',$option['value'],'">',$option['text'],'</option>';
-                        } else {
-                            echo '
-							<option',(
-                            ($formField['value']==$option) ?
-                                ' selected="selected"' :
-                                ''
-                            ),'>',$option,'</option>';
-                        }
-                    }
-                    echo '
+					$optgroup = FALSE;
+					if(!empty($formField['options'])) {
+						foreach ($formField['options'] as $key => $option) {
+							$selected='';
+							if(empty($formField['value'])) {
+								// Selected
+								if(isset($formField['selected'])) {
+									if(is_array($formField['selected'])) {
+										foreach($formField['selected'] as $value) {
+											if(is_array($option)) {
+												if($value==$option['value']) {
+													$selected=' selected="selected"';
+												}
+											} else {
+												if($value==$option) {
+													$selected=' selected="selected"';
+												}
+											}
+										}
+									} else {
+										if(is_array($option)) {
+											if($formField['selected']==$option['value']) {
+												$selected=' selected="selected"';
+											}
+										} else {
+											if($formField['selected']==$option) {
+												$selected=' selected="selected"';
+											}
+										}
+									}
+								}
+							} else {
+								// Return bad entry
+								if($formField['value']==$option['value']) {
+									$selected=' selected="selected"';
+								}
+								if(is_array($formField['value'])) {
+									foreach($formField['value'] as $value) {
+										if(is_array($option)) {
+											if($value==$option['value']) {
+												$selected=' selected="selected"';
+											}
+										} else {
+											if($value==$option) {
+												$selected=' selected="selected"';
+											}
+										}
+									}
+								} else {
+									if(is_array($option)) {
+										if($formField['value']==$option['value']) {
+											$selected=' selected="selected"';
+										}
+									} else {
+										if($formField['value']==$option) {
+											$selected=' selected="selected"';
+										}
+									}
+								}
+							}
+							if (is_array($option)) {
+								if(isset($option['optgroup']) && $option['optgroup'] !== $optgroup)
+								{
+									if($optgroup !== FALSE)
+									{
+										echo '
+										</optgroup>';
+									}
+									$optgroup = $option['optgroup'];
+									echo '
+								<optgroup label = "',$option['optgroup'],'">';
+								}
+								echo '
+								<option',$selected,' value="',$option['value'],'">',$option['text'],'</option>';
+								if(!isset($formField['options'][$key+1]) && $optgroup)
+								{
+									echo '</optgroup>';
+								}
+							} else {
+								echo '
+								<option',$selected,'>',$option,'</option>';
+							}
+						}
+					}
+					echo '
 						</select>';
-                    break;
-                case 'span':
-                    echo '>',htmlspecialchars($formField['value']),'</span>';
-                    break;
-                default:
-                    if (!empty($formField['value'])) {
-                        echo '
+					break;
+				case 'span':
+					echo '>',htmlspecialchars($formField['value']),'</span>';
+					break;
+				default:
+					if (!empty($formField['value'])) {
+						echo '
 							value="',htmlspecialchars($formField['value']),'"';
-                    }
-                    echo '
+					}
+					echo '
 						/>';
-            }
-            echo '
+			}
+			echo '
 					</div>';
-            if (count($formField['errorList'])>0) {
-                echo '
+			if (count($formField['errorList'])>0) {
+				echo '
 					<ul class="errorMessages">';
-                foreach ($formField['errorList'] as $message) {
-                    echo '
+				foreach ($formField['errorList'] as $message) {
+					echo '
 						<li>',$message,'</li>';
-                }
-                echo '
+				}
+				echo '
 					</ul>';
-            }
-            echo '
+			}
+			echo '
 				</div>';
-        }
-    }
-    echo '
+		}
+	}
+	echo '
 			</fieldset></div>
 			<div class="submitsAndHiddens">
 				<input type="submit" class="submit" value="',$formData->submitTitle,'" />
 				<input type="hidden" name="fromForm" id="fromForm" value="',$formData->fromForm,'" />';
-    foreach ($formData->fields as $formDataKey => $formField) {
-        if ($formField['params']['type']=='hidden') {
-            echo '
-		    <input type="hidden"
+	foreach ($formData->fields as $formDataKey => $formField) {
+		if ($formField['params']['type']=='hidden') {
+			echo '
+			<input type="hidden"
 					name="',$formData->formPrefix.$formDataKey,'"
 					id="',$formData->formPrefix.$formDataKey,'"
-		    	value="',$formField['value'],'"
-		    />';
-        }
-    }
-    echo '
+				value="',$formField['value'],'"
+			/>';
+		}
+	}
+	echo '
 				<i>&raquo;</i> Indicates a required field',(
-    $formData->error ? ', <b>X</b> indicates a field with errors' : ''
-    ),(
-    (strlen($formData->extraMarkup)==0) ? '' : $formData->extraMarkup
-    ),'
+	$formData->error ? ', <b>X</b> indicates a field with errors' : ''
+	),(
+	(strlen($formData->extraMarkup)==0) ? '' : '<div class="extraMarkup">
+        '.$formData->extraMarkup.'
+      <!-- .extraMarkup --></div>'
+	),'
 			<!-- .submitsAndHiddens --></div>
 		</form>';
 
-    if($buffer)	{
-        $contents = ob_get_clean();
-        return $contents;
-    }
+	if($buffer)	{
+		$contents = ob_get_clean();
+		return $contents;
+	}
 }
 ?>

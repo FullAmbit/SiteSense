@@ -44,11 +44,11 @@ function gallery_addQueries() {
 			ORDER BY id DESC
 		',
 		'getImagesFromAlbum' => '
-			SELECT * FROM !prefix!gallery_images
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!gallery_images
 			WHERE albumId = :albumId
 		',
 		'getImageByAlbumAndName' => '
-			SELECT * FROM !prefix!gallery_images
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!gallery_images
 			WHERE albumId = :albumId
 			AND shortName = :shortName
 		',
@@ -58,7 +58,7 @@ function gallery_addQueries() {
 			AND shortName = \'profile-pictures\'
 		',
 		'getImageComments' => '
-			SELECT c.*, u.name user_name FROM !prefix!gallery_comments c
+			SELECT c.*, u.name user_name,UNIX_TIMESTAMP(CONCAT(c.time,"+00:00")) AS time FROM !prefix!gallery_comments c
 				INNER JOIN !prefix!users u
 				ON u.id = c.user
 			WHERE image = :image

@@ -96,7 +96,7 @@ function theme_displayComments($Comments){
 				<blockquote>
 					',$Comment['parsedContent'],'
 					<cite>
-						Posted by ',$Comment['author'],' on ', date('F j, Y \a\t g:i a', strtotime($Comment['time'])),'
+						Posted by ',$Comment['authorFirstName'],' ',$Comment['authorLastName'],' on ', date('F j, Y \a\t g:i a', $Comment['time']),'
 					</cite>
 				</blockquote>
 			</li>

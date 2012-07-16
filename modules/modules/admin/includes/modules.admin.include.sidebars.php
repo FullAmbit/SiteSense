@@ -44,23 +44,18 @@ function admin_modulesBuild($data,$db){
 	$statement = $db->prepare('countSidebarsByModule','admin_modules');
 	$statement->execute(array(':moduleId' => $moduleId));
 	list($rowCount) = $statement->fetch();
-	
-	if($rowCount < $maxSidebarCount)
-	{
-		$i = $rowCount;
+	if($rowCount < $maxSidebarCount) {
 		// Get A List Of All Sidebars
 		$statement = $db->prepare('getAllSidebars','admin_sidebars');
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
-		foreach($sidebarList as $sidebarItem)
-		{
-			$i++;
+		foreach($sidebarList as $sidebarItem) {
 			$statement = $db->prepare('createSidebarSetting','admin_modules');
 			$statement->execute(array(
 				':moduleId' => $moduleId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => $i
+				':sortOrder' => admin_sortOrder_new($db,'module_sidebars','sortOrder','module',$moduleId)
 			));
 		}
 	}
@@ -80,34 +75,8 @@ function admin_modulesBuild($data,$db){
 			break;
 		case 'moveDown':
 		case 'moveUp':
-			$settingId = (int)$data->action[5];
-			$statement = $db->prepare('getSidebarSetting','admin_modules');
-			$statement->execute(array(':id' => $settingId));
-			if(($sidebarItem = $statement->fetch()) === FALSE)
-			{
-				continue;
-			}
-			if($data->action[4] == 'moveUp' && intval($sidebarItem['sortOrder']) > 1) {
-				$query1 = 'shiftSidebarOrderUpRelative';
-				$query2 = 'shiftSidebarOrderUpByID';
-			} else if($data->action[4] == 'moveDown' && intval($sidebarItem['sortOrder']) < $rowCount) {
-				$query1 = 'shiftSidebarOrderDownRelative';
-				$query2 = 'shiftSidebarOrderDownByID';
-			}
-			if(isset($query1))
-			{
-				$statement = $db->prepare($query1,'modules');
-				$statement->execute(array(
-					':sortOrder' => $sidebarItem['sortOrder'],
-					':moduleId' => $moduleId
-				));
-				$statement = $db->prepare($query2,'modules');
-				$statement->execute(array(
-					':id' => $sidebarItem['id']
-				));
-			}
-			
-		break;
+            admin_sortOrder_move($db,'module_sidebars',$data->action[4],$data->action[5],'sortOrder','module');
+		    break;
 	}
 	//
 	$statement = $db->prepare('getSidebarsByModule','admin_modules');

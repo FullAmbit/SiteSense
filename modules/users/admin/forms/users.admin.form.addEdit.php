@@ -108,7 +108,7 @@ $this->fields=array(
 	'publicEMail' => array(
 		'label' => 'Public E-Mail',
 		'tag' => 'input',
-		'value' => (empty($data->output['viewUser']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
+		'value' => (empty($data->output['userForm']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
@@ -148,7 +148,14 @@ $this->fields=array(
 			</p>
 		',
 		'compareFailMessage' => 'The passwords you entered do not match!'
-	)
+	),
+    'timeZone' => array(
+        'label' => 'Default Time Zone',
+        'required' => true,
+        'tag' => 'select',
+        'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
+        'options' => $data->output['timeZones']
+    )
 );
 foreach($data->output['groupList'] as $value) {
     if(checkPermission($value,'userGroups',$data)) {
@@ -163,7 +170,7 @@ foreach($data->output['groupList'] as $value) {
                     if($subValue['expires']==0) {
                         $expires='Never';
                     } else {
-                        $expires=gmdate('d F Y - G:i:s',strtotime($subValue['expires']));
+                        $expires=gmdate('d F Y - G:i:s',$subValue['expires']);
                     }
                 }
             }

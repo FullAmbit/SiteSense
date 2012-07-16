@@ -63,7 +63,15 @@ function users_install($db,$drop=false) {
 			'lastAccess'          => SQR_time,
 			'contactEMail'        => SQR_email,
 			'publicEMail'         => SQR_email,
-			'emailVerified'       => SQR_boolean.' DEFAULT \'0\''
+			'emailVerified'       => SQR_boolean.' DEFAULT \'0\'',
+			'activated'           => SQR_boolean.' DEFAULT \'0\'',
+			'timeZone'			  => 'VARCHAR(63) DEFAULT NULL'
+		),
+		'users_dynamic_fields' => array(
+			'id'                  => SQR_ID,
+			'userId'              => SQR_ID,
+			'name'                => 'VARCHAR(255) NOT NULL',
+			'value'               => 'VARCHAR(255) NOT NULL'
 		),
         'user_groups' => array(
             'userID'              => SQR_ID,
@@ -112,8 +120,7 @@ function users_install($db,$drop=false) {
 			'users_edit'
         ),
         'User' => array(
-            'users_access',
-            'users_edit'
+            'users_access'
         )
     );
     foreach($defaultPermissionGroups as $groupName => $permissions) {

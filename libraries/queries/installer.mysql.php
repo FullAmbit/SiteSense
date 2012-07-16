@@ -29,7 +29,7 @@
 function installer_addQueries() {
 	return array(
 		'dropTable' => '
-			DROP TABLE !prefix!!table!
+			DROP TABLE !table!
 		',
 		'addSetting' => '
 			INSERT INTO !prefix!settings

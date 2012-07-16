@@ -53,7 +53,7 @@ $this->fields=array(
 		'label' => 'Type',
 		'tag' => 'select',
 		'options' => array(
-			'textbox', 'textarea', 'checkbox', 'select'
+			'textbox', 'textarea', 'checkbox', 'select' , 'timezone', 'password'
 		),
 		'value' => isset($data->output['field']['type']) ? $data->output['field']['type'] : '',
 		'params' => array(
@@ -101,5 +101,41 @@ $this->fields=array(
 		'params' => array(
 			'type' => 'checkbox'
 		)
+	),
+	'compareTo' => array(
+		'label' => 'Compare To',
+		'tag' => 'select',
+		'options' => $data->output['fieldList'],
+		'value' => isset($data->output['field']['compareTo']) ? $data->output['field']['compareTo'] : '',
+		'params' => array(
+			'type' => 'text',
+		),
+		'description' => '
+			<p>
+				<b>Compare To</b> - Does it match the selected field?
+			</p>
+		'
+	),
+	'moduleHook' => array(
+		'label' => 'Module Hook',
+		'tag' => 'select',
+		'options' => array(
+			array(
+				'value' => NULL,
+				'text' => 'No Hook'
+			)
+		),
+		'value' => isset($data->output['field']['moduleHook']) ? $data->output['field']['moduleHook'] : '',
+		'description' => '
+			<p>
+				<b>Module Hook</b> - Should another module process the data from this field?
+			</p>
+		'
 	)
 );
+foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
+	$this->fields['moduleHook']['options'][] = array(
+		'text' => $moduleName,
+		'value' => $moduleShortName
+	);
+}

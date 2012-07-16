@@ -53,6 +53,13 @@ function admin_blogsBuild($data,$db) {
 			
 			if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 				if (!empty($_POST['delete'])) {
+          if($data->output['thisBlog']['topLevel']) {
+            $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+            $statement->execute(array(
+              ':match' => '^'.$data->output['thisBlog']['shortName'].'(/.*)?$'
+              
+            ));
+          }
 					$qHandle=$db->prepare('deleteBlogById','admin_blogs');
 					$qHandle->execute(array(
 						':id' => $data->action[3]

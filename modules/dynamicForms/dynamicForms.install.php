@@ -58,8 +58,10 @@ function dynamicForms_install($db,$drop=false) {
 			'required'             => SQR_boolean.' DEFAULT \'0\'',
 			'enabled'              => SQR_boolean.' DEFAULT \'0\'',
 			'apiFieldToMapTo'      => 'VARCHAR(255) DEFAULT NULL',
+			'moduleHook'           => 'VARCHAR(127) DEFAULT NULL',
 			'sortOrder'            => SQR_sortOrder.' DEFAULT \'1\'',
-			'isEmail'              => SQR_boolean.' DEFAULT \'0\''
+			'isEmail'              => SQR_boolean.' DEFAULT \'0\'',
+			'compareTo'            => SQR_ID
 		),
 		'form_sidebars' => array(
 			'id'                   => SQR_IDKey,

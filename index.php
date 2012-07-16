@@ -22,7 +22,6 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-ini_set("date.timezone","America/New_York");
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 require_once('dbSettings.php');
 require_once('libraries/common.php');
@@ -32,7 +31,7 @@ final class dynamicPDO extends PDO {
     private $tablePrefix;
 	private $sqlType;
 	private $queries;
-	private $qSearch=array('!prefix!','!table!');
+	private $qSearch=array('!prefix!','!table!','!column1!','!column2!');
 
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
@@ -85,6 +84,11 @@ final class dynamicPDO extends PDO {
         if($moduleName=='admin' || $moduleName=='common' || $moduleName=='installer') {
             $target='libraries/queries/'.$moduleName.'.'.$this->sqlType.'.php';
         }
+        $pos=strpos($moduleName,'_startup');
+        if(!($pos===false)) {
+            $moduleNameOnly=substr($moduleName,0,$pos);
+            $target='modules/'.$moduleNameOnly.'/queries/'.$moduleNameOnly.'.'.$this->sqlType.'.startup.php';
+        }
         if (file_exists($target)) {
 			require_once($target);
 			$loader=$moduleName.'_addQueries';
@@ -94,7 +98,7 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - '.$moduleName.' Queries Library File not found!<br>'.$target);
 		} else return false;
 	}
-	private function prepQuery($queryName,$module,$tableName) {
+	private function prepQuery($queryName,$module,$tableName,$column1,$column2) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
             $this->loadModuleQueries($module);
@@ -104,29 +108,40 @@ final class dynamicPDO extends PDO {
 				$this->qSearch,
 				array(
 					$this->tablePrefix,
-					$tableName
+                    $this->tablePrefix.$tableName,
+                    $column1,
+                    $column2
 				),
 				$this->queries[$module][$queryName]
 			);
 		} else return false;
 	}
-	public function query($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function query($queryName,$module='common',$tableName='',$column1='',$column2='') {
+		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::query($query);
 		} else {
 			return false;
 		}
 	}
-	public function exec($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::exec($query);
 		} else return false;
 	}
-	public function prepare($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::prepare($query);
 		} else return false;
 	}
+    public function fetch() {
+
+    }
+    public function fetchColumn() {
+
+    }
+    public function fetchObject() {
+
+    }
 	public function tableExists($tableName) {
 		try {
 			$statement=$this->query('tableExists','common',$tableName);
@@ -139,9 +154,6 @@ final class dynamicPDO extends PDO {
 	public function countRows($tableName) {
 		$result=$this->query('countRows','common',$tableName);
 		return $result->fetchColumn();
-	}
-	public function lastInsertId() {
-		return parent::lastInsertId();
 	}
 	public function createTable($tableName,$structure,$verbose=false) {
     /*
@@ -217,6 +229,9 @@ final class sitesense {
     	
     	// Database connection
     	$this->db=new dynamicPDO();
+    	
+    	// Set TimeZone To GMT/UTC (0:00)
+    	$this->db->query('setTimeZone');
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -230,29 +245,23 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		}
 		$queryString = trim($queryString,'/').'/';
-
-    	$statement = $this->db->prepare("findReplacement");
-    	$statement->execute(array(':url' => $queryString));
-    	if(($row = $statement->fetch()) !== FALSE)
-    	{
-			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
-    	}
-        	
-        // Break URL up into action array
-        $queryString = trim($queryString,'/');
-        
-        $this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
-        
-        // Install
-        if ($this->action[0]=='install') {
+		$statement = $this->db->prepare('findReplacement');
+		$statement->execute(array(':url' => $queryString));
+		if($row=$statement->fetch()) {
+		$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+		}
+		// Break URL up into action array
+		$queryString = trim($queryString,'/');
+		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);      
+		// Install
+		if ($this->action[0]=='install') {
 			$data=$this->db;
 			require_once('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
-
 		// Load settings
-        $statement=$this->db->query('getSettings');
-        while ($row=$statement->fetch()) {
+		$statement=$this->db->query('getSettings');
+		while ($row=$statement->fetch()) {
 			if ($row['category']=='cms') {
 				$this->settings[$row['name']]=$row['value'];
 			} else {
@@ -260,7 +269,9 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-
+		// Set Default TimeZone
+		date_default_timezone_set($this->settings['defaultTimeZone']);
+		ini_set('date.timezone', $this->settings['defaultTimeZone']);
 		// Append attributions
 		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? '|attribution|' : '';
 
@@ -300,6 +311,7 @@ final class sitesense {
 
         // Direct to Homepage
         if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
+        $url=trim($url,'/');
         if (($url=='') ||
             ($url=='index.php') ||
             ($url=='index.html') ||
@@ -322,7 +334,7 @@ final class sitesense {
         $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
-		if($this->currentPage != 'admin' && !$this->banned){
+		if($this->currentPage != 'admin' && !$this->banned) {
 			$moduleQuery = $this->db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
@@ -343,53 +355,10 @@ final class sitesense {
 					$moduleQuery->execute(array(':shortName' => $this->currentPage));
 					$this->currentPage = 'pageNotFound'; // Still show a page-not-found because it will be disabled by default.
 					$this->module = $moduleQuery->fetch();
-				}else{ // Not a module, but could it be a form, blog or a page.
-					// Check to see if it is a form:
-                    $formStatement = $this->db->prepare('getTopLevelFormByShortName', 'dynamicForms'); //Form
-					$formStatement->execute(
-						array(
-							':shortName' => $this->currentPage,
-						)
-					);
-					if($formStatement->fetch() !== false){ // It's a Form
-						$this->currentPage = 'dynamicForms';
-						array_unshift($this->action, 'pages');
-						$moduleQuery->execute(array(':shortName' => $this->currentPage));
-						$this->module = $moduleQuery->fetch();
-					}else{ // It's a Blog
-                        // Check to see if it is a blog:
-                        $blogStatement = $this->db->prepare('getTopLevelBlogByName', 'blogs');
-						$blogStatement->execute(
-							array(
-								':shortName' => $this->currentPage,
-							)
-						);
-						if($blogStatement->fetch() !== false){
-							$this->currentPage = 'blogs';
-							array_unshift($this->action, 'blogs');
-							$moduleQuery->execute(array(':shortName' => $this->currentPage));
-							$this->module = $moduleQuery->fetch();
-						}else{
-                            // Check to see if it is a page:
-							$statement = $this->db->prepare('getPageByShortNameAndParent', 'pages');
-							$statement->execute(
-								array(
-									':shortName' => $this->currentPage,
-									':parent' => 0
-								)
-							);
-							if($statement->fetch() !== false){// It's a Page
-								$this->currentPage = 'page';
-								array_unshift($this->action, 'page');
-								$moduleQuery->execute(array(':shortName' => $this->currentPage));
-								$this->module = $moduleQuery->fetch();
-							}
-						}
-					}
 				}
 			}
 			// If we didn't set the currentPage above, the page was not found.
-            if($this->currentPage != 'pageNotFound'){
+			if($this->currentPage != 'pageNotFound'){
 				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule','admin_modules');
 				$sidebarQuery->execute(
 					array(
@@ -401,7 +370,6 @@ final class sitesense {
 		}
 
 		$this->action = array_merge($this->action,array_fill(0,10,false));
-		
 		$this->httpHeaders=array(
 				'Content-Type: text/html; charset='.$this->settings['characterEncoding']
 			);
@@ -459,12 +427,17 @@ final class sitesense {
 					if ($user=$statement->fetch()) {
 
 						$this->user=$user;
+                        // Set User TimeZone
+                        if(!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
+                            date_default_timezone_set($this->user['timeZone']);
+                            ini_set('date.timezone', $this->user['timeZone']);
+                        }
                         // Load permissions
                         getUserPermissions($this->db,$this->user);
 						$this->user['sessions']=$session;
 						// Push expiration ahead
 						$expires=time()+$this->settings['userSessionTimeOut'];
-						$session['expires']=strtotime($session['expires']);
+						$session['expires']=$session['expires'];
 						if ($expires<$session['expires']) {
 							/*
 								If the current expiration is ahead of our calculated one,
@@ -523,6 +496,11 @@ final class sitesense {
 			));
 			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
 				$this->user=$user;
+                // Set User TimeZone
+                if(!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
+                    date_default_timezone_set($this->user['timeZone']);
+                    ini_set('date.timezone', $this->user['timeZone']);
+                }
                 // Load permissions
                 getUserPermissions($this->db,$this->user);
 				// Purge existing sessions containing user ID
@@ -591,27 +569,49 @@ final class sitesense {
 					$this->currentPage=$this->settings['hideContentGuests'];
 				}
 			}
-			
 			if($this->currentPage == 'pageNotFound' || $this->banned){
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {
-				common_include($targetInclude);
+                common_include($targetInclude);
 			} else {
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}
-			if (function_exists('page_getUniqueSettings')) {
-				page_getUniqueSettings($this,$this->db);
+            $getUnqiueSettings=$this->module['name'].'_getUnqiueSettings';
+			if (function_exists($getUnqiueSettings)) {
+                $getUnqiueSettings($this,$this->db);
 			}
 			$this->loadModuleTemplate('common');
 			$this->loadModuleTemplate($this->module['name']);
 		}
 		// Get the plugins for this module
-		$statement=$this->db->query('getEnabledPlugins');
+		$statement=$this->db->prepare('getEnabledPluginsByModule');
+		$statement->execute(array(
+			':moduleID' => $this->module['id']
+		));
 		$plugins=$statement->fetchAll();
+		//var_dump($this->module['id']);
+		//var_dump($plugins);
 		foreach($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
+		}
+		
+		// Is this an AJAX request?
+		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
+            ajax_buildContent($this,$this->db);
+		} else {
+			// Nope, this is a normal page request
+
+            $buildContent=$this->module['name'].'_buildContent';
+            if($this->currentPage=='admin') {
+                $buildContent='admin_buildContent';
+            }
+            if (function_exists($buildContent)) {
+                $buildContent($this,$this->db);
+			}
 		}
 		// Parse Sidebars Before Display
 		if(isset($sidebars))
@@ -622,15 +622,7 @@ final class sitesense {
 				$this->sidebarList[$sidebar['side']][]=$sidebar;
 			}
 		}
-		// Is this an AJAX request?
-		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
-            ajax_buildContent($this,$this->db);
-		} else {
-			// Nope, this is a normal page request
-			if (function_exists('page_buildContent')) {
-				page_buildContent($this,$this->db);
-			}
-		}
+
 		
 		$this->db=null;
 		if ($this->compressionType) {
@@ -660,7 +652,11 @@ final class sitesense {
 		}
 		
 		theme_header($this);
-		page_content($this);
+        $content=$this->module['name'].'_content';
+        if($this->currentPage=='admin') {
+            $content='admin_content';
+        }
+        $content($this);
 		
 		if(function_exists('theme_leftSidebar')) {
 			theme_leftSidebar($this);

@@ -47,9 +47,14 @@ function admin_pagesBuild($data,$db) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if ($_POST['fromForm']==$data->action[3]) {
-			if (!empty($_POST['delete'])) {
-				
+		if(isset($_POST['fromForm'])) {
+      if($_POST['fromForm']==$data->action[3] && !empty($_POST['delete'])) {
+        if($data->output['pageItem']['parent']==0) {
+          $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+          $statement->execute(array(
+            ':match' => '^'.$data->output['pageItem']['shortName'].'(/.*)?$'
+          ));
+        }
 				// Fix Gap In Sort Order By Subtracting 1 From Each One Larger Than It
 				$statement = $db->prepare('fixSortOrderGap','admin_pages');
 				$statement->execute(array(  

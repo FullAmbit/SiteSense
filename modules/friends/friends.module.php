@@ -25,7 +25,7 @@
 common_include('libraries/forms.php');
 
 	$data->output['pageShortName']='friends';
-function page_buildContent($data,$db) {
+function friends_buildContent($data,$db) {
 	//permission check for friends access
 	if(!checkPermission('access','friends',$data)) {
 		$data->output['abort'] = true;
@@ -151,7 +151,7 @@ function page_buildContent($data,$db) {
 			break;
 	}
 }
-function page_content(&$data) {
+function friends_content(&$data) {
 	switch($data->output['pageType']){
 		case 'results':
 			theme_searchResults($data);

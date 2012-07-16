@@ -28,7 +28,7 @@ function killHacker($reason) {
           <p>Hacking attempt detected - ',$reason,'</p>'; 
      die; 
 } 
-function common_loadPlugin(&$data,$name)
+function common_loadPlugin($data,$name)
 {
 	if(isset($data->plugins[$name])) {
 		return true;
@@ -177,13 +177,22 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 				$content($data,$attributes);
 			}
 		}
-		
 		$buffer = ob_get_contents();
 		$textToParse = str_replace($matches[0][$key],$buffer,$textToParse);
 	}	
 	
 	ob_end_clean();
 	return $textToParse;
+}
+
+function common_parseTime($UTCTime,$offset,$includeZone = TRUE,$format = "M d Y G:i:s"){
+	$unixTime = (intval($UTCTime) > 100000) ? $UTCTime : strtotime($UTCTime);
+	$newTime = $unixTime + $offset;
+	if($includeZone){
+		$zone = $offset/3600;
+		$format .= (($zone) < 0) ? ' \G\M\T'.$zone : ' \G\M\T+'.$zone;
+	}
+	return date($format,$newTime);
 }
 
 function common_generateShortName($string)
@@ -255,7 +264,7 @@ function loadPermissions($data) {
     );
 }
 
-function getUserPermissions(&$db,&$user) {
+function getUserPermissions($db,&$user) {
     $user['permissions']=array();
     // Group Permissions
     // Purge expired Groups
@@ -279,12 +288,11 @@ function getUserPermissions(&$db,&$user) {
 	// Finds out if user is Admin with universal access
     $statement=$db->prepare('isUserAdmin');
     $statement->execute(array(
-        ':userID' => $user['id'],
+        ':userID' => $user['id']
     ));
     $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
 	if(isset($userAdmin[0]))
 		$user['isAdmin']=1;
-
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
         ':userID' => $user['id']
@@ -314,7 +322,6 @@ function getUserPermissions(&$db,&$user) {
             $suffix = substr($permission,$separator+1);
             $user['permissions'][$prefix][] = $suffix;
         }
-
         // Clean up
         asort($user['permissions']);
     }
@@ -345,4 +352,39 @@ function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
 	$time = ($time == NULL) ? time() : $time;
 	return gmdate($format,$time);
 }
+function common_timeDiff($start,$end) {
+		$diff=$end-$start;
+		$hrs=0;
+		$mins=0;
+		$secs=0;
+		if($diff%86400<=0) $days=$diff/86400;
+		if($diff%86400>0) {
+			$rest=($diff%86400);
+			$days=($diff-$rest)/86400;
+     	if($rest%3600>0) {
+				$rest1=($rest%3600);
+				$hrs=($rest-$rest1)/3600;
+        if($rest1%60>0) {
+					$rest2=($rest1%60);
+          $mins=($rest1-$rest2)/60;
+          $secs=$rest2;
+        } else $mins=$rest1/60;
+     	} else $hrs=$rest/3600;
+		}
+		if($days==1) $days=$days.' Day';
+		elseif($days>1) $days=$days.' Days';
+    else $days=false;
+    if($hrs==1) $hrs=$hrs.' Hour';
+		elseif($hrs>1) $hrs=$hrs.' Hours';
+    else $hrs=false;
+		if($mins==1) $mins=$mins.' Minute';
+		elseif($mins>1) $mins=$mins.' Minutes';
+    else $mins=false;
+		if($secs>1) $secs=$secs.' Seconds';
+    else $secs='1 Second!';
+    if($days) return $days;
+    elseif($hrs) return $hrs;
+    elseif($mins) return $mins;
+		else return $secs;
+	}
 ?>

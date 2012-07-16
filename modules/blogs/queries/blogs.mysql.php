@@ -46,7 +46,10 @@ function blogs_addQueries() {
 			WHERE topLevel = 1
 		',
 		'getBlogPostsByIDandName' => '
-			SELECT * FROM !prefix!blog_posts
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts
 			WHERE blogId = :blogId
 			AND shortName = :shortName
 		',
@@ -57,7 +60,10 @@ function blogs_addQueries() {
 			AND live = TRUE
 		',
 		'getBlogPostsDelimited' => '
-			SELECT * FROM !prefix!blog_posts
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts
 			WHERE blogId = :blogId
 			AND live = TRUE
 			ORDER BY postTime DESC
@@ -67,16 +73,25 @@ function blogs_addQueries() {
 			SELECT * FROM !prefix!users ORDER BY id ASC
 		',
 		'getBlogPostsByTag' => '
-			SELECT * FROM !prefix!blog_posts WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
 		',
 		'getCategoryIdByShortName' => '
 			SELECT * FROM !prefix!blog_categories WHERE shortName = :shortName LIMIT 1
 		',
 		'getBlogPostsByCategory' => '
-			SELECT * FROM !prefix!blog_posts WHERE categoryId = :categoryId AND blogId = :blogId ORDER BY id DESC
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts WHERE categoryId = :categoryId AND blogId = :blogId ORDER BY id DESC
 		',
 		'getBlogPostsByParentBlog' => '
-			SELECT * FROM !prefix!blog_posts WHERE blogId = :blogId AND live = 1 ORDER BY id DESC
+			SELECT *,
+			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
+			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
+			FROM !prefix!blog_posts WHERE blogId = :blogId AND live = 1 ORDER BY id DESC
 		',
 		'getUniqueAuthorCountByBlog' => '
 			SELECT COUNT(DISTINCT user) FROM !prefix!blog_posts WHERE blogId = :blogId
@@ -85,11 +100,12 @@ function blogs_addQueries() {
 			SELECT * FROM !prefix!blog_categories WHERE blogId = :blogId ORDER BY name ASC
 		',
         'getCommentById' => '
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time
+			FROM !prefix!blog_comments
 			WHERE id = :blogId
 		',
         'getApprovedCommentsByPost' => '
-			SELECT * FROM !prefix!blog_comments
+			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments
 			WHERE post = :post AND approved = 1
 			ORDER BY `time` ASC
 		',
@@ -106,12 +122,12 @@ function blogs_addQueries() {
 		',
         'makeComment' => '
 			INSERT INTO !prefix!blog_comments
-			(post, author, rawContent, parsedContent, email,loggedIP)
+			(post, authorFirstName, authorLastName, rawContent, parsedContent, email,loggedIP)
 			VALUES
-			(:post, :author, :rawContent, :parsedContent, :email,:loggedIP)
+			(:post, :authorFirstName, :authorLastName, :rawContent, :parsedContent, :email,:loggedIP)
 		',
         'getCommentsAwaitingApproval' =>'
-			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post
+			SELECT COUNT(*) AS commentsWaiting FROM !prefix!blog_comments WHERE post = :post AND APPROVED=0
 		'
     );
 }

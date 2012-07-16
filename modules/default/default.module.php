@@ -22,7 +22,8 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_buildContent($data,$db) {
+
+function default_buildContent($data,$db) {
 	if(!isset($data->user['id'])) {
 		common_redirect('users/register/',$data);
 	}
@@ -33,7 +34,7 @@ function page_buildContent($data,$db) {
 	$data->output['blogInfo']['startPage']=0;
 	$data->output['newsList']=blog_getContent($data,$db,'news',0,6);
 }
-function page_content($data) {
+function default_content($data) {
 	foreach ($data->output['newsList']['postList'] as $blogPost) {
 		theme_contentBoxHeader(
 			$blogPost['title'],

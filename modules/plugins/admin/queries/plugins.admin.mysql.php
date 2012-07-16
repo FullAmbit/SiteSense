@@ -32,7 +32,7 @@ function admin_plugins_addQueries() {
 			SELECT * FROM !prefix!plugins ORDER BY name ASC
 		',
 		'newPlugin' => '
-			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
+			INSERT INTO !prefix!plugins (name,enabled,isCDN,isEditor) VALUES (:name,:enabled,:isCDN,:isEditor)
 		',
 		'getPluginById' => '
 			SELECT * FROM !prefix!plugins WHERE id = :pluginId LIMIT 1
