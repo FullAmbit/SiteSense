@@ -123,7 +123,7 @@ class formHandler {
 		}
 	}
 	function validateFromPost(&$data = FALSE) {
-		$validData=true;
+        $validData=true;
 		if (isset($_POST['fromForm'])) {
 			foreach ($this->fields as $formKey => &$formField) {
                 $formField['errorList']=array();
@@ -390,8 +390,7 @@ class formHandler {
                                     $savePath = $dir;
                                     $savePath .= (isset($info['customName']) && $info['customName'] !== NULL) ? $info['customName'].'.'.$extension : $file;
                                     // Are We Using The CDN?
-                                    if($data->cdn)
-                                    {
+                                    if(isset($data->cdn) && $data->cdn) {
                                         $quality = (isset($info['quality'])) ? $info['quality'] : 85;
                                         switch($extension){
                                             case 'jpg': case 'jpeg': default:
