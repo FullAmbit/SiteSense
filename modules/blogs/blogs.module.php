@@ -144,7 +144,7 @@ function blogs_buildContent($data,$db) {
 	if (is_numeric($data->action[2])) {
 		$data->output['blogInfo']['startPage']=$data->action[2];
 		$data->output['summarize'] = true;
-		blogs_buildContent($data,$db);
+		blog_buildContent($data,$db);
 		foreach($data->output['newsList'] as &$item){
 			$statement=$db->prepare('countCommentsByPost','blogs');
 			$statement->execute(array('post' => $item['id']));

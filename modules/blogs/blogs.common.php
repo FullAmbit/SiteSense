@@ -22,21 +22,21 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function blogs_buildContent($data,$db) {
-	$statement=$db->prepare('countBlogPosts','blogs');
-	$statement->bindValue(':blogId',$data->output['blogInfo']['id']);
-	$statement->execute();
-	if ($result=$statement->fetch()) {
-		$data->output['blogInfo']['numberOfPosts']=$result['count'];
-	} else $data->output['blogInfo']['numberOfPosts']=0;
-	$statement=$db->prepare('getBlogPostsDelimited','blogs');
-	$statement->bindValue(':blogId',$data->output['blogInfo']['id']);
-	/* LIMIT must be done using ::bindValue with typecasting!!! */
-	$start = (intval($data->output['blogInfo']['startPage']) > 1) ? $data->output['blogInfo']['startPage']+1 : 0;
-	$statement->bindValue(':start',(int)$start,PDO::PARAM_INT);
-	$statement->bindValue(':count',(int)$data->output['blogInfo']['numberPerPage'],PDO::PARAM_INT);
-	$statement->execute();
-	$data->output['newsList']=$statement->fetchAll();
+function blog_buildContent($data,$db) {
+    $statement=$db->prepare('countBlogPosts','blogs');
+    $statement->bindValue(':blogId',$data->output['blogInfo']['id']);
+    $statement->execute();
+    if ($result=$statement->fetch()) {
+        $data->output['blogInfo']['numberOfPosts']=$result['count'];
+    } else $data->output['blogInfo']['numberOfPosts']=0;
+    $statement=$db->prepare('getBlogPostsDelimited','blogs');
+    $statement->bindValue(':blogId',$data->output['blogInfo']['id']);
+    /* LIMIT must be done using ::bindValue with typecasting!!! */
+    $start = (intval($data->output['blogInfo']['startPage']) > 1) ? $data->output['blogInfo']['startPage']+1 : 0;
+    $statement->bindValue(':start',(int)$start,PDO::PARAM_INT);
+    $statement->bindValue(':count',(int)$data->output['blogInfo']['numberPerPage'],PDO::PARAM_INT);
+    $statement->execute();
+    $data->output['newsList']=$statement->fetchAll();
 }
 function blog_getContent($data,$db,$targetBlog=1,$targetStart=0,$targetCount=6) {
 	$retVal=array();
