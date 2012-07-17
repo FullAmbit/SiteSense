@@ -24,11 +24,11 @@
 */
 function admin_blogsBuild($data,$db) {
 	$data->output['delete']='';
-	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
+	if(empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 	} else {
-		if (checkPermission('postDelete','blogs',$data)) {
+		if(checkPermission('postDelete','blogs',$data)) {
 
 			if(!checkPermission('accessOthers','blogs',$data))
 			{
@@ -43,7 +43,7 @@ function admin_blogsBuild($data,$db) {
 					':id' => $data->action[3]
 				));
 			}
-			if(($data->output['thisBlog']=$qHandle->fetch()) == FALSE)
+			if(($data->output['thisBlog']=$qHandle->fetch())==FALSE)
 			{
 				$data->output['rejectError']='invalid parameters';
 				$data->output['rejectText']='The blog you specified was not found.';
@@ -51,20 +51,20 @@ function admin_blogsBuild($data,$db) {
 			}
 				
 			if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
-				if (!empty($_POST['delete'])) {
+				if(!empty($_POST['delete'])) {
 					$statement=$db->prepare('deleteBlogPostById','admin_blogs');
 					$statement->execute(array(
 						':id' => $data->action[3]
 					));
 					$data->output['deleteCount']=$statement->rowCount();
-					if ($data->output['deleteCount']>0) {
+					if($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';
 					} else {
 						$data->output['rejectError']='Database Error';
 						$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
 					}
 				} else {
-					/* from form plus not deleted must == cancelled. */
+					/* from form plus not deleted must==cancelled. */
 					$data->output['delete']='cancelled';
 				}
 			}
@@ -76,7 +76,7 @@ function admin_blogsBuild($data,$db) {
 }
 function admin_blogsShow($data) {
 	$aRoot=$data->linkRoot.'admin/blogs/';
-	if (empty($data->output['rejectError'])) {
+	if(empty($data->output['rejectError'])) {
 		switch ($data->output['delete']) {
 			case 'deleted':
 				theme_blogsDeletePostsDeleted($data,$aRoot) ;

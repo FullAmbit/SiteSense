@@ -26,40 +26,35 @@ common_include('libraries/forms.php');
 function admin_blogsBuild($data,$db) {
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
     if(!checkPermission('categoryAdd','blogs',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
     if(!checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
+		$check=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','admin_blogs');
+		$check=$db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(':id' => $data->action[3]));
 	}
-	
-	if(($data->output['blogItem'] = $check->fetch()) === FALSE)
-	{
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>The blog ID does not exist in database</h2>';
+	if(($data->output['blogItem']=$check->fetch())===FALSE) {
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>The blog ID does not exist in database</h2>';
 		return;
 	}
-	$data->output['categoryForm'] = new formHandler('category',$data,true);
-	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['categoryForm']->fromForm))
-	{
+	$data->output['categoryForm']=new formHandler('category',$data,true);
+	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['categoryForm']->fromForm)) {
 		$data->output['categoryForm']->populateFromPostData();
-		if($data->output['categoryForm']->validateFromPost())
-		{	
+		if($data->output['categoryForm']->validateFromPost()) {
 			// Get Short Name
-			$data->output['categoryForm']->sendArray[':shortName'] = common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
-			$data->output['categoryForm']->sendArray[':blogId'] = $data->output['blogItem']['id'];
-			$statement = $db->prepare('addCategory','admin_blogs');
+			$data->output['categoryForm']->sendArray[':shortName']=common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
+			$data->output['categoryForm']->sendArray[':blogId']=$data->output['blogItem']['id'];
+			$statement=$db->prepare('addCategory','admin_blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
-			if(empty($data->output['secondSidebar']))
-			{
+			if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Category Item Saved Successfully</h2>
 					<div class="panel buttonList">
@@ -81,9 +76,9 @@ function admin_blogsBuild($data,$db) {
 		}
 	}
 }
-function admin_blogsShow($data)
-{
-	if (isset($data->output['savedOkMessage'])) {
+
+function admin_blogsShow($data) {
+	if(isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {
 		theme_buildForm($data->output['categoryForm']);

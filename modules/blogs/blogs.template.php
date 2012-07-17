@@ -31,65 +31,65 @@ function theme_blogSummariesFooter() {
 	echo '
 		<!-- .contentBox --></div>';
 }
-function theme_blogSummaryBox($data, $blogPost, $localRoot, $headingLevel = 2){
+function theme_blogSummaryBox($data, $blogPost, $localRoot, $headingLevel=2) {
 	theme_blogContentBoxHeader(
 		$blogPost['title'],
 		$data->localRoot.'/'.$blogPost['shortName'],
 		$blogPost['postTime'],
 		$headingLevel
 	);
-	$blogPost['summary'] = htmlspecialchars_decode(common_parseDynamicValues($data,$blogPost['parsedSummary']));
+	$blogPost['summary']=htmlspecialchars_decode(common_parseDynamicValues($data,$blogPost['parsedSummary']));
 	
-	$noWrapper = theme_noWrapper($blogPost['summary']);
-	if ($noWrapper) echo '<div class="forceDiv">';
+	$noWrapper=theme_noWrapper($blogPost['summary']);
+	if($noWrapper) echo '<div class="forceDiv">';
 	echo $blogPost['summary'];
-	if ($noWrapper) echo '</div>';
-	if ($blogPost['modifiedTime']>$blogPost['postTime']) {
+	if($noWrapper) echo '</div>';
+	if($blogPost['modifiedTime']>$blogPost['postTime']) {
 		theme_lastModified($blogPost['modifiedTime']);
 	}
 	theme_blogPostControls($data,$blogPost);
-	if(function_exists('theme_blogContentBoxFooter')){
+	if(function_exists('theme_blogContentBoxFooter')) {
 		theme_blogContentBoxFooter();
 	}else{
 		theme_contentBoxFooter();
 	}
 }
-function theme_blogDisplayBox($data, $blogPost, $localRoot, $headingLevel = 2){
+function theme_blogDisplayBox($data, $blogPost, $localRoot, $headingLevel=2) {
 	theme_blogContentBoxHeader(
 		$blogPost['title'],
 		$data->localRoot.'/'.$blogPost['shortName'],
 		$blogPost['postTime'],
 		$headingLevel
 	);
-	$blogPost['content'] = htmlspecialchars_decode(common_parseDynamicValues($data,$blogPost['parsedContent']));
-	$noWrapper = theme_noWrapper($blogPost['content']);
-	if ($noWrapper) echo '<div class="forceDiv">';
+	$blogPost['content']=htmlspecialchars_decode(common_parseDynamicValues($data,$blogPost['parsedContent']));
+	$noWrapper=theme_noWrapper($blogPost['content']);
+	if($noWrapper) echo '<div class="forceDiv">';
 	echo $blogPost['content'];
-	if ($noWrapper) echo '</div>';
-	if ($blogPost['modifiedTime']>$blogPost['postTime']) {
+	if($noWrapper) echo '</div>';
+	if($blogPost['modifiedTime']>$blogPost['postTime']) {
 		theme_lastModified($blogPost['modifiedTime']);
 	}
 	theme_blogPostControls($data,$blogPost);
-	if(function_exists('theme_blogContentBoxFooter')){
+	if(function_exists('theme_blogContentBoxFooter')) {
 		theme_blogContentBoxFooter();
 	}else{
 		theme_contentBoxFooter();
 	}
-	if(!empty($blogPost['comments'])){
+	if(!empty($blogPost['comments'])) {
 		theme_displayComments($blogPost['comments']);
 	}
-	if(isset($data->output['commentForm']) && ($data->output['blogInfo']['commentsRequireLogin'] == 0 || isset($data->user['id']))){
+	if(isset($data->output['commentForm']) && ($data->output['blogInfo']['commentsRequireLogin']==0 || isset($data->user['id']))) {
 		theme_buildForm($data->output['commentForm']);
-	}else if(isset($data->output['commentSuccess'])){
+	}else if(isset($data->output['commentSuccess'])) {
 		echo '<p class="commentSuccess">Thank you for your comment</p>';
 	}
 }
-function theme_displayComments($Comments){
+function theme_displayComments($Comments) {
 	echo '<ol class="blogPostComments">';
-	foreach($Comments as $Comment){
-		$Comment['parsedContent'] = '<p>' . str_replace(array("\r\n", "\n", "\r"), '</p><p>', $Comment['parsedContent']) . '<p>';
-		while(strpos($Comment['parsedContent'], '<p></p>') !== false){
-			$Comment['parsedContent'] = str_replace('<p></p>', '', $Comment['parsedContent']);
+	foreach($Comments as $Comment) {
+		$Comment['parsedContent']='<p>' . str_replace(array("\r\n", "\n", "\r"), '</p><p>', $Comment['parsedContent']) . '<p>';
+		while(strpos($Comment['parsedContent'], '<p></p>') !== false) {
+			$Comment['parsedContent']=str_replace('<p></p>', '', $Comment['parsedContent']);
 		}
 		echo '
 			<li>
@@ -104,9 +104,9 @@ function theme_displayComments($Comments){
 	}
 	echo '<!-- .blogPostComments --></ol>';
 }
-function theme_noWrapper($content){
+function theme_noWrapper($content) {
 	$matchCount=preg_match('/^<(\w+)\W/i',$content,$matches);
-	if ($matchCount===0){
+	if($matchCount===0) {
 		return true;
 	}else{
 		switch ($matches[1]) {
@@ -148,25 +148,25 @@ function theme_blogListItem($blogPost,$localRoot) {
 }
 function theme_blogPostControls($data,$blogItem) {
 	$controls=array();
-	if (checkPermission('blogsViewOthers','blogs',$data)) {
-		if (
+	if(checkPermission('blogsViewOthers','blogs',$data)) {
+		if(
 			$blogItem['allowComments']==true
 		) $controls[]='<a href="#">Reply</a>';
-		if (
+		if(
 			checkPermission('canManageBlog','blogs',$data) &&
 				($data->output['blog']['owner']==$data->user['id'])
 
 		) {
-			if ($blogItem['repliesWaiting']>0) $controls[]='<a href="#">Approve Replies</a>';
-			if (
+			if($blogItem['repliesWaiting']>0) $controls[]='<a href="#">Approve Replies</a>';
+			if(
 				checkPermission('postEdit','blogs',$data)
 			) $controls[]='<a href="'.$data->linkRoot.'/admin/blogs/editPosts/'.$blogItem['blogId'].'/'.$blogItem['id'].'">Edit</a>';
 		}
 	}
-	if (!empty($controls)) {
+	if(!empty($controls)) {
 		echo '
 							<ul class="postControls">';
-		foreach ($controls as $lineItem) {
+		foreach($controls as $lineItem) {
 			echo '
 								<li>',$lineItem,'</li>';
 		}
@@ -180,7 +180,7 @@ function theme_lastModified($modifiedTime) {
 								<em>Last Modified '.date('d F Y H:i T',$modifiedTime).'</em>
 							</div>';
 }
-function theme_notFound($data){
+function theme_notFound($data) {
 	theme_contentBoxHeader('HTTP/1.1 404 Not Found');
 	echo '
 				<p>

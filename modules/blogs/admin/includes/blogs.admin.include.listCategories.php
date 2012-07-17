@@ -24,44 +24,42 @@
 */
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('categoryList','blogs',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
+	// ---If You're a Blogger, You Can Only Load Your OWN Blog--
 	if(!checkPermission('accessOthers','blogs',$data)) {
-		$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
+		$check=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 		$check->execute(array(
 			':id' => $data->action[3],
 			':owner' => $data->user['id']
 		));
 	} else {
-		$check = $db->prepare('getBlogById','admin_blogs');
+		$check=$db->prepare('getBlogById','admin_blogs');
 		$check->execute(array(':id' => $data->action[3]));
 	}
 	// Check For Results
-	if(($data->output['blogItem'] = $check->fetch()) === FALSE)	{
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
+	if(($data->output['blogItem']=$check->fetch())===FALSE) {
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>The ID does not exist in database</h2>';
 		return;
 	}
 	// Get All Categories //
-	$statement = $db->prepare('getAllCategoriesByBlog','admin_blogs');
+	$statement=$db->prepare('getAllCategoriesByBlog','admin_blogs');
 	$statement->execute(array(
 		':blogId' => $data->action[3]
 	));
-	$data->output['categoryList'] = $statement->fetchAll();
+	$data->output['categoryList']=$statement->fetchAll();
 }
 function admin_blogsShow($data) {
 	$aRoot=$data->linkRoot.'admin/blogs/';
 	theme_blogsListCatTableHead($data,$aRoot) ;
-	$count = 0;
-	if(count($data->output['categoryList']) < 1)
-	{
+	$count=0;
+	if(count($data->output['categoryList']) < 1) {
 		theme_blogsListCatNoCats();
 	}
-	foreach($data->output['categoryList'] as $categoryItem)
-	{
+	foreach($data->output['categoryList'] as $categoryItem) {
 		theme_blogsListCatTableRow($categoryItem,$aRoot,$count);
 		$count++;
 	}

@@ -22,52 +22,40 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_blogsBuild($data,$db)
-{
+function admin_blogsBuild($data,$db) {
 	// Make Sure We Have An ID
-	if(!is_numeric($data->action[3]))
-	{
+	if(!is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
 		$data->output['rejectText']='No ID # was entered to be deleted';
 		return;
 	}
 	// Get The Comment Info So Far
-	$statement = $db->prepare('getCommentById','admin_blogs');
+	$statement=$db->prepare('getCommentById','admin_blogs');
 	$statement->execute(array(':id' => $data->action[3]));
-	$data->output['commentItem'] = $statement->fetch();
-	
-	/* Permission Check-----------------------
-	 * If the user is anything less than a moderator,
-	 * check to see if the user owns the blog this
-	 * is under.
-	 * ---------------------------------------
-	**/
-
+	$data->output['commentItem']=$statement->fetch();
+    // Check Permission
     if(checkPermission('commentApprove','blogs',$data))	{
-		$statement = $db->prepare('getBlogByPost','admin_blogs');
+		$statement=$db->prepare('getBlogByPost','admin_blogs');
 		$statement->execute(array(
 			':postId' => $data->output['commentItem']['post']
 		));
-		
-		$blogItem = $statement->fetch();
-		if($data->user['id'] !== $blogItem['owner']) {
+		$blogItem=$statement->fetch();
+		if($data->user['id'] != $blogItem['owner']) {
             if(!checkPermission('accessOthers','blogs',$data)) {
-                $data->output['abort'] = true;
-                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                $data->output['abort']=true;
+                $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
                 return;
             }
 		}
 	} else {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-	
 	// Approve Comment
-	$statement = $db->prepare('approveComment','admin_blogs');
+	$statement=$db->prepare('approveComment','admin_blogs');
 	$statement->execute(array(':id' => $data->action[3]));
-	
-	if (empty($data->output['secondSidebar'])) {
+	if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Comment Approved Successfully</h2>
 					<div class="panel buttonList">
@@ -75,11 +63,10 @@ function admin_blogsBuild($data,$db)
 							Return to Comments List
 						</a>
 					</div>';
-			}
+	}
 }
-function admin_blogsShow($data)
-{
-	if (isset($data->output['savedOkMessage'])) {
+function admin_blogsShow($data) {
+	if(isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	}
 }

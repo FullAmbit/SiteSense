@@ -24,114 +24,75 @@
 */
 common_include('libraries/forms.php');
 function admin_blogsBuild($data,$db) {
-
     if(!checkPermission('blogAdd','blogs',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $data->output['blogForm'] = new formHandler('edit',$data,true);
+    $data->output['blogForm']=new formHandler('edit',$data,true);
     if(!checkPermission('accessOthers','blogs',$data))	{
-		$data->output['blogForm']->fields['owner'] = array(
+		$data->output['blogForm']->fields['owner']=array(
 			'tag' => 'input',
 			'params' => array(
 				'type' => 'hidden'
 			),
 			'value' => $data->user['id']
 		);
-
-	} else {
-		/*
-		// Get all users with 'Blog access'
-        // Start by purging expired groups
-        $statement = $db->query('purgeExpiredGroups');
-        $statement->execute();
-        $statement = $db->prepare('getUserByPermissionNameGroupOnlyScope');
-        $statement->execute(array(
-            ':permissionName' => 'blogs_access'
-        ));
-        $usersFromGroupPermissionCheck=$statement->fetchAll();
-        $statement = $db->prepare('getUserByPermissionNameUserOnlyScope');
-        $statement->execute(array(
-            ':permissionName' => 'blogs_access'
-        ));
-        $usersFromUserPermissionCheck=$statement->fetchAll();
-        $usersWithBlogAccess = array();
-        foreach($usersFromGroupPermissionCheck as $user){
-            if(is_set($usersWithBlogAccess)) {
-                // Run Checks
-            } else {
-                // Empty, add the first user
-                $usersWithBlogAccess[] = $user['userID'];
-            }
-        }
-		*/
-    }
-
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['blogForm']->fromForm))
-	{
+	}
+	if((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['blogForm']->fromForm)) {
 		$data->output['blogForm']->populateFromPostData();
 		// Generate Short Name
-		$shortName = common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
-		$data->output['blogForm']->sendArray[':shortName'] = $shortName;
+		$shortName=common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
+		$data->output['blogForm']->sendArray[':shortName']=$shortName;
 		// We Need To Check And Make Sure This ShortName Isn't Taken
-		$statement = $db->prepare('getExistingBlogShortNames','admin_blogs');
+		$statement=$db->prepare('getExistingBlogShortNames','admin_blogs');
 		$statement->execute();
-		$blogShortNameList = $statement->fetchAll();
-		$cannotEqual = array();
-		foreach($blogShortNameList as $item)
-		{
-			$cannotEqual[] = $item['shortName'];
+		$blogShortNameList=$statement->fetchAll();
+		$cannotEqual=array();
+		foreach($blogShortNameList as $item) {
+			$cannotEqual[]=$item['shortName'];
 		}
-		$data->output['blogForm']->fields['name']['cannotEqual'] = $cannotEqual;
+		$data->output['blogForm']->fields['name']['cannotEqual']=$cannotEqual;
 		// Apply ShortName Convention To Name For Use In Comparison //
-		$_POST[$data->output['blogForm']->formPrefix.'name'] = $shortName;
-
+		$_POST[$data->output['blogForm']->formPrefix.'name']=$shortName;
 		// Validate Form
-		if($data->output['blogForm']->validateFromPost($data))
-		{
-				switch($data->output['blogForm']->sendArray[':topLevel']) {
-          case 1:
-              $modifiedShortName='^'.$shortName.'(/.*)?$';
-              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-              $statement->execute(array(
-                      ':match' => $modifiedShortName
-                  )
-              );
-              $result=$statement->fetch();
-              if($result===false) {
-                  $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-                  $statement->execute(array(
-                      ':match'     => $modifiedShortName,
-                      ':replace'   => 'blogs/'.$shortName.'\1',
-                      ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                      ':regex'     => 0
-                  ));
-              } else {
-                  $data->output['blogForm']->fields['name']['error']=true;
-                  $data->output['blogForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
-                  return;
-              }
-          break;
-        }
+		if($data->output['blogForm']->validateFromPost($data)) {
+		    if($data->output['blogForm']->sendArray[':topLevel']==1) {
+                $modifiedShortName='^'.$shortName.'(/.*)?$';
+                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+                $statement->execute(array(
+                        ':match' => $modifiedShortName
+                    )
+                );
+                $result=$statement->fetch();
+                if($result===false) {
+                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                    $statement->execute(array(
+                        ':match'     => $modifiedShortName,
+                        ':replace'   => 'blogs/'.$shortName.'\1',
+                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                        ':regex'     => 0
+                    ));
+                } else {
+                    $data->output['blogForm']->fields['name']['error']=true;
+                    $data->output['blogForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                    return;
+                }
+            }
 			// "Picture" Is Not Used In The Query
 			unset($data->output['blogForm']->sendArray[':picture']);
 			// Save To Database
 			$statement=$db->prepare('insertBlog','admin_blogs');
 			$statement->execute($data->output['blogForm']->sendArray);
 			// Rename The TMP Folder To The Name Of The Blog Folder
-			if($data->cdn)
-			{
+			if($data->cdn) {
 				$data->cdn->renameFolder($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp',$data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/'.$shortName);
 			} else {
-				if(is_dir($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp'))
-				{
+				if(is_dir($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp')) {
 					rename($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp',$data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/'.$shortName);
 				}
 			}
-
-			$aRoot = $data->linkRoot . 'admin/blogs/';
-
+			$aRoot=$data->linkRoot . 'admin/blogs/';
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>
@@ -155,7 +116,6 @@ function admin_blogsBuild($data,$db) {
 				</p>';
 		}
 	}
-
 }
 
 function admin_blogsShow($data) {

@@ -32,7 +32,7 @@ function default_buildContent($data,$db) {
 	$statement=$db->query('getAllNews');
 	$data->output['blogInfo']=$statement->fetch();
 	$data->output['blogInfo']['startPage']=0;
-	$data->output['newsList']=blog_getContent($data,$db,'news',0,6);
+	$data->output['newsList']=blogs_common_getContent($data,$db,'news',0,6);
 }
 function default_content($data) {
 	foreach ($data->output['newsList']['postList'] as $blogPost) {

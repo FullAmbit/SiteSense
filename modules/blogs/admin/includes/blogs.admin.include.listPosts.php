@@ -24,34 +24,33 @@
 */
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('postList','blogs',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    if (is_numeric($data->action[3])) {
+    if(is_numeric($data->action[3])) {
 		//---If You're a Blogger, You Can Only Load Your OWN Blog--//
 		if(!checkPermission('accessOthers','blogs',$data)) {
-			$check = $db->prepare('getBlogByIdAndOwner','admin_blogs');
+			$check=$db->prepare('getBlogByIdAndOwner','admin_blogs');
 			$check->execute(array(
 				':id' => $data->action[3],
 				':owner' => $data->user['id']
 			));
 		} else {
-			$check = $db->prepare('getBlogById','admin_blogs');
+			$check=$db->prepare('getBlogById','admin_blogs');
 			$check->execute(array(':id' => $data->action[3]));
 		}
 		// Check For Results
-		if(($data->output['parentBlog'] = $check->fetch()) === FALSE) {
-			$data->output['abort'] = true;
-			$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
+		if(($data->output['parentBlog']=$check->fetch())===FALSE) {
+			$data->output['abort']=true;
+			$data->output['abortMessage']='<h2>The ID does not exist in database</h2>';
 			return;
 		}
-		
 		$statement=$db->prepare('countBlogPostsByBlogId','admin_blogs');
 		$statement->execute(array(
 			':id' => $data->output['parentBlog']['id']
 		));
-		if ($count=$statement->fetch()) {
+		if($count=$statement->fetch()) {
 			$data->output['blogStart']=(
 				is_numeric($data->action[4]) ?
 				$data->action[4] :
@@ -60,7 +59,7 @@ function admin_blogsBuild($data,$db) {
 			$data->output['blogLimit']=ADMIN_SHOWPERPAGE;
 			$data->output['blogsCount']=$count['count'];
 			$statement=$db->prepare('getBlogPostsByBlogIdLimited','admin_blogs');
-			/* limit only works with bind, damned if I know why */
+			// Limit only works with bind, damned if I know why
 			$statement->bindParam(':blogId',$data->output['parentBlog']['id'],PDO::PARAM_INT);
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
@@ -77,16 +76,16 @@ function admin_blogsShow($data) {
 		$aRoot.'list/'
 	);
 	theme_blogsListPostsHead($data,$aRoot);
-	if (empty($data->output['blogPosts'])) {
+	if(empty($data->output['blogPosts'])) {
 		theme_blogsListPostsNoPosts();
 	} else {
 		theme_blogsListsPostsTableHead($data);
 		$count=0;
-		foreach ($data->output['blogPosts'] as $item) {
+		foreach($data->output['blogPosts'] as $item) {
 			theme_blogsListPostsTableRow($item,$aRoot,$count);
 			$count++;
 		}
-	theme_blogsListPostsTableFoot();
+	    theme_blogsListPostsTableFoot();
 	}
 	theme_pagination(
 		$data->output['blogsCount'],
