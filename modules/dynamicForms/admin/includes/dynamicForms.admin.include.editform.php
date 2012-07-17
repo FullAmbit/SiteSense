@@ -23,15 +23,14 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_dynamicFormsBuild($data,$db)
-{
+function admin_dynamicFormsBuild($data,$db) {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
 		return;
 	}	
-	// Check If Form Exists //	
+	// Check If Form Exists //
 	$formId = $data->action[3];
 	$check = $db->prepare('getFormById','admin_dynamicForms');
 	$check->execute(array(':id' => $formId));

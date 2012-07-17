@@ -22,12 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-class plugin_ckeditor
-{
+class plugin_ckeditor {
 	var $theme = 'sitesense';
 	
-	function __construct()
-	{
+	function __construct() {
 	}
 	
 	function theme_header($data)
@@ -40,8 +38,7 @@ class plugin_ckeditor
 		<script type="text/javascript" src="',$basePath,'plugins/ckeditor/ckeditor.js"></script>';
 	}
 	
-	function addEditor($fieldId)
-	{
+	function addEditor($fieldId) {
 		$string =  
 		'<script type="text/javascript">
 			CKEDITOR.replace(\''.$fieldId.'\', {
