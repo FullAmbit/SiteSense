@@ -45,37 +45,46 @@ function admin_pagesBuild($data,$db)
 		$data->output['pageForm']->populateFromPostData();
 		$shortName = common_generateShortName($_POST[$data->output['pageForm']->formPrefix.'name']);
 		$data->output['pageForm']->sendArray[':shortName'] = $shortName;
-		
+
 		$statement = $db->prepare('getExistingShortNames','admin_pages');
 		$statement->execute();
-		//if(count($pageShortNameList = $statement->fetchAll())){
-		//	echo 'test';
-		//}
-		//foreach($pageShortNameList as $item)
-		//{
-		//	$cannotEqual[] = $item['shortName'];
-		//}
-		$data->output['pageForm']->fields['name']['cannotEqual'] = NULL;
+        $cannotEqual=array();
+		$pageShortNameList = $statement->fetchAll();
+		foreach($pageShortNameList as $item) {
+		    $cannotEqual[] = $item['shortName'];
+		}
+		$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
 		// Apply ShortName Convention To Name For Use In Comparison //
 		$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
-		
+
 		// Validate Form
-		if ($data->output['pageForm']->validateFromPost())
-		{
-      if($data->output['pageForm']->sendArray[':parent']==0) {
-            $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-            $statement->execute(array(
-              ':match'   => '^'.$shortName.'(/.*)?$',
-              ':replace' => 'pages/'.$shortName.'\1'
-            ));
-      }
+		if ($data->output['pageForm']->validateFromPost()) {
+            if($data->output['pageForm']->sendArray[':parent']==0) {
+                $modifiedShortName='^'.$shortName.'(/.*)?$';
+                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+                $statement->execute(array(
+                    ':match' => $modifiedShortName
+                    )
+                );
+                $result=$statement->fetch();
+                if($result===false) {
+                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                    $statement->execute(array(
+                        ':match'     => $modifiedShortName,
+                        ':replace'   => 'pages/'.$shortName.'\1',
+                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                        ':regex'     => 0
+                    ));
+                } else {
+                    $data->output['pageForm']->fields['name']['error']=true;
+                    $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                    return;
+                }
+            }
 			// Get Sort Order
-			$statement = $db->prepare('countPagesByParent','admin_pages');
-			$statement->execute(array(':parent' => $data->output['pageForm']->sendArray[':parent']));
-			list($rowCount) = $statement->fetch();
-			
-			$data->output['pageForm']->sendArray[':sortOrder'] = $rowCount + 1;
-			
+			$data->output['pageForm']->sendArray[':sortOrder']=
+                admin_sortOrder_new($db,'pages','sortOrder','parent',$data->output['pageForm']->sendArray[':parent']);
+
 			// Parse
 			if($data->settings['useBBCode'] == '1')
 			{

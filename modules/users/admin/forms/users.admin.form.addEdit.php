@@ -154,12 +154,7 @@ $this->fields=array(
         'required' => true,
         'tag' => 'select',
         'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
-        'options' => $data->output['timeZones'],
-        'description' => '
-			<p>
-				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
-			</p>
-		'
+        'options' => $data->output['timeZones']
     )
 );
 foreach($data->output['groupList'] as $value) {

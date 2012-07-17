@@ -31,9 +31,11 @@ function dynamicURLs_settings() {
 function dynamicURLs_install($db,$drop=false) {
 	$structures = array(
 		'url_remap' => array(
-			'id'       => SQR_IDKey,
-			'match'    => 'VARCHAR(127) NOT NULL UNIQUE',
-			'replace'  => 'VARCHAR(127) NOT NULL'
+			'id'        => SQR_IDKey,
+			'match'     => 'VARCHAR(127) NOT NULL UNIQUE',
+			'replace'   => 'VARCHAR(127) NOT NULL',
+            'regex'     => SQR_boolean,
+            'sortOrder' => SQR_sortOrder
 		)
 	);
 	if($drop)

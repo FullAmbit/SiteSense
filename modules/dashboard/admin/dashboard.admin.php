@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 
-function admin_buildContent($data,$db) {
+function dashboard_admin_buildContent($data,$db) {
 	$info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');
 	$info['Server Signature']=$_SERVER['SERVER_SIGNATURE'];
@@ -95,7 +95,7 @@ function admin_buildContent($data,$db) {
 	));
 	
 }
-function admin_content($data) {
+function dashboard_admin_content($data) {
 	// Check Version
 	switch($data->output['result'][1])
 	{

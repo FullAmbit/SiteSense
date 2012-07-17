@@ -91,13 +91,14 @@ function admin_pages_addQueries() {
         'updatePageById' => '
 			UPDATE !prefix!pages
 			SET
-				name = :name,
-				shortName 	 = :shortName,
-				title 			 = :title,
-				parent			 = :parent,
-				rawContent 		 = :rawContent,
-				parsedContent 		 = :parsedContent,
-				live 		     = :live
+				`name`          = :name,
+				shortName 	  = :shortName,
+				title 		  = :title,
+				parent		  = :parent,
+				rawContent 	  = :rawContent,
+				parsedContent = :parsedContent,
+				live 		  = :live,
+				sortOrder     = :sortOrder
 			WHERE id = :id
 		',
         'getLastPageId' => '

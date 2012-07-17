@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildContent($data,$db) {
+function users_admin_buildContent($data,$db) {
 	//permission check for users access
 	if(!checkPermission('access','users',$data)) {
 		$data->output['abort'] = true;
@@ -41,7 +41,7 @@ function admin_buildContent($data,$db) {
 	if (function_exists('admin_usersBuild')) admin_usersBuild($data,$db);
 	$data->output['pageTitle']='Users';
 }
-function admin_content($data) {
+function users_admin_content($data) {
 	if (isset($data->output['abort']) && $data->output['abort'] === true) {
 		echo $data->output['abortMessage'];
 	} else {

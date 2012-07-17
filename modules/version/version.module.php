@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_buildContent($data,$db) {
+function version_buildContent($data,$db) {
 	$data->output['error'] = FALSE;
 	
 	// Make Sure We Have A Post
@@ -79,7 +79,7 @@ function page_buildContent($data,$db) {
 	}
 }
 
-function page_content($data)
+function version_content($data)
 {
 	$return = array(
 		'removeAttribution' => $data->output['removeAttribution'],

@@ -49,60 +49,7 @@ function admin_mainMenuBuild($data,$db) {
 		break;
 		case 'moveUp':
 		case 'moveDown':
-			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getMenuItemById','admin_mainMenu');
-				$statement->execute(array(
-					':id' => $data->action[4]
-				));
-				if ($item=$statement->fetch()) {
-					/**
-					DEPRECATED BY SHAFIQUE ARNAB
-					SEPTEMBER 4 2011
-					if ($data->action[3]=='moveUp') {
-						$item['sortOrder']-=3;
-					} else {
-						$item['sortOrder']+=3;
-					}
-					$statement=$db->prepare('updateOrderById','admin_mainMenu');
-					$statement->execute(array(
-						':sortOrder' => $item['sortOrder'],
-						':id' => $item['id']
-					));
-					**/
-					/**
-					 * Get the total row count
-					 * If the object is at the bottom or top, do not sort
-					**/
-					$statement = $db->prepare('countItemsByParent','admin_mainMenu');
-					$statement->execute(array(':parent' => $item['parent']));
-					list($rowCount) = $statement->fetch();
-					
-					if($data->action[3] == 'moveUp' && intval($item['sortOrder']) > 1) {
-						$query1 = 'shiftOrderUpRelative';
-						$query2 = 'shiftOrderUpByID';
-					} else if($data->action[3] == 'moveDown' && intval($item['sortOrder']) < $rowCount) {
-						$query1 = 'shiftOrderDownRelative';
-						$query2 = 'shiftOrderDownByID';
-					}
-					if(isset($query1))
-					{
-						$statement = $db->prepare($query1,'admin_mainMenu');
-						$statement->execute(array(
-							':sortOrder' => $item['sortOrder'],
-							':parent' => $item['parent']
-						));
-						$statement = $db->prepare($query2,'admin_mainMenu');
-						$statement->execute(array(
-							':id' => $item['id']
-						));
-					}
-					/**$statement->execute(array(
-						':sortOrder' => $item['sortOrder'],
-						':id' => $item['id']
-					));
-					**/
-				}
-			}
+            admin_sortOrder_move($db,'main_menu',$data->action[3],$data->action[4],'sortOrder','parent');
 		break;
 	}
 	//admin_mainMenuRebuild($data,$db);

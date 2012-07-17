@@ -35,6 +35,7 @@ function theme_dynamicURLsListTableHead($linkRoot) {
 				<tr>
 					<th class="match">Pattern</th>
 					<th class="replacement">Replacement</th>
+					<th class="replacement">Mode</th>
 					<th class="buttonList">Controls</th>
 				</tr>
 			</thead>
@@ -43,13 +44,21 @@ function theme_dynamicURLsListTableHead($linkRoot) {
 }
 
 function theme_dynamicURLsListTableRow($remap,$linkRoot,$key) {
-	echo '
+	if(!$remap['regex']) {
+        $remap['match']=str_replace('^','',$remap['match']);
+        $remap['match']=str_replace('(/.*)?$','',$remap['match']);
+        $remap['replace']=str_replace('\1','',$remap['replace']);
+    }
+    echo '
 		<tr class="', ($key%2==0 ? 'even' : 'odd'),'">
 			<td class="match">', $remap['match'], '</td>
 			<td class="replacement">', $remap['replace'], '</td>
+            <td class="replacement">', ($remap['regex'] ? 'Regular Expressions':'Standard'), '</td>
 			<td class="buttonList">
-				<a href="'.$linkRoot.'admin/dynamic-urls/edit/'.$remap['id'].'">Modify</a>
-				<a href="'.$linkRoot.'admin/dynamic-urls/delete/'.$remap['id'].'">Delete</a>
+			    <a href="',$linkRoot,'admin/dynamic-urls/list/moveUp/',$remap['id'],'" title="Move Up">&uArr;</a>
+		        <a href="',$linkRoot,'admin/dynamic-urls/list/moveDown/',$remap['id'],'" title="Move Down">&dArr;</a>
+				<a href="',$linkRoot,'admin/dynamic-urls/edit/',$remap['id'],'">Modify</a>
+				<a href="',$linkRoot,'admin/dynamic-urls/delete/',$remap['id'],'">Delete</a>
 			</td>
 		</tr>';
 }

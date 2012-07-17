@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 
-function page_buildContent($data,$db) {
+function gallery_buildContent($data,$db) {
 	//permission check for gallery access
 	if(!checkPermission('access','gallery',$data)) {
 		$data->output['abort'] = true;
@@ -363,7 +363,7 @@ function page_manageForms($data, $db){
 		break;
 	}
 }
-function page_content($data) {
+function gallery_content($data) {
 	$functionName = 'theme_gallery' . $data->output['pageType'];
 	if(function_exists($functionName)){
 		$functionName($data);

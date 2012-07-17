@@ -50,36 +50,7 @@ function admin_dynamicFormsBuild($data,$db){
 	{
 		case 'moveUp':
 		case 'moveDown':
-			$qHandle = $db->prepare('getFieldById','admin_dynamicForms');
-			$qHandle->execute(array(':id' => $data->action[5]));
-			
-			if($fieldItem = $qHandle->fetch())
-			{				
-				$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
-				$statement->execute(array(':formId' => $form['id']));
-				list($rowCount) = $statement->fetch();
-				
-				if($data->action[4] == 'moveUp' && intval($fieldItem['sortOrder']) > 1) {
-					$query1 = 'shiftFieldOrderUpRelative';
-					$query2 = 'shiftFieldOrderUpByID';
-				} else if($data->action[4] == 'moveDown' && intval($fieldItem['sortOrder']) < $rowCount) {
-					$query1 = 'shiftFieldOrderDownRelative';
-					$query2 = 'shiftFieldOrderDownByID';
-				}
-				
-				if(isset($query1))
-				{
-					$statement = $db->prepare($query1,'dynamicForms');
-					$statement->execute(array(
-						':sortOrder' => $fieldItem['sortOrder'],
-						':formId' => $fieldItem['form']
-					));
-					$statement = $db->prepare($query2,'dynamicForms');
-					$statement->execute(array(
-						':id' => $fieldItem['id']
-					));
-				}
-			}
+            admin_sortOrder_move($db,'form_fields',$data->action[4],$data->action[5],'sortOrder','form');
 		break;
 	}
 	

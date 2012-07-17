@@ -35,11 +35,11 @@ function common_addQueries() {
     		SELECT CURRENT_TIMESTAMP
     	',
         'tableExists' => '
-			SHOW TABLES LIKE \'!prefix!!table!\'
+			SHOW TABLES LIKE \'!table!\'
 		',
         'countRows' => '
 			SELECT COUNT(*) AS COUNT
-			FROM !prefix!!table!
+			FROM !table!
 		',
         'logoutSession' => '
 			DELETE FROM !prefix!sessions

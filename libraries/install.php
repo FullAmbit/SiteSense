@@ -51,7 +51,8 @@ $settings=array(
         'verifyEmail' => 1,
         'requireActivation' => 0,
         'removeAttribution' => 0,
-        'defaultGroup' => 0
+        'defaultGroup' => 0,
+        'defaultTimeZone' => 'America/New_York'
     )
 );
 echo '
@@ -155,6 +156,7 @@ if (
 
     // Install modules
     $coreModules = array(
+        'sidebars',
         'dynamicForms',
         'dynamicURLs',
         'default',
@@ -166,13 +168,16 @@ if (
         'register',
         'users',
         'mainMenu',
-        'sidebars',
         'settings',
         'modules',
         'plugins'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
+    // Sidebar Fix (Bring to Top)
+    $key=array_search('modules/sidebars/sidebars.install.php',$uninstalledModuleFiles);
+    unset($uninstalledModuleFiles[$key]);
+    array_unshift($uninstalledModuleFiles,'modules/sidebars/sidebars.install.php');
     $moduleSettings=array();
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module

@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_buildContent($data,$db) {
+function dynamicURLs_buildContent($data,$db) {
 
 }
-function page_content($data) {
+function dynamicURLs_content($data) {
 
 }
 ?>

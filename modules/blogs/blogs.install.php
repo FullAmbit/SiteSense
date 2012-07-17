@@ -95,6 +95,13 @@ function blogs_install($db,$drop=false) {
 	$db->createTable('blog_categories',$structures['blog_categories'],false);
 
     // Add Blog Category Sidebar
+    $statement=$db->query('getHighestSortOrder','admin','sidebars','sortOrder');
+    if($result=$statement->fetch()) {
+        $sortOrder=1;
+    } else {
+        $sortOrder=$result['sortOrder']+1;
+    }
+
     $statement = $db->prepare('insertSidebar','admin_sidebars');
     $statement->execute(array(
         ':name'           => 'Blog Categories',
@@ -102,6 +109,7 @@ function blogs_install($db,$drop=false) {
         ':title'          => 'Blog Categories',
         ':side'           => 'left',
         ':titleURL'       => 'blog-categories',
+        ':sortOrder'      => $sortOrder,
         ':rawContent'     => '
     <div class="buttonWrapper">
         <a href="|rssLink|" class="greenButton">

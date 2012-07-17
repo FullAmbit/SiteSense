@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildContent($data,$db) {
+function modules_admin_buildContent($data,$db) {
 	/**
 	 *	Permissions: Admin Only
 	**/
@@ -43,7 +43,7 @@ function admin_buildContent($data,$db) {
 	if (function_exists('admin_modulesBuild')) admin_modulesBuild($data,$db);
 	$data->output['pageTitle']='Modules';
 }
-function admin_content($data) {
+function modules_admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {

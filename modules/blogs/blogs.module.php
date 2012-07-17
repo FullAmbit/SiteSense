@@ -24,10 +24,10 @@
 */
 common_include('libraries/forms.php');
 
-function page_getUniqueSettings($data) {
+function blogs_getUniqueSettings($data) {
 	$data->output['pageTitle']='Blog';
 }
-function page_buildContent($data,$db) {
+function blogs_buildContent($data,$db) {
 	require_once('modules/blogs/blogs.common.php');
 	$data->output['summarize'] = false;
 	$data->output['notFound'] = false;
@@ -144,7 +144,7 @@ function page_buildContent($data,$db) {
 	if (is_numeric($data->action[2])) {
 		$data->output['blogInfo']['startPage']=$data->action[2];
 		$data->output['summarize'] = true;
-		blog_buildContent($data,$db);
+		blogs_buildContent($data,$db);
 		foreach($data->output['newsList'] as &$item){
 			$statement=$db->prepare('countCommentsByPost','blogs');
 			$statement->execute(array('post' => $item['id']));
@@ -262,7 +262,7 @@ function page_buildContent($data,$db) {
 	}
 	}
 }
-function page_content($data) 
+function blogs_content($data)
 {
 	// If RSS Feed Skip All This
 	if($data->pageSettings['httpHeaders'][0] == 'Content-Type: application/xml')

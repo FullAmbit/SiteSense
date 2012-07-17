@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function page_buildContent($data,$db) {
+function messages_buildContent($data,$db) {
 	if(!isset($data->user['id'])){
 		common_redirect_local($data, 'login');
 	}else{
@@ -91,7 +91,7 @@ function page_buildContent($data,$db) {
 		
 	}
 }
-function page_content($data) {
+function messages_content($data) {
 	theme_contentBoxHeader('Private Messages');
 	$data->loadModuleTemplate('messages');
 	switch($data->action[1]){

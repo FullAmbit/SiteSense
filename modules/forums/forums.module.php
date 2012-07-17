@@ -23,12 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 // First Function Called, Acts As An Abstraction Layer.
-function page_buildContent($data,$db) {
+function forums_buildContent($data,$db) {
 
 }
 
 // Last Function, Handles All Output
-function page_content($data)
+function forums_content($data)
 {
 	$function = 'theme_' . (isset($data->output['themeFunction']) ? $data->output['themeFunction'] : 'forumsDefault');
 	

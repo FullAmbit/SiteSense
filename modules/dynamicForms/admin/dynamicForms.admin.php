@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildContent($data,$db) {
+function dynamicForms_admin_buildContent($data,$db) {
 	//permission check for forms access
 	if(!checkPermission('access','dynamicForms',$data)) {
 		$data->output['abort'] = true;
@@ -40,7 +40,7 @@ function admin_buildContent($data,$db) {
 	if (function_exists('admin_dynamicFormsBuild')) admin_dynamicFormsBuild($data,$db);
 	$data->output['pageTitle']='Dynamic Forms';
 }
-function admin_content($data) {
+function dynamicForms_admin_content($data) {
     if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {

@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function modules_config($data,$db) {
+function modules_admin_config($data,$db) {
 	if(checkPermission('modules_access','core',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',

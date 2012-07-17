@@ -31,7 +31,7 @@ final class dynamicPDO extends PDO {
     private $tablePrefix;
 	private $sqlType;
 	private $queries;
-	private $qSearch=array('!prefix!','!table!');
+	private $qSearch=array('!prefix!','!table!','!column1!','!column2!');
 
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
@@ -98,7 +98,7 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - '.$moduleName.' Queries Library File not found!<br>'.$target);
 		} else return false;
 	}
-	private function prepQuery($queryName,$module,$tableName) {
+	private function prepQuery($queryName,$module,$tableName,$column1,$column2) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
             $this->loadModuleQueries($module);
@@ -108,29 +108,40 @@ final class dynamicPDO extends PDO {
 				$this->qSearch,
 				array(
 					$this->tablePrefix,
-					$tableName
+                    $this->tablePrefix.$tableName,
+                    $column1,
+                    $column2
 				),
 				$this->queries[$module][$queryName]
 			);
 		} else return false;
 	}
-	public function query($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function query($queryName,$module='common',$tableName='',$column1='',$column2='') {
+		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::query($query);
 		} else {
 			return false;
 		}
 	}
-	public function exec($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::exec($query);
 		} else return false;
 	}
-	public function prepare($queryName,$module='common',$tableName='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName)) {
+	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='') {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
 			return parent::prepare($query);
 		} else return false;
 	}
+    public function fetch() {
+
+    }
+    public function fetchColumn() {
+
+    }
+    public function fetchObject() {
+
+    }
 	public function tableExists($tableName) {
 		try {
 			$statement=$this->query('tableExists','common',$tableName);
@@ -559,14 +570,17 @@ final class sitesense {
 				}
 			}
 			if($this->currentPage == 'pageNotFound' || $this->banned){
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {
-				common_include($targetInclude);
+                common_include($targetInclude);
 			} else {
-				common_include('modules/pages/pages.module.php');
+                $this->module['name']='pages';
+                common_include('modules/pages/pages.module.php');
 			}
-			if (function_exists('page_getUniqueSettings')) {
-				page_getUniqueSettings($this,$this->db);
+            $getUnqiueSettings=$this->module['name'].'_getUnqiueSettings';
+			if (function_exists($getUnqiueSettings)) {
+                $getUnqiueSettings($this,$this->db);
 			}
 			$this->loadModuleTemplate('common');
 			$this->loadModuleTemplate($this->module['name']);
@@ -590,8 +604,13 @@ final class sitesense {
             ajax_buildContent($this,$this->db);
 		} else {
 			// Nope, this is a normal page request
-			if (function_exists('page_buildContent')) {
-				page_buildContent($this,$this->db);
+
+            $buildContent=$this->module['name'].'_buildContent';
+            if($this->currentPage=='admin') {
+                $buildContent='admin_buildContent';
+            }
+            if (function_exists($buildContent)) {
+                $buildContent($this,$this->db);
 			}
 		}
 		// Parse Sidebars Before Display
@@ -633,7 +652,11 @@ final class sitesense {
 		}
 		
 		theme_header($this);
-		page_content($this);
+        $content=$this->module['name'].'_content';
+        if($this->currentPage=='admin') {
+            $content='admin_content';
+        }
+        $content($this);
 		
 		if(function_exists('theme_leftSidebar')) {
 			theme_leftSidebar($this);

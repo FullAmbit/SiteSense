@@ -29,40 +29,12 @@ function admin_sidebarsBuild($data,$db) {
         return;
     }
     if (is_numeric($data->action[4])) {
-		/*if (
+		if (
 			($data->action[3]=='moveUp') ||
 			($data->action[3]=='moveDown')
 		) {
-			
-			$qHandle=$db->prepare('getSortOrderById','admin_sidebars');
-			$qHandle->execute(array(
-				':id' => $data->action[4]
-			));
-			if ($item=$qHandle->fetch()) {
-				$rowCount = intval($db->countRows('sidebars'));
-				  if($data->action[3] == 'moveUp' && intval($item['sortOrder']) > 1) {
-					  $query1 = 'shiftOrderUpRelative';
-					  $query2 = 'shiftOrderUpByID';
-					 // echo "UP";
-				  } else if($data->action[3] == 'moveDown' && intval($item['sortOrder']) < $rowCount) {
-					  $query1 = 'shiftOrderDownRelative';
-					  $query2 = 'shiftOrderDownByID';
-					  //echo "DOWN";
-				  }
-				  if(isset($query1))
-				  {
-					 
-					  $statement = $db->prepare($query1,'sidebars');
-					  $statement->execute(array(
-						  ':sortOrder' => $item['sortOrder']
-					  ));
-					  $statement = $db->prepare($query2,'sidebars');
-					  $statement->execute(array(
-						  ':id' => $item['id']
-					  ));
-				  }
-			}
-		} else if (
+            admin_sortOrder_move($db,'sidebars',$data->action[3],$data->action[4],'sortOrder');
+		/*else if (
 			($data->action[3]=='enable') ||
 			($data->action[3]=='disable')
 		) {
@@ -70,9 +42,8 @@ function admin_sidebarsBuild($data,$db) {
 			$qHandle->execute(array(
 				':enabled' => ($data->action[3]=='enable'),
 				':id' => $data->action[4]
-			));
-		} else */
-		if($data->action[3] == 'switch')	{
+			));*/
+		} elseif($data->action[3] == 'switch')	{
 			if (is_numeric($data->action[4])) {
 				$statement=$db->prepare('getById','admin_sidebars');
 				$statement->execute(array(

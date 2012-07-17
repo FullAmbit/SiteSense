@@ -22,8 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_buildCSS($data)
-{
+function admin_buildCSS($data) {
 }
 function admin_unknown() {
 	echo '
@@ -151,6 +150,115 @@ function admin_mainMenuRebuild($data,$db) {
 				':id' => $item['id']
 			));
 		}
+	}
+}
+
+function admin_sortOrder_new($db,$table,$sortOrderName='sortOrder',$parentName=NULL,$parent=NULL) {
+	if(isset($parentName) && isset($parent)) {
+		// Get Highest Sort Order (Parent)
+		$statement = $db->prepare('getHighestSortOrderParent','admin',$table,$sortOrderName,$parentName);
+		$statement->execute(array(
+			':parent'        => $parent
+			)
+		);
+	} else {
+		// Get Highest Sort Order (No Parent)
+        $statement = $db->query('getHighestSortOrder','admin',$table,$sortOrderName);
+	}
+    $result=$statement->fetch();
+	$sortOrder=$result['sortOrder']+1;
+	return $sortOrder;
+}
+
+function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='sortOrder',$parentName=NULL) {
+	// Get Current Sort Order by ID
+    if(isset($parentName)) {
+        $statement=$db->prepare('getSortOrderByID','admin',$table,$sortOrderName,$parentName);
+        $statement->execute(array(
+                ':id' => $id
+            )
+        );
+        $result=$statement->fetch();
+        $parent=$result['parent'];
+    } else {
+        $statement=$db->prepare('getSortOrderByIDNoParent','admin',$table,$sortOrderName);
+        $statement->execute(array(
+                ':id' => $id
+            )
+        );
+        $result=$statement->fetch();
+    }
+    $sortOrder=$result['sortOrder'];
+    $error=false;
+	if($direction=='up' || $direction=='moveUp') {
+		// Find the next smallest sort order within the parent
+        if(isset($parentName)) {
+            $statement=$db->prepare('getNextSmallestSortOrder','admin',$table,$sortOrderName,$parentName);
+            $statement->execute(array(
+                ':parent'    => $parent,
+                ':sortOrder' => $sortOrder
+                )
+            );
+        } else {
+            $statement=$db->prepare('getNextSmallestSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement->execute(array(
+                    ':sortOrder' => $sortOrder
+                )
+            );
+        }
+        $result=$statement->fetch();
+        if ($result===FALSE) {
+			// Already the smallest
+			$error=true;
+		}
+		$swapSortOrder=$result['sortOrder'];
+	} elseif($direction=='down' || $direction=='moveDown') {
+		// Find the next largest sort order within the parent
+        if(isset($parentName)) {
+            $statement=$db->prepare('getNextHighestSortOrder','admin',$table,$sortOrderName,$parentName);
+            $statement->execute(array(
+                ':parent'    => $parent,
+                ':sortOrder' => $sortOrder
+                )
+            );
+        } else {
+            $statement=$db->prepare('getNextHighestSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement->execute(array(
+                    ':sortOrder' => $sortOrder
+                )
+            );
+        }
+        $result=$statement->fetch();
+        if ($result===FALSE) {
+			// Already the largest
+			$error=true;
+		}
+		$swapSortOrder=$result['sortOrder'];
+	}
+	if(!$error) {
+		// Updating sortOrder effects two items as it is a swap
+        if(isset($parentName)) {
+            $statement=$db->prepare('updateSortOrderByParent','admin',$table,$sortOrderName,$parentName);
+            $statement->execute(array(
+                ':sortOrder_new' => $sortOrder,
+                ':sortOrder'     => $swapSortOrder,
+                ':parent'        => $parent
+                )
+            );
+        } else {
+            $statement=$db->prepare('updateSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement->execute(array(
+                    ':sortOrder_new' => $sortOrder,
+                    ':sortOrder'     => $swapSortOrder
+                    )
+            );
+        }
+		$statement=$db->prepare('updateSortOrderByID','admin',$table,$sortOrderName);
+		$statement->execute(array(
+			':sortOrder' => $swapSortOrder,
+			':id'        => $id
+			)
+		);
 	}
 }
 ?>

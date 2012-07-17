@@ -42,6 +42,7 @@ $this->fields=array(
 	),
 	'replace' => array(
 		'label' => 'Replacement',
+        'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['urlremap']['replace']) ? $data->output['urlremap']['replace'] : '',
 		'params' => array(
@@ -52,5 +53,18 @@ $this->fields=array(
 				<b>Replacement</b> - $i (where i is an integer) means the match in the "$i"th bracket. $0 is the entire match.
 			</p>
 		'
-	)
+	),
+    'regex' => array(
+        'label' => 'Use Regular Expressions',
+        'tag' => 'input',
+        'value' => 1,
+        'checked' => (isset($data->output['urlremap']['regex']) && $data->output['urlremap']['regex'] == '1') ? 'checked' : '',
+        'params' => array(
+            'type' => 'checkbox'
+        )
+    )
 );
+if(isset($data->output['urlremap']['regex'])) {
+    unset($this->fields['regex']);
+}
+?>
