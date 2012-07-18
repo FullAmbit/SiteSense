@@ -151,7 +151,7 @@ function friends_buildContent($data,$db) {
 			break;
 	}
 }
-function friends_content($data) {
+function friends_content(&$data) {
 	switch($data->output['pageType']){
 		case 'results':
 			theme_searchResults($data);
