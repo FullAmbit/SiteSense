@@ -51,12 +51,11 @@ function ajax_buildContent($data,$db) {
 	// Check If In Database And Enabled
 	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName' => $module));
-	$moduleData = $statement->fetch();
+	$data->module = $moduleData = $statement->fetch();
 	// Module Doesn't Exist, or not enabled
-	if($module == '' || $moduleData['enabled'] == '0' || $moduleData === FALSE)
+	if($moduleData == '' || $moduleData['enabled'] == '0' || $moduleData == FALSE)
 	{
-		echo 'The page you requested was not found';
-		return;
+		die('The page you requested was not found');
 	}
 	// Load Sidebars //
 	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'admin_modules');
@@ -81,5 +80,10 @@ function ajax_buildContent($data,$db) {
 	}
     $buildContent=$module.'_buildContent';
     $buildContent($data,$db);
+}
+
+function ajax_content($data){
+	$content = $data->module['name'].'_content';
+	$content($data);
 }
 ?>
