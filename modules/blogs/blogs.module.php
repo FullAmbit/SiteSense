@@ -239,6 +239,7 @@ function blogs_content($data) {
 	// If RSS Feed Skip All This
 	if($data->pageSettings['httpHeaders'][0]=='Content-Type: application/xml') {
 		theme_blogRSSFeed($data);
+        die;
 	} else {
 		$pagination=is_numeric($data->action[2]);
 		blogs_common_pageContent($data,false,$pagination, $data->output['summarize']);

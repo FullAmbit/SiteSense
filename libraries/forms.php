@@ -122,7 +122,7 @@ class formHandler {
 			}
 		}
 	}
-	function validateFromPost(&$data = FALSE) {
+	function validateFromPost($data = FALSE) {
         $validData=true;
 		if (isset($_POST['fromForm'])) {
 			foreach ($this->fields as $formKey => &$formField) {

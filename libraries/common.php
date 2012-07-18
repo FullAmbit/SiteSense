@@ -44,7 +44,7 @@ function common_loadPlugin($data,$name)
 	}
 }
 
-function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
+function common_generateLink($data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
 	$data->output['links'][] = array(
 		'link' => $link,
 		'rel' => ($rel) ? $rel : $id,
@@ -133,7 +133,7 @@ function _common_timedRedirect($URL, $seconds = 5) {
 		</script>
 	';
 }
-function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
+function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 	$codeReplacements=array(
 		'|linkRoot|' => $data->linkRoot,
 		'|imageDir|' => $data->linkRoot.'images/',	
