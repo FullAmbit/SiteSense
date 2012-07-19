@@ -332,7 +332,6 @@ final class sitesense {
 
         // Direct banned users to page 'banned'
         $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
-
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
 		if($this->currentPage != 'admin' && !$this->banned) {
 			$moduleQuery = $this->db->prepare('getModuleByShortName','admin_modules');
