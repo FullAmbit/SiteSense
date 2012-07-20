@@ -22,7 +22,7 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->enctype = 'multipart/form-data';
+$this->enctype='multipart/form-data';
 $this->formPrefix='blogEdit_';
 $this->caption='Create New Blog';
 $this->submitTitle='Save Changes';
@@ -96,7 +96,6 @@ $this->fields=array(
 					'height' => 4000
 				),
 				'customName' => 'rss',
-				
 			)
 		)
 	),
@@ -156,16 +155,6 @@ $this->fields=array(
 			</p>
 		'
 	),
-	/*'minPermission' => array(
-		'label' => 'Minimum Permissions',
-		'tag' => 'select',
-		'options' => array(),
-		'description' => '
-			<p>
-				<b>Minimum Permissions</b> - Lowest ranked user group allowed to edit/post to this blog.
-			</p>
-		'
-	),*/
 	'numberPerPage' => array(
 		'label' => 'Number Per Page',
 		'tag' => 'input',
@@ -207,3 +196,4 @@ $this->fields=array(
 		'
 	)
 );
+?>

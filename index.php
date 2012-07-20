@@ -332,7 +332,6 @@ final class sitesense {
 
         // Direct banned users to page 'banned'
         $this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
-
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
 		if($this->currentPage != 'admin' && !$this->banned) {
 			$moduleQuery = $this->db->prepare('getModuleByShortName','admin_modules');
@@ -460,9 +459,7 @@ final class sitesense {
                         $statement=$this->db->prepare('updateLastAccess');
 						$statement->execute(array(
 							':id' => $user['id']
-						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-
-						
+						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');			
 						/**
 						 *
 						 * Why is this code here?....
@@ -478,7 +475,6 @@ final class sitesense {
 						$this->user['albums'] = $albums->fetchAll();
                        
                         **/
-                        
                         $this->loginResult=true;
 					}
 				}
@@ -600,7 +596,7 @@ final class sitesense {
 		}
 		
 		// Is this an AJAX request?
-		if($this->action[0]=='ajax' && function_exists('ajax_buildContent')) {
+		if($this->currentPage=='ajax') {
             ajax_buildContent($this,$this->db);
 		} else {
 			// Nope, this is a normal page request
@@ -613,6 +609,7 @@ final class sitesense {
                 $buildContent($this,$this->db);
 			}
 		}
+		
 		// Parse Sidebars Before Display
 		if(isset($sidebars))
 		{
@@ -623,7 +620,6 @@ final class sitesense {
 			}
 		}
 
-		
 		$this->db=null;
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
@@ -651,20 +647,26 @@ final class sitesense {
 			}
 		}
 		
-		theme_header($this);
-        $content=$this->module['name'].'_content';
-        if($this->currentPage=='admin') {
-            $content='admin_content';
-        }
-        $content($this);
-		
-		if(function_exists('theme_leftSidebar')) {
+		if($this->currentPage=='ajax'){
+			ajax_content($this);
+			$this->loadModuleTemplate('sidebars');
 			theme_leftSidebar($this);
-		}
-		if (function_exists('theme_rightSidebar')) {
 			theme_rightSidebar($this);
+		}else{
+			theme_header($this);
+	        $content=$this->module['name'].'_content';
+	        if($this->currentPage=='admin') {
+	            $content='admin_content';
+	        }
+	        $content($this);
+			
+			if(!function_exists('theme_leftSidebar')) {
+				$this->loadModuleTemplate('sidebars');
+			}
+			theme_leftSidebar($this);
+			theme_rightSidebar($this);
+			theme_footer($this);
 		}
-		theme_footer($this);
 	} /* __construct */
 
     //Anonymous Function Fix - adds support below 5.3

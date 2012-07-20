@@ -44,7 +44,7 @@ function common_loadPlugin($data,$name)
 	}
 }
 
-function common_generateLink(&$data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
+function common_generateLink($data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
 	$data->output['links'][] = array(
 		'link' => $link,
 		'rel' => ($rel) ? $rel : $id,
@@ -133,7 +133,7 @@ function _common_timedRedirect($URL, $seconds = 5) {
 		</script>
 	';
 }
-function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
+function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 	$codeReplacements=array(
 		'|linkRoot|' => $data->linkRoot,
 		'|imageDir|' => $data->linkRoot.'images/',	
@@ -147,6 +147,13 @@ function common_parseDynamicValues(&$data, &$textToParse,$db = NULL) {
 		$textToParse=str_replace($key,$value,$textToParse);
 	}
 	
+	// Parsing $data->action?
+	preg_match_all('/\|action:([0-9]+)\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
+	$actionList = $matches[0];
+	foreach($actionList as $key => $actionText){
+		$textToParse=str_replace($actionText,$data->action[$matches[1][$key]],$textToParse);
+	}
+		
 	// Any Blocks?
 	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);

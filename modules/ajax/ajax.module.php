@@ -51,12 +51,11 @@ function ajax_buildContent($data,$db) {
 	// Check If In Database And Enabled
 	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName' => $module));
-	$moduleData = $statement->fetch();
+	$data->module = $moduleData = $statement->fetch();
 	// Module Doesn't Exist, or not enabled
-	if($module == '' || $moduleData['enabled'] == '0' || $moduleData === FALSE)
+	if($moduleData == '' || $moduleData['enabled'] == '0' || $moduleData == FALSE)
 	{
-		echo 'The page you requested was not found';
-		return;
+		die('The page you requested was not found');
 	}
 	// Load Sidebars //
 	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'admin_modules');
@@ -73,13 +72,18 @@ function ajax_buildContent($data,$db) {
 	}
 	
 	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------
-	common_include('modules/'.$module.'/'.$module.'.module.php');
-	$data->loadModuleTemplate($module);
-	$getUniqueSettings=$module.'_getUniqueSettings';
+	common_include('modules/'.$moduleData['name'].'/'.$moduleData['name'].'.module.php');
+	$data->loadModuleTemplate($moduleData['name']);
+	$getUniqueSettings=$moduleData['name'].'_getUniqueSettings';
     if(function_exists($getUniqueSettings)) {
         $getUniqueSettings($data);
 	}
-    $buildContent=$module.'_buildContent';
+    $buildContent=$moduleData['name'].'_buildContent';
     $buildContent($data,$db);
+}
+
+function ajax_content($data){
+	$content = $data->module['name'].'_content';
+	$content($data);
 }
 ?>

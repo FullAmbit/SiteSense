@@ -248,7 +248,7 @@ function theme_blogsListCommentsPendingTableHead() {
 }
 
 function theme_blogsListCommentsPendingTableRow($data,$item,$count) {
-	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
+	echo '<tr class="'.($count%2==0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.substr($item['parsedContent'],0,128) 	 . '</td>
 				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
@@ -284,7 +284,7 @@ function theme_blogsListCommentsApprovedTableHead() {
 }
 
 function theme_blogsListCommentsApprovedTableRow($data,$item,$count) {
-	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
+	echo '<tr class="'.($count%2==0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.$item['parsedContent'].'</td>
 				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
@@ -319,7 +319,7 @@ function theme_blogsListCommentsDisapprovedTableHead() {
 }
 
 function theme_blogsListCommentsDisapprovedTableRow($data,$item,$count) {
-	echo '<tr class="'.($count%2 == 0 ? 'even' : 'odd').'">
+	echo '<tr class="'.($count%2==0 ? 'even' : 'odd').'">
 				<td class="title">'.$item['authorFirstName'].' '.$item['authorLastName'].'</td>
 				<td>'.substr($item['parsedContent'],0,128) 	 . '</td>
 				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>

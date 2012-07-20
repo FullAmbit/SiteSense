@@ -29,7 +29,7 @@ function blogs_settings() {
 	);
 }
 function blogs_install($db,$drop=false) {
-	$structures = array(
+	$structures=array(
 		'blogs' => array(
 			'id'                   => SQR_IDKey,
 			'managingEditor'       => SQR_email,
@@ -102,7 +102,7 @@ function blogs_install($db,$drop=false) {
         $sortOrder=$result['sortOrder']+1;
     }
 
-    $statement = $db->prepare('insertSidebar','admin_sidebars');
+    $statement=$db->prepare('insertSidebar','admin_sidebars');
     $statement->execute(array(
         ':name'           => 'Blog Categories',
         ':shortName'      => 'blog-categories',
@@ -226,7 +226,7 @@ function blogs_install($db,$drop=false) {
         }
     }
     // ---
-	if ($db->countRows('blogs')==0) {
+	if($db->countRows('blogs')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -246,7 +246,7 @@ function blogs_install($db,$drop=false) {
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 	
 	$count=$db->countRows('blog_posts');
-	if ($count==0) {
+	if($count==0) {
 		try {
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';

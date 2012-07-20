@@ -24,12 +24,12 @@
 */
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('blogList','blogs',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abort']=true;
+        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
     $statement=$db->query('countBlogs','admin_blogs');
-	if ($count=$statement->fetch()) {
+	if($count=$statement->fetch()) {
 		$data->output['blogStart']=(
 			is_numeric($data->action[3]) ?
 			$data->action[3] :
@@ -39,7 +39,7 @@ function admin_blogsBuild($data,$db) {
 		$data->output['blogsCount']=$count['count'];
 		//---If Less Then Moderator, Load Only OWN Blog Posts
 		if(!checkPermission('accessOthers','blogs',$data)) {
-			$statement = $db->prepare('getBlogsByUser','admin_blogs');
+			$statement=$db->prepare('getBlogsByUser','admin_blogs');
 			$statement->bindParam(':blogStart',$data->output['blogStart'],PDO::PARAM_INT);
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
 			$statement->bindParam(':owner',$data->user['id'],PDO::PARAM_INT);
@@ -50,10 +50,7 @@ function admin_blogsBuild($data,$db) {
 			$statement->bindParam(':blogLimit',$data->output['blogLimit'],PDO::PARAM_INT);
 			$statement->execute();
 		}
-		/*
-			limit only works with bind, damned if I know why
-		*/
-		
+		// limit only works with bind, damned if I know why
 		$data->output['blogs']=$statement->fetchAll();
 		/*
 			we can't do a joined query -- why? Because blogs without any
@@ -65,8 +62,8 @@ function admin_blogsBuild($data,$db) {
 		$statement=$db->prepare('countBlogPostsByBlogId','admin_blogs');
 		$getBlogOwner=$db->prepare('pullUserInfoById');
 		/* we also can't foreach, as we need to actually CHANGE it's values */
-		for ($t=0; $t<count($data->output['blogs']); $t++) {
-			if ($data->output['blogs'][$t]['owner']==0) {
+		for($t=0; $t<count($data->output['blogs']); $t++) {
+			if($data->output['blogs'][$t]['owner']==0) {
 				$data->output['blogs'][$t]['ownerName']='NONE';
 			} else {
 				$getBlogOwner->execute(array(
@@ -78,7 +75,7 @@ function admin_blogsBuild($data,$db) {
 			$statement->execute(array(
 				':id' => $data->output['blogs'][$t]['id']
 			));
-			if ($count=$statement->fetch()) {
+			if($count=$statement->fetch()) {
 				$data->output['blogs'][$t]['count']=$count['count'];
 			} else {
 				$data->output['blogs'][$t]['count']='-';
@@ -94,16 +91,16 @@ function admin_blogsShow($data) {
 		$aRoot.'list/'
 	);
 	theme_blogsListHead($aRoot);
-	if (empty($data->output['blogs'])) {
+	if(empty($data->output['blogs'])) {
 		theme_blogsListNoBlogs();
 	} else {
 		theme_blogsListTableHead();
 		$count=0;
-		foreach ($data->output['blogs'] as $item) {
+		foreach($data->output['blogs'] as $item) {
 			theme_blogsListTableRow($item,$aRoot,$count);
 			$count++;
 		}
-	theme_blogsListTableFoot();
+	    theme_blogsListTableFoot();
 	}
 	theme_pagination(
 		$data->output['blogsCount'],

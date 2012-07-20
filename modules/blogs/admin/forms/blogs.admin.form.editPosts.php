@@ -22,13 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-if(!isset($data->output['blogItem']))
-{
-	$checked = ($data->output['parentBlog']['allowComments'] == '1') ? 'checked' : '';
+if(!isset($data->output['blogItem'])) {
+	$checked=($data->output['parentBlog']['allowComments']=='1') ? 'checked' : '';
 } else {
-	$checked = '';
+	$checked='';
 }
-
 $this->formPrefix='blogEdit_';
 $this->caption='Create New Blog Post For '.$data->output['parentBlog']['name'];
 $this->submitTitle='Save Changes';
@@ -145,3 +143,4 @@ $this->fields=array(
 		'
 	)
 );
+?>

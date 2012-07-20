@@ -23,34 +23,38 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function blogs_admin_buildContent($data,$db) {
-	if (empty($data->action[2])) {
+	if(empty($data->action[2])) {
 		$data->action[2]='list';
 	}
-	if ($data->action[2]=='list') {
+	if($data->action[2]=='list') {
 		$statement=$db->query('getAllBlogs','admin_blogs');
 		$data->output['blogList']=$statement->fetchAll();
 		$statement=$db->prepare('countBlogPosts','admin_blogs');
-		foreach ($data->output['blogList'] as $item) {
+		foreach($data->output['blogList'] as $item) {
 			$statement->execute(array(
 				':blogId' => $item['id']
 			));
 		}
 	}
 	$target='modules/blogs/admin/includes/blogs.admin.include.'.$data->action[2].'.php';
-	if (file_exists($target)) {
+	if(file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_blogsBuild')) admin_blogsBuild($data,$db);
+	if(function_exists('admin_blogsBuild')) {
+        admin_blogsBuild($data,$db);
+    }
 	$data->output['pageTitle']='Blogs';
 }
 function blogs_admin_content($data) {
-	if ($data->output['abort']) {
+	if($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
-		if (!empty($data->output['function'])) {
+		if(!empty($data->output['function'])) {
 			admin_blogsShow($data);
-		} else admin_unknown();
+		} else {
+            admin_unknown();
+        }
 	}
 }
 ?>
