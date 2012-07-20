@@ -82,7 +82,7 @@ function blogs_buildContent($data,$db) {
 	$data->output['rssLink'] = isset($data->output['blogInfo']['rssOverride']{1}) ? $data->output['blogInfo']['rssOverride'] : $data->localRoot.'/rss';
 	
 	// If RSS Feed Skip All This
-	if($data->action[2] == 'rss')
+    if($data->action[2] == 'rss')
 	{
 		// Content Type
 		//$data->httpHeaders = NULL;
@@ -262,12 +262,11 @@ function blogs_buildContent($data,$db) {
 	}
 	}
 }
-function blogs_content($data)
-{
+function blogs_content($data) {
 	// If RSS Feed Skip All This
-	if($data->pageSettings['httpHeaders'][0] == 'Content-Type: application/xml')
-	{
+	if($data->pageSettings['httpHeaders'][0] == 'Content-Type: application/xml') {
 		theme_blogRSSFeed($data);
+        die;
 	} else {
 		$pagination=is_numeric($data->action[2]);
 		blog_pageContent($data,false,$pagination, $data->output['summarize']);
