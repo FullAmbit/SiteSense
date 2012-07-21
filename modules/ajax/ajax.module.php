@@ -57,7 +57,17 @@ function ajax_buildContent($data,$db) {
 	{
 		die('The page you requested was not found');
 	}
-	// Load Sidebars //
+	
+	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------
+	common_include('modules/'.$moduleData['name'].'/'.$moduleData['name'].'.module.php');
+	$data->loadModuleTemplate($moduleData['name']);
+	$getUniqueSettings=$moduleData['name'].'_getUniqueSettings';
+    if(function_exists($getUniqueSettings)) {
+        $getUniqueSettings($data);
+	}
+    $buildContent=$moduleData['name'].'_buildContent';
+    $buildContent($data,$db);
+    // Load Sidebars //
 	$sidebarQuery = $db->prepare('getEnabledSidebarsByModule', 'admin_modules');
 	$sidebarQuery->execute(array(
 		':module' => $moduleData['id']
@@ -70,16 +80,6 @@ function ajax_buildContent($data,$db) {
 		common_parseDynamicValues($data,$sidebar['parsedContent'],$db);
 		$data->sidebarList[$sidebar['side']][]=$sidebar;
 	}
-	
-	// Load The AJAX Version Of Our Module (Our journey begins...)---------------------------------------
-	common_include('modules/'.$moduleData['name'].'/'.$moduleData['name'].'.module.php');
-	$data->loadModuleTemplate($moduleData['name']);
-	$getUniqueSettings=$moduleData['name'].'_getUniqueSettings';
-    if(function_exists($getUniqueSettings)) {
-        $getUniqueSettings($data);
-	}
-    $buildContent=$moduleData['name'].'_buildContent';
-    $buildContent($data,$db);
 }
 
 function ajax_content($data){

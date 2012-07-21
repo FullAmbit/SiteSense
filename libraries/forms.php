@@ -63,6 +63,7 @@ class formHandler {
 		$formPrefix,
 		$caption,
 		$submitTitle,
+		$method = 'post',
 		$fromForm,
 		$fields = array(),
 		$sendArray=array(),
