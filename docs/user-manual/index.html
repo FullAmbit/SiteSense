@@ -1,0 +1,628 @@
+<h1>SiteSense User Manual</h1>
+<hr />
+<h2>Table of Contents</h2>
+<ul>
+  <li><a href="#site-management">Site Management</a>
+    <ol>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#settings">Settings</a>
+        <ul>
+          <li>2.1 <a href="#settings-global">Global Settings</a></li>
+          <li>2.2 <a href="#settings-advanced">Advanced Settings</a></li>
+          <li>2.3 <a href="#settings-registration">Registration Settings</a></li>
+          <li>2.4 <a href="#settings-cdn">Content Delivery Network Settings</a></li>
+        </ul>
+      </li>
+      <li><a href="#main-menu">Main Menu</a></li>
+      <li><a href="#pages">Pages</a></li>
+      <li><a href="#blogs">Blogs</a>
+        <ul>
+          <li>5.1 <a href="#blogs-entities-posts">Posts</a></li>
+          <li>5.2 <a href="#blogs-entities-comments">Comments</a></li>
+          <li>5.3 <a href="#blogs-entities-categories">Categories</a></li>
+        </ul>
+      </li>
+      <li><a href="#dynamic-forms">Dynamic Forms</a>
+        <ul>
+          <li>5.1 <a href="#dynamic-forms-fields">Fields</a></li>
+        </ul>
+      </li>
+      <li><a href="#sidebars">Sidebars</a></li>
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#plugins">Plugins</a></li>
+      <li><a href="#url-routing">URL Routing</a></li>
+    </ol>
+  </li><br />
+  <li><a href="#user-management">User Management</a>
+    <ol>
+      <li><a href="#users">Users</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="site-management">Site Management</h2>
+
+<h3 id="dashboard">1. Dashboard</h3>
+<p>The Dashboard is the first thing an administrative user sees upon logging into the Control Panel. Here information is displayed about the server and current SiteSense installation.</p>
+
+<h4>Information Displayed</h4>
+<ul>
+  <li>SiteSense Version</li>
+  <li>Server Time</li>
+  <li>Server Signature</li>
+  <li>Server Name</li>
+  <li>Server Address</li>
+  <li>Gateway Interface</li>
+  <li>Server Protocol</li>
+  <li>PHP Version</li>
+  <li>Zend Version</li>
+  <li>Host OS</li>
+</ul>
+
+<hr />
+
+<h3 id="settings">2. Settings</h3>
+<p>SiteSense is highly customizable and with that comes many different options. To make things easier on new users, SiteSense installs with all settings in a default configuration. This allows you to quickly power up SiteSense and get the hang of things.</p>
+
+<h4 id="settings-global">2.1 Global Settings</h4>
+<ul>
+  <li><b>Site Title</b><br />
+    Constructs the TITLE tag and in most skins the content of the top level heading (H1)
+  </li>
+  <li><b>Default Theme</b><br />
+    Determines which of your installed themes users will default to
+  </li>
+  <li><b>Language</b><br />
+    Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, and at some point the CMS language strings
+  </li>
+  <li><b>Default Time Zone</b><br />
+    Sets the default time zone for all newly registered users
+  </li>
+  <li><b>Homepage</b><br />
+    Sets the landing “page” for visitors of your site
+  </li>
+  <li><b>Hide Content From Guests</b><br />
+    Sets the CMS to show either the login page or the registration page instead of the normal content to guests
+  </li>
+  <li><b>Use BB Code</b><br />
+    Enables Bulletin Board Code to format blog posts and comments
+  </li>
+  <li><b>WYSIWYG Editor</b><br />
+    Replaces text areas within the control panel with a “What you see is what you get” Text Editor
+  </li>
+  <li><b>Default Blog</b><br />
+    Sets the default blog
+  </li>
+  <li><b>Blog Items Per Page</b><br />
+    Determines how many posts are shown on a list page and the number of news items shown on the homepage
+  </li>
+  <li><b>Footer Content</b><br />
+    Content to be displayed in the footer of each page on the site
+  </li>
+</ul>
+
+<h4 id="settings-advanced">2.2 Advanced Settings</h4>
+<ul>
+  <li><b>Character Encoding</b><br />
+    Sets the <code>Content-Encoding</code> meta-tag and is used by PHP's "header" function to set the mime-type in the http response header
+  </li>
+  <li><b>Compression Enabled</b><br />
+    Turns on and off server <code>gzip/mod_deflate</code> compression if available
+  </li>
+  <li><b>Compression Level</b><br />
+    If compression is on and enabled, sets the amount of compression used
+    <ul>
+      <li>1 - least compression / low CPU load</li>
+      <li>9 - most compression / high CPU use</li>
+    </ul>
+  </li>
+  <li><b>Default Session Timeout (seconds)</b><br />
+    Sets how long a user account is allowed to remain logged in without requesting any pages
+  </li>
+  <li><b>Use modRewrite (.htacess)</b><br />
+    This will enable support for what is commonly referred to as "SEO friendly URLs."
+    If enabled this will build all links to assume that the rewrite engine is in use and redirecting all calls to the system to index.php directly.
+    In order to use this feature make sure that the SiteSense root directory contains an .htaccess file including something like this:<pre>
+      RewriteEngine On
+      RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)$ index.php</pre>
+    You will want to make sure any and all data types you do not want the CMS to handle have their file extensions listed above.
+  </li>
+</ul>
+
+<h4 id="settings-registration">2.3 Registration Settings</h4>
+<ul>
+  <li><b>Default Registration Group</b><br />
+    Determines which user group newly registered users will be associated to
+  </li>
+  <li><b>Verify Email</b><br />
+    New users will be required to click a link that was emailed to their address specified during registration in order to complete registration
+  </li>
+  <li><b>Require Activation</b><br />
+    New users must be manually activated by an administrator
+  </li>
+</ul>
+
+<h4 id="settings-cdn">2.4 Content Delivery Network Settings</h4>
+<ul>
+  <li><b>Use CDN</b><br />
+    Enables the use of a CDN
+  </li>
+  <li><b>CDN Plugin</b><br />
+    Sets the plugin used for accessing the CDN
+  </li>
+  <li><b>CDN Base Directory</b><br />
+    Sets the base directory to upload to on your CDN server (Use trailing and base slashes)
+  </li>
+  <li><b>Large CDN URL</b><br />
+    Sets the URL of your larger CDN server where files are pulled from the disk
+  </li>
+  <li><b>Small CDN URL</b><br />
+    Sets the URL of your smaller CDN server where files are pulled from the RAM
+  </li>
+  <li><b>Flash CDN URL</b><br />
+    Sets the URL of your flash streaming CDN server where files are pulled from the RAM.
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="main-menu">3. Main Menu</h3>
+<p>Navigation is built into SiteSense’s core through the Main Menu Module. Here main menu items can be added, modified, and removed. The Main Menu Module is deeply integrated into the core modules meaning that main menu items can be generated automatically for you upon the creation of other entities, such as pages and forms.</p>
+
+<h4>Properties</h4>
+<ul>
+  <li><b>Text</b><br />
+    Sets the text that a visitor will see on the menu item
+  </li>
+  <li><b>Title</b><br />
+    Sets the tooltip text that a visitor will see when they hover over the menu item
+  </li>
+  <li><b>URL</b><br />
+    Sets the URL link that the menu item points to (Placing a '|' at the beginning will prepend your local URL.)
+  </li>
+  <li><b>Enable</b><br />
+    Determines if the menu item will be displayed
+  </li>
+  <li><b>Parent Menu Item</b><br />
+    Menu items can be associated via a parent/child relationship.
+  </li>
+</ul>
+
+<h4>Controls</h4>
+<ul>
+  <li><b>Enable</b><br />
+    Toggles the enable property of a main menu item
+  </li>
+  <li><b>Delete</b><br />
+    Removes the main menu item
+  </li>
+  <li><b>Switch Side</b><br />
+    Toggles the side of the main menu item (left/right)
+  </li>
+  <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br />
+    Changes the ordering of main menu items
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="pages">4. Pages</h3>
+<p>The Pages Module allows for the management of pages that are primarily used for the display of static content. While their content may be static, they can easily and dynamically be modified using the Control Panel.</p>
+
+<h4>Properties</h4>
+<ul>
+  <li><b>Page Name</b><br />
+    The page name is the URL entity of a page and therefore is required to be unique.
+  </li>
+  <li><b>Page Title</b><br />
+    The page title populates the heading tag for the page.
+  </li>
+  <li><b>Parent Page</b><br />
+    Pages can be associated via a parent/child relationship. If sidebar navigation is enabled this sub-page will appear in a separate menu off the parent.
+  </li>
+  <li><b>Create Main Menu Link</b><br />
+    When checked, it will generate a main menu item for the page.
+  </li>
+  <li><b>Menu Link Text</b><br />
+    The menu link text is what will be used as the Text property for the automatically created main menu item (if enabled).
+  </li>
+  <li><b>Page Content</b><br />
+    Page content is the content that will go inside the automatically generated 'contentBox'. HTML is allowed in here, though any sub-headings you wish to use should start at H3, since 'Page Title' is used as the h2.
+  </li>
+  <li><b>Live</b><br />
+    Determines if the page will be displayed
+  </li>
+</ul>
+
+<h4>Controls</h4>
+<ul>
+  <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br />
+    Changes the ordering of pages within their parent page
+  </li>
+  <li><b>Sidebars</b><br />
+    Manage the sidebars for the selected page
+  </li>
+  <li><b>Add Child</b><br />
+    Adds a new child page to the selected page
+  </li>
+  <li><b>Delete</b><br />
+    Removes the page
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="blogs">5. Blogs</h3>
+<p>SiteSense’s core includes a feature-filled blogging solution ready for seamless integration into your site. With the Blogs Module you can host multiple different blogs on a single SiteSense installation.</p>
+<p>Blogs are made up of posts which can be organized into categories. Users add comments to posts, and administrative users can approve or disapprove comments for display.</p>
+<p>The Blogs Module also generates an RSS feed for every blog entity. <code>http://example.com/blogs/{BlogShortName}/rss</code></p>
+
+  <h4>Properties</h4>
+    <ul>
+      <li><b>Blog Name</b><br />
+        The name used for creating the URL. It must be unique.
+      </li>
+      <li><b>Blog Title</b><br />
+        The blog title populates the heading tag for the blog.
+      </li>
+      <li><b>Blog Owner</b><br />
+        The owner of a blog will have access to their own blog even if they don’t have Blogs->Access Others permission. They are still required to have the permission pertaining to any action they wish to perform (post/edit/reply/approval).
+      </li>
+      <li><b>RSS Channel Image</b><br />
+        Image to be displayed with the RSS feed
+      </li>
+      <li><b>Managing Editor</b><br />
+        Sets the managing editor email that will be displayed on the RSS feed
+      </li>
+      <li><b>Web Master</b><br />
+        Sets the webmaster email that will be displayed on the RSS feed
+      </li>
+      <li><b>Require Login to Comment</b><br />
+        Forces readers to log-in before commenting on a blog
+      </li>
+      <li><b>Make Blog a Top-Level Page</b><br />
+        Automatically generates a URL Route to allow access to the form by /{BlogName} as an alternative to /blogs/{ BlogName}
+      </li>
+      <li><b>Allow Comments</b><br />
+        Determines if commenting is enabled on the blog
+      </li>
+      <li><b>Number Per Page</b><br />
+        Sets the number of post entries to show on a page
+      </li>
+      <li><b>RSS Link Override</b><br />
+        Entering a link here will change the links of the "Subscribe" buttons on the blog pages. This is useful, for example, for a Feedburner URL.
+      </li>
+      <li><b>Description</b><br />
+        Short text to describe this blog (Not currently displayed to visitors)
+      </li>
+    </ul>
+  <h4>Controls</h4>
+    <ul>
+      <li><b>New Post</b><br />
+        Adds a new post to the selected blog
+      </li>
+      <li><b>Modify Blog</b><br />
+        Edit the properties of the blog
+      </li>
+      <li><b>Delete</b><br />
+        Removes the blog and all of its contents (posts/comments)
+      </li>
+    </ul>
+
+<h4 id="blogs-entities-posts"><b>5.1 Blog Posts</b></h4>
+  <h5>Properties</h5>
+    <ul>
+      <li><b>Post Name</b><br />
+        The name used for creating the URL. It must be unique.
+      </li>
+      <li><b>Post Title</b><br />
+        The post title populates the heading tag for the post.
+      </li>
+      <li><b>Tags</b><br />
+        Assigns tags to the post (Tags must be comma separated)
+      </li>
+      <li><b>Categories</b><br />
+        Posts can be placed into a single category or no category at all for organizational purposes.
+      </li>
+      <li><b>Summary</b><br />
+        A brief description of the content of the post
+      </li>
+      <li><b>Content</b><br />
+        The content of the post you are writing/editing can be created from within the WYSIWYG editor
+      </li>
+      <li><b>Allow Comments</b><br />
+        In order to allow comments on a post, the “Allow Comments” checkbox must be checked for both the parent blog and the post.
+      </li>
+      <li><b>Live</b><br />
+        Determines if the page will be displayed
+      </li>
+    </ul>
+  <h5>Controls</h5>
+    <ul>
+      <li><b>Edit Comments</b><br />
+        Lists all comments awaiting approval, approved comments, and disapproved comments. Allows you to change the status of comments and to remove comments
+      </li>
+      <li><b>Delete</b><br />
+        Removes the post and all related content (comments)
+      </li>
+    </ul>
+
+<h4 id="blogs-entities-comments"><b>5.2 Blog Post Comments</b></h4>
+  <h5>Properties</h5>
+    <ul>
+      <li><b>Edit Comments</b><br />
+        Lists all comments awaiting approval, approved comments, and disapproved comments. Allows you to change the status of comments and to remove comments
+      </li>
+      <li><b>Delete</b><br />
+        Removes the post and all related content (comments)
+      </li>
+    </ul>
+  <h5>Controls</h5>
+    <ul>
+      <li><b>Approve / Disapprove</b><br />
+        Toggles the status of the comment (Only approved comments are visible to visitors)
+      </li>
+      <li><b>Edit</b><br />
+        Edits the properties of a comment
+      </li>
+      <li><b>Delete</b><br />
+        Removes a comment
+      </li>
+    </ul>
+
+<h4 id="blogs-entities-categories"><b>5.3 Blog Post Categories</b></h4>
+  <h5>Properties</h5>
+    <ul>
+      <li><b>Name</b><br />
+        The name is the category’s title that will be displayed to visitors
+      </li>
+    </ul>
+  <h5>Controls</h5>
+    <ul>
+      <li><b>Modify Category</b><br />
+        Edits the properties of a category
+      </li>
+      <li><b>Delete Category</b><br />
+        Removes a category
+      </li>
+    </ul>
+
+<h3 id="dynamic-forms">6. Dynamic Forms</h3>
+<p>Forms can be dynamically created from within SiteSense’s Control Panel without the need to write a single line of code. From the Control Panel, forms and fields can be added, modified, and removed and submit data can be outputted into a table.</p>
+
+  <h4>Properties</h4>
+  <ul>
+    <li><b>Name</b><br />
+      The name used for creating the URL. It must be unique.
+    </li>
+    <li><b>Title</b><br />
+      The form title populates the heading tag for the form.
+    </li>
+    <li><b>Submit Title</b><br />
+      Sets the text displayed on the submit button
+    </li>
+    <li><b>Email Data To</b><br />
+      Specify an email address to send submitted form data to. Multiple addresses should be separated by commas with no spaces
+    </li>
+    <li><b>API</b><br />
+      Plugins can be created to manage form submissions and linked to a dynamic form via an API
+    </li>
+    <li><b>Create Main Menu Link</b><br />
+      When checked, it will generate a main menu item for the page.
+    </li>
+    <li><b>Menu Link Text</b><br />
+      The menu link text is what will be used as the Text property for the automatically created main menu item (if enabled).
+    </li>
+    <li><b>Content Before Form</b><br />
+      The content to be displayed before the form can be entered from within the WYSIWYG editor.
+    </li>
+    <li><b>Content After Form</b><br />
+      The content to be displayed after the form can be entered from within the WYSIWYG editor.
+    </li>
+    <li><b>Success Message</b><br />
+      This is the message that users will see after successfully submitting the form.
+    </li>
+    <li><b>Require Login</b><br />
+      Determines if users must be logged in prior to submitting the form
+    </li>
+    <li><b>Make Form a Top-Level Page</b><br />
+      Automatically generates a URL Route to allow access to the form by /{FormName} as an alternative to /dynamic-forms/{ FormName}
+    </li>
+    <li><b>Enabled</b><br />
+      Determines if the form will be displayed to visitors
+    </li>
+  </ul>
+  <h4>Controls</h4>
+  <ul>
+    <li><b>Edit Settings</b><br />
+      Edit properties of the form
+    </li>
+    <li><b>Manage Fields</b><br />
+      Allows you to create, modify, and remove fields from the form (See Fields)
+    </li>
+    <li><b>View Data</b><br />
+      Displays values from form submissions in a table
+    </li>
+    <li><b>Sidebars</b><br />
+      Manage the sidebars for the selected form
+    </li>
+    <li><b>Delete</b><br />
+      Removes the form and all related content (fields and data)
+    </li>
+  </ul>
+  
+  <h4 id="dynamic-forms-fields">6.1 Fields</h4>
+    <h5>Properties</h5>
+    <ul>
+      <li><b>Name</b><br />
+        The name of the field will populate the label text and is visible to visitors
+      </li>
+      <li><b>Description</b><br />
+        Explanation of the data you are trying to collect. Depending on the theme, this can be displayed to visitors upon focus of the form field.
+      </li>
+      <li><b>Type</b><br />
+        The type of HTML form element in which you are trying to create.
+      </li>
+      <li><b>API Field</b><br />
+        ?
+      </li>
+      <li><b>Required</b><br />
+        Determines if the field is required to be filled out prior to submission
+      </li>
+      <li><b>Enabled</b><br />
+        Determines if the field should be displayed
+      </li>
+      <li><b>E-Mail Validation</b><br />
+        When checked, the value submitted will be validated as an email address. If the value is not in the proper format, it will display an error to the user. (Should only be enabled when Type=textbox)
+      </li>
+      <li><b>Compare To</b><br />
+        The value of the field will be compared to the value of the field selected here. If they do not match, an error will be displayed to the user. This is useful when trying to confirm an email or password submission.
+      </li>
+      <li><b>Module Hook</b><br />
+        If a module is selected, that module will be responsible for processing the submitted field data.
+      </li>
+    </ul>
+    <h5>Controls</h5>
+    <ul>
+      <li><b>Edit</b><br />
+        Modifies the properties of a field
+      </li>
+      <li><b>Delete</b><br />
+        Removes the field from the form
+      </li>
+      <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br />
+        Changes the ordering of fields within their parent form
+      </li>
+    </ul>
+    
+<hr />
+
+<h3 id="sidebars">7. Sidebars</h3>
+<p>Sidebars contain static or dynamic content that can be displayed on the edges of almost any page within SiteSense. Dynamic content is achieved through the use of blocks which are PHP files containing code within a module.</p>
+
+  <h4>Properties</h4>
+  <ul>
+    <li><b>Name</b><br />
+        Used only for reference. (Must be unique)
+    </li>
+    <li><b>Title</b><br />
+      The title is the text that will be displayed above the sidebar and is visible to visitors
+    </li>
+    <li><b>Title URL</b><br />
+      Optionally allows the title to be a hyperlink. Should be a full URL (If the first character is a vertical break (|) then the 'linkRoot' will be appended before it—in other words a local link in the CMS.)
+    </li>
+    <li><b>Side</b><br />
+      Determines the side a sidebar will display on
+    </li>
+    <li><b>Context Text</b><br />
+      The content of the sidebar you are writing/editing can be created from within the WYSIWYG editor. Dynamic sidebars can be created through the integration of blocks or other dynamic values. A block can be called by using the following syntax:<pre>
+        |block:{ModuleName}_{BlockName}({Attributes})|
+        Ex. |block:blogs_lastestPosts(5,1)|
+      </pre>This will be replaced with a list of the five latest posts from the blog with an ID=1.
+    </li>
+  </ul>
+  <h4>Controls</h4>
+  <ul
+    <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br />
+      Changes the ordering of sidebars
+    </li>
+    <li><b>Delete</b><br>
+      Removes the sidebar
+    </li>
+    <li><b>Switch Side</b><br>
+      Toggles the side the sidebar will display (left/right)
+    </li>
+  </ul>
+  
+<hr />
+
+<h3 id="modules">8. Modules</h3>
+<p>Modules are where most of the logic for end-user functionality resides and each module contains a particular set of functionality as indicated by the name of the module. It is important that a module be enabled before attempting to utilize its functionality in the Control Panel or on the front-end of the site.</p>
+
+  <h4>Controls</h4>
+  <ul>
+    <li><b>Enabled / Disable</b><br>
+      Toggles the status of the selected module
+    </li>
+    <li><b>Modify</b><br>
+      Manage the sidebars for the selected form
+    </li>
+  </ul>
+
+<hr />
+
+<h3 id="plugins">9. Plugins</h3>
+<p>While a module largely adds functionality by utilizing the SiteSense framework, a plugin connects third party functionality by creating a bridge or interface with SiteSense. Plugins must be enabled for each module that will utilize the plugin.</p>
+
+  <h4>Controls</h4>
+  <ul>
+    <li><b>Enabled / Disable</b><br>
+      Toggles the status of the selected plugin
+    </li>
+    <li><b>Modify</b><br>
+      Select the modules that have access to the plugin
+    </li>
+  </ul>
+
+<hr />
+
+<h3 id="url-routing">10. URL Routing</h3>
+<p>All page requests are routed through the URL Remap module. Patterns will be matched from top to bottom, stopping at the first match. Once a match has been found, the pattern will be replaced with the specified replacement.</p>
+  <h4>Properties</h4>
+    <ul>
+      <li><b>Pattern</b><br>
+        Everything after the SiteSense path in the URL will be matched to this field.
+      </li>
+      <li><b>Replacement</b><br>
+        Sets what the matched pattern will be replaced with
+      </li>
+      <li><b>Use Regular Expressions</b><br>
+        When checked, the pattern and replacement will utilize regular expressions. (Advanced Users Only)
+      </li>
+    </ul>
+  <h4>Controls</h4>
+    <ul>
+      <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br>
+        Changes the ordering of URL Remaps. Ordering is important here since the framework will process the list of URL remaps from top to bottom, stopping at the first match. Therefore, your most specific matches should go first and least specific matches last.
+      </li>
+      <li><b>Modify</b><br>
+        Edit the properties of the URL Remap
+      </li>
+      <li><b>Delete</b><br>
+        Remove the URL Remap
+      </li>
+    </ul>
+
+<hr />
+
+<h2 id="user-management">User Management</h2>
+  <h3 id="users">1. Users</h3>
+    <h4>Properties</h4>
+    <ul>
+      <li><b>Personal Information</b><br>
+        The following information can be associated to a user via the Users Module. (* marks a required field)
+        <ul>
+          <li>* First Name</li>
+          <li>* Last Name</li>
+          <li>* Username</li>
+          <li>Contact E-Mail</li>
+          <li>Public E-Mail</li>
+          <li>* Password</li>
+          <li>* Default Time Zone (Defaults to Global Time Zone in Settings)</li>
+        </ul>
+      </li>
+      <li><b>User Groups</b><br>
+        Users are placed into groups, and groups contain permissions. A user can be assigned to multiple groups or no group at all. Furthermore, a user can be temporarily added to a group for a limited time by setting an expiration time.
+      </li>
+      <li><b>User Specific Permissions</b><br>
+        Each permission defaults to “Inherited”, meaning that the user will only be granted the permission if a group the user is associated with has the permission. You can also set a permission as “Allowed” or “Disallowed” which will grant or deny, respectively, the user the permission regardless of whether or not they have the permission already. 
+      </li>
+    </ul>
+
+<hr />    
+
+  <h3 id="permissions">2. Permissions</h3>
+  <p>Users can be added to multiple groups or to no group at all, and groups can be assigned permissions. Users can also be individually set to allow a permission, inherit the permission if already granted by an associated group, or have the permission marked as revoked regardless of whether or not the user has already been granted the permission from an associated group. A user's list of granted permissions is the sum of all the permissions from associated groups, plus all permissions granted on an individual basis, and minus all permissions revoked from the specific user.</p>
