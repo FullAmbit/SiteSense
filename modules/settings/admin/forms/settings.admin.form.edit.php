@@ -73,7 +73,7 @@ $this->fields=array(
 		'options' => $data->output['timeZones'],
 		'description' => '
 			<p>
-				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
+				<b>Default Time Zone</b> - Sets the default time zone for all newly registered users.</i>.
 			</p>
 		'
 	),
