@@ -397,7 +397,7 @@ function theme_buildForm($formData) {
 					echo '
 					/>';
 			}
-			if (count($formField['errorList'])>0) {
+			if (isset($formField['errorList']) && count($formField['errorList'])>0) {
 				echo '
 					<ul class="errorMessages">';
 				foreach ($formField['errorList'] as $message) {
