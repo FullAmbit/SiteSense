@@ -24,10 +24,13 @@
 */
 class customFormHandler extends formHandler{
 	function __construct($fields, $dataName, $formName, $data=false, $admin=false, $action=NULL){
-		if($data !== false && $action == NULL){
-			$this->action = $data->linkRoot . implode('/', array_filter($data->action));
-		} else {
-			$this->action = $action;
+		if($data !== false){
+			$this->enableAJAX = ($data->currentPage == 'ajax') ? true : false;
+			if($action == NULL){
+				$this->action = $data->linkRoot . implode('/', array_filter($data->action));
+			} else {
+				$this->action = $data->linkRoot.$action;
+			}
 		}
 		$this->formPrefix = $dataName . '_';
 		$this->fromForm = $dataName;
@@ -60,6 +63,7 @@ class formHandler {
 		$formPrefix,
 		$caption,
 		$submitTitle,
+		$method = 'post',
 		$fromForm,
 		$fields = array(),
 		$sendArray=array(),

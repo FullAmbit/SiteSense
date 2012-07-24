@@ -147,16 +147,23 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 		$textToParse=str_replace($key,$value,$textToParse);
 	}
 	
+	// Parsing $data->action?
+	preg_match_all('/\|action:([0-9]+)\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
+	$actionList = $matches[0];
+	foreach($actionList as $key => $actionText){
+		$textToParse=str_replace($actionText,$data->action[$matches[1][$key]],$textToParse);
+	}
+		
 	// Any Blocks?
 	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);
 	$blockList = $matches[1];
 	ob_start();
-	foreach($blockList as $key => $originalBlockName) {
+    foreach($blockList as $key => $originalBlockName) {
 		$blockInfo=explode('_',$originalBlockName);
-		$target = 'modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php';
-		if(file_exists('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php')) {
-			common_include('modules/'.$blockInfo[0].'/blocks/'.$blockInfo[1].'.block.php');
+		$target = 'modules/'.$blockInfo[0].'/blocks/'.$blockInfo[0].'.block.'.$blockInfo[1].'.php';
+        if(file_exists($target)) {
+			common_include($target);
 			$attributes = array(false);
 			$attributesString = $matches[2][$key];
 			$attributes = explode(',',$attributesString);

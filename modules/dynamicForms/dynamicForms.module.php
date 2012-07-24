@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function dynamicForms_buildContent($data,$db) {
-	require_once('libraries/forms.php');
+	common_include('libraries/forms.php');
 	$form = false;
 	if ($data->action[1] !== false){
 		$statement=$db->prepare('getFormByShortName','dynamicForms');
@@ -47,25 +47,68 @@ function dynamicForms_buildContent($data,$db) {
 	$statement->execute(array(':formId' => $form['id']));
 	$sidebars = $statement->fetchAll();
 	$data->sidebarList = array();
-	foreach($sidebars as $sidebar)
-	{
+	foreach($sidebars as $sidebar){
 		$data->sidebarList[$sidebar['side']][] = $sidebar;
 	}
-	// Process Fields //
+	
+	// Module List For Hooking
+	$moduleList = array_flip($data->output['moduleShortName']);
+	$hookedModules = array();
+	
+	// Get Fields
 	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
 	$rawFields = $statement->fetchAll();
 	$rawForm = array();
+	
+	
+	// Get Original Values?
+	if($data->action[2]=='edit' && $data->action[3]!==FALSE){
+		$data->output['rowId']=$rowId=$data->action[3];
+	}
+	
 	foreach($rawFields as $field){
-		if($field['enabled'] !== '1')
-		{
+		if($field['enabled'] !== '1'){
 			continue;
 		}
 		$f = array(
 			'name' => $field['id'],
 			'label' => $field['name'],
-			'required' => true,
+			'required' => true
 		);
+		// Run The Initial Form Function For This Field's Hook
+		if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
+			$moduleName = $moduleList[$field['moduleHook']];
+			$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
+			common_include($target);
+			
+			if(!isset($hookedModules[$field['moduleHook']])){
+				// Field hasn't been hooked yet...therefore the initial form function hasn't been run yet
+				$funcName = $moduleName.'_beforeForm';
+				if(function_exists($funcName)){
+					$formContinue = $funcName($data,$db);
+					if($formContinue === FALSE){
+						$data->action['error'] = 'BeforeFormExit';
+						return;
+					}
+				}
+				$hookedModules[$field['moduleHook']] = $moduleName;
+			}
+			
+			// Now Are We Editing This Field?
+			if(isset($data->output['rowId'])){
+				// Check To See What Function We Can Run
+				$fieldCamelCase = common_camelBack($field['name']);
+				$fieldFunction = $moduleName.'_load'.$fieldCamelCase.'Value';
+				$generalFunction = $moduleName.'_loadDynamicFormFieldValue';
+				if(function_exists($fieldFunction)){
+					$f['value'] = $fieldFunction($data,$db,$field);
+				} else {
+					$f['value'] = $generalFunction($data,$db,$field);
+				}
+			}
+		}
+		
 		switch($field['type']){
 			case 'textbox':
 				$f['tag'] = 'input';
@@ -103,12 +146,8 @@ function dynamicForms_buildContent($data,$db) {
 		}
 		$rawForm[$f['name']] = $f;
 	}
-	
-	$moduleList = array_flip($data->output['moduleShortName']);
-	$hookedModules = array();
-	$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false,$data->action[1]);
+	$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false);
 	$data->output['customForm']->submitTitle = $data->output['form']['submitTitle'];
-	$data->output['customForm']->caption = $data->output['form']['name'];
 	if(isset($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['customForm']->fromForm)){
 		$data->output['customForm']->populateFromPostData();
 		// Validate Form
@@ -120,9 +159,6 @@ function dynamicForms_buildContent($data,$db) {
 				// Is This Field Hooked And Is The Module Enabled?
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
-					$hookedModules[] = $moduleName;
-					$target = 'modules/'.$moduleName.'/'.$moduleName.'.dynamicForms.php';
-					common_include($target);
 					// Check To See What Function We Can Run
 					$fieldCamelCase = common_camelBack($field['name']);
 					$fieldFunction = $moduleName.'_validate'.$fieldCamelCase;
@@ -139,6 +175,12 @@ function dynamicForms_buildContent($data,$db) {
 		if($data->output['customForm']->error==FALSE){
 			$statement = $db->prepare('newValue', 'dynamicForms');
 			$emailText = '';
+			// Do We Have A Row Yet For This New Custom Form Data?
+			if(!isset($rowId)){
+				$newRow = $db->prepare('newRow', 'dynamicForms');
+				$newRow->execute(array(':form' => $form['id']));
+				$rowId = $db->lastInsertId();
+			}
 			foreach($rawFields as $field){
 				$fieldId = $field['id'];
 				$fieldValue = $data->output['customForm']->sendArray[':'.$fieldId];
@@ -155,12 +197,6 @@ function dynamicForms_buildContent($data,$db) {
 						$generalFunction($data,$db,$fieldCamelCase,$fieldValue);
 					}					
 				} else {
-					// Do We Have A Row Yet For This New Custom Form Data?
-					if(!isset($rowId)){
-						$newRow = $db->prepare('newRow', 'dynamicForms');
-						$newRow->execute(array(':form' => $form['id']));
-						$rowId = $db->lastInsertId();
-					}
 					$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $fieldValue));
 					$emailText .= $field['name'] . ': ' . $data->output['customForm']->sendArray[':'.$fieldId] . "\n";
 					/**
@@ -181,7 +217,7 @@ function dynamicForms_buildContent($data,$db) {
 				}
 			}
 			// Call Hooks After Processing / Saving Form Fields
-			foreach($hookedModules as $moduleName){
+			foreach($hookedModules as $moduleShortName => $moduleName){
 				$function = $moduleName.'_afterForm';
 				if(function_exists($function)){
 					$function($data,$db);
@@ -214,11 +250,13 @@ function dynamicForms_content($data) {
 		switch($data->action['error']){	
 			case 'notFound':
 				echo "Not Found";
-				return;
 				break;
 			case 'accessDenied':
 				echo "Access Denied";
-				return;
+			break;
+			default:
+				echo $data->output['responseMessage'];
+			break;
 		}
 	}else if(isset($data->output['success'])){
 		theme_contentBoxHeader($data->output['form']['name']);
