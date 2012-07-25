@@ -24,7 +24,7 @@
 */
 
 function dashboard_admin_buildContent($data,$db) {
-	$info['SiteSense Version'] = $data->settings['version'];
+    $info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');
 	$info['Server Signature']=$_SERVER['SERVER_SIGNATURE'];
 	$info['Server Name']=$_SERVER['SERVER_NAME'];
