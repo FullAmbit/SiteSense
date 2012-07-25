@@ -169,8 +169,7 @@ if (
         'users',
         'mainMenu',
         'settings',
-        'modules',
-        'plugins'
+        'modules'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
