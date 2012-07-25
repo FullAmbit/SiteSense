@@ -87,8 +87,8 @@ function admin_pluginsBuild($data,$db) {
 			}
 			// Query
 			if(isset($enabledModules)) {
+				$statement=$db->prepare('enablePluginForModule','admin_plugins');
 				foreach($enabledModules as $enabledModule) {
-					$statement=$db->prepare('enablePluginForModule','admin_plugins');
 					$statement->execute(array(
 						':plugin'		 => $data->output['pluginItem']['id'],
 						':module'		 => $enabledModule
@@ -97,8 +97,8 @@ function admin_pluginsBuild($data,$db) {
 				}
 			}
 			if(isset($disabledModules)) {
+				$statement=$db->prepare('disablePluginForModule','admin_plugins');
 				foreach($disabledModules as $disabledModule) {
-					$statement=$db->prepare('disablePluginForModule','admin_plugins');
 					$statement->execute(array(
 						':plugin'		 => $data->output['pluginItem']['id'],
 						':module'		 => $disabledModule
