@@ -46,6 +46,7 @@ function admin_usersBuild($data,$db) {
         if($data->action[4]=='add') { //Add a new Group
             getPermissions($data,$db);
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
+            
             // Add Group Form Submitted
             if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
@@ -71,25 +72,21 @@ function admin_usersBuild($data,$db) {
                     $data->output['permissionGroup']->fields['groupName']['error']=true;
                     return;
                 }
-                foreach($data->output['permissionGroup']->sendArray as $fieldName => $value) {
-                    if($fieldName!==':groupName' && $fieldName!==':expiration') {
-                        // Check to see if it is checked or not
-                        if($value) {
-                            $permissions[]=substr($fieldName,1);
-                        }
-                    }
-                }
-                foreach($permissions as $permission) {
-                    $statement=$db->prepare('addPermissionByGroupName');
-                    $result = $statement->execute(array(
-                        ':groupName'      => $data->output['permissionGroup']->sendArray[':groupName'],
-                        ':permissionName' => $permission
-
-                    ));
-                    if($result==FALSE) {
-                        $data->output['savedOkMessage'] = 'There was an error in saving to the database';
-                        return;
-                    }
+                 // Start Adding Permissions
+                $statement = $db->prepare('addPermissionByGroupName');
+                foreach($data->permissions as $category => $permissions){
+	                $statement->execute(array(
+	                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+	                     ':permissionName' => $category.'_permissions',
+	                     ':value' => $data->output['permissionGroup']->sendArray[':'.$category.'_permissions']
+	                ));
+	                foreach($permissions as $permissionName => $permissionDescription) {
+	                	$statement->execute(array(
+	                		':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+	                     	':permissionName' => $category.'_'.$permissionName,
+	                     	':value' => $data->output['permissionGroup']->sendArray[':'.$category.'_'.$permissionName]
+	                     ));
+	                }
                 }
                 $data->output['savedOkMessage']='
 					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
