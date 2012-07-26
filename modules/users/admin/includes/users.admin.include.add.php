@@ -158,7 +158,7 @@ function admin_usersBuild($data,$db) {
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
-                unset($data->output['userForm']->sendArray[':userGroups_'.$value['groupName']]);
+                unset($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']]);
 
             }
             unset($data->output['userForm']->sendArray[':id_hidden']);
@@ -167,6 +167,7 @@ function admin_usersBuild($data,$db) {
             unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
 			$statement=$db->prepare('insertUser','admin_users');
 			$result=$statement->execute($data->output['userForm']->sendArray);
+			var_dump($data->output['userForm']->sendArray);
             $statement=$db->prepare('getUserIdByName');
             $statement->execute(array(
                 ':name' => $data->output['userForm']->sendArray[':name']
@@ -179,20 +180,17 @@ function admin_usersBuild($data,$db) {
                 }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
-                        if($submittedPermissions[':'.$category.'_'.$permissionName]!=='Inherited') {
-                            $allow=0;
-                            if($submittedPermissions[':'.$category.'_'.$permissionName]=='Allow') {
-                                $allow=1;
-                            }
-                            // Add it to the database
-                            $statement=$db->prepare('addPermissionsByUserId');
-                            $statement->execute(array(
-                                ':id' => $userID[0]['id'],
-                                ':permission' => $category.'_'.$permissionName,
-                                ':allow' => $allow
-                            ));
-                        }
+                    	$value = $submittedPermissions[':'.$category.'_'.$permissionName];
+                    }else{
+                    	$value = 0;
                     }
+                    // Add it to the database
+                    $statement=$db->prepare('addPermissionsByUserId');
+                    $statement->execute(array(
+                        ':id' => $userID[0]['id'],
+                        ':permission' => $category.'_'.$permissionName,
+                        ':value' => $value
+                    ));
                 }
             }
 
