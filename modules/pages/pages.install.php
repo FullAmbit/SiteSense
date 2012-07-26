@@ -80,7 +80,8 @@ function pages_install($db,$drop=false) {
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
-                    ':permissionName' => $permissionName
+                    ':permissionName' => $permissionName,
+                    ':value' => '0'
                 )
             );
         }
