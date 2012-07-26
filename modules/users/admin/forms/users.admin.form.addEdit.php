@@ -258,7 +258,7 @@ foreach($data->permissions as $category => $permissions) {
         );
         foreach($permissions as $permissionName => $permissionDescription) {
         	
-        	$value = ($data->output['userFinalPermissions'][$category][$permissionName]['value'] == NULL) ? '0' : $data->output['userFinalPermissions'][$category][$permissionName]['value'];
+        	$value = ($data->output['userForm']['permissions'][$category][$permissionName]['value'] == NULL) ? '0' : $data->output['userForm']['permissions'][$category][$permissionName]['value'];
         	        	
         	if(isset($data->output['userFinalPermissions'][$category][$permissionName])){
 	        	if($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '0'){
