@@ -172,9 +172,9 @@ function common_addQueries() {
         // Permissions
         'addPermissionsByUserId' => '
             INSERT INTO !prefix!user_permissions
-            (userId,permissionName,allow)
+            (userId,permissionName,value)
             VALUES
-            (:id,:permission,:allow)
+            (:id,:permission,:value)
         ',
         'removeAllUserPermissionsByUserID' => '
             DELETE FROM !prefix!user_permissions
@@ -182,9 +182,9 @@ function common_addQueries() {
         ',
         'addPermissionByGroupName' => '
             INSERT INTO !prefix!user_group_permissions
-            (groupName,permissionName)
+            (groupName,permissionName,value)
             VALUES
-            (:groupName,:permissionName)
+            (:groupName,:permissionName,:value)
         ',
         'addUserToPermissionGroup' => '
             INSERT INTO !prefix!user_groups
@@ -227,7 +227,7 @@ function common_addQueries() {
 			WHERE groupName = :groupName
 		',
         'getPermissionsByGroupName' => '
-			SELECT permissionName
+			SELECT permissionName,value
 			FROM !prefix!user_group_permissions
 			WHERE groupName = :groupName
 		',
@@ -261,6 +261,10 @@ function common_addQueries() {
             UPDATE !prefix!user_groups
             SET groupName = :groupName
             WHERE groupName = :currentGroupName
+        ',
+        'purgeAllPermissionsByGroupName' => '
+        	DELETE FROM !prefix!user_group_permissions
+            WHERE groupName = :groupName
         ',
         'purgePermissionByGroupName' => '
             DELETE FROM !prefix!user_group_permissions

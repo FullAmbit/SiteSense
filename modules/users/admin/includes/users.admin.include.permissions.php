@@ -110,19 +110,14 @@ function admin_usersBuild($data,$db) {
                 return;
             }
             getPermissions($data,$db);
-            // Get Group Permissions
-            $statement=$db->prepare('getPermissionsByGroupName');
-            $statement->execute(array(
-                ':groupName' =>  $data->action[5]
-            ));
-            $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
-
+            // Check To See If The Group Exists
             $statement=$db->query('getAllGroups','admin_users');
             $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
             $existing=false;
             foreach($groupList as $key => $value) {
                 if($groupList[$key]['groupName']==$data->action[5]) {
                     $existing=true;
+                    break;
                 }
             }
             if(!$existing) {
@@ -130,23 +125,19 @@ function admin_usersBuild($data,$db) {
                 $data->output['abortMessage']='The group you specified could not be found';
                 return;
             }
-
-            foreach($permissions as $permission) {
-                $data->output['permissionGroup']['permissions'][]=$permission['permissionName'];
-            }
-            if(isset($data->output['permissionGroup']['permissions'])) {
-                // Organize array by module (Ex. $user['permissions']['blogs'])
-                foreach($data->output['permissionGroup']['permissions'] as $key => $permission) {
-                    unset($data->output['permissionGroup']['permissions'][$key]);
-                    $separator=strpos($permission,'_');
-                    $prefix=substr($permission,0,$separator);
-                    $suffix=substr($permission,$separator+1);
-                    $data->output['permissionGroup']['permissions'][$prefix][]=$suffix;
-                }
-                // Clean up
-                asort($data->output['permissionGroup']['permissions']);
-            }
-            $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
+            
+             // Get Group Permissions
+            $statement=$db->prepare('getPermissionsByGroupName');
+            $statement->execute(array(
+                ':groupName' =>  $data->action[5]
+            ));
+            $permissionList=$statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach($permissionList as $permissionItem) {
+            	list($prefix,$suffix) = parsePermissionName($permissionItem['permissionName']);
+                $data->output['permissionList'][$prefix][$suffix]['value'] = $permissionItem['value'];
+            }            
+            $data->output['permissionGroup'] = new formHandler('permissionGroup',$data,true);
+            
             // Edit Group Form Submitted
             if((!empty($_POST['fromForm']))&&($_POST['fromForm']==$data->output['permissionGroup']->fromForm)) {
                 $data->output['permissionGroup']->populateFromPostData();
@@ -175,40 +166,29 @@ function admin_usersBuild($data,$db) {
                         ':currentGroupName' => $data->action[5]
                     ));
                 }
-
-                $statement=$db->prepare('getPermissionsByGroupName');
+                
+                // Purge Existing Group Permissions
+                $statement = $db->prepare('purgeAllPermissionsByGroupName');
                 $statement->execute(array(
                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
                 ));
-                $currentGroupPermissions=$statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach($data->output['permissionGroup']->sendArray as $key => $value) {
-                    if($value) {
-                        if($key==':groupName') continue;
-                        if($key==':expiration') continue;
-                        $existing=false;
-                        foreach($currentGroupPermissions as $subKey => $subValue) {
-                            if($currentGroupPermissions[$subKey]['permissionName']==substr($key,1)) {
-                                $existing=true;
-                            }
-                        }
-
-                        if(!$existing) {
-                             $statement=$db->prepare('addPermissionByGroupName');
-                             $statement->execute(array(
-                                 ':permissionName' => substr($key,1),
-                                 ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
-                             ));
-                        }
-                    } else {
-                        if($key==':groupName') continue;
-                        if($key==':expiration') continue;
-                        $statement=$db->prepare('purgePermissionByGroupName');
-                        $statement->execute(array(
-                            ':permissionName' => substr($key,1),
-                            ':groupName' => $data->output['permissionGroup']->sendArray[':groupName']
-                        ));
-                    }
+                // Start Adding Permissions
+                $statement = $db->prepare('addPermissionByGroupName');
+                foreach($data->permissions as $category => $permissions){
+	                $statement->execute(array(
+	                     ':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+	                     ':permissionName' => $category.'_permissions',
+	                     ':value' => $data->output['permissionGroup']->sendArray[':'.$category.'_permissions']
+	                ));
+	                foreach($permissions as $permissionName => $permissionDescription) {
+	                	$statement->execute(array(
+	                		':groupName' => $data->output['permissionGroup']->sendArray[':groupName'],
+	                     	':permissionName' => $category.'_'.$permissionName,
+	                     	':value' => $data->output['permissionGroup']->sendArray[':'.$category.'_'.$permissionName]
+	                     ));
+	                }
                 }
+
                 $data->output['savedOkMessage']='
 					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
 					<div class="panel buttonList">

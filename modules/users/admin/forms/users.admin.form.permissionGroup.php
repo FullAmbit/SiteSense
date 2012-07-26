@@ -42,34 +42,50 @@ $this->fields=array(
 );
 foreach($data->permissions as $category => $permissions) {
     if(checkPermission('permissions',$category,$data)) {
+    	$value = ($data->output['permissionList'][$category]['permissions']['value'] == NULL) ? '0' : $data->output['permissionList'][$category]['permissions']['value'];
+
         $this->fields[$category.'_permissions']=array(
             'label'   => 'Manage Permissions',
-            'tag'     => 'input',
+            'tag'     => 'select',
             'group'   => ucfirst($category).' Permissions',
-            'value'   => '1',
-            'checked' => (
-                isset($data->output['permissionGroup']['permissions'][$category])
-                    && in_array('permissions',$data->output['permissionGroup']['permissions'][$category]))
-                ? 'checked'
-                : '',
-            'params' => array(
-                'type' => 'checkbox'
-            )
+            'value' => $value,
+            'options' => array(
+	        	array(
+	        		'value' => '1',
+	        		'text' => 'Allow'
+	            ),
+	            array(
+	            	'value' => '0',
+	            	'text' => 'Neutral'
+	            ),
+	            array(
+	            	'value' => '-1',
+	            	'text' => 'Forbid'
+	            )
+		    )
         );
+                    
         foreach($permissions as $permissionName => $permissionDescription) {
+       	 	$value = ($data->output['permissionList'][$category][$permissionName]['value'] == NULL) ? '0' : $data->output['permissionList'][$category][$permissionName]['value'];
             $this->fields[$category.'_'.$permissionName]=array(
-                    'label'   => $permissionDescription,
-                    'tag'     => 'input',
-                    'group'   => ucfirst($category).' Permissions',
-                    'value'   => '1',
-                    'checked' => (
-                        isset($data->output['permissionGroup']['permissions'][$category])
-                        && in_array($permissionName,$data->output['permissionGroup']['permissions'][$category]))
-                        ? 'checked'
-                        : '',
-                    'params' => array(
-                        'type' => 'checkbox'
-                    )
+	            'label'   => $permissionDescription,
+	            'tag'     => 'select',
+	            'group'   => ucfirst($category).' Permissions',
+	            'value'   => $value,
+	            'options' => array(
+		        	array(
+		        	'value' => '1',
+		        	'text' => 'Allow'
+		            ),
+		            array(
+		            	'value' => '0',
+		            	'text' => 'Neutral'
+		            ),
+		            array(
+		            	'value' => '-1',
+		            	'text' => 'Forbid'
+		            )
+		        )
             );
         }
     }

@@ -271,83 +271,118 @@ function loadPermissions($data) {
     );
 }
 
-function getUserPermissions($db,&$user) {
-    $user['permissions']=array();
-    // Group Permissions
-    // Purge expired Groups
-    $db->query('purgeExpiredGroups');
-    $statement=$db->prepare('getGroupsByUserID');
-    $statement->execute(array(
-        ':userID' => $user['id']
-    ));
-    $groups=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all groups a user is a member of
-    foreach($groups as $group) {
-        $statement=$db->prepare('getPermissionsByGroupName');
-        $statement->execute(array(
-            ':groupName' =>  $group['groupName']
-        ));
-        $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all permissions in each group
-        foreach($permissions as $permission) {
-           $user['permissions'][] = $permission['permissionName'];
-        }
-    }
-    // User permissions
+/**function permissionQuery(&$db,&$user,$queryName,$queryData) {
+	$statement=$db->prepare($queryName);
+	$statement->execute($queryData);
+	while ($result=$statement->fetch(PDO::FETCH_ASSOC)
+		$user['permissions'][$result['name']]|=$result['value'];
+	}
+}
+
+function getUserPermissions(&$db,&$user) {
+	if (isset($user['permissions'])) return false; // already set
+	
+	$user['permissions']=array();
+	
+	$db->query('purgeExpiredGroups');
+	
+	$groupsStatement=$db->prepare('getGroupsByUserID');
+	$groupsStatement->execute(array(
+		':userID' => $user['id']
+	));
+	while ($group=$groupsStatement->fetch(PDO::FETCH_ASSOC)) {
+		permissionQuery($db,$user,'getPermissionsByGroupName',array(
+			':name' => $group['name']
+		);
+	}
+	
+	permissionQuery($db,$user,'getUserPermissionsByUserID',array(
+		':userID' => $user['id']
+	);
+}**/
+
+
+function getUserPermissions($db,&$user){
+	if(isset($user['permissions'])) return false;
 	// Finds out if user is Admin with universal access
     $statement=$db->prepare('isUserAdmin');
     $statement->execute(array(
         ':userID' => $user['id']
     ));
     $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
-	if(isset($userAdmin[0]))
-		$user['isAdmin']=1;
+	if(isset($userAdmin[0])) $user['isAdmin']=1;
+	
+	$user['permissions']=array();
+	
+	$db->query('purgeExpiredGroups');
+	
+	
+	// Permissions Per Group
+	$statement = $db->prepare('getGroupsByUserID');
+	$statement->execute(array(
+		':userID' => $user['id']
+	));
+	while($group = $statement->fetch(PDO::FETCH_ASSOC)){
+		$statement=$db->prepare('getPermissionsByGroupName');
+        $statement->execute(array(
+            ':groupName' =>  $group['groupName']
+        ));
+        $permissionList=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all permissions in each group
+        foreach($permissionList as $permissionItem) {
+        	// Parse Perission Name
+        	list($prefix,$suffix) = parsePermissionname($permissionItem['permissionName']);
+        	$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
+        }
+	}
+	
+	// Permissions Per User
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
         ':userID' => $user['id']
     ));
-    $permissions=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
-    foreach($permissions as $permission) {
-        // Check to see if the user has already been granted the permission
-        if(!in_array($permission['permissionName'],$user['permissions'])){ // User doesn't have permission
-            // Allow/Forbid?
-            if($permission['allow']==1) { // Allow; add permission
-                $user['permissions'][] = $permission['permissionName'];
-            }
-        } else { // User has permission
-            // Allow/Forbit?
-            if($permission['allow']==0) { //Forbit; delete permission
-                $key = array_search($permission['permissionName'],$user['permissions']);
-                unset($user['permissions'][$key]);
-            }
-        }
-    }
-    if(isset($user['permissions'])) {
-        // Organize array by module (Ex. $user['permissions']['blogs'])
-        foreach($user['permissions'] as $key => $permission) {
-            unset($user['permissions'][$key]);
-            $separator = strpos($permission,'_');
-            $prefix = substr($permission,0,$separator);
-            $suffix = substr($permission,$separator+1);
-            $user['permissions'][$prefix][] = $suffix;
-        }
-        // Clean up
-        asort($user['permissions']);
-    }
+    $permissionList=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
+    foreach($permissionList as $permissionItem){
+		list($prefix,$suffix) = parsePermissionName($permissionItem['permissionName']);
+		if(!isset($user['permissions'][$prefix][$suffix])){
+			$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
+		}elseif($user['permissions'][$prefix][$suffix] == '-1'){
+			// Forbid Takes Priority Over Everything
+			continue;
+		}elseif($user['permissions'][$prefix][$suffix] == '0'){
+			// If Existing Permission Is Neutral..Override
+			$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
+		}elseif($user['permissions'][$prefix][$suffix] == '1' && $permissionItem['value'] !== '0'){
+			// If Existing Permission Is Allow...Only Override If The New One Is Not A Neutral
+			$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
+		}		
+	}	
 }
+
+function parsePermissionName($permission){
+    $separator = strpos($permission,'_');
+    $prefix = substr($permission,0,$separator);
+    $suffix = substr($permission,$separator+1);
+    
+    return array($prefix,$suffix);
+}
+
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
 	// User is Admin, which is universal access, Return true
     if(isset($data->user['isAdmin']) && $data->user['isAdmin']==1) {
         $hasPermission = true;
     } else {
-        if(isset($data->user['permissions'][$module]) && in_array($permission,$data->user['permissions'][$module])) {
+        if(isset($data->user['permissions'][$module][$permission]) && $data->user['permissions'][$module][$permission] == '1') {
             $hasPermission = true;
         }
     }
     return $hasPermission;
 }
+
 function printFieldValue($fieldValue) {
 	return isset($fieldValue) ? $fieldValue : '';
 }
+
 function hyphenToCamel($str,$ucfirst=false) {
     $parts=explode('-',$str);
     $parts=$parts ? array_map('ucfirst',$parts):array($str);
