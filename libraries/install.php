@@ -332,7 +332,8 @@ if (
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
-                    ':permissionName' => $permissionName
+                    ':permissionName' => $permissionName,
+                    ':value' => '0'
                 )
             );
         }
