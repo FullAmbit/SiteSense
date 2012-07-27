@@ -673,16 +673,21 @@ class formHandler {
 					echo '
 						<div',(
 					$class ? ' class="'.$class.'"' : ''
-					),'>
-							<label for="',$this->formPrefix.$thisKey,'">',$formField['label'],' ',(
-					$formField['error'] ? '<b>X</b>' : (
-					$formField['required'] ? (
-					empty($_POST['fromForm']) ?
-						'<i>&raquo;</i>' :
-						'<span>&radic;</span>'
-					) : ''
-					)
-					),'</label>
+					),'>';
+					
+					if(isset($formField['label'])){
+						echo '
+								<label for="',$this->formPrefix.$thisKey,'">',$formField['label'],' ',(
+						$formField['error'] ? '<b>X</b>' : (
+						$formField['required'] ? (
+						empty($_POST['fromForm']) ?
+							'<i>&raquo;</i>' :
+							'<span>&radic;</span>'
+						) : ''
+						)
+						),'</label>';
+					}
+					echo '
 							<div>
 								<',$formField['tag'],'
 									id="',$this->formPrefix,$thisKey,'"',(
@@ -866,8 +871,8 @@ class formHandler {
 					/>';
 				}
 			}
-			echo '
-						<i>&raquo;</i> Indicates a required field',(
+			echo ((count($this->fields) > 1) ? '
+						<i>&raquo;</i> Indicates a required field' : ''),(
 			$this->error ? ', <b>X</b> indicates a field with errors' : ''
 			),(
 			(strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">
