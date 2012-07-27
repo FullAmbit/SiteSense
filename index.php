@@ -193,6 +193,39 @@ final class dynamicPDO extends PDO {
 			
 		}
 	}
+	public function loadTable($tableName,$structure,$verbose=true) {
+        if ($this->tableExists($tableName)) {
+			$query='INSERT into `'.$this->tablePrefix.$tableName.'` ';
+			foreach ($structure as $field => $struct) {
+				$fields.= ($fields) ? ', '.$field : $field;
+				if(is_int($struct)){
+					$values.= ($values) ? ', '.$struct : $struct;
+				}else{
+					$values.= ($values) ? ', "'.$struct.'"' : '"'.$struct.'"';
+				}
+				
+			}
+			$query .= '('.$fields.')'.' values '.'('.$values.')';
+			if ($verbose) echo '<pre>',$query,'</pre>';
+			
+			try {
+				parent::exec($query);
+			} catch(PDOException $e) {
+				if($verbose) {
+					echo '
+						<p class="error">Failed to load '.$tableName.' table!</p>
+						<pre>'.$e->getMessage().'</pre>';
+				}
+				return false;
+			}
+			
+			return true;
+			
+		} else {
+			if($verbose) echo '<p>Table ',$tableName,' does not exist</p>';
+			return false;
+		}
+	}
 	public function dropTable($tableName,$verbose=false) {
 		if($verbose) echo '<p>Dropping ',$tableName,' table</p>';
 		
