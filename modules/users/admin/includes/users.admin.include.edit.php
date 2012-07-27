@@ -159,14 +159,14 @@ function admin_usersBuild($data,$db) {
 		if(!isset($user['permissions'][$prefix][$suffix])){
 			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
 			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
-		}elseif($user['permissions'][$prefix][$suffix] == '-1'){
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '-1'){
 			// Forbid Takes Priority Over Everything
 			continue;
-		}elseif($user['permissions'][$prefix][$suffix] == '0'){
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '0'){
 			// If Existing Permission Is Neutral..Override
 			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
 			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
-		}elseif($user['permissions'][$prefix][$suffix] == '1' && $permissionItem['value'] !== '0'){
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '1' && $permissionItem['value'] !== '0'){
 			// If Existing Permission Is Allow...Only Override If The New One Is Not A Neutral
 			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
 			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
