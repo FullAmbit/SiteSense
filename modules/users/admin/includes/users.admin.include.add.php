@@ -26,80 +26,80 @@ common_include('libraries/forms.php');
 // Copyright (C) 2012 Nathan Wong
 // See 'acknowledgment.txt' for more details
 function populateTimeZones($data) {
-    $currentTime=time();
-    $times=array();
-    $start=$currentTime-date('G',$currentTime)*3600;
-    for($i=0;$i<24*60;$i+=15) {
-        $times[date('g:i A',$start+$i*60)]=array();
-    }
-    $timezones=DateTimeZone::listIdentifiers();
-    foreach($timezones AS $timezone) {
-        $dt=new DateTime('@'.$currentTime);
-        $dt->setTimeZone(new DateTimeZone($timezone));
-        $time=$dt->format('g:i A');
-        $times[$time][]=$timezone;
-    }
-    $timeZones=array_filter($times);
-    foreach($timeZones as $time => $timeZoneList) {
-        foreach($timeZoneList as $timeZone) {
-            $data->output['timeZones'][]=array(
-                'text'  => $time.' - '.$timeZone,
-                'value' => $timeZone
-            );
-        }
-    }
+	$currentTime=time();
+	$times=array();
+	$start=$currentTime-date('G', $currentTime)*3600;
+	for ($i=0;$i<24*60;$i+=15) {
+		$times[date('g:i A', $start+$i*60)]=array();
+	}
+	$timezones=DateTimeZone::listIdentifiers();
+	foreach ($timezones as $timezone) {
+		$dt=new DateTime('@'.$currentTime);
+		$dt->setTimeZone(new DateTimeZone($timezone));
+		$time=$dt->format('g:i A');
+		$times[$time][]=$timezone;
+	}
+	$timeZones=array_filter($times);
+	foreach ($timeZones as $time => $timeZoneList) {
+		foreach ($timeZoneList as $timeZone) {
+			$data->output['timeZones'][]=array(
+				'text'  => $time.' - '.$timeZone,
+				'value' => $timeZone
+			);
+		}
+	}
 }
 // End Credit
-function getPermissions($data,$db) {
-    $targetFunction='loadPermissions';
-    // Get core permissions
-    if (function_exists($targetFunction)) {
-        $targetFunction($data);
-    }
+function getPermissions($data, $db) {
+	$targetFunction='loadPermissions';
+	// Get core permissions
+	if (function_exists($targetFunction)) {
+		$targetFunction($data);
+	}
 }
-function checkUserName($name,$db) {
-	$statement=$db->prepare('checkUserName','admin_users');
+function checkUserName($name, $db) {
+	$statement=$db->prepare('checkUserName', 'admin_users');
 	$statement->execute(array(
-		':name' => $name
-	));
+			':name' => $name
+		));
 	return $statement->fetchColumn();
 }
 
-function admin_usersBuild($data,$db) {
+function admin_usersBuild($data, $db) {
 	//permission check for users add
-	if(!checkPermission('add','users',$data)) {
+	if (!checkPermission('add', 'users', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
 		return;
 	}
-    // Load all groups
-    $db->query('purgeExpiredGroups');
-    $statement=$db->query('getAllGroups','admin_users');
-    $data->output['groupList']=$statement->fetchAll();
-    $data->output['groupList'][]['groupName']='Administrators';
-    sort($data->output['groupList']);
+	// Load all groups
+	$db->query('purgeExpiredGroups');
+	$statement=$db->query('getAllGroups', 'admin_users');
+	$data->output['groupList']=$statement->fetchAll();
+	$data->output['groupList'][]['groupName']='Administrators';
+	sort($data->output['groupList']);
 
-    // Load core permissions
-    getPermissions($data,$db);
-    // Poulate Time Zone List
-    populateTimeZones($data);
-    $data->output['userForm'] = $form = new formHandler('addEdit',$data,true);
+	// Load core permissions
+	getPermissions($data, $db);
+	// Poulate Time Zone List
+	populateTimeZones($data);
+	$data->output['userForm'] = $form = new formHandler('addEdit', $data, true);
 
 	unset($form->fields['registeredDate']);
 	unset($form->fields['registeredIP']);
 	unset($form->fields['lastAccess']);
-	
+
 	$form->fields['password']['required'] = true;
 	$form->fields['password2']['required'] = true;
-	
+
 	$form->caption = 'Add A User';
 	// Handle Form Submission
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['userForm']->fromForm)) {
 		// Populate From Post //
 		$form->populateFromPostData();
 		// Check If UserName Already Exists //
-		$existing = checkUserName($form->sendArray[':name'],$db);
-		if($existing) {
+		$existing = checkUserName($form->sendArray[':name'], $db);
+		if ($existing) {
 			$data->output['secondSidebar']='
 				  <h2>Error in Data</h2>
 				  <p>
@@ -107,137 +107,134 @@ function admin_usersBuild($data,$db) {
 				  </p><p>
 					  <strong>That username is already taken!</strong>
 				  </p>';
-				  
+
 			$data->output['userForm']->fields['name']['error'] = true;
-				  
+
 			return;
 		}
 
 		// Did it validate?!?
 		if (($form->validateFromPost())) {
 			// Make Sure We Have A Password..
-			if (empty($data->output['userForm']->sendArray[':password']))
-			{
-			  $data->output['secondSidebar']='
+			if (empty($data->output['userForm']->sendArray[':password'])) {
+				$data->output['secondSidebar']='
 				  <h2>Error in Data</h2>
 				  <p>
 					  There were one or more errors. Please correct the fields with the red X next to them and try again.
 				  </p><p>
 					  <strong>New User Accounts must include Password!</strong>
 				  </p>';
-				  $data->output['userForm']->fields['password']['error']=true;
-				  
-				  return;
+				$data->output['userForm']->fields['password']['error']=true;
+
+				return;
 			}
 			// Don't need this....
 			unset($data->output['userForm']->sendArray[':password2']);
 			unset($data->output['userForm']->sendArray[':id']);
-			
+
 			$data->output['userForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
-			$data->output['userForm']->sendArray[':password']=hash('sha256',$data->output['userForm']->sendArray[':password']);
-            foreach($data->permissions as $category => $permissions) {
-                if(!isset($permissions['permissions'])) {
-                    $permissions['permissions']='Manage Permissions';
-                }
-                foreach($permissions as $permissionName => $permissionDescription) {
-                    if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
-                        $submittedPermissions[':'.$category.'_'.$permissionName]=$data->output['userForm']->sendArray[':'.$category.'_'.$permissionName];
-                        unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
-                    }
-                }
-            }
-            $submittedGroups=array();
-            foreach($data->output['groupList'] as $value) {
-                if($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
-                    // User is still a member
-                    // Check expiration
-                    $submittedGroups[$value['groupName']]['expires']=$data->output['userForm']->sendArray[':'.$value['groupName'].'_update'];
+			$data->output['userForm']->sendArray[':password']=hash('sha256', $data->output['userForm']->sendArray[':password']);
+			foreach ($data->permissions as $category => $permissions) {
+				if (!isset($permissions['permissions'])) {
+					$permissions['permissions']='Manage Permissions';
+				}
+				foreach ($permissions as $permissionName => $permissionDescription) {
+					if (isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
+						$submittedPermissions[':'.$category.'_'.$permissionName]=$data->output['userForm']->sendArray[':'.$category.'_'.$permissionName];
+						unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
+					}
+				}
+			}
+			$submittedGroups=array();
+			foreach ($data->output['groupList'] as $value) {
+				if ($data->output['userForm']->sendArray[':'.$value['groupName']]=='checked') {
+					// User is still a member
+					// Check expiration
+					$submittedGroups[$value['groupName']]['expires']=$data->output['userForm']->sendArray[':'.$value['groupName'].'_update'];
 
-                }
-                unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
-                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
-                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
-                unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
-                unset($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']]);
+				}
+				unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
+				unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
+				unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
+				unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
+				unset($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']]);
 
-            }
-            unset($data->output['userForm']->sendArray[':id_hidden']);
-            unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
-            unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
-            unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
-			$statement=$db->prepare('insertUser','admin_users');
+			}
+			unset($data->output['userForm']->sendArray[':id_hidden']);
+			unset($data->output['userForm']->sendArray[':registeredDate_hidden']);
+			unset($data->output['userForm']->sendArray[':registeredIP_hidden']);
+			unset($data->output['userForm']->sendArray[':lastAccess_hidden']);
+			$statement=$db->prepare('insertUser', 'admin_users');
 			$result=$statement->execute($data->output['userForm']->sendArray);
-			var_dump($data->output['userForm']->sendArray);
-            $statement=$db->prepare('getUserIdByName');
-            $statement->execute(array(
-                ':name' => $data->output['userForm']->sendArray[':name']
-            ));
-            $userID=$statement->fetchAll();
-            // Insert Permissions
-            foreach($data->permissions as $category => $permissions) {
-                if(!isset($permissions['permissions'])) {
-                    $permissions['permissions']='Manage Permissions';
-                }
-                foreach($permissions as $permissionName => $permissionDescription) {
-                    if(isset($submittedPermissions[':'.$category.'_'.$permissionName])) {
-                    	$value = $submittedPermissions[':'.$category.'_'.$permissionName];
-                    }else{
-                    	$value = 0;
-                    }
-                    // Add it to the database
-                    $statement=$db->prepare('addPermissionsByUserId');
-                    $statement->execute(array(
-                        ':id' => $userID[0]['id'],
-                        ':permission' => $category.'_'.$permissionName,
-                        ':value' => $value
-                    ));
-                }
-            }
+			$statement=$db->prepare('getUserIdByName');
+			$statement->execute(array(
+					':name' => $data->output['userForm']->sendArray[':name']
+				));
+			$userID=$statement->fetchAll();
+			// Insert Permissions
+			foreach ($data->permissions as $category => $permissions) {
+				if (!isset($permissions['permissions'])) {
+					$permissions['permissions']='Manage Permissions';
+				}
+				foreach ($permissions as $permissionName => $permissionDescription) {
+					if (isset($submittedPermissions[':'.$category.'_'.$permissionName]) && $submittedPermissions[':'.$category.'_'.$permissionName] !== '0') {
+						$value = $submittedPermissions[':'.$category.'_'.$permissionName];
 
-            foreach($submittedGroups as $groupName => $value) {
-                // Add expiration dropdown box to the current time stamp
-                $expires=0;
-                $dropdown=$submittedGroups[$groupName]['expires'];
-                switch($dropdown) {
-                    case 'No change':
-                    case 'Never':
-                        $expires=0;
-                        break;
-                    case '15 minutes':
-                        $expires=900;
-                        break;
-                    case '1 hour':
-                        $expires=3600;
-                        break;
-                    case '2 hours':
-                        $expires=7200;
-                        break;
-                    case '1 day':
-                        $expires=86400;
-                        break;
-                    case '2 days':
-                        $expires=172800;
-                        break;
-                    case '1 week':
-                        $expires=604800;
-                        break;
-                }
-                if($expires==0) {
-                    $statement=$db->prepare('addUserToPermissionGroupNoExpires');
-                    $statement->execute(array(
-                        ':userID'          => $userID[0]['id'],
-                        ':groupName'       => $groupName
-                    ));
-                } else {
-                    $statement=$db->prepare('addUserToPermissionGroup');
-                    $statement->execute(array(
-                        ':userID'          => $userID[0]['id'],
-                        ':groupName'       => $groupName,
-                        ':expires'         => $expires
-                    ));
-                }
-            }
-			if($result == FALSE) {
+						// Add it to the database
+						$statement=$db->prepare('addPermissionsByUserId');
+						$statement->execute(array(
+							':id' => $userID[0]['id'],
+							':permission' => $category.'_'.$permissionName,
+							':value' => $value
+						));
+					}
+				}
+			}
+
+			foreach ($submittedGroups as $groupName => $value) {
+				// Add expiration dropdown box to the current time stamp
+				$expires=0;
+				$dropdown=$submittedGroups[$groupName]['expires'];
+				switch ($dropdown) {
+				case 'No change':
+				case 'Never':
+					$expires=0;
+					break;
+				case '15 minutes':
+					$expires=900;
+					break;
+				case '1 hour':
+					$expires=3600;
+					break;
+				case '2 hours':
+					$expires=7200;
+					break;
+				case '1 day':
+					$expires=86400;
+					break;
+				case '2 days':
+					$expires=172800;
+					break;
+				case '1 week':
+					$expires=604800;
+					break;
+				}
+				if ($expires==0) {
+					$statement=$db->prepare('addUserToPermissionGroupNoExpires');
+					$statement->execute(array(
+							':userID'          => $userID[0]['id'],
+							':groupName'       => $groupName
+						));
+				} else {
+					$statement=$db->prepare('addUserToPermissionGroup');
+					$statement->execute(array(
+							':userID'          => $userID[0]['id'],
+							':groupName'       => $groupName,
+							':expires'         => $expires
+						));
+				}
+			}
+			if ($result == FALSE) {
 				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
 				return;
 			}
@@ -260,13 +257,12 @@ function admin_usersBuild($data,$db) {
 	}
 }
 
-function admin_usersShow($data)
-{
+function admin_usersShow($data) {
 	if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
 		admin_unknown();
 	} else if (isset($data->output['savedOkMessage'])) {
-		echo $data->output['savedOkMessage'];
-	} else {
+			echo $data->output['savedOkMessage'];
+		} else {
 		theme_buildForm($data->output['userForm']);
 	}
 }

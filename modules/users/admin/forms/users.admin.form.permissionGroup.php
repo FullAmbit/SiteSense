@@ -42,7 +42,7 @@ $this->fields=array(
 );
 foreach($data->permissions as $category => $permissions) {
     if(checkPermission('permissions',$category,$data)) {
-    	$value = ($data->output['permissionList'][$category]['permissions']['value'] == NULL) ? '0' : $data->output['permissionList'][$category]['permissions']['value'];
+    	$value = (!isset($data->output['permissionList'][$category]['permissions']['value'])) ? '0' : $data->output['permissionList'][$category]['permissions']['value'];
 
         $this->fields[$category.'_permissions']=array(
             'label'   => 'Manage Permissions',
@@ -66,7 +66,7 @@ foreach($data->permissions as $category => $permissions) {
         );
                     
         foreach($permissions as $permissionName => $permissionDescription) {
-       	 	$value = ($data->output['permissionList'][$category][$permissionName]['value'] == NULL) ? '0' : $data->output['permissionList'][$category][$permissionName]['value'];
+       	 	$value = (!isset($data->output['permissionList'][$category][$permissionName]['value'])) ? '0' : $data->output['permissionList'][$category][$permissionName]['value'];
             $this->fields[$category.'_'.$permissionName]=array(
 	            'label'   => $permissionDescription,
 	            'tag'     => 'select',

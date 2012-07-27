@@ -207,8 +207,8 @@ foreach($data->output['groupList'] as $value) {
                 '1 week'
             ),
             'value'   => 'No change'
-        );				
-        $state = ($data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'] == NULL) ? '0' : $data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'];
+        );
+        $state = (!isset($data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'])) ? '0' : $data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'];
         $this->fields['manageGroups_'.$value['groupName']]=array(
             'label'   => 'Manage Membership',
             'tag'     => 'select',
@@ -234,7 +234,7 @@ foreach($data->output['groupList'] as $value) {
 foreach($data->permissions as $category => $permissions) {
     if(checkPermission('permissions',$category,$data)) {
     
-    	$value = ($data->output['userForm']['permissions'][$category]['permissions']['value'] == NULL) ? 0 : $data->output['userForm']['permissions'][$category]['permissions']['value'];
+    	$value = (!isset($data->output['userForm']['permissions'][$category]['permissions']['value'])) ? '0' : $data->output['userForm']['permissions'][$category]['permissions']['value'];
     	
         $this->fields[$category.'_permissions']=array(
             'label'   => 'Manage Permissions',
@@ -258,7 +258,7 @@ foreach($data->permissions as $category => $permissions) {
         );
         foreach($permissions as $permissionName => $permissionDescription) {
         	
-        	$value = ($data->output['userForm']['permissions'][$category][$permissionName]['value'] == NULL) ? '0' : $data->output['userForm']['permissions'][$category][$permissionName]['value'];
+        	$value = (!isset($data->output['userForm']['permissions'][$category][$permissionName]['value'])) ? '0' : $data->output['userForm']['permissions'][$category][$permissionName]['value'];
         	        	
         	if(isset($data->output['userFinalPermissions'][$category][$permissionName])){
 	        	if($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '0'){

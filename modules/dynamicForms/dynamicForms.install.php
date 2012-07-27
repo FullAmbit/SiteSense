@@ -115,7 +115,7 @@ function dynamicForms_install($db,$drop=false) {
                 array(
                     ':groupName' => $groupName,
                     ':permissionName' => $permissionName,
-                    ':value' => '0'
+                    ':value' => '1'
                 )
             );
         }
