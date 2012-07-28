@@ -24,34 +24,55 @@
 */
 common_include('libraries/forms.php');
 
-function admin_pagesBuild($data,$db)
-{
+function admin_mainMenuOptions($db,$parent = 0,$level = 0,$options = array()) {
+	// Get All Items In Current Level
+	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
+	$statement->execute(array(
+		':parent' => $parent
+	));
+	$menuItemList = $statement->fetchAll();
+	foreach($menuItemList as $menuItem)
+	{
+		$hypen = '';
+		for($i=0;$i<$level;$i++)
+		{
+			$hypen .= '--';
+		}
+		$options[$menuItem['id']]['text'] = $hypen.' '.$menuItem['text'];
+		$options[$menuItem['id']]['value'] = $menuItem['id'];
+		// Now Get This Item's Children
+		$options = admin_mainMenuOptions($db,$menuItem['id'],$level + 1,$options);
+	}
+	return $options;
+}
+
+function admin_pagesBuild($data, $db) {
 	//permission check for pages add
-	if(!checkPermission('add','pages',$data)) {
+	if (!checkPermission('add', 'pages', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
 		return;
 	}
-	$data->output['pageForm']=new formHandler('addEdit',$data,true);
-	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
-	
-	if (($data->action[3]=='childOf') && is_numeric($data->action[4]))
-	{
+	$data->output['pageForm']=new formHandler('addEdit', $data, true);
+
+	if (($data->action[3]=='childOf') && is_numeric($data->action[4])) {
 		$data->output['pageForm']->fields['parent']['value']=$data->action[4];
 	}
 	
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['pageForm']->fromForm)) 
-	{
+	// Get Menu Items To Select Parent
+	$data->output['pageForm']->fields['menuParent']['options'] = array_merge($data->output['pageForm']->fields['menuParent']['options'], admin_mainMenuOptions($db));
+
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['pageForm']->fromForm)) {
 		$data->output['pageForm']->populateFromPostData();
 		$shortName = common_generateShortName($_POST[$data->output['pageForm']->formPrefix.'name']);
 		$data->output['pageForm']->sendArray[':shortName'] = $shortName;
 
-		$statement = $db->prepare('getExistingShortNames','admin_pages');
+		$statement = $db->prepare('getExistingShortNames', 'admin_pages');
 		$statement->execute();
-        $cannotEqual=array();
+		$cannotEqual=array();
 		$pageShortNameList = $statement->fetchAll();
-		foreach($pageShortNameList as $item) {
-		    $cannotEqual[] = $item['shortName'];
+		foreach ($pageShortNameList as $item) {
+			$cannotEqual[] = $item['shortName'];
 		}
 		$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
 		// Apply ShortName Convention To Name For Use In Comparison //
@@ -59,74 +80,71 @@ function admin_pagesBuild($data,$db)
 
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost()) {
-            if($data->output['pageForm']->sendArray[':parent']==0) {
-                $modifiedShortName='^'.$shortName.'(/.*)?$';
-                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-                $statement->execute(array(
-                    ':match' => $modifiedShortName
-                    )
-                );
-                $result=$statement->fetch();
-                if($result===false) {
-                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-                    $statement->execute(array(
-                        ':match'     => $modifiedShortName,
-                        ':replace'   => 'pages/'.$shortName.'\1',
-                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                        ':regex'     => 0
-                    ));
-                } else {
-                    $data->output['pageForm']->fields['name']['error']=true;
-                    $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
-                    return;
-                }
-            }
+			if ($data->output['pageForm']->sendArray[':parent']==0) {
+				$modifiedShortName='^'.$shortName.'(/.*)?$';
+				$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+				$statement->execute(array(
+						':match' => $modifiedShortName
+					)
+				);
+				$result=$statement->fetch();
+				if ($result===false) {
+					$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
+					$statement->execute(array(
+							':match'     => $modifiedShortName,
+							':replace'   => 'pages/'.$shortName.'\1',
+							':sortOrder' => admin_sortOrder_new($db, 'url_remap', 'sortOrder'),
+							':regex'     => 0
+						));
+				} else {
+					$data->output['pageForm']->fields['name']['error']=true;
+					$data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+					return;
+				}
+			}
 			// Get Sort Order
 			$data->output['pageForm']->sendArray[':sortOrder']=
-                admin_sortOrder_new($db,'pages','sortOrder','parent',$data->output['pageForm']->sendArray[':parent']);
+				admin_sortOrder_new($db, 'pages', 'sortOrder', 'parent', $data->output['pageForm']->sendArray[':parent']);
 
 			// Parse
-			if($data->settings['useBBCode'] == '1')
-			{
-				common_loadPlugin($data,'bbcode');
-				
+			if ($data->settings['useBBCode'] == '1') {
+				common_loadPlugin($data, 'bbcode');
+
 				$data->output['pageForm']->sendArray[':parsedContent'] = $data->plugins['bbcode']->parse($data->output['pageForm']->sendArray[':rawContent']);
 			} else {
 				$data->output['pageForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['pageForm']->sendArray[':rawContent']);
 			}
-			
-			if($data->output['pageForm']->sendArray[':showOnMenu'])
-			{
+
+			if ($data->output['pageForm']->sendArray[':showOnMenu']) {
 				//----Build The Menu Item----//
 				$title = (isset($data->output['pageForm']->sendArray[':menuText']{1})) ? $data->output['pageForm']->sendArray[':menuText'] : $data->output['pageForm']->sendArray[':name'];
-				// Sort Order
-				$rowCount = $db->countRows('main_menu');
-				$sortOrder = $rowCount + 1;
+				// Grab The SortOrder
+				$sortOrder = admin_sortOrder_new($db,'main_menu','sortOrder','parent',$data->output['pageForm']->sendArray[':menuParent']);
 				
-				$statement = $db->prepare('newMenuItem','admin_mainMenu');
+				$statement = $db->prepare('newMenuItem', 'admin_mainMenu');
 				$statement->execute(array(
-					':text' => $title,
-					':title' => $title,
-					':url' => 'pages/'.$data->output['pageForm']->sendArray[':shortName'].'/',
-					':enabled' => '1',
-					':parent' => '0',
-					':sortOrder' => $sortOrder
-				));
-				
+						':text' => $title,
+						':title' => $title,
+						':url' => $data->output['pageForm']->sendArray[':shortName'].'/',
+						':enabled' => '1',
+						':parent' => $data->output['pageForm']->sendArray[':menuParent'],
+						':sortOrder' => $sortOrder
+						));
+
 				$menuId = $db->lastInsertId();
 			}
-			
+
 			unset(
 				$data->output['pageForm']->sendArray[':menuText'],
-				$data->output['pageForm']->sendArray[':showOnMenu']
+				$data->output['pageForm']->sendArray[':showOnMenu'],
+				$data->output['pageForm']->sendArray[':menuParent']
 			);
-			
-			
+
 			// Save To DB
-            $statement=$db->prepare('insertPage','admin_pages');
-			if($statement->execute($data->output['pageForm']->sendArray)) {
-				
-				
+			$statement=$db->prepare('insertPage', 'admin_pages');
+			if ($statement->execute($data->output['pageForm']->sendArray)) {
+
+
 				$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>
@@ -140,28 +158,28 @@ function admin_pagesBuild($data,$db)
 						Return to Page List
 					</a>'.
 					(isset($menuId) ? '<a href="'.$data->linkRoot.'admin/main-menu/edit/'.$menuId.'/">Edit Menu Item</a>' : NULL)
-				.
-				'</div>';
-            } else {
-                $data->output['secondSidebar']='
+					.
+					'</div>';
+			} else {
+				$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>
 					There were one or more errors. Please correct the fields with the red X next to them and try again.
 				</p>';
-            }
+			}
 		}
 	}
 }
 
-function admin_pageOptions($db, $Parent = -1, $Level = 0){ // Using a function is necessary here for recursion
+function admin_pageOptions($db, $Parent = -1, $Level = 0) { // Using a function is necessary here for recursion
 	$options = array();
-	if($Parent == -1){
+	if ($Parent == -1) {
 		$options[] = array('value' => 0, 'text' => 'Site Root');
 		$options = array_merge($options, admin_pageOptions($db, 0, 1));
-	}else{
-		$statement = $db->prepare('getPageListByParent','admin_pages');
+	}else {
+		$statement = $db->prepare('getPageListByParent', 'admin_pages');
 		$statement->execute(array(':parent' => $Parent));
-		while($item = $statement->fetch()){
+		while ($item = $statement->fetch()) {
 			$options[] = array(
 				'value' => $item['id'],
 				'text' => str_repeat('-', $Level * 4) . ' ' . $item['shortName']
@@ -172,13 +190,12 @@ function admin_pageOptions($db, $Parent = -1, $Level = 0){ // Using a function i
 	return $options;
 }
 
-function admin_pagesShow($data)
-{
+function admin_pagesShow($data) {
 	if ($data->output['pagesError']=='unknown function') {
 		admin_unknown();
 	} else if (!empty($data->output['savedOkMessage'])) {
-		echo $data->output['savedOkMessage'];
-	} else {
+			echo $data->output['savedOkMessage'];
+		} else {
 		theme_buildForm($data->output['pageForm']);
 	}
 }

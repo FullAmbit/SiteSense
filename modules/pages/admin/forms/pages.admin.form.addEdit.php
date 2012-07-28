@@ -112,6 +112,16 @@ $this->fields=array(
 			</p>
 		'
 	),
+	'menuParent' => array(
+		'label' => "Parent Menu Item",
+		'tag' => "select",
+		'options' => array(
+			array(
+				'value' => 0,
+				'text' => 'Site Root'
+			)
+		)
+	),
 	'menuText' => array(
 		'label' => 'Menu Link Text',
 		'tag' => 'input',

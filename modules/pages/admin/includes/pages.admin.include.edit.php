@@ -160,8 +160,6 @@ function admin_pagesBuild($data,$db) {
 				$statement->execute($data->output['pageForm']->sendArray);
 			}
 			
-			//admin_pagesResort($db);
-			//admin_mainMenuRebuild($data,$db);
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>
