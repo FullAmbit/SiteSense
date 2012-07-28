@@ -80,12 +80,13 @@ function users_install($db,$drop=false) {
         ),
         'user_group_permissions' => array(
             'groupName'           => SQR_name,
-            'permissionName'      => SQR_name
+            'permissionName'      => SQR_name,
+            'value'               => 'TINYINT(1) NOT NULL'
         ),
         'user_permissions' => array(
             'userId'              => SQR_ID,
             'permissionName'      => SQR_name,
-            'allow'               => SQR_boolean
+            'value'               => 'TINYINT(1) NOT NULL'
         )
 	);
 	if($drop)
@@ -129,7 +130,8 @@ function users_install($db,$drop=false) {
             $statement->execute(
                 array(
                     ':groupName' => $groupName,
-                    ':permissionName' => $permissionName
+                    ':permissionName' => $permissionName,
+                    ':value' => '1'
                 )
             );
         }

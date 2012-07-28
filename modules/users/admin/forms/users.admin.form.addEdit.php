@@ -158,7 +158,7 @@ $this->fields=array(
     )
 );
 foreach($data->output['groupList'] as $value) {
-    if(checkPermission($value,'userGroups',$data)) {
+    if(checkPermission($value['groupName'],'manageGroups',$data)) {
         $checked='';
         $expires='Never';
         if(isset($data->output['userGroupList'])) {
@@ -175,6 +175,7 @@ foreach($data->output['groupList'] as $value) {
                 }
             }
         }
+                
         $this->fields[$value['groupName']]=array(
             'label'   => $value['groupName'],
             'tag'     => 'input',
@@ -207,23 +208,24 @@ foreach($data->output['groupList'] as $value) {
             ),
             'value'   => 'No change'
         );
-        if(isset($data->output['userForm']['permissions']['userGroups']['permissions']['allow'])) {
-            if($data->output['userForm']['permissions']['userGroups']['permissions']['allow']) {
-                $state='Allow';
-            } else {
-                $state='Forbid';
-            }
-        } else {
-            $state='Inherited';
-        }
-        $this->fields['userGroups_'.$value['groupName']]=array(
+        $state = (!isset($data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'])) ? '0' : $data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'];
+        $this->fields['manageGroups_'.$value['groupName']]=array(
             'label'   => 'Manage Membership',
             'tag'     => 'select',
             'group'   => 'User Groups',
             'options' => array(
-                'Allow',
-                'Inherited',
-                'Forbid'
+                array(
+                	'value' => '1',
+                	'text' => 'Allow'
+                ),
+                array(
+                	'value' => '0',
+                	'text' => 'Neutral'
+                ),
+                array(
+                	'value' => '-1',
+                	'text' => 'Forbid'
+                )
             ),
             'value'   => $state
         );
@@ -231,46 +233,67 @@ foreach($data->output['groupList'] as $value) {
 }
 foreach($data->permissions as $category => $permissions) {
     if(checkPermission('permissions',$category,$data)) {
-        if(isset($data->output['userForm']['permissions'][$category]['permissions']['allow'])) {
-            if($data->output['userForm']['permissions'][$category]['permissions']['allow']) {
-                $value='Allow';
-            } else {
-                $value='Forbid';
-            }
-        } else {
-            $value='Inherited';
-        }
+    
+    	$value = (!isset($data->output['userForm']['permissions'][$category]['permissions']['value'])) ? '0' : $data->output['userForm']['permissions'][$category]['permissions']['value'];
+    	
         $this->fields[$category.'_permissions']=array(
             'label'   => 'Manage Permissions',
             'tag'     => 'select',
             'group'   => ucfirst($category).' Permissions',
             'options' => array(
-                'Allow',
-                'Inherited',
-                'Forbid'
+                array(
+                	'value' => '1',
+                	'text' => 'Allow'
+                ),
+                array(
+                	'value' => '0',
+                	'text' => 'Neutral'
+                ),
+                array(
+                	'value' => '-1',
+                	'text' => 'Forbid'
+                )
             ),
             'value'   => $value
         );
         foreach($permissions as $permissionName => $permissionDescription) {
-            if(isset($data->output['userForm']['permissions'][$category][$permissionName]['allow'])) {
-               if($data->output['userForm']['permissions'][$category][$permissionName]['allow']) {
-                   $value='Allow';
-               } else {
-                   $value='Forbid';
-               }
-            } else {
-                $value='Inherited';
-            }
+        	
+        	$value = (!isset($data->output['userForm']['permissions'][$category][$permissionName]['value'])) ? '0' : $data->output['userForm']['permissions'][$category][$permissionName]['value'];
+        	        	
+        	if(isset($data->output['userFinalPermissions'][$category][$permissionName])){
+	        	if($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '0'){
+		        	$verdict = 'Neutral';
+	        	}elseif($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '-1'){
+	        		$verdict = 'Forbidden by '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
+		        }elseif($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '1'){
+	        		$verdict = 'Allowed by '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
+		        }
+        	} else{
+	        	$verdict = 'Neutral';
+        	}
+        	
+        	
             $this->fields[$category.'_'.$permissionName]=array(
                 'label'   => $permissionDescription,
                 'tag'     => 'select',
                 'group'   => ucfirst($category).' Permissions',
                 'options' => array(
-                    'Allow',
-                    'Inherited',
-                    'Forbid'
-                ),
-                'value'   => $value
+                    array(
+                		'value' => '1',
+                		'text' => 'Allow'
+	                ),
+	                array(
+	                	'value' => '0',
+	                	'text' => 'Neutral'
+	                ),
+	                array(
+	                	'value' => '-1',
+	                	'text' => 'Forbid'
+	                )
+	            ),
+                'value' => $value,
+                'description' => '
+                	<p><b>Vedict:</b> '.$verdict.'</p>'
             );
         }
     }

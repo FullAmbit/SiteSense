@@ -306,7 +306,7 @@ function theme_buildForm($formData) {
 					if(!empty($formField['options'])) {
 						foreach ($formField['options'] as $key => $option) {
 							$selected='';
-							if(empty($formField['value'])) {
+							if(is_array($formField['value']) && empty($formField['value'])) {
 								// Selected
 								if(isset($formField['selected'])) {
 									if(is_array($formField['selected'])) {

@@ -871,16 +871,19 @@ class formHandler {
 					/>';
 				}
 			}
-			echo ((count($this->fields) > 1) ? '
-						<i>&raquo;</i> Indicates a required field' : ''),(
-			$this->error ? ', <b>X</b> indicates a field with errors' : ''
-			),(
-			(strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">
-		        '.$this->extraMarkup.'
-		      <!-- .extraMarkup --></div>'
-			),'
-					<!-- .submitsAndHiddens --></div>
-				</form>';
+			if(count($this->fields) > 1){
+				echo '
+							<i>&raquo;</i> Indicates a required field',(
+				$this->error ? ', <b>X</b> indicates a field with errors' : ''
+				);
+				echo 
+				((strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">').
+			       	$this->extraMarkup.'
+			      <!-- .extraMarkup --></div>
+				
+						<!-- .submitsAndHiddens --></div>
+					</form>';
+			}
 		}
 		if($buffer)	{
 			$contents = ob_get_clean();

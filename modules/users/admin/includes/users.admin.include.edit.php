@@ -109,35 +109,71 @@ function admin_usersBuild($data,$db) {
 
     // Load core permissions
     getPermissions($data,$db);
+    
     // Get User Permissions
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
         ':userID' =>  $data->action[3]
     ));
     $permissions=$statement->fetchAll(PDO::FETCH_ASSOC);
-    /*
-    $statement=$db->query('getAllGroups','admin_users');
-    $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach($groupList as $key => $value) {
-        if($groupList[$key]['groupName']==$data->action[5]) {
-            $existing=true;
-        }
-    }
-    */
     if(isset($permissions)) {
         foreach($permissions as $key => $permission) {
             $permissionName=$permission['permissionName'];
-            $allow=$permission['allow'];
+            $value=$permission['value'];
             $separator=strpos($permissionName,'_');
             $prefix=substr($permissionName,0,$separator);
             $suffix=substr($permissionName,$separator+1);
             $data->output['userForm']['permissions'][$prefix][]=$suffix;
-            $data->output['userForm']['permissions'][$prefix][$suffix]['allow']=$allow;
+            $data->output['userForm']['permissions'][$prefix][$suffix]['value']=$value;
         }
-
     }
-    // ---
+    
+    // Load Verdict (Final) Permissions Accounting For Groups And Overrides
+    $user = array('permissions' => array(),'id' => $data->action[3]);
+    $statement = $db->prepare('getGroupsByUserID');
+	$statement->execute(array(
+		':userID' => $user['id']
+	));
+	$groupList = $statement->fetchAll(PDO::FETCH_ASSOC);
+	
+    foreach($groupList as $group){
+		$statement=$db->prepare('getPermissionsByGroupName');
+        $statement->execute(array(
+            ':groupName' =>  $group['groupName']
+        ));
+        $permissionList=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all permissions in each group
+        foreach($permissionList as $permissionItem) {
+        	// Parse Perission Name
+        	list($prefix,$suffix) = parsePermissionname($permissionItem['permissionName']);
+			$user['permissions'][$prefix][$suffix]['source'] = 'Group: '.$group['groupName'];
+        	$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
+        }
+	}
+    $statement=$db->prepare('getUserPermissionsByUserID');
+    $statement->execute(array(
+        ':userID' => $user['id']
+    ));
+    $permissionList=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains all user permissions
+    foreach($permissionList as $permissionItem){
+		list($prefix,$suffix) = parsePermissionName($permissionItem['permissionName']);
+		if(!isset($user['permissions'][$prefix][$suffix])){
+			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
+			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '-1'){
+			// Forbid Takes Priority Over Everything
+			continue;
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '0'){
+			// If Existing Permission Is Neutral..Override
+			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
+			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
+		}elseif($user['permissions'][$prefix][$suffix]['value'] == '1' && $permissionItem['value'] !== '0'){
+			// If Existing Permission Is Allow...Only Override If The New One Is Not A Neutral
+			$user['permissions'][$prefix][$suffix]['source'] = 'User Permission';
+			$user['permissions'][$prefix][$suffix]['value'] = $permissionItem['value'];
+		}		
+	}
+	$data->output['userFinalPermissions'] = $user['permissions'];
+	    
     // Poulate Time Zone List
     populateTimeZones($data);
     $data->output['userForm']=$form=new formHandler('addEdit',$data,true);
@@ -146,15 +182,9 @@ function admin_usersBuild($data,$db) {
     $statement->execute(array(
         ':id' => $data->action[3]
     ));
-
-
-	
 	if (($item=$statement->fetch()) !== FALSE) {
-		
 		$data->output['userForm']->caption = 'Editing User '.$item['name'];
-
 		foreach ($data->output['userForm']->fields as $key => $value) {
-
            switch ($key) {
                 case 'lastAccess':
                     $data->output['userForm']->fields[$key]['value']=(
@@ -238,19 +268,15 @@ function admin_usersBuild($data,$db) {
                 }
                 foreach($permissions as $permissionName => $permissionDescription) {
                     if(isset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName])) {
-                        if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]!=='Inherited') {
-                            $allow=0;
-                            if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]=='Allow') {
-                                $allow=1;
-                            }
-                            // Add it to the database
-                            $statement=$db->prepare('addPermissionsByUserId');
-                            $statement->execute(array(
-                                ':id' => $data->action[3],
-                                ':permission' => $category.'_'.$permissionName,
-                                ':allow' => $allow
-                            ));
-                        }
+                    	if($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName] == '1' || $data->output['userForm']->sendArray[':'.$category.'_'.$permissionName] == '-1'){
+		                    // Add it to the database
+		                    $statement=$db->prepare('addPermissionsByUserId');
+		                    $r = $statement->execute(array(
+		                        ':id' => $data->action[3],
+		                        ':permission' => $category.'_'.$permissionName,
+		                        ':value' => $data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]
+		                    ));
+		                }
                     }
                     unset($data->output['userForm']->sendArray[':'.$category.'_'.$permissionName]);
                 }
@@ -265,6 +291,7 @@ function admin_usersBuild($data,$db) {
                     if($subValue['groupName']==$value['groupName']) {
                         // User must be already a member of the group
                         $member=1;
+                        break;
                     }
                 }
                 switch($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']) {
@@ -292,6 +319,18 @@ function admin_usersBuild($data,$db) {
                     case '1 week':
                         $expires=604800;
                         break;
+                }
+                // Check To See If You Are Allowed To Manage MemberShip of this group
+                if(isset($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']])){
+	                if($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']] == 1 || $data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']] == -1){
+		                // If Deny Or Allow Store, No Need To Store DisAllow As That Is Assumed For Everything
+		                $statement=$db->prepare('addPermissionsByUserId');
+                        $statement->execute(array(
+                            ':id' => $data->action[3],
+                            ':permission' => 'manageGroups_'.$value['groupName'],
+                            ':value' => $data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']]
+                        ));
+	                }
                 }
                 if($member) {
                     // User already is a member of the group
@@ -342,15 +381,13 @@ function admin_usersBuild($data,$db) {
                                 ':expires' => $expires
                             ));
                         }
-                    } else {
-                        // Do nothing
                     }
                 }
                 unset($data->output['userForm']->sendArray[':'.$value['groupName']]);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_expiration_hidden']);
                 unset($data->output['userForm']->sendArray[':'.$value['groupName'].'_update']);
-                unset($data->output['userForm']->sendArray[':userGroups_'.$value['groupName']]);
+                unset($data->output['userForm']->sendArray[':manageGroups_'.$value['groupName']]);
             }
 
 			//--Don't Need These, User Already Exists--//
