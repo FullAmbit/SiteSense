@@ -29,6 +29,7 @@ function gzip_start() {
 }
 function gzip_end($data) {
   $contents=ob_get_contents();
+  //$contents=common_parseDynamicValues($data,$contents);
   ob_end_clean();
   header('Content-Encoding: '.$data->compressionType);
   print("\x1F\x8B\x08\x00\x00\x00\x00\x00");
