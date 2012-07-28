@@ -334,7 +334,7 @@ function users_content($data){
         break;
         case 'register':
         	if ($data->output['showForm']) {
-        		theme_buildForm($data->output['registerForm']);
+        		$data->output['registerForm']->build();
         	} else {
 	        	theme_contentBoxHeader('Account Registration &amp; Activation');
 	        	foreach ($data->output['messages'] as $message) {
