@@ -6,7 +6,7 @@ function latestPosts_buildContent($data,$db,$attributes) {
 	$count = ($attributes[0] < 1) ? $data->settings['showPerPage'] : $attributes[0];
 	$blogName = (isset($attributes[1])) ? $attributes[1] : $data->settings['defaultBlog'];
 	
-	$result = blog_getContent($data,$db,$blogName,0,$count);
+	$result = blogs_common_getContent($data,$db,$blogName,0,$count);
 	$data->output['postList'] = $result['postList'];
 }
 
