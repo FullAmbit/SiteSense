@@ -876,14 +876,14 @@ class formHandler {
 							<i>&raquo;</i> Indicates a required field',(
 				$this->error ? ', <b>X</b> indicates a field with errors' : ''
 				);
-				echo 
-				((strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">').
-			       	$this->extraMarkup.'
-			      <!-- .extraMarkup --></div>
-				
-						<!-- .submitsAndHiddens --></div>
-					</form>';
-			}
+      }
+      echo 
+      ((strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">').
+            $this->extraMarkup.'
+          <!-- .extraMarkup --></div>
+      
+          <!-- .submitsAndHiddens --></div>
+        </form>';
 		}
 		if($buffer)	{
 			$contents = ob_get_clean();
