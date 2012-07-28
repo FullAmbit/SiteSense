@@ -78,6 +78,7 @@ function admin_pagesBuild($data,$db) {
 	// Unset Main Menu Options
 	unset($form->fields['showOnMenu']);
 	unset($form->fields['menuText']);
+	unset($form->fields['menuParent']);
 	
 	
 	foreach ($data->output['pageForm']->fields as $key => $value) {
