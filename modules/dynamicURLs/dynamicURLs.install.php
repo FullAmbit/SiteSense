@@ -32,19 +32,18 @@ function dynamicURLs_install($db,$drop=false) {
 	$structures = array(
 		'url_remap' => array(
 			'id'        => SQR_IDKey,
-			'match'     => 'VARCHAR(127) NOT NULL UNIQUE',
+			'match'     => 'VARCHAR(127) NOT NULL',
 			'replace'   => 'VARCHAR(127) NOT NULL',
-			'hostname'	=> 'VARCHAR(64) NOT NULL DEFAULT ``',
+			'hostname'	=> 'VARCHAR(64) NOT NULL DEFAULT ""',
             'regex'     => SQR_boolean,
             'sortOrder' => SQR_sortOrder,
-            'UNIQUE KEY `match` (`match`,`hostname`)'
+            'UNIQUE KEY `match_hostName` (`match`,`hostname`)'
 		)
 	);
 	if($drop)
 		dynamicURLs_uninstall($db);
 
 	$db->createTable('url_remap',$structures['url_remap'],false);
-
 }
 function dynamicURLs_uninstall($db) {
 	$db->dropTable('url_remap');
