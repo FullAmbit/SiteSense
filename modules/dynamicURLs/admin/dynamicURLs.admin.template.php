@@ -35,6 +35,7 @@ function theme_dynamicURLsListTableHead($linkRoot) {
 				<tr>
 					<th class="match">Pattern</th>
 					<th class="replacement">Replacement</th>
+					<th class="hostname">Hostname</th>
 					<th class="replacement">Mode</th>
 					<th class="buttonList">Controls</th>
 				</tr>
@@ -53,6 +54,7 @@ function theme_dynamicURLsListTableRow($remap,$linkRoot,$key) {
 		<tr class="', ($key%2==0 ? 'even' : 'odd'),'">
 			<td class="match">', $remap['match'], '</td>
 			<td class="replacement">', $remap['replace'], '</td>
+			<td class="hostname">',($remap['hostname']=='') ? 'Global' : $remap['hostname'],'</td>
             <td class="replacement">', ($remap['regex'] ? 'Regular Expressions':'Standard'), '</td>
 			<td class="buttonList">
 			    <a href="',$linkRoot,'admin/dynamic-urls/list/moveUp/',$remap['id'],'" title="Move Up">&uArr;</a>
