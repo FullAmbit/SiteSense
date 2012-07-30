@@ -235,6 +235,7 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
 		}
 		$swapSortOrder=$result['sortOrder'];
 	}
+	
 	if(!$error) {
 		// Updating sortOrder effects two items as it is a swap
         if(isset($parentName)) {
@@ -244,7 +245,7 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
                 ':sortOrder'     => $swapSortOrder,
                 ':parent'        => $parent
                 )
-            );
+            );            
         } else {
             $statement=$db->prepare('updateSortOrderNoParent','admin',$table,$sortOrderName);
             $statement->execute(array(
@@ -253,12 +254,13 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
                     )
             );
         }
+    
 		$statement=$db->prepare('updateSortOrderByID','admin',$table,$sortOrderName);
 		$statement->execute(array(
 			':sortOrder' => $swapSortOrder,
 			':id'        => $id
 			)
-		);
+		);		
 	}
 }
 ?>
