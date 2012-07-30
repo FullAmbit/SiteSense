@@ -58,7 +58,7 @@ function dynamicForms_buildContent($data,$db) {
 	// Get Fields
 	$statement = $db->prepare('getFieldsByForm', 'dynamicForms');
 	$statement->execute(array(':form' => $form['id']));
-	$rawFields = $statement->fetchAll();
+	$rawFields = $statement->fetchAll(PDO::FETCH_ASSOC);
 	$rawForm = array();
 	
 	
@@ -134,7 +134,8 @@ function dynamicForms_buildContent($data,$db) {
 				$f['required'] = ($field['required'] == '0') ? false : true;
 				$f['options'] = unserialize($field['options']);
 				$f['validate'] = ($field['isEmail'] == '1') ? 'eMail' : '';
-			case 'timezone':
+				break;
+			case 'timezone':	
 				$f['tag'] = 'select';
 				$f['required'] = ($field['required'] == '0') ? false : true;
 				$f['type'] = 'timezone';
@@ -143,6 +144,7 @@ function dynamicForms_buildContent($data,$db) {
 				$f['tag'] = 'input';
 				$f['params'] = array('type' => 'password');
 				$f['required'] = ($field['required'] == '0') ? false : true;
+				break;
 		}
 		$rawForm[$f['name']] = $f;
 	}

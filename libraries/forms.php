@@ -722,6 +722,7 @@ class formHandler {
 							break;
 						case 'select':
 							echo '>';
+							
 							if($formField['type']=='timezone'){
 							    $currentTime=time();
 							    $times=array();
