@@ -52,6 +52,10 @@ function admin_dynamicURLs_addQueries() {
 		'deleteUrlRemap' => '
 			DELETE FROM !prefix!url_remap WHERE id = :id
 		',
+		
+		'deleteByHostname' => '
+			DELETE FROM !prefix!url_remap WHERE hostname = :hostname
+		',
 		'deleteReplacementByMatch' => '
       DELETE FROM !prefix!url_remap
       WHERE `match` = :match
