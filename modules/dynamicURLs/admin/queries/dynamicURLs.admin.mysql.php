@@ -37,7 +37,7 @@ function admin_dynamicURLs_addQueries() {
 			ORDER BY sortOrder ASC
 		',
         'getUrlRemapByMatch' => '
-			SELECT * FROM !prefix!url_remap WHERE `match` = :match
+			SELECT * FROM !prefix!url_remap WHERE `match` = :match AND `hostname` = :hostname
 			ORDER BY sortOrder ASC
 		',
 		'editUrlRemap' => '

@@ -79,6 +79,7 @@ function admin_dynamicURLsBuild($data,$db) {
             $statement = $db->prepare('editUrlRemap','admin_dynamicURLs');
             $form->sendArray[':id'] = $remapId;
             $result = $statement->execute($form->sendArray) ;
+            var_dump($statement->errorInfo());
 			
 			if($result == FALSE) {
                 $data->output['remapForm']->fields['match']['error']=true;

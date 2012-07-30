@@ -59,7 +59,8 @@ function admin_dynamicURLsBuild($data,$db) {
                 $modifiedMatch=$form->sendArray[':match'];
                 $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
                 $statement->execute(array(
-                        ':match' => $modifiedMatch
+                        ':match' => $modifiedMatch,
+                        ':hostname' => $form->sendArray[':hostname']
                     )
                 );
                 $result=$statement->fetch();
