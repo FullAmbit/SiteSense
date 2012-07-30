@@ -232,6 +232,29 @@ final class sitesense {
     	
     	// Set TimeZone To GMT/UTC (0:00)
     	$this->db->query('setTimeZone');
+    	
+    	// Load settings
+		$statement=$this->db->query('getSettings');
+		while ($row=$statement->fetch()) {
+			if ($row['category']=='cms') {
+				$this->settings[$row['name']]=$row['value'];
+			} else {
+				$this->settings[$row['category']][$row['name']]=$row['value'];
+				$this->settings[$row['category']][$row['name']]=$row['value'];
+			}
+		}
+    	
+    	// Do We Have Any Specific Settings For This HostName?
+    	$this->hostname = $_SERVER['HTTP_HOST'];
+		$statement = $this->db->prepare('getHostname','hostnames');
+		$statement->execute(array(
+			':hostname' => $this->hostname
+		));
+		if($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)){
+			$this->settings['theme'] = $hostnameItem['defaultTheme'];
+			$this->settings['language'] = $hostnameItem['defaultLanguage'];
+			$this->settings['homepage'] = $hostnameItem['homepage'];
+		}
 
 		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
@@ -253,9 +276,11 @@ final class sitesense {
 			 $queryString=substr($url,strlen($this->linkHome)-1);
 			// be sure to ===0 since false trips ==0
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
-		}		$queryString = trim($queryString,'/').'/';
+		}
+		$queryString = trim($queryString,'/').'/';
+		// Check For URL Replacement
 		$statement = $this->db->prepare('findReplacement');
-		$statement->execute(array(':url' => $queryString));
+		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if($row=$statement->fetch()) {
 		$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
 		}
@@ -268,16 +293,7 @@ final class sitesense {
 			require_once('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
-		// Load settings
-		$statement=$this->db->query('getSettings');
-		while ($row=$statement->fetch()) {
-			if ($row['category']=='cms') {
-				$this->settings[$row['name']]=$row['value'];
-			} else {
-				$this->settings[$row['category']][$row['name']]=$row['value'];
-				$this->settings[$row['category']][$row['name']]=$row['value'];
-			}
-		}
+		
 		// Set Default TimeZone
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);
@@ -307,20 +323,8 @@ final class sitesense {
 				$this->compressionType='gzip';
 			}
 		}
-
-        // Define server paths
-        $this->hostname = $_SERVER['HTTP_HOST'];
-        // Do We Have Any Specific Settings For This HostName?
-		$statement = $this->db->prepare('getHostname','hostnames');
-		$statement->execute(array(
-			':hostname' => $this->hostname
-		));
-		if($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)){
-			$this->settings['theme'] = $hostnameItem['defaultTheme'];
-			$this->settings['language'] = $hostnameItem['defaultLanguage'];
-			$this->settings['homepage'] = $hostnameItem['homepage'];
-		}
 		
+		// Define server path
 		$this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->siteRoot=$_SERVER['PHP_SELF'];
 		$this->themeDir='themes/'.$this->settings['theme'].'/';

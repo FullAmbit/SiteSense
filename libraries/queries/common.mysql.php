@@ -397,7 +397,7 @@ function common_addQueries() {
             (:name,:enabled)
         ',
         'findReplacement' => '
-            SELECT r.match,r.replace FROM !prefix!url_remap r WHERE :url RLIKE r.match
+            SELECT r.match,r.replace FROM !prefix!url_remap r WHERE :url RLIKE r.match AND (hostname = :hostname OR hostname = `` OR hostname = 0)
         '
     );
 }
