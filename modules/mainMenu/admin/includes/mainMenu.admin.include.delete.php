@@ -51,6 +51,7 @@ function admin_mainMenuBuild($data,$db) {
 			// Delete All Children //
 			deleteChildren($db,$data->output['menuItem']);
 			/*=========================================================================*/
+			//die();
 			// Remove from database
 			$statement = $db->prepare('deleteMenuItemById','admin_mainMenu');
 			$statement->execute(array(':id' => $data->action[3]));
@@ -67,15 +68,17 @@ function deleteChildren($db,$item)
 	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
 	$statement->execute(array(':parent' => $item['id']));
 	$children = $statement->fetchAll();
+	
 	foreach($children as $child)
 	{
+		// Recursively Check If Our Child Has Any Children Of It's Own
 		deleteChildren($db,$child);
-	}
-	// Delete All With This Parent ID
-	if($item['parent'] !== '0')
-	{
+		
+		// Now Delete All Menu Items That Belong To This Child
 		$statement = $db->prepare('deleteItemsByParent','admin_mainMenu');
-		$statement->execute(array(':parent' => $item['parent']));
+		$statement->execute(array(
+			':parent' => $item['id']
+		));
 	}
 }
 
