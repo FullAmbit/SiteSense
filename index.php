@@ -309,7 +309,19 @@ final class sitesense {
 		}
 
         // Define server paths
-        $this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
+        $this->hostname = $_SERVER['HTTP_HOST'];
+        // Do We Have Any Specific Settings For This HostName?
+		$statement = $this->db->prepare('getHostname','hostnames');
+		$statement->execute(array(
+			':hostname' => $this->hostname
+		));
+		if($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)){
+			$this->settings['theme'] = $hostnameItem['defaultTheme'];
+			$this->settings['language'] = $hostnameItem['defaultLanguage'];
+			$this->settings['homepage'] = $hostnameItem['homepage'];
+		}
+		
+		$this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->siteRoot=$_SERVER['PHP_SELF'];
 		$this->themeDir='themes/'.$this->settings['theme'].'/';
 		$this->linkRoot=$this->linkHome;
@@ -318,6 +330,8 @@ final class sitesense {
 		$this->smallStaticLinkRoot=(isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
+		
+		
 
         // Direct to Homepage
         if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
