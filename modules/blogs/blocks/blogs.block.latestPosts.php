@@ -16,14 +16,10 @@ function latestPosts_content($data,$attributes) {
 	foreach($data->output['postList'] as $postItem) {
 		echo '
 			<h3 class="link">
-        <span>
-          ',date("F jS, Y",$postItem['postTime']),'
-          <span> - </span>
-        </span>
-        <a href="',$data->linkRoot,'press/',$postItem['shortName'],'">',$postItem['title'],'</a>
+        <a href="',$data->linkRoot,(isset($attributes[1])) ? $attributes[1] : $data->settings['defaultBlog'],'/',$postItem['shortName'],'">',$postItem['title'],'</a>
         <b></b>
       </h3>
-			',htmlspecialchars_decode($postItem['parsedSummary']);
+			';
 	}
 	echo '</div>';
   } else {

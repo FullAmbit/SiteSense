@@ -46,7 +46,7 @@ function admin_dynamicFormsBuild($data,$db) {
 		return;
 	}
 
-	$form = $data->output['fromForm'] = new formHandler('formoptions',$data,true);
+	$form = $data->output['fromForm'] = new formHandler('options',$data,true);
 	if (
 		(!empty($_POST['fromForm'])) &&
 		($_POST['fromForm']==$form->fromForm)

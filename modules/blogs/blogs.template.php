@@ -154,7 +154,7 @@ function theme_blogPostControls($data,$blogItem) {
 		) $controls[]='<a href="#">Reply</a>';
 		if(
 			checkPermission('canManageBlog','blogs',$data) &&
-				($data->output['blog']['owner']==$data->user['id'])
+				($data->output['blogInfo']['owner']==$data->user['id'])
 
 		) {
 			if($blogItem['repliesWaiting']>0) $controls[]='<a href="#">Approve Replies</a>';

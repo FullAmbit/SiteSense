@@ -241,7 +241,11 @@ function blogs_content($data) {
 		theme_blogRSSFeed($data);
         die;
 	} else {
-		$pagination=is_numeric($data->action[2]);
+    if(is_numeric($data->action[2]) && $data->action[2]>0) {
+      $pagination=TRUE;
+    } else {
+      $pagination=FALSE;
+    }
 		blogs_common_pageContent($data,false,$pagination, $data->output['summarize']);
 	}
 }

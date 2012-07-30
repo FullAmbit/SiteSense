@@ -618,7 +618,7 @@ class formHandler {
 		}
 	}
 	
-	function build($buffer=FALSE){
+	function build($buffer=FALSE,$commonForm=TRUE){
 		if($buffer)	{
 			ob_start();
 		}
@@ -630,8 +630,10 @@ class formHandler {
 					method="post"
 					action="',rtrim($this->action,'/').'/','"
 					id="',$this->formPrefix,'form"
-					enctype="multipart/form-data"
-					class="commonForm"
+					enctype="multipart/form-data"';
+					if($commonForm) echo '
+					class="commonForm"';
+					echo '
 				>';
 			if ($this->error) {
 				echo '
@@ -877,11 +879,13 @@ class formHandler {
 				$this->error ? ', <b>X</b> indicates a field with errors' : ''
 				);
       }
-      echo 
-      ((strlen($this->extraMarkup)==0) ? '' : '<div class="extraMarkup">').
-            $this->extraMarkup.'
-          <!-- .extraMarkup --></div>
-      
+      if(strlen($this->extraMarkup)==0) {
+        echo '
+          <div class="extraMarkup">
+            ',$this->extraMarkup.'
+          <!-- .extraMarkup --></div>';
+      }
+      echo '
           <!-- .submitsAndHiddens --></div>
         </form>';
 		}
