@@ -46,6 +46,11 @@ function admin_dynamicURLsBuild($data,$db) {
         $data->output['urlremap']['match']=str_replace('(/.*)?$','',$data->output['urlremap']['match']);
         $data->output['urlremap']['replace']=str_replace('\1','',$data->output['urlremap']['replace']);
     }
+    // Load Hostnames
+    $statement = $db->prepare('getAllHostnames','admin_hostnames');
+    $statement->execute();
+    $data->output['hostnameList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
+    
 	// Create The Form
 	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	$form->caption = 'Editing URL Remap';
@@ -54,6 +59,9 @@ function admin_dynamicURLsBuild($data,$db) {
 		// Populate The Send Array
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
+			// Check Hostname
+			if(!isset($form->sendArray[':hostname'])) $form->sendArray[':hostname'] = '';
+			
 			if(!$data->output['urlremap']['regex']) {
                 // Remove
                 $form->sendArray[':match']=str_replace('^','',$form->sendArray[':match']);

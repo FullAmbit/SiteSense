@@ -42,12 +42,12 @@ function admin_dynamicURLs_addQueries() {
 		',
 		'editUrlRemap' => '
 			UPDATE !prefix!url_remap
-			SET `match` = :match, `replace` = :replace
+			SET `match` = :match, `replace` = :replace, `hostname` = :hostname
 			WHERE id = :id
 		',
 		'insertUrlRemap' => '
 			INSERT INTO !prefix!url_remap
-			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder, `regex`=:regex
+			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder, `regex`=:regex, `hostname` = :hostname
 		',
 		'deleteUrlRemap' => '
 			DELETE FROM !prefix!url_remap WHERE id = :id

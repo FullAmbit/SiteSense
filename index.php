@@ -331,8 +331,6 @@ final class sitesense {
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
 		
-		
-
         // Direct to Homepage
         if ($this->linkHome!='/') $url=str_replace($this->linkHome,'',$url);
         $url=trim($url,'/');

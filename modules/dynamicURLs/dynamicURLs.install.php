@@ -34,6 +34,7 @@ function dynamicURLs_install($db,$drop=false) {
 			'id'        => SQR_IDKey,
 			'match'     => 'VARCHAR(127) NOT NULL UNIQUE',
 			'replace'   => 'VARCHAR(127) NOT NULL',
+			'hostname'	=> 'VARCHAR(64) NOT NULL DEFAULT ``',
             'regex'     => SQR_boolean,
             'sortOrder' => SQR_sortOrder
 		)
