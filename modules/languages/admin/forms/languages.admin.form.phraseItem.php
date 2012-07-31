@@ -6,6 +6,7 @@ $this->fields = array(
 	'phrase' => array(
 		'label' => 'Phrase',
 		'tag' => 'input',
+		'value' => (isset($data->output['phraseItem'])) ? $data->output['phraseItem']['phrase'] : '',
 		'params' => array(
 			'type' => 'text'
 		),
@@ -14,6 +15,7 @@ $this->fields = array(
 	'text' => array(
 		'label' => 'Text',
 		'tag' => 'input',
+		'value' => (isset($data->output['phraseItem'])) ? $data->output['phraseItem']['text'] : '',
 		'params' => array(
 			'type' => 'text'
 		),
@@ -22,10 +24,11 @@ $this->fields = array(
 	'module' => array(
 		'label' => 'Module',
 		'tag' => 'select',
+		'value' => (isset($data->output['phraseItem'])) ? $data->output['phraseItem']['module'] : '',
 		'options' => array(
 			array(
 				'text' => 'Global',
-				'value' => NULL
+				'value' => ''
 			)
 		)
 	)

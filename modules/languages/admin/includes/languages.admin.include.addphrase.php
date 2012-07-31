@@ -17,15 +17,16 @@ function languages_admin_addphrase_build($data,$db){
 			// Populate Post Data
 			$data->output['phraseForm']->populateFromPostData();
 			// Check To See If Phrase Exists Already
-			$statement = $db->prepare('getPhraseByLanguage','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+			$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
 			$statement->execute(array(
-				':phrase' => $data->output['phraseForm']->sendArray[':phrase']
+				':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
+				':module' => $data->output['phraseForm']->sendArray[':module']
 			));
 			if($statement->fetch() !== FALSE){
 				// Throw Form Error, Phrase Taken.
 				$data->output['phraseForm']->error = true;
 				$data->output['phraseForm']->fields['phrase']['error'] = true;
-				$data->output['phraseForm']->fields['phrase']['errorList'][] = 'The phrase you specified already exists.';
+				$data->output['phraseForm']->fields['phrase']['errorList'][] = 'The phrase you specified already exists for this module.';
 				return;
 			}
 			// Save To Database
@@ -35,7 +36,7 @@ function languages_admin_addphrase_build($data,$db){
 				$data->output['themeOverride'] = 'AddPhraseSuccess';
 			}else{
 				$data->output['responseMessage'] = 'There was an error in saving to the database.';
-			}
+			}			
 		}
 	}
 }
