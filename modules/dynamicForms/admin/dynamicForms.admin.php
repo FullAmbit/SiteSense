@@ -32,6 +32,7 @@ function dynamicForms_admin_buildContent($data,$db) {
 	if (empty($data->action[2])) {
 		$data->action[2]='list';
 	}
+	$data->action[2] = strtolower($data->action[2]);
 	$target='modules/dynamicForms/admin/includes/dynamicForms.admin.include.'.$data->action[2].'.php';
     if (file_exists($target)) {
         common_include($target);
