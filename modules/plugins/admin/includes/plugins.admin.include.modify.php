@@ -24,7 +24,7 @@
 */
 common_include('libraries/forms.php');
 function admin_pluginsBuild($data,$db) {
-    if(!checkPermission('plugins_edit','core',$data)) {
+    if(!checkPermission('edit','plugins',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;

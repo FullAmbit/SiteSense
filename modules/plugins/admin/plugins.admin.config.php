@@ -24,7 +24,7 @@
 */
 function plugins_admin_config($data,$db)
 {
-	if(checkPermission('plugins_access','core',$data)) {
+	if(checkPermission('access','plugins',$data)) {
 		$data->admin['menu'][] = array(
 			'category' => 'Site Management',
 			'command' => 'plugins/list',

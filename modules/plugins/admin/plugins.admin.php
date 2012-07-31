@@ -27,7 +27,7 @@ function plugins_admin_buildContent($data,$db)
 	/**
 	 *	Permissions: Admin Only
 	**/
-    if(!checkPermission('plugins_access','core',$data)) {
+    if(!checkPermission('access','plugins',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
