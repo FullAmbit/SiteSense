@@ -225,6 +225,7 @@ final class sitesense {
 		$plugins = array(),
 		$cdn,$smallStaticLinkRoot,$largeStaticLinkRoot,$flashLinkRoot,$cdnLinks = array(),
 		$banned = false,
+		$language,
 		$jsEditor;
 
 	private $db;
@@ -497,9 +498,10 @@ final class sitesense {
 						// Update and sync cookie to server values
 						setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
 						$expires=gmdate("Y-m-d H:i:s",$expires);
-						$statement=$this->db->prepare('updateSessionExpiration');
+						$statement=$this->db->prepare('updateSessionExpirationAndLanguage');
 						$statement->execute(array(
 							':expires' => $expires,
+							':language' => (isset($_POST['language'])) ? $_POST['language'] : $this->user['defaultLanguage'],
 							':sessionId' => $session['sessionId']
 						)) or die('Session Database failed updating expiration');
 
@@ -569,12 +571,30 @@ final class sitesense {
 					':userId'    => $user['id'],
 					':expires'   => $expires,
 					':ipAddress' => $_SERVER['REMOTE_ADDR'],
-					':userAgent' => $_SERVER['HTTP_USER_AGENT']
+					':userAgent' => $_SERVER['HTTP_USER_AGENT'],
+					':language'	 => isset($_POST['language']) ? $_POST['language'] : $this->user['defaultLanguage']
 				));
 				$this->loginResult=true;
 			}
 		}
 		
+		// What Language Will We Be Loading?
+		if(isset($_POST['language'])){
+			$this->language = $_POST['language'];
+		}elseif(isset($this->user['sessions']['language']) && $this->user['sessions']['language']!==''){
+			$this->language = $this->user['sessions']['language'];
+		}elseif(isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!==''){
+			$this->language = $this->user['defaultLanguage'];
+		}else{
+			$this->language = $this->settings['language'];
+		}
+		// Load The Phrases From The Database
+		$statement = $this->db->prepare('getCoreAndModulePhrases','common','languages_phrases_'.$this->language);
+		$statement->execute(array(
+			':module' => $this->currentPage
+		));
+		$this->phrases = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+
 		$moduleQuery = $this->db->query('getEnabledModules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {

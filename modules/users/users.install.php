@@ -50,6 +50,7 @@ function users_install($db,$drop=false) {
             'expires'             => SQR_time,
             'ipAddress'           => SQR_IP,
             'userAgent'           => 'VARCHAR(255)',
+            'language'            => 'VARCHAR(64) NOT NULL DEFAULT""',
             'KEY `userId` (`userId`,`expires`)'
         ),
         'users' => array(
@@ -65,7 +66,8 @@ function users_install($db,$drop=false) {
 			'publicEMail'         => SQR_email,
 			'emailVerified'       => SQR_boolean.' DEFAULT \'0\'',
 			'activated'           => SQR_boolean.' DEFAULT \'0\'',
-			'timeZone'			  => 'VARCHAR(63) DEFAULT NULL'
+			'timeZone'			  => 'VARCHAR(63) DEFAULT NULL',
+			'defaultLanguage'     => 'VARCHAR(64) NOT NULL DEFAULT ""'
 		),
 		'users_dynamic_fields' => array(
 			'id'                  => SQR_ID,
