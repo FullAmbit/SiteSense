@@ -106,6 +106,7 @@ function theme_languagesUpdate($data){
 			<option value="1">Only Install Phrases That Don\'t Currently Exist</option>
 			<option value="2">Update Existing Phrases And Install New Ones</option>
 		</select>
+		Update Module Languages? <input type="checkbox" name="updateModules" value="1" />
 		<input type="submit" name="install" value="Install" />
 	</form>';
 }

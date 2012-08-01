@@ -1,5 +1,7 @@
 <?php
 
+common_include('modules/languages/admin/languages.admin.common.php');
+
 function languages_admin_update_build($data,$db){
 	// Build List Of Languages Available To You (Must Have Core Phrase File In modules/langauges/phrases/)
 	
@@ -57,118 +59,28 @@ function languages_admin_update_build($data,$db){
 		// Add Core Phrases
 		if(language_admin_savePhrases($data,$db,$_POST['language'],'',$languageList[$_POST['language']]['phrases']) === FALSE) return;
 		
-		// Get The Modular Installation Files For This Language
-		$dirNames = array_flip($data->output['moduleShortName']);
-		$dirSearch = implode(',',$data->output['moduleShortName']);
-		$modularFileList = glob("modules/{".$dirSearch."}/languages/{".$dirSearch."}.phrases.".$_POST['language'].".php",GLOB_BRACE);
-		foreach($modularFileList as $modularFile){
-			$matches=array();
-			if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$modularFile,$matches) == 0) continue;
-			$moduleName = $matches[2];
-			
-			$func = 'languages_'.$moduleName.'_'.$_POST['language'];
-			common_include($modularFile);
-			if(!function_exists($func)) continue;
-			// Get Phrases For This Module
-			$modulePhrases = $func();
-			// Save These Phrases
-			if(language_admin_savePhrases($data,$db,$_POST['language'],$moduleName,$modulePhrases) === FALSE) return;			
+		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1'){		
+			// Get The Modular Installation Files For This Language
+			$dirNames = array_flip($data->output['moduleShortName']);
+			$dirSearch = implode(',',$data->output['moduleShortName']);
+			$modularFileList = glob("modules/{".$dirSearch."}/languages/{".$dirSearch."}.phrases.".$_POST['language'].".php",GLOB_BRACE);
+			foreach($modularFileList as $modularFile){
+				$matches=array();
+				if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$modularFile,$matches) == 0) continue;
+				$moduleName = $matches[2];
+				
+				$func = 'languages_'.$moduleName.'_'.$_POST['language'];
+				common_include($modularFile);
+				if(!function_exists($func)) continue;
+				// Get Phrases For This Module
+				$modulePhrases = $func();
+				// Save These Phrases
+				if(language_admin_savePhrases($data,$db,$_POST['language'],$moduleName,$modulePhrases) === FALSE) return;			
+			}
 		}
-		
 		$data->output['themeOverride'] = 'UpdateSuccess';
 	}	
 }	
-
-function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases){
-	$moduleShortName = (isset($data->output['moduleShortName'][$moduleName])) ? $data->output['moduleShortName'][$moduleName] : '';
-	switch($_POST['action']){
-		case 0:
-			// Clear Table And Start Fresh
-			$statement=$db->prepare("deletePhrasesByModuleAndLanguage","admin_languages","languages_phrases_".$languageShortName);
-			$statement->execute(array(
-				':module' => $moduleShortName
-			));
-			// Put In The New Phrases
-			$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$languageShortName);
-			foreach($modulePhrases as $phrase => $text){
-				$result = $statement->execute(array(
-					':phrase' => $phrase,
-					':text' => $text,
-					':module' => $moduleShortName
-				));
-				if($result == FALSE){
-					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
-					return FALSE;
-				}
-			}
-		break;
-		case 1:
-			// Install Non-Existing Phrases, Ignore Pre-Existing Ones
-			$statement = $db->prepare('getPhrasesByModule','admin_languages','languages_phrases_'.$languageShortName);
-			$statement->execute(array(
-				':module' => $moduleShortName
-			));
-			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
-			// Put In The New Phrases
-			$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$languageShortName);
-			foreach($modulePhrases as $phrase => $text){
-				if(isset($existingModuleList[$phrase])) continue; // Ignore Pre-Existing One
-
-				$result = $statement->execute(array(
-					':phrase' => $phrase,
-					':text' => $text,
-					':module' => $moduleShortName
-				));
-				
-				if($result == FALSE){
-					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
-					return FALSE;
-				}
-			}
-		break;
-		case 2:
-			// Update Existing Ones, Install New Ones
-			$statement = $db->prepare('getPhrasesByModule','admin_languages','languages_phrases_'.$languageShortName);
-			$statement->execute(array(
-				':module' => $moduleShortName
-			));
-			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
-			// Put In The New Phrases
-			$insert = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$languageShortName);
-			$update = $db->prepare('updatePhraseByLanguage','admin_languages','languages_phrases_'.$languageShortName);
-			foreach($modulePhrases as $phrase => $text){
-				if(isset($existingModuleList[$phrase])){
-					// Update old one
-					$result = $update->execute(array(
-						':phrase' => $phrase,
-						':text' => $text,
-						':module' => $moduleShortName,
-						':id' => $existingModuleList[$phrase][0]['id']
-					));
-				}else{
-					// insert New One
-					$result = $insert->execute(array(
-						':phrase' => $phrase,
-						':text' => $text,
-						':module' => $moduleShortName
-					));
-				}
-				
-				if($result == FALSE){
-					$data->output['responseMessage'] = 'There was an error while saving the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
-					return FALSE;
-				}
-			}
-
-		break;
-		default:
-			$data->output['responseMessage'] = 'The action you specified was invalid.';
-			return FALSE;
-		break;
-	}
-}
 
 function languages_admin_update_content($data){
 	if(isset($data->output['themeOverride'])){

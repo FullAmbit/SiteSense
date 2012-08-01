@@ -28,10 +28,11 @@ require_once('libraries/common.php');
 
 final class dynamicPDO extends PDO {
     public  $sessionPrefix;
+    public 	$lang;
     private $tablePrefix;
 	private $sqlType;
 	private $queries;
-	private $qSearch=array('!prefix!','!table!','!column1!','!column2!');
+	private $qSearch=array('!prefix!','!lang!','!table!','!column1!','!column2!');
 
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
@@ -98,16 +99,19 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - '.$moduleName.' Queries Library File not found!<br>'.$target);
 		} else return false;
 	}
-	private function prepQuery($queryName,$module,$tableName,$column1,$column2) {
+	private function prepQuery($queryName,$module,$tableName,$column1,$column2,$lang=NULL) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
             $this->loadModuleQueries($module);
 		}
 		if (isset($this->queries[$module][$queryName])) {
+			$lang = ($lang == NULL) ? $this->lang : $lang;
+			$lang = rtrim($lang,'_').'_';
 			return str_replace(
 				$this->qSearch,
 				array(
 					$this->tablePrefix,
+					$lang,
                     $this->tablePrefix.$tableName,
                     $column1,
                     $column2
@@ -116,20 +120,20 @@ final class dynamicPDO extends PDO {
 			);
 		} else return false;
 	}
-	public function query($queryName,$module='common',$tableName='',$column1='',$column2='') {
-		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
+	public function query($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
+		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
 			return parent::query($query);
 		} else {
 			return false;
 		}
 	}
-	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='') {
-        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
+	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
 			return parent::exec($query);
 		} else return false;
 	}
-	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='') {
-        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2)) {
+	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
+        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
 			return parent::prepare($query);
 		} else return false;
 	}
@@ -226,37 +230,15 @@ final class sitesense {
 	private $db;
 
     public function __construct() {
-    	
     	// Database connection
     	$this->db=new dynamicPDO();
     	
     	// Set TimeZone To GMT/UTC (0:00)
     	$this->db->query('setTimeZone');
     	
-    	// Load settings
-		$statement=$this->db->query('getSettings');
-		while ($row=$statement->fetch()) {
-			if ($row['category']=='cms') {
-				$this->settings[$row['name']]=$row['value'];
-			} else {
-				$this->settings[$row['category']][$row['name']]=$row['value'];
-				$this->settings[$row['category']][$row['name']]=$row['value'];
-			}
-		}
-    	
-    	// Do We Have Any Specific Settings For This HostName?
-    	$this->hostname = $_SERVER['HTTP_HOST'];
-		$statement = $this->db->prepare('getHostname','hostnames');
-		$statement->execute(array(
-			':hostname' => $this->hostname
-		));
-		if($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)){
-			$this->settings['theme'] = $hostnameItem['defaultTheme'];
-			$this->settings['language'] = $hostnameItem['defaultLanguage'];
-			$this->settings['homepage'] = $hostnameItem['homepage'];
-		}
-
-		$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
+    	// Parse URL
+    	 $this->hostname = $_SERVER['HTTP_HOST'];
+    	$url=str_replace(array('\\','%5C'),'/',$_SERVER['REQUEST_URI']);
 		if (strpos($url,'../')) killHacker('Uptree link in URI');
 		$this->linkHome=str_ireplace('index.php','',$_SERVER['PHP_SELF']); 
 		$hasIndex=$this->linkHome==$_SERVER['PHP_SELF'];
@@ -278,12 +260,14 @@ final class sitesense {
 			 if (strpos($queryString,'index.php')===0) $queryString=substr($queryString,9); 
 		}
 		$queryString = trim($queryString,'/').'/';
+		
 		// Check For URL Replacement
 		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if($row=$statement->fetch()) {
-		$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
+			$queryString = preg_replace('~' . $row['match'] . '~',$row['replace'],$queryString); // Our New URL
 		}
+		
 		// Break URL up into action array
 		$queryString = trim($queryString,'/');
 		$this->action=empty($queryString) ? array('default') : explode('/',$queryString);
@@ -294,6 +278,44 @@ final class sitesense {
 			die; // technically install.php should die at end, but to be sure...
 		}
 		
+		// Get Default Language
+    	$statement=$this->db->query('getDefaultLanguage');
+    	if(!$statement){
+	    	$languageItem = array(
+	    		'shortName' => 'en_us',
+	    		'name' => "English (US)"
+	    	);
+	    }else{
+	    	$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
+	    	if($languageItem == FALSE){
+		    	die("There is no default langauge available.");
+	    	}
+	    }
+	    // Give DB The Default Language
+    	$this->settings['language'] = $languageItem['shortName'];
+    	$this->db->lang = $this->settings['language'];
+    	
+    	// Load settings
+		$statement=$this->db->query('getSettings');
+		while ($row=$statement->fetch()) {
+			if ($row['category']=='cms') {
+				$this->settings[$row['name']]=$row['value'];
+			} else {
+				$this->settings[$row['category']][$row['name']]=$row['value'];
+				$this->settings[$row['category']][$row['name']]=$row['value'];
+			}
+		}   
+    	// Do We Have Any Specific Settings For This HostName?
+		$statement = $this->db->prepare('getHostname','hostnames');
+		$statement->execute(array(
+			':hostname' => $this->hostname
+		));
+		if($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)){
+			$this->settings['theme'] = $hostnameItem['defaultTheme'];
+			$this->settings['language'] = $hostnameItem['defaultLanguage'];
+			$this->settings['homepage'] = $hostnameItem['homepage'];
+		}
+
 		// Set Default TimeZone
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);

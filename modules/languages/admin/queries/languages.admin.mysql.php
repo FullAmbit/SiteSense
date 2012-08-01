@@ -72,6 +72,8 @@ function admin_languages_addQueries(){
 				phrase,id,text
 			FROM
 				!table!
+			WHERE
+				module = :module
 		',
 		'updatePhraseByLanguage' => '
 			UPDATE 
@@ -105,6 +107,13 @@ function admin_languages_addQueries(){
 				(shortName,name)
 			VALUES
 				(:shortName,:name)
+		',
+		'addDefaultLanguage' => '
+			INSERT INTO
+				!prefix!languages
+				(shortName,name,isDefault)
+			VALUES
+				(:shortName,:name,1)
 		'
 	);
 }
