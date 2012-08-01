@@ -119,8 +119,14 @@ function admin_modulesBuild($data,$db){
 						}
 					}
 					if($data->output['languageExistsError']==FALSE){
-						// No Existing Phrases Found...Add These In!
-						if(language_admin_savePhrases($data,$db,$languageShortName,$name,$modulePhrases) === FALSE){
+						// Put In The New Phrases
+						$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$languageItem['shortName']);
+						foreach($modulePhrases as $phrase => $text){
+							$result = $statement->execute(array(
+								':phrase' => $phrase,
+								':text' => $text,
+								':module' => $result['shortName']
+							));
 							$data->output['rejectError']='Language Installation Error';
 							$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
 						}

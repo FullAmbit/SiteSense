@@ -269,7 +269,7 @@ function blogs_uninstall($db,$lang="en_us") {
 	$lang = rtrim($lang,'_').'_';
     $db->dropTable($lang.'blogs');
     $db->dropTable($lang.'blog_posts');
-    $db->dropTable($lang.'blog_comments');
+    $db->dropTable('blog_comments');
     $db->dropTable($lang.'blog_categories');
 }
 ?>

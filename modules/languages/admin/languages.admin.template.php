@@ -19,7 +19,10 @@ function theme_languagesList($data){
 		echo 
 		'	<tr>
 				<td>',$languageItem['name'],'</td>
-				<td><a href="',$data->linkRoot,'admin/languages/listPhrases/',$languageItem['shortName'],'">Phrases</a></td>
+				<td>
+					<a href="',$data->linkRoot,'admin/languages/listPhrases/',$languageItem['shortName'],'">Phrases</a>',
+					(($languageItem['isDefault']=='0') ? '<a href="'.$data->linkRoot.'admin/languages/default/'.$languageItem['shortName'].'">Make Default</a>' : '<b>Default</b>'),'
+				</td>
 			</tr>';
 	}
 	echo

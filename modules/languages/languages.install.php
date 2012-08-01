@@ -30,8 +30,11 @@ function languages_install($db,$drop = FALSE){
 		':shortName' => 'en_us',
 		':name' => $languageItem['name']
 	));
+
+	// Install Phrases (creat lang table first)
+	$create = $db->prepare("createLanguageTable","admin_languages","languages_phrases_en_us");
+	$create->execute();
 	
-	// Install Phrases
 	$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_en_us');
 	foreach($languageItem['phrases'] as $phrase => $text){
 		$statement->execute(array(
