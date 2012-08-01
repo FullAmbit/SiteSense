@@ -30,77 +30,77 @@ function admin_sidebars_addQueries() {
 	return array(
 		'getSorted' => '
 			SELECT id
-			FROM !prefix!sidebars
+			FROM !prefix!!lang!sidebars
 			ORDER BY id
 		',
 		'getSortOrderById' => '
 			SELECT id
-			FROM !prefix!sidebars
+			FROM !prefix!!lang!sidebars
 			WHERE id = :id
 		',
 		'updateSortOrderById' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET sortOrder = :sortOrder
 			WHERE id = :id
 		',
 		'updateEnabledById' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET enabled = :enabled
 			WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
 		'getSidebarNameByName' => '
-			SELECT name FROM !prefix!sidebars
+			SELECT name FROM !prefix!!lang!sidebars
 			WHERE name = :name
 		',
         'getSidebarsNames' => '
-			SELECT name FROM !prefix!sidebars
+			SELECT name FROM !prefix!!lang!sidebars
 			ORDER BY sortOrder ASC
 		',
 		'insertSidebarFile' => '
-			INSERT INTO !prefix!sidebars
+			INSERT INTO !prefix!!lang!sidebars
 			(name,shortName,enabled,fromFile,side) VALUES (:name,:shortName,false,true,"left")
 		',
 		'insertSidebar' => '
-			INSERT INTO !prefix!sidebars
+			INSERT INTO !prefix!!lang!sidebars
 			(name,shortName,enabled,fromFile,title,side,titleURL,rawContent,parsedContent,sortOrder) VALUES (:name,:shortName, true, false, :title, :side, :titleURL, :rawContent,:parsedContent,:sortOrder)
 		',
 		'getFromFiles' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!!lang!sidebars
 			WHERE fromFile = TRUE
 			ORDER BY id ASC
 		',
 		'getFromFileById' => '
-			SELECT fromFile FROM !prefix!sidebars
+			SELECT fromFile FROM !prefix!!lang!sidebars
 			WHERE id = :id
 		',
 		'deleteById' => '
-			DELETE FROM !prefix!sidebars
+			DELETE FROM !prefix!!lang!sidebars
 			WHERE id = :id
 		',
 		'getAllSidebars' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!!lang!sidebars
 			ORDER BY sortOrder ASC
 		',
 		'getAllOrdered' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!!lang!sidebars
 			ORDER BY sortOrder ASC
 		',
 		'getById' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!!lang!sidebars
 			WHERE id = :id
 		',
 		'getIdByShortName' => '
-			SELECT id FROM !prefix!sidebars
+			SELECT id FROM !prefix!!lang!sidebars
 			WHERE shortName = :shortName
 		',
 		'updateShortNameById' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET shortName = :shortName
 			WHERE id = :id
 		',
 		'updateById' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET
 				name      = :name,
 				shortName = :shortName,
@@ -112,32 +112,32 @@ function admin_sidebars_addQueries() {
 			WHERE id = :id
 		',
 		'shiftOrderUpByID' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
 		'shiftOrderUpRelative' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder
 			ORDER BY sortOrder DESC LIMIT 1
 		',
 		'shiftOrderDownByID' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
 		'shiftOrderDownRelative' => '
-			UPDATE !prefix!sidebars
+			UPDATE !prefix!!lang!sidebars
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder
 			ORDER BY sortOrder ASC LIMIT 1
 		',
 		'updateSideById' => '
-			UPDATE !prefix!sidebars SET side = :side WHERE id = :id LIMIT 1
+			UPDATE !prefix!!lang!sidebars SET side = :side WHERE id = :id LIMIT 1
 		',
 		'getExistingShortNames' => '
-			SELECT shortName FROM !prefix!sidebars
+			SELECT shortName FROM !prefix!!lang!sidebars
 		',
 		'deleteSettings' => '
 			(DELETE FROM !prefix!form_sidebars WHERE sidebar = :sidebar)

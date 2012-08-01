@@ -29,22 +29,22 @@
 function admin_dynamicForms_addQueries() {
 	return array(
 		'getAllFormIds' => '
-			SELECT id FROM !prefix!forms
+			SELECT id FROM !prefix!!lang!forms
 		',
 		'getAllForms' => '
-			SELECT * FROM !prefix!forms ORDER BY id DESC
+			SELECT * FROM !prefix!!lang!forms ORDER BY id DESC
 		',
 		'getFormById' => '
-			SELECT * FROM !prefix!forms WHERE id = :id
+			SELECT * FROM !prefix!!lang!forms WHERE id = :id
 		',
 		'getFormByShortName' => '
-			SELECT * FROM !prefix!forms WHERE shortName = :shortName AND enabled = 1
+			SELECT * FROM !prefix!!lang!forms WHERE shortName = :shortName AND enabled = 1
 		', 
 		'getTopLevelFormByShortName' => '
-			SELECT * FROM !prefix!forms WHERE shortName = :shortName and topLevel = 1
+			SELECT * FROM !prefix!!lang!forms WHERE shortName = :shortName and topLevel = 1
 		', 
 		'getFieldById' => '
-			SELECT * FROM !prefix!form_fields WHERE id = :id
+			SELECT * FROM !prefix!!lang!form_fields WHERE id = :id
 		',
 		'getRowById' => '
 			SELECT * FROM !prefix!form_rows WHERE id = :id
@@ -53,7 +53,7 @@ function admin_dynamicForms_addQueries() {
 			SELECT * FROM !prefix!form_values WHERE id = :id
 		',
 		'getFieldsByForm' => '
-			SELECT * FROM !prefix!form_fields WHERE form = :form ORDER BY sortOrder ASC
+			SELECT * FROM !prefix!!lang!form_fields WHERE form = :form ORDER BY sortOrder ASC
 		',
 		'getRowsByForm' => '
 			SELECT * FROM !prefix!form_rows WHERE form = :form ORDER BY ID DESC
@@ -74,7 +74,7 @@ function admin_dynamicForms_addQueries() {
 			WHERE r.form = :form
 		',
 		'newForm' => '
-			INSERT INTO !prefix!forms (
+			INSERT INTO !prefix!!lang!forms (
 				enabled, 
 				shortName, 
 				name, 
@@ -110,7 +110,7 @@ function admin_dynamicForms_addQueries() {
 			)
 		',
 		'newField' => '
-			INSERT INTO !prefix!form_fields
+			INSERT INTO !prefix!!lang!form_fields
 			(form, name, type, description, enabled, required, moduleHook, apiFieldToMapTo, sortOrder, isEmail, compareTo)
 			VALUES
 			(:form,:name,:type,:description,:enabled,:required,:moduleHook,:apiFieldToMapTo,:sortOrder,:isEmail,:compareTo)
@@ -122,7 +122,7 @@ function admin_dynamicForms_addQueries() {
 			INSERT INTO !prefix!form_values (row, field, value) VALUES (:row, :field, :value)
 		',
 		'editForm' => '
-			UPDATE !prefix!forms SET 
+			UPDATE !prefix!!lang!forms SET 
 				enabled = :enabled, 
 				name = :name, 
 				title = :title, 
@@ -141,7 +141,7 @@ function admin_dynamicForms_addQueries() {
 			WHERE id = :id
 		',
 		'editField' => '
-			UPDATE !prefix!form_fields SET 
+			UPDATE !prefix!!lang!form_fields SET 
 			name            = :name,
 			description     = :description,
 			type            = :type,
@@ -157,10 +157,10 @@ function admin_dynamicForms_addQueries() {
 			UPDATE !prefix!form_values SET value = :value WHERE id = :id
 		',
 		'deleteForm' => '
-			DELETE FROM !prefix!forms WHERE id = :id
+			DELETE FROM !prefix!!lang!forms WHERE id = :id
 		',
 		'deleteField' => '
-			DELETE FROM !prefix!form_fields WHERE id = :id
+			DELETE FROM !prefix!!lang!form_fields WHERE id = :id
 		',
 		'deleteRow' => '
 			DELETE FROM !prefix!form_rows WHERE id = :id
@@ -175,19 +175,19 @@ function admin_dynamicForms_addQueries() {
 			DELETE FROM !prefix!form_rows WHERE form = :formID
 		',
 		'deleteFieldsByForm' => '
-			DELETE FROM !prefix!form_fields WHERE form = :formID
+			DELETE FROM !prefix!!lang!form_fields WHERE form = :formID
 		',
 		'saveMenuItem' => '
 			INSERT INTO !prefix!main_menu (text,title,url,module,side,sortOrder,enabled) VALUES (:name,:title,:shortName,:module,:side,:sortOrder,:enabled)
 		',
 		'getOptionsByFieldId' => '
-			SELECT options FROM !prefix!form_fields WHERE id = :fieldId
+			SELECT options FROM !prefix!!lang!form_fields WHERE id = :fieldId
 		',
 		'updateOptions' => '
-			UPDATE !prefix!form_fields SET options = :options WHERE id = :fieldId
+			UPDATE !prefix!!lang!form_fields SET options = :options WHERE id = :fieldId
 		',
 		'getExistingShortNames' => '
-			SELECT shortName FROM !prefix!forms
+			SELECT shortName FROM !prefix!!lang!forms
 		',
 		'countSidebarsByForm' => '
 			SELECT COUNT(*) FROM !prefix!form_sidebars WHERE form = :formId
@@ -247,32 +247,32 @@ function admin_dynamicForms_addQueries() {
 			SELECT a.enabled,a.sortOrder,b.* FROM !prefix!form_sidebars a, !prefix!sidebars b WHERE a.form = :formId AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 		',
 		'countFieldsByForm' => '
-			SELECT COUNT(*) as rowCount FROM !prefix!form_fields WHERE form = :formId
+			SELECT COUNT(*) as rowCount FROM !prefix!!lang!form_fields WHERE form = :formId
 		',
 		'shiftFieldOrderUpByID' => '
-			UPDATE !prefix!form_fields
+			UPDATE !prefix!!lang!form_fields
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
 		'shiftFieldOrderUpRelative' => '
-			UPDATE !prefix!form_fields
+			UPDATE !prefix!!lang!form_fields
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND form = :formId
 			ORDER BY sortOrder DESC LIMIT 1
 		',
 		'shiftFieldOrderDownByID' => '
-			UPDATE !prefix!form_fields
+			UPDATE !prefix!!lang!form_fields
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
 		'shiftFieldOrderDownRelative' => '
-			UPDATE !prefix!form_fields
+			UPDATE !prefix!!lang!form_fields
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND form = :formId
 			ORDER BY sortOrder ASC LIMIT 1
 		',
 		'fixFieldSortOrderGap' => '
-			UPDATE !prefix!form_fields
+			UPDATE !prefix!!lang!form_fields
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND form = :formId
 		',

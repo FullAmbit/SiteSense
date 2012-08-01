@@ -28,7 +28,8 @@ function blogs_settings() {
 		'shortName' => 'blogs'
 	);
 }
-function blogs_install($db,$drop=false) {
+function blogs_install($db,$drop=false,$lang = "en_us") {
+	$lang = rtrim($lang,'_').'_';
 	$structures=array(
 		'blogs' => array(
 			'id'                   => SQR_IDKey,
@@ -89,13 +90,13 @@ function blogs_install($db,$drop=false) {
 	if($drop)
         blogs_uninstall($db);
 
-	$db->createTable('blogs',$structures['blogs'],false);
-	$db->createTable('blog_posts',$structures['blog_posts'],false);
+	$db->createTable($lang.'blogs',$structures['blogs'],false);
+	$db->createTable($lang.'blog_posts',$structures['blog_posts'],false);
 	$db->createTable('blog_comments',$structures['blog_comments'],false);
-	$db->createTable('blog_categories',$structures['blog_categories'],false);
+	$db->createTable($lang.'blog_categories',$structures['blog_categories'],false);
 
     // Add Blog Category Sidebar
-    $statement=$db->query('getHighestSortOrder','admin','sidebars','sortOrder');
+    $statement=$db->query('getHighestSortOrder','admin',$lang.'sidebars','sortOrder');
     if($result=$statement->fetch()) {
         $sortOrder=1;
     } else {
@@ -226,11 +227,11 @@ function blogs_install($db,$drop=false) {
         }
     }
     // ---
-	if($db->countRows('blogs')==0) {
+	if($db->countRows($lang.'blogs')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeNewsBlog','installer');
+			$db->exec('makeNewsBlog','installer',NULL,NULL,NULL,$lang);
 			echo '
 				<div>
 					Home Page News Blog Generated!
@@ -245,12 +246,12 @@ function blogs_install($db,$drop=false) {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 	
-	$count=$db->countRows('blog_posts');
+	$count=$db->countRows($lang.'blog_posts');
 	if($count==0) {
 		try {
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';
-			$statement=$db->query('makeWelcomePost','installer');
+			$statement=$db->query('makeWelcomePost','installer',NULL,NULL,NULL,$lang);
 			echo '
 				<div>
 					Home Page Welcome Post Generated!<br />
@@ -264,10 +265,11 @@ function blogs_install($db,$drop=false) {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 }
-function blogs_uninstall($db) {
-    $db->dropTable('blogs');
-    $db->dropTable('blog_posts');
-    $db->dropTable('blog_comments');
-    $db->dropTable('blog_categories');
+function blogs_uninstall($db,$lang="en_us") {
+	$lang = rtrim($lang,'_').'_';
+    $db->dropTable($lang.'blogs');
+    $db->dropTable($lang.'blog_posts');
+    $db->dropTable($lang.'blog_comments');
+    $db->dropTable($lang.'blog_categories');
 }
 ?>

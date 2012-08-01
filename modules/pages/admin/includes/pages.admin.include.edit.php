@@ -119,7 +119,8 @@ function admin_pagesBuild($data,$db) {
             $modifiedShortName='^'.$shortName.'(/.*)?$';
             $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
             $statement->execute(array(
-                    ':match' => $modifiedShortName
+                    ':match' => $modifiedShortName,
+                    ':hostname' => ''
                 )
             );
             $result=$statement->fetch();

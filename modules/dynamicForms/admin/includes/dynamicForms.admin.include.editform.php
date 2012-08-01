@@ -96,7 +96,8 @@ function admin_dynamicFormsBuild($data,$db) {
               $modifiedShortName='^'.$shortName.'(/.*)?$';
               $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
               $statement->execute(array(
-                      ':match' => $modifiedShortName
+                      ':match' => $modifiedShortName,
+                      ':hostname' => ''
                   )
               );
               $result=$statement->fetch();
@@ -106,7 +107,8 @@ function admin_dynamicFormsBuild($data,$db) {
                       ':match'     => $modifiedShortName,
                       ':replace'   => 'dynamic-forms/'.$shortName.'\1',
                       ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                      ':regex'     => 0
+                      ':regex'     => 0,
+                      ':hostname' => ''
                   ));
               } else {
                   $data->output['fromForm']->fields['name']['error']=true;

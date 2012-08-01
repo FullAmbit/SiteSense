@@ -21,7 +21,8 @@
 * @author     Full Ambit Media, LLC <pr@fullambit.com>
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-*/
+*/ 
+
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('blogList','blogs',$data)) {
         $data->output['abort']=true;

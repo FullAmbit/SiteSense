@@ -29,7 +29,6 @@ $settings=array(
         'siteTitle' => 'SiteSense',
         'homepage' => 'default',
         'theme' => 'default',
-        'language' => 'en',
         'characterEncoding' => 'utf-8',
         'compressionEnabled' => 0,
         'compressionLevel' => 9,
@@ -104,6 +103,7 @@ if (
   </fieldset>
 </form>';
 } else {
+	$lang = 'en_us_';
     $drop = false;
     if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
         $drop = true;
@@ -114,24 +114,25 @@ if (
     echo '<p>Connect to Database Successful</p>';
 
     if($drop) {
-        $data->dropTable('settings');
+        $data->dropTable($lang.'settings');
         $data->dropTable('banned');
         $data->dropTable('sessions');
-        $data->dropTable('sidebars');
-        $data->dropTable('main_menu');
+        $data->dropTable($lang.'sidebars');
+        $data->dropTable($lang.'main_menu');
         $data->dropTable('activations');
         $data->dropTable('url_remap');
         $data->dropTable('modules');
         $data->dropTable('module_sidebars');
+        $data->dropTable('languages');
         // Dynamic User Permissions
         $data->dropTable('user_groups');
         $data->dropTable('user_group_permissions');
         $data->dropTable('user_permissions');
     }
     // Create the settings table
-    if ($data->createTable('settings',$structures['settings'],false)) {
+    if ($data->createTable($lang.'settings',$structures['settings'],false)) {
         try {
-            $statement=$data->prepare('addSetting','installer');
+            $statement=$data->prepare('addSetting','installer',NULL,NULL,NULL,$lang);
             echo '
 				<div>';
             foreach ($settings['saveToDb'] as $key => $value) {
@@ -169,7 +170,8 @@ if (
         'users',
         'mainMenu',
         'settings',
-        'modules'
+        'modules',
+        'languages'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');

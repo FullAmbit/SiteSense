@@ -28,7 +28,8 @@ function pages_settings() {
 		'shortName' => 'pages'
 	);
 }
-function pages_install($db,$drop=false) {
+function pages_install($db,$drop=false,$lang='en_us') {
+	$lang = rtrim($lang,'_').'_';
 	$structures=array(
 		'pages' => array(
 			'id'              => SQR_IDKey,
@@ -52,9 +53,9 @@ function pages_install($db,$drop=false) {
 		)
 	);
 	if($drop)
-        pages_uninstall($db);
+        pages_uninstall($db,$lang);
 
-	$db->createTable('pages',$structures['pages'],false);
+	$db->createTable($lang.'pages',$structures['pages'],false);
 	$db->createTable('pages_sidebars',$structures['pages_sidebars'],false);
 
     // Set up default permission groups
@@ -85,11 +86,11 @@ function pages_install($db,$drop=false) {
             );
         }
     }
-	if($db->countRows('pages')==0) {
+	if($db->countRows($lang.'pages')==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationAgreement','installer');
+			$db->exec('makeRegistrationAgreement','installer',NULL,NULL,NULL,$lang);
 			echo '
 				<div>
 					Registration Agreement Page Generated!
@@ -105,7 +106,7 @@ function pages_install($db,$drop=false) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationEMail','installer');
+			$db->exec('makeRegistrationEMail','installer',NULL,NULL,NULL,$lang);
 			echo '
 				<div>
 					Registration E-Mail Page Generated!
@@ -120,8 +121,9 @@ function pages_install($db,$drop=false) {
 		}
 	} else echo '<p class="exists">"pages database" already contains records</p>';
 }
-function pages_uninstall($db) {
-    $db->dropTable('pages');
+function pages_uninstall($db,$lang = 'en_us') {
+	$lang = rtrim($lang,'_').'_';
+    $db->dropTable($lang.'pages');
     $db->dropTable('pages_sidebars');
 }
 ?>

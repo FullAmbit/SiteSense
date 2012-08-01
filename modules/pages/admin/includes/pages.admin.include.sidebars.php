@@ -43,7 +43,7 @@ function admin_pagesBuild($data,$db)
 	}
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSidebarCount = $db->countRows('sidebars');
+	$maxSidebarCount = $db->countRows($data->settings['language'].'_sidebars');
 	$statement = $db->prepare('countSidebarsByPage','admin_pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();

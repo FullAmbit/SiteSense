@@ -29,67 +29,67 @@
 function admin_pages_addQueries() {
 	return array(
         'getAllPageIds' => '
-			SELECT id FROM !prefix!pages
+			SELECT id FROM !prefix!!lang!pages
 		',
         'getPageListOrdered' => '
 			SELECT id,name,sortOrder,parent,shortName
-			FROM !prefix!pages
+			FROM !prefix!!lang!pages
 			ORDER BY parent,sortOrder,id
 		',
         'updatePageSortOrderById' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = :sortOrder
 			WHERE id = :id
 		',
         'getPageOrderById' => '
 			SELECT id,parent,sortOrder
-			FROM !prefix!pages
+			FROM !prefix!!lang!pages
 			WHERE id = :id
 		',
         'getPageListOrphans' => '
 			SELECT id,name,shortName,parent,sortOrder
-			FROM !prefix!pages
+			FROM !prefix!!lang!pages
 			WHERE parent <= 0
 			ORDER BY parent,sortOrder,id
 		',
         'getPageListByParent' => '
 			SELECT id,name,shortName,parent,sortOrder
-			FROM !prefix!pages
+			FROM !prefix!!lang!pages
 			WHERE parent = :parent
 			ORDER BY parent,sortOrder,id
 		',
         'deletePageById' => '
-			DELETE FROM !prefix!pages
+			DELETE FROM !prefix!!lang!pages
 			WHERE id = :id
 		',
         'deletePageByParent' => '
-			DELETE FROM !prefix!pages
+			DELETE FROM !prefix!!lang!pages
 			WHERE parent = :id
 		',
         'getPageIdByShortName' => '
-			SELECT id FROM !prefix!pages
+			SELECT id FROM !prefix!!lang!pages
 			WHERE shortName = :shortName
 		',
         'getPageIdByShortNameAndParent' => '
-			SELECT id FROM !prefix!pages
+			SELECT id FROM !prefix!!lang!pages
 			WHERE shortName = :shortName
 			AND parent = :parent
 		',
         'getIdShortNameOrphans' => '
-			SELECT id,shortName FROM !prefix!pages
+			SELECT id,shortName FROM !prefix!!lang!pages
 			WHERE parent <= 0
 		',
         'insertPage' => '
-			INSERT INTO !prefix!pages
+			INSERT INTO !prefix!!lang!pages
 			(name,shortName,title,parent,rawContent,parsedContent,sortOrder,live) VALUES (:name,:shortName, :title, :parent, :rawContent, :parsedContent, :sortOrder, :live)
 		',
         'updateShortNameById' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET shortName = :shortName
 			WHERE id = :id
 		',
         'updatePageById' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET
 				`name`          = :name,
 				shortName 	  = :shortName,
@@ -102,22 +102,22 @@ function admin_pages_addQueries() {
 			WHERE id = :id
 		',
         'getLastPageId' => '
-			SELECT id FROM !prefix!pages
+			SELECT id FROM !prefix!!lang!pages
 			ORDER BY id DESC
 			LIMIT 1
 		',
         'getMenuPages' => '
-			SELECT * FROM !prefix!pages
+			SELECT * FROM !prefix!!lang!pages
 			WHERE showOnMenu = 1
 		',
         'getTopLevelPages' => '
-			SELECT * FROM !prefix!pages WHERE parent = 0
+			SELECT * FROM !prefix!!lang!pages WHERE parent = 0
 		',
         'getPageById' => '
-			SELECT * FROM !prefix!pages WHERE id = :id
+			SELECT * FROM !prefix!!lang!pages WHERE id = :id
 		',
         'getSidebarsByPage' => '
-			SELECT a.id,a.page,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!pages_sidebars a, !prefix!sidebars b WHERE a.page = :pageId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
+			SELECT a.id,a.page,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!pages_sidebars a, !prefix!!lang!sidebars b WHERE a.page = :pageId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
         'enableSidebar' => '
 			UPDATE !prefix!pages_sidebars
@@ -132,35 +132,35 @@ function admin_pages_addQueries() {
 			WHERE id = :id
 		',
         'getExistingShortNames' => '
-			SELECT shortName FROM !prefix!pages
+			SELECT shortName FROM !prefix!!lang!pages
 		',
         'countPagesByParent' => '
-			SELECT COUNT(*) AS sortOrder FROM !prefix!pages WHERE parent = :parent
+			SELECT COUNT(*) AS sortOrder FROM !prefix!!lang!pages WHERE parent = :parent
 		',
         'shiftOrderUpByID' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
         'shiftOrderUpRelative' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND parent = :parent
 			ORDER BY sortOrder DESC LIMIT 1
 		',
         'shiftOrderDownByID' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
         'shiftOrderDownRelative' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND parent = :parent
 			ORDER BY sortOrder ASC LIMIT 1
 		',
         'fixSortOrderGap' => '
-			UPDATE !prefix!pages
+			UPDATE !prefix!!lang!pages
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND parent = :parent
 		',

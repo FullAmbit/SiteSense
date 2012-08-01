@@ -61,7 +61,8 @@ function admin_blogsBuild($data,$db) {
                 $modifiedShortName='^'.$shortName.'(/.*)?$';
                 $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
                 $statement->execute(array(
-                        ':match' => $modifiedShortName
+                        ':match' => $modifiedShortName,
+                        ':hostname' => ''
                     )
                 );
                 $result=$statement->fetch();
@@ -71,7 +72,8 @@ function admin_blogsBuild($data,$db) {
                         ':match'     => $modifiedShortName,
                         ':replace'   => 'blogs/'.$shortName.'\1',
                         ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                        ':regex'     => 0
+                        ':regex'     => 0,
+                        ':hostname' => ''
                     ));
                 } else {
                     $data->output['blogForm']->fields['name']['error']=true;
