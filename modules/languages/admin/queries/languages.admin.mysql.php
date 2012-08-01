@@ -114,6 +114,20 @@ function admin_languages_addQueries(){
 				(shortName,name,isDefault)
 			VALUES
 				(:shortName,:name,1)
+		',
+		'disableDefaultLanguage' => '
+			UPDATE
+				!prefix!languages
+			SET 
+				isDefault = 0
+		',
+		'setNewDefaultLanguage' => '
+			UPDATE
+				!prefix!languages 
+			SET 
+				isDefault = 1
+			WHERE 
+				shortName = :shortName
 		'
 	);
 }
