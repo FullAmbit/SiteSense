@@ -49,7 +49,7 @@ function common_addQueries() {
 		',
         'countRows' => '
 			SELECT COUNT(*) AS COUNT
-			FROM !table!
+			FROM !prefix!!table!
 		',
         'logoutSession' => '
 			DELETE FROM !prefix!sessions
@@ -78,10 +78,9 @@ function common_addQueries() {
 		',
         'updateSessionExpirationAndLanguage' => '
 			UPDATE !prefix!sessions
-			SET expires = :expires
+			SET expires = :expires,
+				language = :language
 			WHERE sessionId = :sessionId
-			AND
-			language = :language
 		',
         'updateLastAccess' => '
 			UPDATE !prefix!users
@@ -424,6 +423,54 @@ function common_addQueries() {
 				module = ""
 			GROUP BY
 				module
+		',
+		'getAllLanguages' => '
+			SELECT 
+				shortName,name 
+			FROM 
+				!prefix!languages
+		',
+		'getAllLanguagesException' => '
+			SELECT
+				name,shortName
+			FROM
+				!prefix!languages
+			WHERE 	
+				shortName != :shortName
+		',
+		'populateLanguageTable' => '
+			INSERT INTO
+				!prefix!!languageTable!
+			SELECT
+				*
+			FROM
+				!prefix!!sourceTable!
+			WHERE
+				!keyColumn! = :keyValue
+		',
+		'deleteFromLanguageTable' => '
+			DELETE FROM
+				!prefix!!table!
+			WHERE 
+				!keyColumn! = :keyValue
+		',
+		'updateLanguageTable' => '
+			UPDATE
+				!prefix!!table!
+			SET 
+				!qString! 
+			WHERE 
+				!conditionStatement!
+		',
+		'selectFromLanguageTable' => '
+			SELECT
+				!column! 
+			FROM 
+				!prefix!!table! 
+			WHERE 
+				!qString! 
+			LIMIT 
+				1
 		'
     );
 }

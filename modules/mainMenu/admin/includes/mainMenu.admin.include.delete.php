@@ -45,15 +45,14 @@ function admin_mainMenuBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
 	}
-	// Delete Project
+	// Delete Menu Item
 	if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 		if(!empty($_POST['delete'])) {
 			// Delete All Children //
 			deleteChildren($db,$data->output['menuItem']);
 			/*=========================================================================*/
-			// Remove from database
-			$statement = $db->prepare('deleteMenuItemById','admin_mainMenu');
-			$statement->execute(array(':id' => $data->action[3]));
+			// Delete Across All Languages
+			common_deleteFromLanguageTables($data,$db,'main_menu','id',$data->action[3],TRUE);
 			$data->output['delete']='deleted';
 		} else {
 			$data->output['delete']='cancelled';
@@ -74,8 +73,7 @@ function deleteChildren($db,$item)
 	// Delete All With This Parent ID
 	if($item['parent'] !== '0')
 	{
-		$statement = $db->prepare('deleteItemsByParent','admin_mainMenu');
-		$statement->execute(array(':parent' => $item['parent']));
+		common_deleteFromLanguageTables($data,$db,'main_menu','parent',$item['parent'],TRUE);
 	}
 }
 

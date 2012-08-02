@@ -345,6 +345,98 @@ function checkPermission($permission,$module,$data) {
     }
     return $hasPermission;
 }
+
+function common_populateLanguageTables($data,$db,$tableName,$keyColumn,$keyValue,$includeCurrentLanguage = FALSE){
+	foreach($data->languageList as $languageItem){
+		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
+
+		$statement=$db->prepare('populateLanguageTable','common',array(
+			'!languageTable!' => $languageItem['shortName'].'_'.$tableName,
+			'!sourceTable!' => $data->language.'_'.$tableName,
+			'!keyColumn!' => $keyColumn
+		));
+		$statement->execute(array(
+			':keyValue' => $keyValue
+		));
+		if(!$statement){
+			return $statement;
+		}
+	}
+}
+
+function common_deleteFromLanguageTables($data,$db,$tableName,$keyColumn,$keyValue,$includeCurrentLanguage = FALSE){
+	foreach($data->languageList as $languageItem){
+		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
+		$statement=$db->prepare('deleteFromLanguageTable','common',array(
+			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!keyColumn!' => $keyColumn
+		));
+		$statement->execute(array(
+			':keyValue' => $keyValue
+		));
+	}
+}
+
+function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$values,$includeCurrentLanguage = FALSE){
+	$qString = '';
+	foreach($values as $columnName => $columnValue){
+		$vars[':'.$columnName."Val"] = $columnValue;
+		
+		// Query String
+		$qString .= $columnName." = :".$columnName."Val,";
+	}
+	$qString = trim($qString,",");
+	
+	// Build Condition Where Statement
+	$conditionStatement = '';
+	$max = count($conditions);
+	$i = 0;
+	foreach($conditions as $conditionColumn => $conditionValue){
+		$vars[':'.$conditionColumn] = $conditionValue;
+		
+		// Query String
+		$conditionStatement .= $conditionColumn." = :".$conditionColumn.((($i+1) >= $max) ? "" : " AND ");
+		$i++;
+	}
+	
+	foreach($data->languageList as $languageItem){
+		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
+		$statement = $db->prepare("updateLanguageTable",'common',array(
+			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!qString!' => $qString,
+			'!conditionStatement!' => $conditionStatement
+		));
+		$statement->execute($vars);
+	}
+}
+
+function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSelector,$conditions,$includeCurrentLanguage = TRUE){
+	$qString = '';
+	$max = count($conditions);
+	$i = 0;
+	foreach($conditions as $conditionColumn => $conditionValue){
+		$vars[':'.$conditionColumn] = $conditionValue;
+		
+		// Query String
+		$qString .= $conditionColumn." = :".$conditionColumn.((($i+1) >= $max) ? "" : " AND ");
+		$i++;
+	}
+	foreach($data->languageList as $languageItem){
+		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
+		
+		$statement = $db->prepare("selectFromLanguageTable","common",array(
+			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!column!' => $columnSelector,
+			'!qString!' => $qString
+		));
+		$statement->execute($vars);
+		if($statement->fetch()!==FALSE){
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 function printFieldValue($fieldValue) {
 	return isset($fieldValue) ? $fieldValue : '';
 }

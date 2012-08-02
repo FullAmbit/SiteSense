@@ -32,7 +32,6 @@ final class dynamicPDO extends PDO {
     private $tablePrefix;
 	private $sqlType;
 	private $queries;
-	private $qSearch=array('!prefix!','!lang!','!table!','!column1!','!column2!');
 
 	public static function exceptionHandler($exception) {
 		die('Uncaught Exception:'.$exception->getMessage());
@@ -99,41 +98,39 @@ final class dynamicPDO extends PDO {
 			die('Fatal Error - '.$moduleName.' Queries Library File not found!<br>'.$target);
 		} else return false;
 	}
-	private function prepQuery($queryName,$module,$tableName,$column1,$column2,$lang=NULL) {
+	private function prepQuery($queryName,$module,$parameters) {
     // Replace !prefix! and !table! with actual values
 		if(!isset($this->queries[$module])){
             $this->loadModuleQueries($module);
 		}
 		if (isset($this->queries[$module][$queryName])) {
-			$lang = ($lang == NULL) ? $this->lang : $lang;
-			$lang = rtrim($lang,'_').'_';
-			return str_replace(
-				$this->qSearch,
-				array(
-					$this->tablePrefix,
-					$lang,
-                    $this->tablePrefix.$tableName,
-                    $column1,
-                    $column2
-				),
+			// Make Sure We At Least Have Prefix And Lang....
+			if(!is_array($parameters)) $parameters=array();
+			if(!isset($parameters['!prefix!'])) $parameters['!prefix!'] = $this->tablePrefix;
+			if(!isset($parameters['!lang!'])) $parameters['!lang!'] = $this->lang.'_';
+			
+			$queryString = str_replace(
+				array_keys($parameters),
+				array_values($parameters),
 				$this->queries[$module][$queryName]
 			);
+			return $queryString;
 		} else return false;
 	}
-	public function query($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
-		if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
+	public function query($queryName,$module='common',$parameters=NULL) {
+		if ($query=$this->prepQuery($queryName,$module,$parameters)) {
 			return parent::query($query);
 		} else {
 			return false;
 		}
 	}
-	public function exec($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
-        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
+	public function exec($queryName,$module='common',$parameters=NULL) {
+        if ($query=$this->prepQuery($queryName,$module,$parameters)) {
 			return parent::exec($query);
 		} else return false;
 	}
-	public function prepare($queryName,$module='common',$tableName='',$column1='',$column2='',$lang=NULL) {
-        if ($query=$this->prepQuery($queryName,$module,$tableName,$column1,$column2,$lang)) {
+	public function prepare($queryName,$module='common',$parameters = NULL) {
+        if ($query=$this->prepQuery($queryName,$module,$parameters)) {
 			return parent::prepare($query);
 		} else return false;
 	}
@@ -156,7 +153,7 @@ final class dynamicPDO extends PDO {
   	    }
 	}
 	public function countRows($tableName) {
-		$result=$this->query('countRows','common',$tableName);
+		$result=$this->query('countRows','common',array("!table!"=>$tableName));
 		return $result->fetchColumn();
 	}
 	public function createTable($tableName,$structure,$verbose=false) {
@@ -305,7 +302,7 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
-		}   
+		}
     	// Do We Have Any Specific Settings For This HostName?
 		$statement = $this->db->prepare('getHostname','hostnames');
 		$statement->execute(array(
@@ -499,12 +496,12 @@ final class sitesense {
 						setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
 						$expires=gmdate("Y-m-d H:i:s",$expires);
 						$statement=$this->db->prepare('updateSessionExpirationAndLanguage');
+	
 						$statement->execute(array(
 							':expires' => $expires,
-							':language' => (isset($_POST['language'])) ? $_POST['language'] : $this->user['defaultLanguage'],
+							':language' => (isset($_POST['language'])) ? $_POST['language'] : $session['language'],
 							':sessionId' => $session['sessionId']
 						)) or die('Session Database failed updating expiration');
-
 						// Update last access
                         $statement=$this->db->prepare('updateLastAccess');
 						$statement->execute(array(
@@ -588,13 +585,18 @@ final class sitesense {
 		}else{
 			$this->language = $this->settings['language'];
 		}
+		
+		// Pass DB the New Current Language (So It Knows To Pull / Insert All Queries To This One)
+		$this->db->lang = $this->language;
+				
 		// Load The Phrases From The Database
+		$moduleShortName = ($this->currentPage == 'admin') ? $this->action[1] : $this->currentPage;
 		$statement = $this->db->prepare('getCoreAndModulePhrases','common','languages_phrases_'.$this->language);
 		$statement->execute(array(
-			':module' => $this->currentPage
+			':module' => $moduleShortName
 		));
 		$this->phrases = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
+		
 		$moduleQuery = $this->db->query('getEnabledModules');
 		$modules = $moduleQuery->fetchAll();
 		foreach ($modules as $module) {

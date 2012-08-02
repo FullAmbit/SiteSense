@@ -43,6 +43,8 @@ function admin_mainMenuBuild($data,$db) {
 		':id' => $data->output['menuItem']['id'],
 		':enabled' => '0'
 	));
+	common_updateAcrossLanguageTables($data,$db,'main_menu',array('id'=>$data->output['menuItem']['id']),array('enabled' => '0'));
+	
 	// Success Message
 	if (empty($data->output['secondSidebar'])) {
 	  $data->output['savedOkMessage']='

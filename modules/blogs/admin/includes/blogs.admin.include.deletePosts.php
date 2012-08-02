@@ -56,6 +56,9 @@ function admin_blogsBuild($data,$db) {
 					$statement->execute(array(
 						':id' => $data->action[3]
 					));
+					// now delete across other language tables
+					common_deleteFromLanguageTables($data,$db,'blog_posts','id',$data->action[3]);
+					
 					$data->output['deleteCount']=$statement->rowCount();
 					if($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';

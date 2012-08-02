@@ -50,10 +50,19 @@ function admin_blogsBuild($data,$db) {
 		$data->output['categoryForm']->populateFromPostData();
 		if($data->output['categoryForm']->validateFromPost()) {
 			// Get Short Name
-			$data->output['categoryForm']->sendArray[':shortName']=common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
+			$data->output['categoryForm']->sendArray[':shortName']=$shortName=common_generateShortName($_POST[$data->output['categoryForm']->formPrefix.'name']);
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_categories','id',array('shortName'=>$shortName))){
+				$data->output['categoryForm']->fields['name']['error']=true;
+	            $data->output['categoryForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog category.';
+	            return;
+			}
 			$data->output['categoryForm']->sendArray[':blogId']=$data->output['blogItem']['id'];
 			$statement=$db->prepare('addCategory','admin_blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');
+			// Now Replicate Across Other Languages
+			common_populateLanguageTables($data,$db,'blog_categories','shortName',$data->output['categoryForm']->sendArray[':shortName']);
+			
 			if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Category Item Saved Successfully</h2>

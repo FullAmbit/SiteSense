@@ -44,17 +44,12 @@ function admin_blogsBuild($data,$db) {
 		// Generate Short Name
 		$shortName=common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
 		$data->output['blogForm']->sendArray[':shortName']=$shortName;
-		// We Need To Check And Make Sure This ShortName Isn't Taken
-		$statement=$db->prepare('getExistingBlogShortNames','admin_blogs');
-		$statement->execute();
-		$blogShortNameList=$statement->fetchAll();
-		$cannotEqual=array();
-		foreach($blogShortNameList as $item) {
-			$cannotEqual[]=$item['shortName'];
+		// Check To See If ShortName Exists Anywhere (Across Any Language)
+		if(common_checkUniqueValueAcrossLanguages($data,$db,'blogs','id',array('shortName'=>$shortName))){
+			$data->output['blogForm']->fields['name']['error']=true;
+            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog post.';
+            return;
 		}
-		$data->output['blogForm']->fields['name']['cannotEqual']=$cannotEqual;
-		// Apply ShortName Convention To Name For Use In Comparison //
-		$_POST[$data->output['blogForm']->formPrefix.'name']=$shortName;
 		// Validate Form
 		if($data->output['blogForm']->validateFromPost($data)) {
 		    if($data->output['blogForm']->sendArray[':topLevel']==1) {
@@ -71,7 +66,7 @@ function admin_blogsBuild($data,$db) {
                     $statement->execute(array(
                         ':match'     => $modifiedShortName,
                         ':replace'   => 'blogs/'.$shortName.'\1',
-                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                        ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
                         ':regex'     => 0,
                         ':hostname' => ''
                     ));
@@ -83,9 +78,11 @@ function admin_blogsBuild($data,$db) {
             }
 			// "Picture" Is Not Used In The Query
 			unset($data->output['blogForm']->sendArray[':picture']);
-			// Save To Database
+			// Save To Database (For Current Language)
 			$statement=$db->prepare('insertBlog','admin_blogs');
 			$statement->execute($data->output['blogForm']->sendArray);
+			// Now Replicate Across Other Languages
+			common_populateLanguageTables($data,$db,'blogs','shortName',$data->output['blogForm']->sendArray[':shortName']);
 			// Rename The TMP Folder To The Name Of The Blog Folder
 			if($data->cdn) {
 				$data->cdn->renameFolder($data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/tmp',$data->settings['cdnBaseDir'].$data->themeDir.'images/blogs/'.$shortName);

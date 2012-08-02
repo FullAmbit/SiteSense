@@ -55,7 +55,7 @@ function admin_modulesBuild($data,$db){
 				':moduleId' => $moduleId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => admin_sortOrder_new($db,'module_sidebars','sortOrder','module',$moduleId)
+				':sortOrder' => admin_sortOrder_new($data,$db,'module_sidebars','sortOrder','module',$moduleId)
 			));
 		}
 	}
@@ -75,7 +75,7 @@ function admin_modulesBuild($data,$db){
 			break;
 		case 'moveDown':
 		case 'moveUp':
-            admin_sortOrder_move($db,'module_sidebars',$data->action[4],$data->action[5],'sortOrder','module');
+            admin_sortOrder_move($data,$db,'module_sidebars',$data->action[4],$data->action[5],'sortOrder','module');
 		    break;
 	}
 	//

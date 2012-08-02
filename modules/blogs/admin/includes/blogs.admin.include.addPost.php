@@ -65,23 +65,17 @@ function admin_blogsBuild($data,$db) {
 	// Handle Post Request
 	if(!empty($_POST['fromForm']) && ($_POST['fromForm']==$data->output['blogForm']->fromForm)) {
 		$data->output['blogForm']->populateFromPostData();
-		/**
-		 * Set up Short Name Check
-		**/
-		$shortName=common_generateShortName($_POST[$data->output['blogForm']->formPrefix.'name']);
-		// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-		$data->output['blogForm']->sendArray[':shortName']=$_POST[$data->output['blogForm']->formPrefix.'name']=$shortName;
-		// Load All Existing Sidebar ShortNames For Comparison
-		$statement=$db->prepare('getExistingShortNames','admin_blogs');
-		$statement->execute();
-		$postList=$statement->fetchAll();
-		$existingShortNames=array();
-		foreach($postList as $postItem) {
-			$existingShortNames[]=$postItem['shortName'];
-		}
-		$data->output['blogForm']->fields['name']['cannotEqual']=$existingShortNames;
-		/*----------------*/
+		// Validate Form Data
 		if($data->output['blogForm']->validateFromPost()) {
+			// Check For Existing ShortName..
+			$data->output['blogForm']->sendArray[':shortName']=$shortName=common_generateShortName($data->output['blogForm']->sendArray[':name']);
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_posts','id',array('shortName'=>$shortName))){
+				$data->output['blogForm']->fields['name']['error']=true;
+	            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog post.';
+	            return;
+			}
+		
 			//--Various Parsing--//
 			$data->output['blogForm']->sendArray[':title']=htmlspecialchars($data->output['blogForm']->sendArray[':title']);
 			
@@ -103,6 +97,9 @@ function admin_blogsBuild($data,$db) {
 				$data->output['pagesError']=='db error';
 				return;
 			}
+			// Now Replicate Across Other Languages
+			common_populateLanguageTables($data,$db,'blog_posts','shortName',$data->output['blogForm']->sendArray[':shortName']);
+			
 			$aRoot=$data->linkRoot.'admin/blogs/';
 			// Success !
 			$data->output['savedOkMessage']='

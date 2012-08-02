@@ -36,20 +36,22 @@ function admin_mainMenuBuild($data,$db) {
 					':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
-					if($item['parent'] == '0')
-					{
+					if($item['parent'] == '0') {
+						$side = $item['side']=='left' ? 'right' : 'left';
 						$statement=$db->prepare('updateSideById','admin_mainMenu');
 						$statement->execute(array(
-							':side' => ( $item['side']=='left' ? 'right' : 'left' ),
+							':side' => $side,
 							':id' => $item['id']
-						));
+						));						
+						//--Push Changes To Other Languages
+						common_updateAcrossLanguageTables($data,$db,'main_menu',array('id'=>$item['id']),array('side' => $side));
 					}
 				}
 			}
 		break;
 		case 'moveUp':
 		case 'moveDown':
-            admin_sortOrder_move($db,'main_menu',$data->action[3],$data->action[4],'sortOrder','parent');
+            admin_sortOrder_move($data,$db,'main_menu',$data->action[3],$data->action[4],'sortOrder','parent',TRUE);
 		break;
 	}
 	//admin_mainMenuRebuild($data,$db);

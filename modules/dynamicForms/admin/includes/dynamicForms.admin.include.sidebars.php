@@ -57,7 +57,7 @@ function admin_dynamicFormsBuild($data,$db)
 				':formId' => $formId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => admin_sortOrder_new($db,'form_sidebars','sortOrder','form',$formId)
+				':sortOrder' => admin_sortOrder_new($data,$db,'form_sidebars','sortOrder','form',$formId)
 			));
 		}
 	}
@@ -76,7 +76,7 @@ function admin_dynamicFormsBuild($data,$db)
 			break;
 		case 'moveDown':
 		case 'moveUp':
-            admin_sortOrder_move($db,'form_sidebars',$data->action[4],$data->action[5],'sortOrder','form');
+            admin_sortOrder_move($data,$db,'form_sidebars',$data->action[4],$data->action[5],'sortOrder','form');
 		    break;
 	}
 	

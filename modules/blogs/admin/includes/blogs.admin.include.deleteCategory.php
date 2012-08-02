@@ -64,11 +64,15 @@ function admin_blogsBuild($data,$db) {
 			$statement->execute(array(
 				':id' => $data->output['categoryItem']['id']
 			));
+			common_deleteFromLanguageTables($data,$db,'blog_categories','id',$data->output['categoryItem']['id']);
+
 			// Set Category to ZERO For All Existing Posts Within Category
-			$statement=$db->prepare('updatePostsWithinCategory','admin_blogs');
+			common_updateAcrossLanguageTables($data,$db,'blog_posts',array('categoryId' => $data->output['categoryItem']['id']),array('categoryId' => $data->output['categoryItem']['id']),TRUE);
+			/**$statement=$db->prepare('updatePostsWithinCategory','admin_blogs');
 			$statement->execute(array(
 				':categoryId' => $data->output['categoryItem']['id']
-			));
+			));**/
+			
 			$data->output['delete']='deleted';
 		} else {
 			$data->output['delete']='cancelled';

@@ -108,15 +108,12 @@ function admin_blogsBuild($data,$db) {
 		if($shortName==$data->output['blogItem']['shortName']) {
 			unset($data->output['blogForm']->fields['name']['cannotEqual']);
 		} else {
-			$statement=$db->prepare('getExistingShortNames','admin_blogs');
-			$statement->execute();
-			$postShortNameList=$statement->fetchAll();
-			foreach($postShortNameList as $item) {
-				$cannotEqual[]=$item['shortName'];
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_posts','id',array('shortName'=>$shortName))){
+				$data->output['blogForm']->fields['name']['error']=true;
+	            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog.';
+	            return;
 			}
-			$data->output['blogForm']->fields['name']['cannotEqual']=$cannotEqual;
-			// Apply ShortName Convention To Name For Use In Comparison //
-			$_POST[$data->output['blogForm']->formPrefix.'name']=$shortName;
 		}
 		// ---Validate All Form Fields---
 		if($data->output['blogForm']->validateFromPost()) {
@@ -135,6 +132,12 @@ function admin_blogsBuild($data,$db) {
 			$data->output['blogForm']->sendArray[':tags']=strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
 			// ---Save To DB---
 			$statement->execute($data->output['blogForm']->sendArray);
+			// -- Push The Constant Fields Across Other Languages
+			common_updateAcrossLanguageTables($data,$db,'blog_posts',array('id'=>$data->action[4]),array(
+				'categoryId' => $data->output['blogForm']->sendArray[':categoryId'],
+				'allowComments' => $data->output['blogForm']->sendArray[':allowComments'],
+				'live' => $data->output['blogForm']->sendArray[':live']
+			));
 			$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
 				<p>

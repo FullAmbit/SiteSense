@@ -37,12 +37,16 @@ function admin_mainMenuBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
 		return;
 	}
-	// Disable
+	// Enable Menu Item
 	$statement = $db->prepare('enableOrDisableMenuItem','admin_mainMenu');
 	$statement->execute(array(
 		':id' => $data->output['menuItem']['id'],
 		':enabled' => '1'
 	));
+	
+	// Push Change Across Languages
+	common_updateAcrossLanguageTables($data,$db,'main_menu',array('id'=>$data->output['menuItem']['id']),array('enabled' => '1'));
+	
 	// Success Message
 	if (empty($data->output['secondSidebar'])) {
 	  $data->output['savedOkMessage']='

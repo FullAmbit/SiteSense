@@ -31,7 +31,7 @@ function admin_pagesBuild($data,$db) {
 	}
 
 	if ((($data->action[3]=='moveUp') || ($data->action[3]=='moveDown')) && is_numeric($data->action[4])) {
-        admin_sortOrder_move($db,'pages',$data->action[3],$data->action[4],'sortOrder','parent');
+        admin_sortOrder_move($data,$db,'pages',$data->action[3],$data->action[4],'sortOrder','parent');
 	}
 	$data->output['pagesList'] = admin_List($db);
 }

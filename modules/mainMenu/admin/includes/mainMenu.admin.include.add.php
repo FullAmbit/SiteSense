@@ -39,11 +39,15 @@ function admin_mainMenuBuild($data,$db) {
 		if($data->output['MenuItemForm']->validateFromPost())
 		{
 			$data->output['MenuItemForm']->sendArray[':sortOrder'] =
-                admin_sortOrder_new($db,'main_menu','sortOrder','parent',$data->output['MenuItemForm']->sendArray[':parent']);
+                admin_sortOrder_new($data,$db,'main_menu','sortOrder','parent',$data->output['MenuItemForm']->sendArray[':parent'],TRUE);
 			$data->output['MenuItemForm']->sendArray[':url'] = str_replace('|',$data->linkRoot,$data->output['MenuItemForm']->sendArray[':url']);
 			
 			$statement = $db->prepare('newMenuItem','admin_mainMenu');
 			$statement->execute($data->output['MenuItemForm']->sendArray) or die('Saving Menu Item Failed');
+			$id = $db->lastInsertId();
+			// Duplicate Across Languages
+			common_populateLanguageTables($data,$db,'main_menu','id',$id);
+			
 			if(empty($data->output['secondSidebar']))
 			{
 				$data->output['savedOkMessage']='

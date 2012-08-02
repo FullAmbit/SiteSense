@@ -59,13 +59,12 @@ function admin_blogsBuild($data,$db) {
 					$qHandle->execute(array(
 						':id' => $data->action[3]
 					));
+					// Delete Blog EVERYWHERE
+					common_deleteFromLanguageTables($data,$db,'blogs','id',$data->action[3]);
 					$data->output['deleteCount']=$qHandle->rowCount();
 					if($data->output['deleteCount']>0) {
-						$qHandle=$db->prepare('deleteBlogPostByBlogId','admin_blogs');
-						$qHandle->execute(array(
-							':id' => $data->action[3]
-						));
-						$data->output['deletePostCount']=$qHandle->rowCount();
+						// Delete Blog Posts EVERYWHERE
+						common_deleteFromLanguageTables($data,$db,'blog_posts','blogId',$data->action[3]);
 						$data->output['delete']='deleted';
 						if($data->cdn) {
 							// Delete Blog Image Folder

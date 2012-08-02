@@ -22,44 +22,35 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_sidebarsBuild($data,$db) {
-    if(!checkPermission('list','sidebars',$data)) {
-        $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
-        return;
-    }
-    if (is_numeric($data->action[4])) {
-		if (
-			($data->action[3]=='moveUp') ||
-			($data->action[3]=='moveDown')
-		) {
-            admin_sortOrder_move($db,'sidebars',$data->action[3],$data->action[4],'sortOrder');
-		/*else if (
-			($data->action[3]=='enable') ||
-			($data->action[3]=='disable')
-		) {
-			$qHandle=$db->prepare('updateEnabledById','admin_sidebars');
-			$qHandle->execute(array(
-				':enabled' => ($data->action[3]=='enable'),
-				':id' => $data->action[4]
-			));*/
-		} elseif($data->action[3] == 'switch')	{
+function admin_sidebarsBuild($data, $db) {
+	if (!checkPermission('list', 'sidebars', $data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+		return;
+	}
+	if (is_numeric($data->action[4])) {
+		if (($data->action[3]=='moveUp') ||($data->action[3]=='moveDown')){
+			admin_sortOrder_move($data,$db,'sidebars',$data->action[3],$data->action[4],'sortOrder',NULL,TRUE);
+		} elseif ($data->action[3] == 'switch') {
 			if (is_numeric($data->action[4])) {
-				$statement=$db->prepare('getById','admin_sidebars');
+				$statement=$db->prepare('getById', 'admin_sidebars');
 				$statement->execute(array(
-					':id' => $data->action[4]
+						':id' => $data->action[4]
 				));
 				if ($item=$statement->fetch()) {
-					$statement=$db->prepare('updateSideById','admin_sidebars');
+					$side = $item['side']=='left' ? 'right' : 'left';
+					$statement=$db->prepare('updateSideById', 'admin_sidebars');
 					$statement->execute(array(
-						':side' => ( $item['side']=='left' ? 'right' : 'left' ),
-						':id' => $item['id']
+							':side' => $side,
+							':id' => $item['id']
 					));
+					//--Push Changes To Other Languages
+					common_updateAcrossLanguageTables($data,$db,'sidebars',array('id'=>$item['id']),array('side' => $side));
 				}
 			}
 		}
 	}
-	$qHandle=$db->prepare('getAllOrdered','admin_sidebars');
+	$qHandle=$db->prepare('getAllOrdered', 'admin_sidebars');
 	$qHandle->execute();
 	$data->output['sidebars']=$qHandle->fetchAll();
 }
@@ -85,10 +76,10 @@ function admin_sidebarsShow($data) {
 				$titleStartTag.='<a href="'.$aRoot.'edit/'.$item['id'].'">';
 				$titleEndTag='</a>'.$titleEndTag;
 			}
-			theme_sidebarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count);
+			theme_sidebarsListTableRow($item, $aRoot, $titleStartTag, $titleEndTag, $count);
 			$count++;
 		}
-	theme_sidebarsListTableFoot();
+		theme_sidebarsListTableFoot();
 	}
 	theme_sidebarsListAddNewButton($aRoot);
 }

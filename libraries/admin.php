@@ -25,6 +25,11 @@
 define('ADMIN_SHOWPERPAGE',16);
 require_once('libraries/admin.common.php');
 function admin_buildContent($data,$db) {
+	// Load Languages
+    $statement = $db->prepare("getAllLanguages","common");
+    $statement->execute();
+    $data->languageList = $statement->fetchAll(PDO::FETCH_ASSOC);
+        	
 	$db->loadModuleQueries('admin',true);
 	//Preload default values into $data->output:
 	$defaults = array(

@@ -41,7 +41,16 @@ function admin_blogsBuild($data,$db) {
 		$data->output['categoryForm']->populateFromPostData();
 		if($data->output['categoryForm']->validateFromPost()) {
 			// Get Short Name
-			$data->output['categoryForm']->sendArray[':shortName']=preg_replace('/\W-/i','',str_replace(' ','-',strtolower($_POST[$data->output['categoryForm']->formPrefix.'name'])));
+			$data->output['categoryForm']->sendArray[':shortName']=$shortName=common_generateShortName($data->output['categoryForm']->sendArray[':name']);
+			// Check ShortName Uniqueness ONLY If Changes Made
+			if($shortName !== $data->output['categoryItem']['shortName']){
+				// Check To See If ShortName Exists Anywhere (Across Any Language)
+				if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_categories','id',array('shortName'=>$shortName))){
+					$data->output['categoryForm']->fields['name']['error']=true;
+		            $data->output['categoryForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog.';
+		            return;
+				}
+			}
 			$data->output['categoryForm']->sendArray[':id']=$data->output['categoryItem']['id'];
 			$statement=$db->prepare('editCategory','admin_blogs');
 			$statement->execute($data->output['categoryForm']->sendArray) or die('Saving Category Item Failed');

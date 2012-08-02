@@ -23,144 +23,117 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_dynamicFormsBuild($data,$db) {
+function admin_dynamicFormsBuild($data, $db) {
 	//permission check for forms edit
-	if(!checkPermission('edit','dynamicForms',$data)) {
+	if (!checkPermission('edit', 'dynamicForms', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
 		return;
-	}	
+	}
 	// Check If Form Exists //
 	$formId = $data->action[3];
-	$check = $db->prepare('getFormById','admin_dynamicForms');
+	$check = $db->prepare('getFormById', 'admin_dynamicForms');
 	$check->execute(array(':id' => $formId));
-	if(($data->output['formItem'] = $check->fetch()) === FALSE)
-	{
+	if (($data->output['formItem'] = $check->fetch()) === FALSE) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
-			return;
+		return;
 	}
 
-	$form = $data->output['fromForm'] = new formHandler('forms',$data,true);
+	$form = $data->output['fromForm'] = new formHandler('forms', $data, true);
+	// Editing...So Remove Menu Options
+	unset($form->fields['showOnMenu'],$form->fields['menuTitle']);
 	// Load List Of Plugins
 	$statement=$db->query('getEnabledPlugins');
 	$statement->execute();
 	$pluginList = $statement->fetchAll();
-	foreach($pluginList as $pluginItem)
-	{
+	foreach ($pluginList as $pluginItem) {
 		$option['text'] = $pluginItem['name'];
 		$option['value'] = $pluginItem['name'];
-			
+
 		$data->output['fromForm']->fields['api']['options'][] = $option;
 	}
 	// Handle Form Submission //
-	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm))
-	{
+	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		$data->output['fromForm']->populateFromPostData();
 		/**
 		 * Set Up Short Name Check (ONLY if different from currently existing
-		**/
-		$shortName = common_generateShortName($_POST[$data->output['fromForm']->formPrefix.'name']);
-		$data->output['fromForm']->sendArray[':shortName'] = $shortName;
-		
-		if($shortName == $data->output['formItem']['shortName'])
-		{
-			unset($data->output['fromForm']->fields['name']['cannotEqual']);
-			$newShortName=false;
-		} else {
-			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-			$data->output['fromForm']->sendArray[':shortName'] = $_POST[$data->output['fromForm']->formPrefix.'name'] = $shortName;
-			// Load All Existing Sidebar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','admin_dynamicForms');
-			$statement->execute();
-			$formList = $statement->fetchAll();
-			$existingShortNames = array();
-			foreach($formList as $formItem)
-			{
-				$existingShortNames[] = $formItem['shortName'];
+		 **/
+		$data->output['fromForm']->sendArray[':shortName'] = $shortName = common_generateShortName($data->output['fromForm']->sendArray[':name']);
+		unset($data->output['fromForm']->fields['name']['cannotEqual']);
+
+		if ($shortName !== $data->output['formItem']['shortName']) {
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'pages','id',array('shortName'=>$shortName))){
+				$data->output['fromForm']->fields['name']['error']=true;
+	            $data->output['fromForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a form.';
+	            return;
 			}
-			$data->output['fromForm']->fields['name']['cannotEqual'] = $existingShortNames;
-			$newShortName=true;
+			$newShortName=TRUE;
 		}
+		$newShortName=FALSE;
 		// Validate All Form Fields
 		if ($data->output['fromForm']->validateFromPost()) {
-      if(intval($data->output['fromForm']->sendArray[':topLevel'])!==intval($data->output['formItem']['topLevel'])) {
-        switch($data->output['fromForm']->sendArray[':topLevel']) {
-          case 0:
-            $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
-            $statement->execute(array(
-              ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
-            ));
-          break;
-          case 1:
-              $modifiedShortName='^'.$shortName.'(/.*)?$';
-              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-              $statement->execute(array(
-                      ':match' => $modifiedShortName,
-                      ':hostname' => ''
-                  )
-              );
-              $result=$statement->fetch();
-              if($result===false) {
-                  $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-                  $statement->execute(array(
-                      ':match'     => $modifiedShortName,
-                      ':replace'   => 'dynamic-forms/'.$shortName.'\1',
-                      ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                      ':regex'     => 0,
-                      ':hostname' => ''
-                  ));
-              } else {
-                  $data->output['fromForm']->fields['name']['error']=true;
-                  $data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
-                  return;
-              }
-          break;
-        }
-      } elseif($newShortName) {
-          if($data->output['fromForm']->sendArray[':topLevel']) {
-              $modifiedShortName='^'.$shortName.'(/.*)?$';
-              $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-              $statement->execute(array(
-                      ':match' => $modifiedShortName
-                  )
-              );
-              $result=$statement->fetch();
-              if($result===false) {
-                  $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
-                  $statement->execute(array(
-                      ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
-                      ':newMatch'   => '^'.$shortName.'(/.*)?$',
-                      ':replace' => 'dynamic-forms/'.$shortName.'\1'
-                  ));
-              } else {
-                  $data->output['fromForm']->fields['name']['error']=true;
-                  $data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
-                  return;
-              }
-          }
-      }
-			// Save Menu Item //
-			if($data->output['fromForm']->sendArray[':showOnMenu'] == 1)
-			{
-				$rowCount = $db->countRows('main_menu');
-				$saveMenuItem = $db->prepare('saveMenuItem','admin_dynamicForms');
-				$saveMenuItem->execute(array(
-					'name' => $data->output['fromForm']->sendArray[':name'],
-					'title' => $data->output['fromForm']->sendArray[':menuTitle'],
-					'shortName' => $data->output['fromForm']->sendArray[':shortName'],
-					'side' => 'left',
-					'enabled' => $data->output['fromForm']->sendArray[':enabled'],
-					'module' => 'dynamicForms',
-					'sortOrder' => $rowCount + 1
-				));
+			if (intval($data->output['fromForm']->sendArray[':topLevel'])!==intval($data->output['formItem']['topLevel'])) {
+				switch ($data->output['fromForm']->sendArray[':topLevel']) {
+				case 0:
+					$statement=$db->prepare('deleteReplacementByMatch', 'admin_dynamicURLs');
+					$statement->execute(array(
+							':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
+						));
+					break;
+				case 1:
+					$modifiedShortName='^'.$shortName.'(/.*)?$';
+					$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+					$statement->execute(array(
+							':match' => $modifiedShortName,
+							':hostname' => ''
+						)
+					);
+					$result=$statement->fetch();
+					if ($result===false) {
+						$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
+						$statement->execute(array(
+								':match'     => $modifiedShortName,
+								':replace'   => 'dynamic-forms/'.$shortName.'\1',
+								':sortOrder' => admin_sortOrder_new($data, $db, 'url_remap', 'sortOrder'),
+								':regex'     => 0,
+								':hostname' => ''
+							));
+					} else {
+						$data->output['fromForm']->fields['name']['error']=true;
+						$data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+						return;
+					}
+					break;
+				}
+			} elseif ($newShortName) {
+				if ($data->output['fromForm']->sendArray[':topLevel']) {
+					$modifiedShortName='^'.$shortName.'(/.*)?$';
+					$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+					$statement->execute(array(
+							':match' => $modifiedShortName
+						)
+					);
+					$result=$statement->fetch();
+					if ($result===false) {
+						$statement=$db->prepare('updateUrlRemapByMatch', 'admin_dynamicURLs');
+						$statement->execute(array(
+								':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
+								':newMatch'   => '^'.$shortName.'(/.*)?$',
+								':replace' => 'dynamic-forms/'.$shortName.'\1'
+							));
+					} else {
+						$data->output['fromForm']->fields['name']['error']=true;
+						$data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+						return;
+					}
+				}
 			}
-			unset($data->output['fromForm']->sendArray[':menuTitle'],$data->output['fromForm']->sendArray[':showOnMenu']);
 			//----Parse---//
-			if($data->settings['useBBCode'] == '1')
-			{
-				common_loadPlugin($data,'bbcode');
-				
+			if ($data->settings['useBBCode'] == '1') {
+				common_loadPlugin($data, 'bbcode');
+
 				$data->output['fromForm']->sendArray[':parsedContentBefore'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawContentBefore']);
 				$data->output['fromForm']->sendArray[':parsedContentAfter'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawContentAfter']);
 				$data->output['fromForm']->sendArray[':parsedSuccessMessage'] = $data->plugins['bbcode']->parse($data->output['fromForm']->sendArray[':rawSuccessMessage']);
@@ -171,11 +144,20 @@ function admin_dynamicFormsBuild($data,$db) {
 			}
 			//------------//
 			// Save To DB //
-			$statement = $db->prepare('editForm','admin_dynamicForms');
-			
+			$statement = $db->prepare('editForm', 'admin_dynamicForms');
+
 			$data->output['fromForm']->sendArray[':id'] = $formId;
 			$statement->execute($data->output['fromForm']->sendArray);
 			
+			// -- Push The Constant Fields Across Other Languages
+			common_updateAcrossLanguageTables($data,$db,'forms',array('id'=>$formId),array(
+				'requireLogin' => $data->output['fromForm']->sendArray[':requireLogin'],
+				'enabled' => $data->output['fromForm']->sendArray[':enabled'],
+				'eMail' =>  $data->output['fromForm']->sendArray[':eMail'],
+				'topLevel' =>  $data->output['fromForm']->sendArray[':topLevel'],
+				'api' =>  $data->output['fromForm']->sendArray[':api'],
+			));
+
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Saved Successfully</h2>

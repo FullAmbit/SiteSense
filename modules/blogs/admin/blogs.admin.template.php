@@ -25,9 +25,6 @@
 function theme_blogsDeleteDeleted($data,$aRoot) {
 	echo '
 		<h2>Entry #',$data->action[3],' - ',$data->output['thisBlog']['name'],' Deleted</h2>
-		<p>
-			This action deleted a total of ',$data->output['deleteCount'],' blogs containing ',$data->output['deletePostCount'],' Posts!
-		</p>
 		<div class="buttonList">
 			<a href="',$aRoot,'list">Return to List</a>
 		</div>
