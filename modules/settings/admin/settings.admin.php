@@ -168,6 +168,7 @@ function settings_admin_buildContent($data,$db) {
 			if(isset($data->output['settingsForm']->fields['parsedFooterContent']['newValue']))
 				$data->output['settingsForm']->fields['parsedFooterContent']['updated']='newValue';
 			// Loop Through Form Fields //
+			$languageExceptions = array('siteTitle','rawFooterContent','parsedFooterContent');
 			$statement=$db->prepare('updateSettings','admin_settings');
 			foreach ($data->output['settingsForm']->fields as $fieldKey => $fieldData) {
 				if (!empty($fieldData['updated'])) {
@@ -178,6 +179,11 @@ function settings_admin_buildContent($data,$db) {
 						'value' => $fieldData[$fieldData['updated']],
 						'name' => $fieldKey
 					));
+					
+					//---Update Across All Langauges--//
+					if(!in_array($fieldKey,$languageExceptions)){
+						common_updateAcrossLanguageTables($data,$db,'settings',array('name'=>$fieldKey),array('value'=>$fieldData[$fieldData['updated']]),TRUE);
+					}
 				} else $data->output['secondSidebar'].='
 					<li><b>'.$fieldKey.'</b><span> unchanged</span></li>';
 			}
