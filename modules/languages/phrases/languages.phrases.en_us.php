@@ -3,9 +3,7 @@
 function languages_core_en_us(){
 
 	$phrases = array(
-		'greeting'			=>			"Hello World",
-		'insult'			=>			"Screw you!",
-		'apology'			=>			"I'm So sorry"
+		'greeting'			=>			"Hello World"
 	);
 	
 	return array(
