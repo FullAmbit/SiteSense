@@ -146,10 +146,10 @@ function theme_modulesLanguages($data){
 	<form name="updateLanguage" action="" method="post">
 		<caption>Update Languages For <b>',ucwords($data->output['moduleItem']['name']),'</b></caption><br />
 		Language:
-		<select name="language">';
-	foreach($data->output['languageList'] as $languageShortName => $languageName){
+		<select name="updateLanguage">';
+	foreach($data->languageList as $languageItem){
 		echo
-		'	<option value="',$languageShortName,'">',$languageName,'</option>';
+		'	<option value="',$languageItem['shortName'],'">',$languageItem['name'],'</option>';
 	}
 	echo '
 		</select>
@@ -164,6 +164,6 @@ function theme_modulesLanguages($data){
 }
 
 function theme_modulesLanguageSuccess($data){
-	echo 'The language ',$data->output['languageItem']['name'],' has been updated for ',ucwords($data->output['moduleItem']['name']),'.';
+	echo 'The language has been updated for ',ucwords($data->output['moduleItem']['name']),'.';
 }
 ?>

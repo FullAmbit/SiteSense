@@ -77,6 +77,7 @@ function admin_modulesBuild($data,$db){
 					$data->output['rejectError']='Improper installation file';
 					$data->output['rejectText']='The module install function could not be found within the module installation file.';
 				} else {
+					// Install Tables For Each Language
 					foreach($data->languageList as $languageItem){
 						$targetFunction($db,false,$languageItem['shortName']);
 					}

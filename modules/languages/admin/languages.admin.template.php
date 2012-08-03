@@ -96,10 +96,11 @@ function theme_languagesUpdate($data){
 	<form name="updateLanguage" action="" method="post">
 		<caption>Update From File System</caption><br />
 		Language:
-		<select name="language">';
-	foreach($data->output['languageList'] as $languageShortName => $languageItem){
+		<select name="updateLanguage">';
+	foreach($data->output['languageList'] as $languageItem){
+	
 		echo
-		'	<option value="',$languageShortName,'">',$languageItem['name'],'</option>';
+		'	<option value="',$languageItem['shortName'],'">',$languageItem['name'],'</option>';
 	}
 	echo '
 		</select>
@@ -115,5 +116,5 @@ function theme_languagesUpdate($data){
 }
 
 function theme_languagesUpdateSuccess($data){
-	echo '<h2>The language ',$data->output['languageList'][$_POST['language']]['name'],' was successfully updated</h2>';
+	echo '<h2>The language ',$data->output['languageList'][$_POST['updateLanguage']]['name'],' was successfully updated</h2>';
 }

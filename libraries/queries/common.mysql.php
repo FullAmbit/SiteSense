@@ -458,6 +458,14 @@ function common_addQueries() {
 			WHERE
 				!keyColumn! = :keyValue
 		',
+		'duplicateLanguageTable' => '
+			INSERT INTO
+				!prefix!!table!!lang!
+			SELECT
+				* 
+			FROM 
+				!prefix!!table!_en_us
+		',
 		'deleteFromLanguageTable' => '
 			DELETE FROM
 				!prefix!!table!

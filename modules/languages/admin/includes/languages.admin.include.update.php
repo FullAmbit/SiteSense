@@ -1,6 +1,7 @@
 <?php
 
 common_include('modules/languages/admin/languages.admin.common.php');
+common_include('libraries/queries/defines.mysql.php');
 
 function languages_admin_update_build($data,$db){
 	// Build List Of Languages Available To You (Must Have Core Phrase File In modules/langauges/phrases/)
@@ -25,7 +26,7 @@ function languages_admin_update_build($data,$db){
 	
 	if(isset($_POST['install'])){
 		// Make Sure The Language We Specified Has A Core File
-		if(!isset($languageList[$_POST['language']])){
+		if(!isset($languageList[$_POST['updateLanguage']])){
 			$data->output['responseMessage'] = 'The language you selected does not have a core installer file.';
 			return;
 		}
@@ -33,22 +34,22 @@ function languages_admin_update_build($data,$db){
 		// Check If Language Is Already Installed....
 		$statement=$db->prepare('getLanguage','admin_languages');
 		$statement->execute(array(
-			':shortName' => $_POST['language']
+			':shortName' => $_POST['updateLanguage']
 		));
 		if(($data->output['languageItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
-			// Language Not Installed...Create Table
-			$statement = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>$_POST['language']));
+			// Language Not Installed...Create Table For Phrases
+			$statement = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>$_POST['updateLanguage']));
 			$result = $statement->execute();
 			if($result == FALSE){
-				$data->output['responseMessage'] = 'There was an error in creating the table for the langauge.';
+				$data->output['responseMessage'] = 'There was an error in creating the phrases table for the langauge.';
 				return;
 			}
 
 			// add to list of installed langauges.
 			$statement = $db->prepare('addLanguage','admin_languages');
 			$statement->execute(array(
-				':shortName' => $_POST['language'],
-				':name' => $languageList[$_POST['language']]['name']
+				':shortName' => $_POST['updateLanguage'],
+				':name' => $languageList[$_POST['updateLanguage']]['name']
 			));
 			
 			if($result == FALSE){
@@ -57,26 +58,32 @@ function languages_admin_update_build($data,$db){
 			}
 		}
 		// Add Core Phrases
-		if(language_admin_savePhrases($data,$db,$_POST['language'],'',$languageList[$_POST['language']]['phrases']) === FALSE) return;
+		if(language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$languageList[$_POST['updateLanguage']]['phrases']) === FALSE) return;
 		
-		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1'){		
-			// Get The Modular Installation Files For This Language
-			$dirNames = array_flip($data->output['moduleShortName']);
-			$dirSearch = implode(',',$data->output['moduleShortName']);
-			$modularFileList = glob("modules/{".$dirSearch."}/languages/{".$dirSearch."}.phrases.".$_POST['language'].".php",GLOB_BRACE);
-			foreach($modularFileList as $modularFile){
-				$matches=array();
-				if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$modularFile,$matches) == 0) continue;
-				$moduleName = $matches[2];
+		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1'){
+			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
+			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
+				// Create A Duplicate Table For This Module For Installation Purposes
+				$installFile = 'modules/'.$moduleName.'/'.$moduleName.'.install.php';
+				if (file_exists($installFile)) {
+					common_include($installFile);
+					$installFunc = $moduleName.'_install';
+					if (function_exists($installFunc)) {
+						$installFunc($db, FALSE, $_POST['updateLanguage'], TRUE);
+					}
+				}
 				
-				$func = 'languages_'.$moduleName.'_'.$_POST['language'];
-				common_include($modularFile);
-				if(!function_exists($func)) continue;
-				// Get Phrases For This Module
-				$modulePhrases = $func();
-				// Save These Phrases
-				if(language_admin_savePhrases($data,$db,$_POST['language'],$moduleName,$modulePhrases) === FALSE) return;			
-			}
+				// Load The Phrases
+				if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php')) {
+					common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php');
+					$func = 'languages_'.$moduleName.'_'.$_POST['updateLanguage'];
+					if (function_exists($func)) {
+						$modulePhrases = $func($data, $db);
+						// Save The Phrases
+						language_admin_savePhrases($data, $db, $_POST['updateLanguage'], $moduleName, $modulePhrases);
+					}
+				}
+			}	
 		}
 		$data->output['themeOverride'] = 'UpdateSuccess';
 	}	
