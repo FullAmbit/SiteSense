@@ -181,10 +181,40 @@ function admin_dynamicForms_addQueries() {
 			INSERT INTO !prefix!main_menu (text,title,url,module,side,sortOrder,enabled) VALUES (:name,:title,:shortName,:module,:side,:sortOrder,:enabled)
 		',
 		'getOptionsByFieldId' => '
-			SELECT options FROM !prefix!!lang!form_fields WHERE id = :fieldId
+			SELECT id,sortOrder,text,value FROM !prefix!!lang!form_fields_options WHERE fieldId = :fieldId ORDER BY sortOrder ASC
 		',
-		'updateOptions' => '
-			UPDATE !prefix!!lang!form_fields SET options = :options WHERE id = :fieldId
+		'addOption' => '
+			INSERT INTO
+				!prefix!!lang!form_fields_options 
+				(formId,fieldId,sortOrder,text,value)
+			VALUES 
+				(:formId,:fieldId,:sortOrder,:text,:value)
+		',
+		'updateOptionById' => '
+			UPDATE
+				!prefix!!lang!form_fields_options
+			SET
+				text = :text,
+				value = :value
+			WHERE id = :id
+		',
+		'getOptionById' => '
+			SELECT 
+				* 
+			FROM 
+				!prefix!!lang!form_fields_options 
+			WHERE 
+				id = :id 
+			LIMIT 
+				1
+		',
+		'deleteOption' => '
+			DELETE FROM 
+				!prefix!!lang!form_fields_options 
+			WHERE 
+				id = :id 
+			LIMIT
+				1
 		',
 		'getExistingShortNames' => '
 			SELECT shortName FROM !prefix!!lang!forms
@@ -201,7 +231,7 @@ function admin_dynamicForms_addQueries() {
 				sortOrder = :sortOrder
 		',
 		'getSidebarsByForm' => '
-			SELECT a.id,a.form,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!form_sidebars a, !prefix!sidebars b WHERE a.form = :formId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
+			SELECT a.id,a.form,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!form_sidebars a, !prefix!!lang!sidebars b WHERE a.form = :formId AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
 		'enableSidebar' => '
 			UPDATE !prefix!form_sidebars

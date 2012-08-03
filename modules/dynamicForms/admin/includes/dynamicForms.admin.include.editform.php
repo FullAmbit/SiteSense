@@ -155,7 +155,7 @@ function admin_dynamicFormsBuild($data, $db) {
 				'enabled' => $data->output['fromForm']->sendArray[':enabled'],
 				'eMail' =>  $data->output['fromForm']->sendArray[':eMail'],
 				'topLevel' =>  $data->output['fromForm']->sendArray[':topLevel'],
-				'api' =>  $data->output['fromForm']->sendArray[':api'],
+				'api' =>  $data->output['fromForm']->sendArray[':api']
 			));
 
 			if (empty($data->output['secondSidebar'])) {

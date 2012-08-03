@@ -34,7 +34,7 @@ $this->fields = array(
 			'size'> 256
 		),
 		'required' => true,
-		'value' => isset($data->output['optionList'][$data->action[4]]) ? $data->output['optionList'][$data->action[4]]['text'] : ''
+		'value' => isset($data->output['optionItem']) ? $data->output['optionItem']['text'] : ''
 	),
 	'value' => array(
 		'label' => 'Value',
@@ -44,7 +44,7 @@ $this->fields = array(
 			'size'> 256
 		),
 		'required' => true,
-		'value' => isset($data->output['optionList'][$data->action[4]]) ? $data->output['optionList'][$data->action[4]]['value'] : ''
+		'value' => isset($data->output['optionItem']) ? $data->output['optionItem']['value'] : ''
 	)
 )
 ?>

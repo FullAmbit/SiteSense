@@ -125,7 +125,7 @@ function admin_dynamicFormsBuild($data, $db) {
 			$statement = $db->prepare('newForm', 'admin_dynamicForms');
 			$result = $statement->execute($data->output['fromForm']->sendArray);
 			if ($result) {
-				//--Push Page To All Other Languages
+				//--Push Form To All Other Languages
 				common_populateLanguageTables($data,$db,'forms','shortName',$shortName);
 
 				$data->output['savedOkMessage']='

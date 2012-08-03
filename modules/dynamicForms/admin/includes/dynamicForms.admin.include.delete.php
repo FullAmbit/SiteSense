@@ -69,12 +69,13 @@ function admin_dynamicFormsBuild($data,$db)
 			// Now Delete The Rows
 			$statement = $db->prepare('deleteRowsByForm','admin_dynamicForms');
 			$statement->execute(array(':formID' => $formID));
-			// Delete The Fields
-			$statement = $db->prepare('deleteFieldsByForm','admin_dynamicForms');
-			$statement->execute(array(':formID' => $formID));
+			// Delete The Fields Across All Languages
+			common_deleteFromLanguageTables($data,$db,'form_fields','form',$formID,TRUE);
+			// Delete The Field Options (For Select DropDowns) Across All Languages
+			common_deleteFromLanguageTables($data,$db,'form_fields_options','formId',$formID,TRUE);
+
 			// Delete The Form Itself
-			$statement = $db->prepare('deleteForm','admin_dynamicForms');
-			$statement->execute(array(':id' => $formID));
+			common_deleteFromLanguageTables($data,$db,'forms','id',$formID,TRUE);
 			
 			$data->output['delete'] = 'deleted';
 		} else {

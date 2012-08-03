@@ -71,23 +71,18 @@ function admin_dynamicFormsBuild($data,$db) {
 			}
 			$form->sendArray[':form'] = $dbform['id'];
 			
-			//--Get SortOrder--//
-            /*
-			$statement = $db->prepare('countFieldsByForm','admin_dynamicForms');
-			$statement->execute(array(':formId' => $formId));
-			list($rowCount) = $statement->fetch();
-			$sortOrder = $rowCount + 1;
-			$form->sendArray[':sortOrder'] = $sortOrder;
-						
-			*/
-            $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'form_fields','sortOrder','form',$formId);
+            $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'form_fields','sortOrder','form',$formId,TRUE);
 			$statement = $db->prepare('newField','admin_dynamicForms');
 			$result = $statement->execute($form->sendArray);
+			$fieldId = $db->lastInsertId();
 			if(!$result) {
 				$data->output['abort'] = true;
 				$data->output['abortMessage'] = '<h2>Unable to save to database</h2>';
 				return;
 			}
+			//--Push Form To All Other Languages
+			common_populateLanguageTables($data,$db,'form_fields','id',$fieldId);
+			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Field Saved Successfully</h2>

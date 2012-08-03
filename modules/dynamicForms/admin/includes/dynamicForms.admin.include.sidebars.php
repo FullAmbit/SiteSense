@@ -41,7 +41,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSidebarCount = $db->countRows('sidebars');
+	$maxSidebarCount = $db->countRows($data->language.'_sidebars');
 	$statement = $db->prepare('countSidebarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	list($rowCount) = $statement->fetch();
@@ -51,7 +51,6 @@ function admin_dynamicFormsBuild($data,$db)
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
 		foreach($sidebarList as $sidebarItem) {
-			$i++;
 			$statement = $db->prepare('createSidebarSetting','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $formId,

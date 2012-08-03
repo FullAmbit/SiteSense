@@ -55,11 +55,9 @@ function admin_dynamicFormsBuild($data,$db)
 	{
 		if(!empty($_POST['delete']))
 		{
-			// Delete Form Field
-			$statement = $db->prepare('deleteField','admin_dynamicForms');
-			$statement->execute(array(
-				':id' => $data->output['fieldItem']['id']
-			));
+			// Delete Form Field Across All Languages (incl. current lang)
+			common_deleteFromLanguageTables($data,$db,'form_fields','id',$data->action[3],TRUE);
+
 			// Fix Sort Order Gap
 			$statement = $db->prepare('fixFieldSortOrderGap','admin_dynamicForms');
 			$statement->execute(array(

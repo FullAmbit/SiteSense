@@ -36,30 +36,16 @@ function admin_dynamicFormsBuild($data,$db) {
 		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
 		return;
 	}
-	$data->action[3] = intval($data->action[3]);
-	$statement = $db->prepare('getFieldById','admin_dynamicForms');
-	$statement->execute(array(':id' => $data->action[3]));
-	$data->output['fieldItem'] = $statement->fetch();
-	if($data->output['fieldItem']  === false){
-		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
-		return;
-	}
 	// Get Options
-	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
-	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
-	$optionsSerialized = $statement->fetch();
-	$data->output['optionList'] = unserialize($optionsSerialized[0]);
-	
-	// Does Our Option Exist?
-	if(!isset($data->output['optionList'][$data->action[4]]))
-	{
+	$statement = $db->prepare('getOptionById','admin_dynamicForms');
+	$statement->execute(array(':id' => $data->action[3]));
+	if(($data->output['optionItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '<h2>Option Not Found</h2>';
 		return;
 	}
-	
-	$form = $data->output['fromForm'] = new formHandler('formoptions',$data,true);
+		
+	$form = $data->output['fromForm'] = new formHandler('options',$data,true);
 	
 	if (
 		(!empty($_POST['fromForm'])) &&
@@ -69,24 +55,18 @@ function admin_dynamicFormsBuild($data,$db) {
 		$form->populateFromPostData();
 		
 		if ($form->validateFromPost()) {
-			
-			$form->sendArray[':fieldId'] = $data->output['fieldItem']['id'];
-			$data->output['optionList'][$data->action[4]]['text'] = $form->sendArray[':text'];
-			$data->output['optionList'][$data->action[4]]['value'] = $form->sendArray[':value'];
-			
-			$form->sendArray[':options'] = serialize($data->output['optionList']);
-			unset($form->sendArray[':text'],$form->sendArray[':value']);
-			
-			$statement = $db->prepare('updateOptions','admin_dynamicForms');
+			$form->sendArray[':id'] = $data->output['optionItem']['id'];
+			$statement = $db->prepare('updateOptionById','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die($statement->errorInfo());
+
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Option Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addOption/' . $data->output['fieldItem']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addOption/' . $data->output['optionItem']['fieldId'] . '">
 							Add New Option
 						</a>
-						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/' . $data->output['fieldItem']['id'] . '">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/' . $data->output['optionItem']['fieldId'] . '">
 							Return to Options List
 						</a>
 					</div>';
