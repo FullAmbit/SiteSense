@@ -69,7 +69,8 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 			'formId'               => SQR_ID,
 			'fieldId'              => SQR_ID,
 			'text'                 => 'VARCHAR(127) NOT NULL DEFAULT ""',
-			'value'                 => 'VARCHAR(127) NOT NULL DEFAULT ""'
+			'value'                => 'VARCHAR(127) NOT NULL DEFAULT ""',
+			'sortOrder'            => SQR_sortOrder.' DEFAULT "1"',
 		),
 		'form_sidebars' => array(
 			'id'                   => SQR_IDKey,
