@@ -46,6 +46,9 @@ function admin_buildContent($data,$db) {
 			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $data->action[1]));
 			$module=$moduleQuery->fetch();
+			if($module==FALSE){
+				common_redirect($data->linkRoot.'admin');
+			}
 		}
 		$data->currentModule=$module['name'];
         common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
@@ -65,6 +68,7 @@ function admin_buildContent($data,$db) {
 			$strFind=array('.config.php','.admin');
 			$targetName=substr(strrchr(str_replace($strFind,'',$fileName),'/'),1);
 			$targetName=hyphenToCamel($targetName);
+			if(!isset($data->output['moduleShortName'][$targetName])) continue;
 			$targetFunction=$targetName.'_admin_config';
 			
 			if (function_exists($targetFunction)) {
