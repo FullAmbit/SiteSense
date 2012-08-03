@@ -351,8 +351,8 @@ function common_populateLanguageTables($data,$db,$tableName,$keyColumn,$keyValue
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
 
 		$statement=$db->prepare('populateLanguageTable','common',array(
-			'!languageTable!' => $languageItem['shortName'].'_'.$tableName,
-			'!sourceTable!' => $data->language.'_'.$tableName,
+			'!languageTable!' => $tableName.'_'.$languageItem['shortName'],
+			'!sourceTable!' => $tableName.'_'.$data->language,
 			'!keyColumn!' => $keyColumn
 		));
 		$statement->execute(array(
@@ -368,7 +368,7 @@ function common_deleteFromLanguageTables($data,$db,$tableName,$keyColumn,$keyVal
 	foreach($data->languageList as $languageItem){
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
 		$statement=$db->prepare('deleteFromLanguageTable','common',array(
-			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!table!' => $tableName.'_'.$languageItem['shortName'],
 			'!keyColumn!' => $keyColumn
 		));
 		$statement->execute(array(
@@ -402,7 +402,7 @@ function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$val
 	foreach($data->languageList as $languageItem){
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
 		$statement = $db->prepare("updateLanguageTable",'common',array(
-			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!table!' => $tableName.'_'.$languageItem['shortName'],
 			'!qString!' => $qString,
 			'!conditionStatement!' => $conditionStatement
 		));
@@ -425,7 +425,7 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
 		
 		$statement = $db->prepare("selectFromLanguageTable","common",array(
-			'!table!' => $languageItem['shortName'].'_'.$tableName,
+			'!table!' => $tableName.'_'.$languageItem['shortName'],
 			'!column!' => $columnSelector,
 			'!qString!' => $qString
 		));

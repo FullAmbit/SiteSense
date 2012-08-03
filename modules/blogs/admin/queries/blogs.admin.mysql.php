@@ -29,58 +29,58 @@
 function admin_blogs_addQueries() {
 	return array(
         'getAllBlogs' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 		',
         'countBlogs' => '
 			SELECT count(id) AS count
-			FROM !prefix!!lang!blogs
+			FROM !prefix!blogs!lang!
 		',
         'countBlogPosts' => '
-			SELECT count(id) FROM !prefix!!lang!blog_posts
+			SELECT count(id) FROM !prefix!blog_posts!lang!
 			WHERE blogId = :blogId
 		',
         'getBlogById' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE id = :id
 		',
         'getBlogByIdAndOwner' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE id = :id AND owner = :owner
 		',
         'getBlogByPost' => '
-			SELECT * FROM !prefix!!lang!blogs WHERE id IN (SELECT blogId FROM !prefix!!lang!blog_posts WHERE id = :postId)
+			SELECT * FROM !prefix!blogs!lang! WHERE id IN (SELECT blogId FROM !prefix!blog_posts!lang! WHERE id = :postId)
 		',
         'deleteBlogById' => '
-			DELETE FROM !prefix!!lang!blogs
+			DELETE FROM !prefix!blogs!lang!
 			WHERE id = :id
 		',
         'deleteBlogPostByBlogId' => '
-			DELETE FROM !prefix!!lang!blog_posts
+			DELETE FROM !prefix!blog_posts!lang!
 			WHERE blogId = :id
 		',
         'getBlogPostsById' => '
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!!lang!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE id = :id
 		',
         'deleteBlogPostById' => '
-			DELETE FROM !prefix!!lang!blog_posts
+			DELETE FROM !prefix!blog_posts!lang!
 			WHERE id = :id
 		',
         'getBlogIdByName' => '
-			SELECT id FROM !prefix!!lang!blogs
+			SELECT id FROM !prefix!blogs!lang!
 			WHERE shortName = :shortName
 		',
         'getBlogPostIdByName' => '
-			SELECT id FROM !prefix!!lang!blog_posts
+			SELECT id FROM !prefix!blog_posts!lang!
 			WHERE shortName = :shortName
 		',
         'getUsersWithBlogAccess' => '
 		',
         'updateBlogById' => '
-			UPDATE !prefix!!lang!blogs
+			UPDATE !prefix!blogs!lang!
 			SET
 				shortName            =   :shortName,
 				name                 =   :name,
@@ -97,16 +97,16 @@ function admin_blogs_addQueries() {
 			WHERE id = :id
 		',
         'insertBlog' => '
-			INSERT INTO !prefix!!lang!blogs
+			INSERT INTO !prefix!blogs!lang!
 			(name,title,managingEditor,shortName,owner,allowComments,numberPerPage,description,commentsRequireLogin, topLevel, webMaster,rssOverride) VALUES (:name, :title, :managingEditor, :shortName, :owner, :allowComments, :numberPerPage, :description, :commentsRequireLogin, :topLevel, :webMaster, :rssOverride)
 		',
         'updateShortNameById' => '
-			UPDATE !prefix!!lang!blogs
+			UPDATE !prefix!blogs!lang!
 			SET shortName = :shortName
 			WHERE id = :id
 		',
         'updateBlogPostsById' => '
-			UPDATE !prefix!!lang!blog_posts
+			UPDATE !prefix!blog_posts!lang!
 			SET
 				categoryId = :categoryId,
 				title        = :title,
@@ -122,7 +122,7 @@ function admin_blogs_addQueries() {
 			WHERE id = :id
 		',
         'insertBlogPost' => '
-			INSERT INTO !prefix!!lang!blog_posts(
+			INSERT INTO !prefix!blog_posts!lang!(
 				blogId,
 				categoryId,
 				title,
@@ -154,66 +154,66 @@ function admin_blogs_addQueries() {
 				:allowComments
 			)',
         'updatePostShortNameById' => '
-			UPDATE !prefix!!lang!blog_posts
+			UPDATE !prefix!blog_posts!lang!
 			SET shortName = :shortName
 			WHERE id = :id
 		',
         'getBlogsByOwner' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			ORDER BY owner
 			LIMIT :blogStart, :blogLimit
 		',
         'getBlogsByUser' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE owner = :owner
 			ORDER BY owner
 			LIMIT :blogStart, :blogLimit
 		',
         'countBlogPostsByBlogId' => '
 			SELECT COUNT(id) AS count
-			FROM !prefix!!lang!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE blogID = :id
 		',
         'getBlogPostsByBlogIdLimited' => '
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!!lang!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE blogId = :blogId
 			ORDER BY postTime DESC
 			LIMIT :blogStart, :blogLimit
 		',
         'getAllCategories' => '
 			SELECT *
-				FROM !prefix!!lang!blog_categories
+				FROM !prefix!blog_categories!lang!
 				ORDER BY name ASC
 		',
         'getAllCategoriesByBlog' => '
 			SELECT *
-				FROM !prefix!!lang!blog_categories
+				FROM !prefix!blog_categories!lang!
 				WHERE blogId = :blogId
 				ORDER BY name ASC
 		',
         'getCategoryById' => '
-			SELECT * FROM !prefix!!lang!blog_categories WHERE id = :id
+			SELECT * FROM !prefix!blog_categories!lang! WHERE id = :id
 		',
         'editCategory' => '
-			UPDATE !prefix!!lang!blog_categories SET name = :name, shortName = :shortName WHERE id = :id LIMIT 1
+			UPDATE !prefix!blog_categories!lang! SET name = :name, shortName = :shortName WHERE id = :id LIMIT 1
 		',
         'deleteCategory' => '
-			DELETE FROM !prefix!!lang!blog_categories WHERE id = :id
+			DELETE FROM !prefix!blog_categories!lang! WHERE id = :id
 		',
         'updatePostsWithinCategory' => '
-			UPDATE !prefix!!lang!blog_posts SET categoryId = 0 WHERE categoryId = :categoryId
+			UPDATE !prefix!blog_posts!lang! SET categoryId = 0 WHERE categoryId = :categoryId
 		',
         'addCategory' => '
-			INSERT INTO !prefix!!lang!blog_categories (blogId,name,shortName) VALUES (:blogId,:name,:shortName)
+			INSERT INTO !prefix!blog_categories!lang! (blogId,name,shortName) VALUES (:blogId,:name,:shortName)
 		',
         'getExistingShortNames' => '
-			SELECT shortName FROM !prefix!!lang!blog_posts
+			SELECT shortName FROM !prefix!blog_posts!lang!
 		',
         'getExistingBlogShortNames' => '
-			SELECT shortName FROM !prefix!!lang!blogs
+			SELECT shortName FROM !prefix!blogs!lang!
 		',
         'getCommentById' => '
 			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time FROM !prefix!blog_comments

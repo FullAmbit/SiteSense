@@ -30,37 +30,37 @@ function admin_mainMenu_addQueries() {
 	return array(
 		'getSideById' => '
 			SELECT id,side
-			FROM !prefix!!lang!main_menu
+			FROM !prefix!main_menu!lang!
 			WHERE id = :id
 		',
 		'updateSideById' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET side = :side
 			WHERE id = :id
 		',
 		'getSortOrderById' => '
 			SELECT id,sortOrder
-			FROM !prefix!!lang!main_menu
+			FROM !prefix!main_menu!lang!
 			WHERE id = :id
 		',
 		'updateOrderById' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = :sortOrder
 			WHERE id = :id
 		',
 		'getMenuItemsOrdered' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			ORDER BY sortOrder ASC, side ASC
 		',
 		'getMenuItemById' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE id = :id
 		',
 		'getMenuItemByParent' => '
-			SELECT * FROM !prefix!!lang!main_menu WHERE parent = :parent
+			SELECT * FROM !prefix!main_menu!lang! WHERE parent = :parent
 		',
 		'editMenuItem' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET
 				text = :text,
 				title = :title,
@@ -71,49 +71,49 @@ function admin_mainMenu_addQueries() {
 			WHERE id = :id
 		',
 		'newMenuItem' => '
-			INSERT INTO !prefix!!lang!main_menu (text,title,url,sortOrder,enabled,parent) VALUES (:text,:title,:url,:sortOrder,:enabled,:parent)
+			INSERT INTO !prefix!main_menu!lang! (text,title,url,sortOrder,enabled,parent) VALUES (:text,:title,:url,:sortOrder,:enabled,:parent)
 		',
 		'shiftOrderUpByID' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = sortOrder - 1
 			WHERE id = :id
 		',
 		'shiftOrderUpRelative' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = sortOrder + 1
 			WHERE sortOrder < :sortOrder AND parent = :parent
 			ORDER BY sortOrder DESC LIMIT 1
 		',
 		'shiftOrderDownByID' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = sortOrder + 1
 			WHERE id = :id
 		',
 		'shiftOrderDownRelative' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND parent = :parent
 			ORDER BY sortOrder ASC LIMIT 1
 		',
 		'getMenuItemByParent' => '
-			SELECT * FROM !prefix!!lang!main_menu WHERE parent = :parent
+			SELECT * FROM !prefix!main_menu!lang! WHERE parent = :parent
 		',
 		'enableOrDisableMenuItem' => '
-			UPDATE !prefix!!lang!main_menu SET enabled = :enabled WHERE id = :id LIMIT 1
+			UPDATE !prefix!main_menu!lang! SET enabled = :enabled WHERE id = :id LIMIT 1
 		',
 		'fixSortOrderGap' => '
-			UPDATE !prefix!!lang!main_menu
+			UPDATE !prefix!main_menu!lang!
 			SET sortOrder = sortOrder - 1
 			WHERE sortOrder > :sortOrder AND parent = :parent
 		',
 		'deleteMenuItemById' => '
-			DELETE FROM !prefix!!lang!main_menu WHERE id = :id LIMIT 1
+			DELETE FROM !prefix!main_menu!lang! WHERE id = :id LIMIT 1
 		',
 		'countItemsByParent' => '
-			SELECT COUNT(*) as sortOrder FROM !prefix!!lang!main_menu WHERE parent = :parent
+			SELECT COUNT(*) as sortOrder FROM !prefix!main_menu!lang! WHERE parent = :parent
 		',
 		'deleteItemsByParent' => '
-			DELETE FROM !prefix!!lang!main_menu WHERE parent = :parent
+			DELETE FROM !prefix!main_menu!lang! WHERE parent = :parent
 		'
 	);
 }

@@ -32,7 +32,7 @@ function installer_addQueries() {
 			DROP TABLE !table!
 		',
 		'addSetting' => '
-			INSERT INTO !prefix!!lang!settings
+			INSERT INTO !prefix!settings!lang!
 			(name,category,value)
 			VALUES (:name, :category, :value)
 		',
@@ -43,13 +43,13 @@ function installer_addQueries() {
 			(:name,:passphrase,:registeredIP)
 		',
 		'makeNewsBlog' => '
-			INSERT INTO !prefix!!lang!blogs
+			INSERT INTO !prefix!blogs!lang!
 			(name,shortName,title,owner,numberPerPage,description)
 			VALUES
 			(\'news\', \'news\', \'News\', 0, 3, \'Home Page News\')
 		',
 		'makeWelcomePost' => '
-			INSERT INTO !prefix!!lang!blog_posts
+			INSERT INTO !prefix!blog_posts!lang!
 			(blogId,title,name,shortName,user,postTime,rawSummary,parsedSummary,rawContent,parsedContent,live)
 			VALUES (
 				1,
@@ -66,7 +66,7 @@ function installer_addQueries() {
 			)
 		',
 		'makeRegistrationAgreement' => '
-			INSERT INTO !prefix!!lang!pages
+			INSERT INTO !prefix!pages!lang!
 			(shortName,name,title,parent,rawContent,parsedContent,live)
 			VALUES (
 				\'registration-agreement\',
@@ -79,7 +79,7 @@ function installer_addQueries() {
 			)
 		',
 		'makeRegistrationEMail' => '
-			INSERT INTO !prefix!!lang!pages
+			INSERT INTO !prefix!pages!lang!
 			(shortName,name,title,parent,rawContent,parsedContent,live)
 			VALUES (
 				\'registration-email\',

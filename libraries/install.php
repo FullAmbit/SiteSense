@@ -114,10 +114,10 @@ if (
     echo '<p>Connect to Database Successful</p>';
 
     if($drop) {
-        $data->dropTable($lang.'settings');
+        $data->dropTable('settings'.$lang);
         $data->dropTable('banned');
         $data->dropTable('sessions');
-        $data->dropTable($lang.'sidebars');
+        $data->dropTable('sidebars'.$lang);
         $data->dropTable($lang.'main_menu');
         $data->dropTable('activations');
         $data->dropTable('url_remap');
@@ -130,7 +130,7 @@ if (
         $data->dropTable('user_permissions');
     }
     // Create the settings table
-    if ($data->createTable($lang.'settings',$structures['settings'],false)) {
+    if ($data->createTable('settings'.$lang,$structures['settings'],false)) {
         try {
             $statement=$data->prepare('addSetting','installer',NULL,NULL,NULL,$lang);
             echo '

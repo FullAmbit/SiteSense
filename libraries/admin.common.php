@@ -157,7 +157,7 @@ function admin_sortOrder_new($data,$db,$table,$sortOrderName='sortOrder',$parent
 	// Are We Updating A Language Table?
 	if($language){
 		$baseTableName = $table;
-		$table=$data->language.'_'.$table;
+		$table=$table.'_'.$data->language;
 	}
 	
 	if(isset($parentName) && isset($parent)) {
@@ -186,7 +186,7 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
 	// Are We Updating A Language Table?
 	if($language){
 		$baseTableName = $table;
-		$table=$data->language.'_'.$table;
+		$table=$table.'_'.$data->language;
 	}
 	// Get Current Sort Order by ID
     if(isset($parentName)) {

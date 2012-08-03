@@ -29,7 +29,7 @@ function blogs_settings() {
 	);
 }
 function blogs_install($db,$drop=false,$lang = "en_us") {
-	$lang = rtrim($lang,'_').'_';
+	$lang = '_'.trim($lang,'_');
 	$structures=array(
 		'blogs' => array(
 			'id'                   => SQR_IDKey,
@@ -90,13 +90,13 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 	if($drop)
         blogs_uninstall($db);
 
-	$db->createTable($lang.'blogs',$structures['blogs'],false);
+	$db->createTable('blogs'.$lang,$structures['blogs'],false);
 	$db->createTable($lang.'blog_posts',$structures['blog_posts'],false);
 	$db->createTable('blog_comments',$structures['blog_comments'],false);
 	$db->createTable($lang.'blog_categories',$structures['blog_categories'],false);
 
     // Add Blog Category Sidebar
-    $statement=$db->query('getHighestSortOrder','admin',$lang.'sidebars','sortOrder');
+    $statement=$db->query('getHighestSortOrder','admin','sidebars'.$lang,'sortOrder');
     if($result=$statement->fetch()) {
         $sortOrder=1;
     } else {
@@ -227,7 +227,7 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
         }
     }
     // ---
-	if($db->countRows($lang.'blogs')==0) {
+	if($db->countRows('blogs'.$lang)==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -266,8 +266,8 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 }
 function blogs_uninstall($db,$lang="en_us") {
-	$lang = rtrim($lang,'_').'_';
-    $db->dropTable($lang.'blogs');
+	$lang = '_'.trim($lang,'_');
+    $db->dropTable('blogs'.$lang);
     $db->dropTable($lang.'blog_posts');
     $db->dropTable('blog_comments');
     $db->dropTable($lang.'blog_categories');

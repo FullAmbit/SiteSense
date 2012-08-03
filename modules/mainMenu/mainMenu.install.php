@@ -29,7 +29,7 @@ function mainMenu_settings() {
 	);
 }
 function mainMenu_install($db,$drop=false,$lang="en_us") {
-	$lang = rtrim($lang,'_').'_';
+	$lang = '_'.trim($lang,'_');
 	$structures = array(
         'main_menu' => array(
             'id'           => SQR_IDKey,

@@ -29,7 +29,7 @@ function dynamicForms_settings() {
 	);
 }
 function dynamicForms_install($db,$drop=false,$lang='en_us') {
-	$lang = rtrim($lang,'_').'_';
+	$lang = '_'.trim($lang,'_');
 	$structures = array(
 		'forms' => array(
 			'id'                   => SQR_IDKey,
@@ -93,7 +93,7 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 	if($drop)
         dynamicForms_uninstall($db,$lang);
 
-	$db->createTable($lang.'forms',$structures['forms'],false);
+	$db->createTable('forms'.$lang,$structures['forms'],false);
 	$db->createTable($lang.'form_fields',$structures['form_fields'],false);
 	$db->createTable($lang.'form_fields_options',$structures['form_fields_options'],false);
 	$db->createTable('form_rows',$structures['form_rows'],false);
@@ -131,9 +131,9 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 
 }
 function dynamicForms_uninstall($db,$lang) {
-	$lang = rtrim($lang,'_').'_';
+	$lang = '_'.trim($lang,'_');
 	
-    $db->dropTable($lang.'forms');
+    $db->dropTable('forms'.$lang);
     $db->dropTable($lang.'form_fields');
     $db->dropTable($lang.'form_fields_options');
     $db->dropTable('form_rows');

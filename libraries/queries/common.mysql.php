@@ -105,77 +105,77 @@ function common_addQueries() {
 			(:sessionId,:userId,:expires,:ipAddress,:userAgent,:language)
 		',
         'getSettings' => '
-			SELECT * FROM !prefix!!lang!settings
+			SELECT * FROM !prefix!settings!lang!
 		',
         'getNewsId' => '
-			SELECT id FROM !prefix!!lang!blogs
+			SELECT id FROM !prefix!blogs!lang!
 			WHERE name="news"
 		',
         'getAllNews' => '
-			SELECT * FROM !prefix!!lang!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE name="news"
 		',
         'getMainMenuOrder' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			ORDER BY sortOrder ASC
 		',
         'getMainMenuOrderLeft' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "left"
 			ORDER BY sortOrder ASC
 		',
         'getMainMenuOrderRight' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "right"
 			ORDER BY sortOrder ASC
 		',
         'getEnabledMainMenuOrderLeft' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "left"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
         'getEnabledMainMenuOrderRight' => '
-			SELECT * FROM !prefix!!lang!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "right"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
         'getSidebars' => '
 			SELECT *
-			FROM !prefix!!lang!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE enabled = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getSidebarById' => '
 			SELECT *
-			FROM !prefix!!lang!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
         'deleteFromSidebarsById' => '
 			DELETE
-			FROM !prefix!!lang!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE id = :id
 		',
         //No column "showOnParent" in table !prefix!pages
         'getHomePagePages' => '
 			SELECT *
-			FROM !prefix!!lang!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4096
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getHomePageSidebarPages' => '
 			SELECT *
-			FROM !prefix!!lang!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4097
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getSidebarPages' => '
 			SELECT *
-			FROM !prefix!!lang!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4098
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
@@ -299,18 +299,18 @@ function common_addQueries() {
 			ORDER BY name ASC
 		',
         'getAllSidebars' => '
-			SELECT * FROM !prefix!!lang!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 		',
         'getSidebarById' => '
-			SELECT * FROM !prefix!!lang!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 			WHERE id = :id
 		',
         'getSidebarsByModule' => '
-			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!!lang!sidebars b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
+			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
         'getEnabledSidebarsByModule' => '
 				SELECT a.enabled,a.sortOrder,b.*
-					FROM !prefix!module_sidebars a, !prefix!!lang!sidebars b
+					FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b
 					WHERE a.module = :module
 					AND a.sidebar = b.id
 					AND a.enabled = 1

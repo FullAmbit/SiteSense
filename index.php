@@ -106,7 +106,7 @@ final class dynamicPDO extends PDO {
 			// Make Sure We At Least Have Prefix And Lang....
 			if (!is_array($parameters)) $parameters=array();
 			if (!isset($parameters['!prefix!'])) $parameters['!prefix!'] = $this->tablePrefix;
-			if (!isset($parameters['!lang!'])) $parameters['!lang!'] = $this->lang.'_';
+			if (!isset($parameters['!lang!'])) $parameters['!lang!'] = '_'.$this->lang;
 
 			$queryString = str_replace(
 				array_keys($parameters),

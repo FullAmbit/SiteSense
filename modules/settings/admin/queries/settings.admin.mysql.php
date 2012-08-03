@@ -29,7 +29,7 @@
 function admin_settings_addQueries() {
 	return array(
 		'updateSettings' => "
-			UPDATE !prefix!!lang!settings
+			UPDATE !prefix!settings!lang!
 			SET value= :value
 			WHERE name= :name
 			AND category= 'cms'
