@@ -132,7 +132,16 @@ function dynamicForms_buildContent($data,$db) {
 			case 'select':
 				$f['tag'] = 'select';
 				$f['required'] = ($field['required'] == '0') ? false : true;
-				$f['options'] = unserialize($field['options']);
+				// Get Options //
+				$statement = $db->prepare('getOptionsByFieldForForm','dynamicForms');
+				$statement->execute(array(
+					':formId' => $form['id'],
+					':fieldId' => $field['id']
+				));
+				$optionList = $statement->fetchAll(PDO::FETCH_ASSOC);
+				foreach($optionList as $optionItem){
+					$f['options'][] = $optionItem;
+				}
 				$f['validate'] = ($field['isEmail'] == '1') ? 'eMail' : '';
 			case 'timezone':
 				$f['tag'] = 'select';
