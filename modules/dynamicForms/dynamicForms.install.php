@@ -29,7 +29,6 @@ function dynamicForms_settings() {
 	);
 }
 function dynamicForms_install($db,$drop=false,$lang='en_us') {
-	$lang = '_'.trim($lang,'_');
 	$structures = array(
 		'forms' => array(
 			'id'                   => SQR_IDKey,
@@ -94,12 +93,12 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 	if($drop)
         dynamicForms_uninstall($db,$lang);
 
-	$db->createTable('forms'.$lang,$structures['forms'],false);
-	$db->createTable('form_fields'.$lang,$structures['form_fields'],false);
-	$db->createTable('form_fields_options'.$lang,$structures['form_fields_options'],false);
-	$db->createTable('form_rows',$structures['form_rows'],false);
-	$db->createTable('form_values',$structures['form_values'],false);
-	$db->createTable('form_sidebars',$structures['form_sidebars'],false);
+	$db->createTable('forms',$structures['forms'],$lang);
+	$db->createTable('form_fields',$structures['form_fields'],$lang);
+	$db->createTable('form_fields_options',$structures['form_fields_options'],$lang);
+	$db->createTable('form_rows',$structures['form_rows']);
+	$db->createTable('form_values',$structures['form_values']);
+	$db->createTable('form_sidebars',$structures['form_sidebars']);
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -132,11 +131,9 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 
 }
 function dynamicForms_uninstall($db,$lang) {
-	$lang = '_'.trim($lang,'_');
-	
-    $db->dropTable('forms'.$lang);
-    $db->dropTable('form_fields'.$lang);
-    $db->dropTable('form_fields_options'.$lang);
+    $db->dropTable('forms',$lang);
+    $db->dropTable('form_fields',$lang);
+    $db->dropTable('form_fields_options',$lang);
     $db->dropTable('form_rows');
     $db->dropTable('form_values');
     $db->dropTable('form_sidebars');

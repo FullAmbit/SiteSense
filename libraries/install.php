@@ -171,7 +171,8 @@ if (
         'mainMenu',
         'settings',
         'modules',
-        'languages'
+        'languages',
+        'hostnames'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');

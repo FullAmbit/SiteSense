@@ -52,8 +52,7 @@ function admin_modulesBuild($data,$db){
 					$data->output['rejectError']='Improper installation file';
 					$data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
 				} else {
-					foreach($data->languageList as $languageItem){
-						var_dump("CALLING FUNC");
+					foreach($data->languageList as $languageItem) {
 						$targetFunction($db,$languageItem['shortName']);
 					}
 				}

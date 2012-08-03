@@ -29,7 +29,6 @@ function pages_settings() {
 	);
 }
 function pages_install($db,$drop=false,$lang='en_us') {
-	$lang = '_'.trim($lang,'_');
 	$structures=array(
 		'pages' => array(
 			'id'              => SQR_IDKey,
@@ -55,8 +54,8 @@ function pages_install($db,$drop=false,$lang='en_us') {
 	if($drop)
         pages_uninstall($db,$lang);
 
-	$db->createTable('pages'.$lang,$structures['pages'],false);
-	$db->createTable('pages_sidebars',$structures['pages_sidebars'],false);
+	$db->createTable('pages',$structures['pages'],$lang);
+	$db->createTable('pages_sidebars',$structures['pages_sidebars']);
 
     // Set up default permission groups
     $defaultPermissionGroups=array(
@@ -86,7 +85,7 @@ function pages_install($db,$drop=false,$lang='en_us') {
             );
         }
     }
-	if($db->countRows('pages'.$lang)==0) {
+	if($db->countRows('pages'.'_'.$lang)==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -121,9 +120,8 @@ function pages_install($db,$drop=false,$lang='en_us') {
 		}
 	} else echo '<p class="exists">"pages database" already contains records</p>';
 }
-function pages_uninstall($db,$lang = 'en_us') {
-	$lang = '_'.trim($lang,'_');
-    $db->dropTable('pages'.$lang);
+function pages_uninstall($db,$lang='en_us') {
+    $db->dropTable('pages',$lang);
     $db->dropTable('pages_sidebars');
 }
 ?>

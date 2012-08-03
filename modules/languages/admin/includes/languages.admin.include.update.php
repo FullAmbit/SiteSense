@@ -60,16 +60,20 @@ function languages_admin_update_build($data,$db){
 		// Add Core Phrases
 		if(language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$languageList[$_POST['updateLanguage']]['phrases']) === FALSE) return;
 		
-		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1'){
+		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
+			$temp=array('sidebars' => $data->output['moduleShortName']['sidebars']);
+      unset($data->output['moduleShortName']['sidebars']);
+      var_dump($data->output['moduleShortName']=$temp+$data->output['moduleShortName']);
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
+			VAR_DUMP($_POST['updateLanguage']);
 				// Create A Duplicate Table For This Module For Installation Purposes
 				$installFile = 'modules/'.$moduleName.'/'.$moduleName.'.install.php';
 				if (file_exists($installFile)) {
 					common_include($installFile);
 					$installFunc = $moduleName.'_install';
 					if (function_exists($installFunc)) {
-						$installFunc($db, FALSE, $_POST['updateLanguage'], TRUE);
+						$installFunc($db, TRUE, $_POST['updateLanguage']);
 					}
 				}
 				

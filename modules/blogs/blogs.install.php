@@ -28,8 +28,7 @@ function blogs_settings() {
 		'shortName' => 'blogs'
 	);
 }
-function blogs_install($db, $drop=false, $lang = "en_us", $duplicate = FALSE) {
-	$lang = '_'.trim($lang, '_');
+function blogs_install($db,$drop=false,$lang='en_us') {
 	$structures=array(
 		'blogs' => array(
 			'id'                   => SQR_IDKey,
@@ -90,21 +89,14 @@ function blogs_install($db, $drop=false, $lang = "en_us", $duplicate = FALSE) {
 	if ($drop)
 		blogs_uninstall($db);
 
-	$db->createTable('blogs'.$lang, $structures['blogs'], false);
-	$db->createTable('blog_posts'.$lang, $structures['blog_posts'], false);
-	$db->createTable('blog_comments', $structures['blog_comments'], false);
-	$db->createTable('blog_categories'.$lang, $structures['blog_categories'], false);
-
-	// Are We Duplicating Data?
-	if ($duplicate) {
-		$db->query("duplicateLanguageTable", "common", array("!lang!"=>$lang, "!table!"=>"blogs"));
-		$db->query("duplicateLanguageTable", "common", array("!lang!"=>$lang, "!table!"=>"blog_posts"));
-		$db->query("duplicateLanguageTable", "common", array("!lang!"=>$lang, "!table!"=>"blog_categories"));
-		return;
-	}
+	$db->createTable('blogs',$structures['blogs'],$lang);
+	$db->createTable('blog_posts',$structures['blog_posts'],$lang);
+	$db->createTable('blog_comments',$structures['blog_comments']);
+	$db->createTable('blog_categories',$structures['blog_categories'],$lang);
 
 	// Add Blog Category Sidebar
-	$statement=$db->query('getHighestSortOrder', 'admin', array('!table!'=>'sidebars'.$lang, '!column1!' => 'sortOrder'));
+	$statement=$db->query('getHighestSortOrder', 'admin', array('!table!'=>'sidebars'.'_'.$lang, '!column1!' => 'sortOrder'));
+	print_r($db->errorInfo());
 	if ($result=$statement->fetch()) {
 		$sortOrder=1;
 	} else {
@@ -235,7 +227,7 @@ function blogs_install($db, $drop=false, $lang = "en_us", $duplicate = FALSE) {
 		}
 	}
 	// ---
-	if ($db->countRows('blogs'.$lang)==0) {
+	if ($db->countRows('blogs'.'_'.$lang)==0) {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
@@ -254,7 +246,7 @@ function blogs_install($db, $drop=false, $lang = "en_us", $duplicate = FALSE) {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 
-	$count=$db->countRows('blog_posts'.$lang);
+	$count=$db->countRows('blog_posts'.'_'.$lang);
 	if ($count==0) {
 		try {
 			echo '
@@ -274,11 +266,10 @@ function blogs_install($db, $drop=false, $lang = "en_us", $duplicate = FALSE) {
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 }
 
-function blogs_uninstall($db, $lang="en_us") {
-	$lang = '_'.trim($lang, '_');
-	$db->dropTable('blogs'.$lang);
-	$db->dropTable('blog_posts'.$lang);
+function blogs_uninstall($db,$lang="en_us") {
+	$db->dropTable('blogs',$lang);
+	$db->dropTable('blog_posts',$lang);
 	$db->dropTable('blog_comments');
-	$db->dropTable('blog_categories'.$lang);
+	$db->dropTable('blog_categories',$lang);
 }
 ?>

@@ -133,15 +133,6 @@ final class dynamicPDO extends PDO {
 			return parent::prepare($query);
 		} else return false;
 	}
-	public function fetch() {
-
-	}
-	public function fetchColumn() {
-
-	}
-	public function fetchObject() {
-
-	}
 	public function tableExists($tableName) {
 		try {
 			$statement=$this->query('tableExists', 'common', array('!table!' => $tableName));
@@ -152,48 +143,44 @@ final class dynamicPDO extends PDO {
 		}
 	}
 	public function countRows($tableName) {
-		$result=$this->query('countRows', 'common', array("!table!"=>$tableName));
+		$result=$this->query('countRows', 'common', array('!table!'=>$tableName));
 		return $result->fetchColumn();
 	}
-	public function createTable($tableName, $structure, $verbose=false) {
-		/*
-        structure is an array of field names and definitions
-    */
-		if ($this->tableExists($tableName)) {
-			if ($verbose) echo '<p>Table ', $tableName, ' already exists</p>';
+	public function createTable($tableName,$structure,$lang=false,$verbose=false) {
+    if($lang) $fullTableName=$tableName.'_'.$lang;
+    else $fullTableName=$tableName;
+		//structure is an array of field names and definitions
+		if($this->tableExists($fullTableName)) {
+			if($verbose) echo '<p>Table ', $fullTableName, ' already exists</p>';
 			return false;
 		} else {
-
-			$query='CREATE TABLE `'.$this->tablePrefix.$tableName.'` (';
+			$query='CREATE TABLE `'.$this->tablePrefix.$fullTableName.'` (';
 			$qList=array();
 			foreach ($structure as $field => $struct) {
-				if (is_int($field)) { //no field name, so it's a command - e.g. INDEX(`blogId`) etc
+				if(is_int($field)) { //no field name, so it's a command - e.g. INDEX(`blogId`) etc
 					$qList[].="\n\t" . str_replace(';', '', $struct);
-				}else {
+				} else {
 					$qList[].="\n\t`".str_replace(';', '', $field).'` '.str_replace(';', '', $struct);
 				}
-
 			}
-
 			$query.=implode(', ', $qList)."\n) ENGINE=MyISAM";
-			if ($verbose) echo '<pre>', $query, '</pre>';
-
+			if($verbose) echo '<pre>', $query, '</pre>';
 			try {
 				parent::exec($query);
 			} catch(PDOException $e) {
-				if ($verbose) {
+				if($verbose) {
 					echo '
-						<p class="error">Failed to create '.$tableName.' table!</p>
+						<p class="error">Failed to create '.$fullTableName.' table!</p>
 						<pre>'.$e->getMessage().'</pre>';
 				}
 				return false;
 			}
-
+			if($lang) $this->query('duplicateLanguageTable','common',array('!lang!'=>'_'.$lang,'!table!'=>$tableName));
 			return true;
-
 		}
 	}
-	public function dropTable($tableName, $verbose=false) {
+	public function dropTable($tableName,$lang=false,$verbose=false) {
+    if($lang) $tableName=$tableName.'_'.$lang;
 		if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
 
 		if ($this->tableExists($tableName)) {
@@ -201,7 +188,6 @@ final class dynamicPDO extends PDO {
 		} else {
 			if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
 		}
-
 	}
 }
 final class sitesense {

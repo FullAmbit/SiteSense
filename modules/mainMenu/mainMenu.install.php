@@ -29,7 +29,6 @@ function mainMenu_settings() {
 	);
 }
 function mainMenu_install($db,$drop=false,$lang="en_us") {
-	$lang = '_'.trim($lang,'_');
 	$structures = array(
         'main_menu' => array(
             'id'           => SQR_IDKey,
@@ -46,10 +45,9 @@ function mainMenu_install($db,$drop=false,$lang="en_us") {
 	if($drop)
         mainMenu_uninstall($db,$lang);
 
-    $db->createTable('main_menu'.$lang,$structures['main_menu'],false);
+    $db->createTable('main_menu',$structures['main_menu'],$lang);
 }
 function mainMenu_uninstall($db,$lang="en_us") {
-	$lang = '_'.trim($lang,'_');
-	$db->dropTable('main_menu'.$lang);
+	$db->dropTable('main_menu',$lang);
 }
 ?>

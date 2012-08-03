@@ -36,7 +36,7 @@ function admin_modulesBuild($data, $db) {
 			common_include($installFile);
 			$installFunc = $moduleName.'_install';
 			if (function_exists($installFunc)) {
-				$installFunc($db, FALSE, $_POST['updateLanguage'], TRUE);
+				$installFunc($db, FALSE, $_POST['updateLanguage']);
 			}
 		}
 
