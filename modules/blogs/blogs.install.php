@@ -97,6 +97,8 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 
     // Add Blog Category Sidebar	
     $statement=$db->query('getHighestSortOrder','admin',array('!table!'=>'sidebars'.$lang,'!column1!' => 'sortOrder'));
+    var_dump($lang);
+    var_dump($db->errorInfo());
     if($result=$statement->fetch()) {
         $sortOrder=1;
     } else {
@@ -268,8 +270,8 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 function blogs_uninstall($db,$lang="en_us") {
 	$lang = '_'.trim($lang,'_');
     $db->dropTable('blogs'.$lang);
-    $db->dropTable($lang.'blog_posts');
+    $db->dropTable('blog_posts'.$lang);
     $db->dropTable('blog_comments');
-    $db->dropTable($lang.'blog_categories');
+    $db->dropTable('blog_categories'.$lang);
 }
 ?>

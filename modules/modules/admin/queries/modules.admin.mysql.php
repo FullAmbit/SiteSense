@@ -33,7 +33,7 @@ function admin_modules_addQueries() {
 		',
 		'getModuleByShortName' => '
 			SELECT * FROM !prefix!modules
-			WHERE shortName = :shortName AND enabled = 1
+			WHERE shortName = :shortName
 		',
 		'getModuleById' => '
 			SELECT * FROM !prefix!modules

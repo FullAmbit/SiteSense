@@ -144,9 +144,9 @@ final class dynamicPDO extends PDO {
 	}
 	public function tableExists($tableName) {
 		try {
-			$statement=$this->query('tableExists', 'common', $tableName);
-			$result=$statement->fetchAll();
-			return count($result)>0;
+			$statement=$this->query('tableExists', 'common', array('!table!' => $tableName));
+			$result=$statement->fetch();
+			return ($result == FALSE) ? FALSE : TRUE;
 		} catch (PDOException $e) {
 			return false;
 		}
@@ -198,7 +198,7 @@ final class dynamicPDO extends PDO {
 		if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
 
 		if ($this->tableExists($tableName)) {
-			$this->exec('dropTable', 'installer', $tableName);
+			$this->exec('dropTable', 'installer', array('!table!' => $tableName));
 		} else {
 			if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
 		}

@@ -76,9 +76,12 @@ function admin_modulesBuild($data,$db){
 				if(!function_exists($targetFunction)) {
 					$data->output['rejectError']='Improper installation file';
 					$data->output['rejectText']='The module install function could not be found within the module installation file.';
-				} else $targetFunction($db);
-				
-				// Install Language Files For Module
+				} else {
+					foreach($data->languageList as $languageItem){
+						$targetFunction($db,false,$languageItem['shortName']);
+					}
+				}
+				// Install Language Phrases For Module
 				$languageFileList = glob("modules/".$name."/languages/".$name.".phrases.*.php");
 				foreach($languageFileList as $languageFile){
 					$matches = array();
@@ -90,13 +93,15 @@ function admin_modulesBuild($data,$db){
 					
 					// Check If Language Is Installed In Database...
 					$statement=$db->prepare('getLanguage','admin_languages');
-					$statement->execute(array(
-						':shortName' => $languageShortName
-					));
-					if(($languageItem = $statement->fetch(PDO::FETCH_ASSOC))==FALSE) continue;
+
+					if(!isset($data->languageList[$languageShortName])) continue;
+					
+					/*
+					 * Should Not Be Needed...All Modules Should Have Tables Corresponding To Core Languages
 					
 					// Create Table For These Languages
 					$targetFunction($db,false,$languageShortName);
+					**/
 					
 					// Get Phrases For This Module
 					$func = 'languages_'.$name.'_'.$languageShortName;

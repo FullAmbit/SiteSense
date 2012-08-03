@@ -45,7 +45,7 @@ function common_addQueries() {
     		SELECT CURRENT_TIMESTAMP
     	',
         'tableExists' => '
-			SHOW TABLES LIKE \'!table!\'
+			SHOW TABLES LIKE "!prefix!!table!"
 		',
         'countRows' => '
 			SELECT COUNT(*) AS COUNT
