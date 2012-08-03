@@ -103,7 +103,7 @@ if (
   </fieldset>
 </form>';
 } else {
-	$lang = 'en_us_';
+	$lang = '_en_us';
     $drop = false;
     if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
         $drop = true;
@@ -118,7 +118,7 @@ if (
         $data->dropTable('banned');
         $data->dropTable('sessions');
         $data->dropTable('sidebars'.$lang);
-        $data->dropTable($lang.'main_menu');
+        $data->dropTable('main_menu'.$lang);
         $data->dropTable('activations');
         $data->dropTable('url_remap');
         $data->dropTable('modules');

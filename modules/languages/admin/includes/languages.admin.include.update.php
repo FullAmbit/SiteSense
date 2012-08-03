@@ -37,7 +37,7 @@ function languages_admin_update_build($data,$db){
 		));
 		if(($data->output['languageItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
 			// Language Not Installed...Create Table
-			$statement = $db->prepare("createLanguageTable","admin_languages","languages_phrases_".$_POST['language']);
+			$statement = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>$_POST['language']));
 			$result = $statement->execute();
 			if($result == FALSE){
 				$data->output['responseMessage'] = 'There was an error in creating the table for the langauge.';

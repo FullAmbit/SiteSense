@@ -153,6 +153,7 @@ final class dynamicPDO extends PDO {
 	}
 	public function countRows($tableName) {
 		$result=$this->query('countRows', 'common', array("!table!"=>$tableName));
+		var_dump($this->errorInfo());
 		return $result->fetchColumn();
 	}
 	public function createTable($tableName, $structure, $verbose=false) {

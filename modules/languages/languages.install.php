@@ -32,10 +32,10 @@ function languages_install($db,$drop = FALSE){
 	));
 
 	// Install Phrases (creat lang table first)
-	$create = $db->prepare("createLanguageTable","admin_languages","languages_phrases_en_us");
+	$create = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>"en_us"));
 	$create->execute();
 	
-	$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_en_us');
+	$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>"en_us"));
 	foreach($languageItem['phrases'] as $phrase => $text){
 		$statement->execute(array(
 			':phrase' => $phrase,

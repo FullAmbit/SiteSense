@@ -11,7 +11,7 @@ function languages_admin_editphrase_build($data,$db){
 		return;
 	}
 	// Get Phrase Item
-	$statement=$db->prepare('getPhraseByLanguageAndId','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+	$statement=$db->prepare('getPhraseByLanguageAndId','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
 	$statement->execute(array(
 		':id' => $data->action[4]
 	));
@@ -27,7 +27,7 @@ function languages_admin_editphrase_build($data,$db){
 			$data->output['phraseForm']->populateFromPostData();
 			// Check To See If Phrase Exists Already But Only If Different Than Before
 			if($data->output['phraseForm']->sendArray[':phrase'] !== $data->output['phraseItem']['phrase']){
-				$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+				$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
 				$statement->execute(array(
 					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 					':module' => $data->output['phraseForm']->sendArray[':module']
@@ -41,7 +41,7 @@ function languages_admin_editphrase_build($data,$db){
 				}
 			}
 			// Save To Database
-			$statement = $db->prepare('updatePhraseByLanguage','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+			$statement = $db->prepare('updatePhraseByLanguage','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
 			$result = $statement->execute(array(
 				':id' => $data->output['phraseItem']['id'],
 				':phrase' => $data->output['phraseForm']->sendArray[':phrase'],

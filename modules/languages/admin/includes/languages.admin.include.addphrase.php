@@ -17,7 +17,7 @@ function languages_admin_addphrase_build($data,$db){
 			// Populate Post Data
 			$data->output['phraseForm']->populateFromPostData();
 			// Check To See If Phrase Exists Already
-			$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+			$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
 			$statement->execute(array(
 				':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 				':module' => $data->output['phraseForm']->sendArray[':module']
@@ -30,7 +30,7 @@ function languages_admin_addphrase_build($data,$db){
 				return;
 			}
 			// Save To Database
-			$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$data->output['languageItem']['shortName']);
+			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']);
 			$result = $statement->execute($data->output['phraseForm']->sendArray);
 			if($result){
 				$data->output['themeOverride'] = 'AddPhraseSuccess';

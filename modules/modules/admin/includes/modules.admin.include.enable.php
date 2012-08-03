@@ -105,7 +105,7 @@ function admin_modulesBuild($data,$db){
 					$modulePhrases = $func();
 					// Check To See If We Have Any Of These Phrases In The Database Already For This Module
 					// Because If We Do, We'll Need User Input To Decide What Action To Take.
-					$statement = $db->prepare('getPhrasesByModule','admin_languages','languages_phrases_'.$languageShortName);
+					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 					$statement->execute(array(
 						':module' => $result['shortName']
 					));
@@ -120,7 +120,7 @@ function admin_modulesBuild($data,$db){
 					}
 					if($data->output['languageExistsError']==FALSE){
 						// Put In The New Phrases
-						$statement = $db->prepare('addPhraseByLanguage','admin_languages','languages_phrases_'.$languageItem['shortName']);
+						$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageItem['shortName']));
 						foreach($modulePhrases as $phrase => $text){
 							$result = $statement->execute(array(
 								':phrase' => $phrase,

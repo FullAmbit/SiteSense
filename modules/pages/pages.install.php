@@ -90,7 +90,7 @@ function pages_install($db,$drop=false,$lang='en_us') {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationAgreement','installer',NULL,NULL,NULL,$lang);
+			$db->exec('makeRegistrationAgreement','installer',array('!lang!'=>$lang));
 			echo '
 				<div>
 					Registration Agreement Page Generated!
@@ -106,7 +106,7 @@ function pages_install($db,$drop=false,$lang='en_us') {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationEMail','installer',NULL,NULL,NULL,$lang);
+			$db->exec('makeRegistrationEMail','installer',array('!lang!'=>$lang));
 			echo '
 				<div>
 					Registration E-Mail Page Generated!

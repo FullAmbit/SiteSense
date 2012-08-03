@@ -91,12 +91,12 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
         blogs_uninstall($db);
 
 	$db->createTable('blogs'.$lang,$structures['blogs'],false);
-	$db->createTable($lang.'blog_posts',$structures['blog_posts'],false);
+	$db->createTable('blog_posts'.$lang,$structures['blog_posts'],false);
 	$db->createTable('blog_comments',$structures['blog_comments'],false);
-	$db->createTable($lang.'blog_categories',$structures['blog_categories'],false);
+	$db->createTable('blog_categories'.$lang,$structures['blog_categories'],false);
 
-    // Add Blog Category Sidebar
-    $statement=$db->query('getHighestSortOrder','admin','sidebars'.$lang,'sortOrder');
+    // Add Blog Category Sidebar	
+    $statement=$db->query('getHighestSortOrder','admin',array('!table!'=>'sidebars'.$lang,'!column1!' => 'sortOrder'));
     if($result=$statement->fetch()) {
         $sortOrder=1;
     } else {
@@ -231,7 +231,7 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 		try {
 			echo '
 				<h3>Attempting:</h3>';
-			$db->exec('makeNewsBlog','installer',NULL,NULL,NULL,$lang);
+			$db->exec('makeNewsBlog','installer',array('!lang!'=>$lang));
 			echo '
 				<div>
 					Home Page News Blog Generated!
@@ -246,12 +246,12 @@ function blogs_install($db,$drop=false,$lang = "en_us") {
 		}
 	} else echo '<p class="exists">"blogs database" already contains records</p>';
 	
-	$count=$db->countRows($lang.'blog_posts');
+	$count=$db->countRows('blog_posts'.$lang);
 	if($count==0) {
 		try {
 			echo '
 				<h3>Attempting to add Welcome Post</h3>';
-			$statement=$db->query('makeWelcomePost','installer',NULL,NULL,NULL,$lang);
+			$statement=$db->query('makeWelcomePost','installer',array('!lang!'=>$lang));
 			echo '
 				<div>
 					Home Page Welcome Post Generated!<br />

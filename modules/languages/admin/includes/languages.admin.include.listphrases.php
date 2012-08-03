@@ -11,7 +11,7 @@ function languages_admin_listphrases_build($data,$db){
 		return;
 	}
 	// Get Phrases
-	$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages','languages_phrases_'.$data->action[3]);
+	$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages',array('!lang!'=>$data->action[3]));
 	$statement->execute();
 	$data->output['phraseList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
 }

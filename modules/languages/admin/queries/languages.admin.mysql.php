@@ -14,7 +14,7 @@ function admin_languages_addQueries(){
 			SELECT
 				*
 			FROM 
-				!table!
+				!prefix!languages_phrases_!lang!
 			ORDER BY
 				module, phrase ASC
 		',
@@ -32,7 +32,7 @@ function admin_languages_addQueries(){
 			SELECT
 				*
 			FROM 
-				!table! 
+				!prefix!languages_phrases_!lang! 
 			WHERE 
 				phrase = :phrase
 			LIMIT 
@@ -40,7 +40,7 @@ function admin_languages_addQueries(){
 		',
 		'addPhraseByLanguage' => '
 			INSERT INTO 
-				!table!
+				!prefix!languages_phrases_!lang!
 				(phrase,text,module)
 			VALUES
 				(:phrase,:text,:module)
@@ -49,7 +49,7 @@ function admin_languages_addQueries(){
 			SELECT
 				id,phrase,text
 			FROM 
-				!table!
+				!prefix!languages_phrases_!lang!
 			WHERE
 				phrase = :phrase
 				AND
@@ -61,7 +61,7 @@ function admin_languages_addQueries(){
 			SELECT
 				*
 			FROM 
-				!table! 
+				!prefix!languages_phrases_!lang! 
 			WHERE 
 				id = :id
 			LIMIT 
@@ -71,13 +71,13 @@ function admin_languages_addQueries(){
 			SELECT
 				phrase,id,text
 			FROM
-				!table!
+				!prefix!languages_phrases_!lang!
 			WHERE
 				module = :module
 		',
 		'updatePhraseByLanguage' => '
 			UPDATE 
-				!table!
+				!prefix!languages_phrases_!lang!
 			SET 
 				phrase = :phrase,
 				text = :text,
@@ -86,7 +86,7 @@ function admin_languages_addQueries(){
 				id = :id
 		',
 		'createLanguageTable' => '
-			CREATE TABLE IF NOT EXISTS !table! (
+			CREATE TABLE IF NOT EXISTS !prefix!languages_phrases_!lang! (
 			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 			  `phrase` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT "",
 			  `text` text CHARACTER SET utf8,
@@ -97,7 +97,7 @@ function admin_languages_addQueries(){
 		',
 		'deletePhrasesByModuleAndLanguage' => '
 			DELETE FROM 
-				!table!
+				!prefix!languages_phrases_!lang!
 			WHERE 
 				module = :module
 		',
