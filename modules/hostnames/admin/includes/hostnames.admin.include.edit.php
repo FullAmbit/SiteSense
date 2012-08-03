@@ -50,6 +50,17 @@ function hostnames_admin_edit_build($data,$db){
 		}
 	}
 	
+	// All Languages //
+	$statement = $db->prepare('getAllLanguages','admin_languages');
+	$statement->execute();
+	$languageList = $statement->fetchAll(PDO::FETCH_ASSOC);
+	foreach($languageList as $languageItem){
+		$data->output['hostnameForm']->fields['defaultLanguage']['options'][] = array(
+			'text' => $languageItem['name'],
+			'value' => $languageItem['shortName']
+		);
+	}
+	
 	if(isset($_POST['fromForm']) && $_POST['fromForm'] == $data->output['hostnameForm']->fromForm){
 		if($data->output['hostnameForm']->validateFromPost()){
 			$data->output['hostnameForm']->populateFromPostData();

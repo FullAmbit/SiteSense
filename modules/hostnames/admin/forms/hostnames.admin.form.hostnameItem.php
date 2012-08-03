@@ -19,6 +19,13 @@ $this->fields = array(
 		'options' => array(),
 		'required' => true
 	),
+	'defaultLanguage' => array(
+		'tag' => 'select',
+		'label' => 'Default Language',
+		'value' => (isset($data->output['hostnameItem'])) ? $data->output['hostnameItem']['defaultLanguage'] : '',
+		'options' => array(),
+		'required' => true
+	),
 	'homepage' => array(
 		'tag' => 'select',
 		'label' => 'Homepage',

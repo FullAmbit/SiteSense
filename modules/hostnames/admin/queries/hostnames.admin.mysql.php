@@ -23,9 +23,9 @@ function admin_hostnames_addQueries(){
 		'addHostname' => '
 			INSERT INTO
 				!prefix!hostnames 
-				(hostname,defaultTheme,homepage)
+				(hostname,defaultTheme,defaultLanguage,homepage)
 			VALUES
-				(:hostname,:defaultTheme,:homepage)
+				(:hostname,:defaultTheme,:defaultLanguage,:homepage)
 		',
 		'updateHostname' => '
 			UPDATE 
@@ -33,6 +33,7 @@ function admin_hostnames_addQueries(){
 			SET 
 				hostname = :hostname,
 				defaultTheme = :defaultTheme,
+				defaultLanguage = :defaultLanguage,
 				homepage = :homepage
 			WHERE
 				hostname = :originalHostName

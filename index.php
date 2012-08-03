@@ -423,6 +423,7 @@ final class sitesense {
 		}elseif (isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!=='') {
 			$this->language = $this->user['defaultLanguage'];
 		}else {
+			$useDefaultLang = true;
 			$statement=$this->db->query("getDefaultLanguage");
 			$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
 			$this->language=$languageItem['shortName'];
@@ -449,7 +450,7 @@ final class sitesense {
 
 		if ($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->settings['theme'] = $hostnameItem['defaultTheme'];
-			$this->settings['language'] = $hostnameItem['defaultLanguage'];
+			$this->language = (isset($useDefaultLang) && $useDefaultLang) ? $hostnameItem['defaultLanguage'] : $this->language;
 			$this->settings['homepage'] = $hostnameItem['homepage'];
 		}
 
