@@ -132,7 +132,7 @@ if (
     // Create the settings table
     if ($data->createTable('settings'.$lang,$structures['settings'],false)) {
         try {
-            $statement=$data->prepare('addSetting','installer',NULL,NULL,NULL,$lang);
+            $statement=$data->prepare('addSetting','installer',array("!lang!"=>$lang));
             echo '
 				<div>';
             foreach ($settings['saveToDb'] as $key => $value) {

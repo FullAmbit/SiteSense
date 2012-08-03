@@ -98,6 +98,16 @@ function common_addQueries() {
 			DELETE FROM !prefix!sessions
 			WHERE userId = :userId
 		',
+		'userSessionTimeOut' => '
+			SELECT
+				value
+			FROM
+				!prefix!settings_en_us
+			WHERE 
+				name = "userSessionTimeout"
+			LIMIT 
+				1
+		',
         'updateUserSession' => '
 			INSERT INTO !prefix!sessions
 			(sessionId,userId,expires,ipAddress,userAgent,language)

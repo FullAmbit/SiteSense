@@ -94,8 +94,8 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
         dynamicForms_uninstall($db,$lang);
 
 	$db->createTable('forms'.$lang,$structures['forms'],false);
-	$db->createTable($lang.'form_fields',$structures['form_fields'],false);
-	$db->createTable($lang.'form_fields_options',$structures['form_fields_options'],false);
+	$db->createTable('form_fields'.$lang,$structures['form_fields'],false);
+	$db->createTable('form_fields_options'.$lang,$structures['form_fields_options'],false);
 	$db->createTable('form_rows',$structures['form_rows'],false);
 	$db->createTable('form_values',$structures['form_values'],false);
 	$db->createTable('form_sidebars',$structures['form_sidebars'],false);
@@ -134,8 +134,8 @@ function dynamicForms_uninstall($db,$lang) {
 	$lang = '_'.trim($lang,'_');
 	
     $db->dropTable('forms'.$lang);
-    $db->dropTable($lang.'form_fields');
-    $db->dropTable($lang.'form_fields_options');
+    $db->dropTable('form_fields'.$lang);
+    $db->dropTable('form_fields_options'.$lang);
     $db->dropTable('form_rows');
     $db->dropTable('form_values');
     $db->dropTable('form_sidebars');

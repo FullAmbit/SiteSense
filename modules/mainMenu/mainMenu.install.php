@@ -44,11 +44,12 @@ function mainMenu_install($db,$drop=false,$lang="en_us") {
         )
 	);
 	if($drop)
-        mainMenu_uninstall($db);
+        mainMenu_uninstall($db,$lang);
 
-    $db->createTable($lang.'main_menu',$structures['main_menu'],false);
+    $db->createTable('main_menu'.$lang,$structures['main_menu'],false);
 }
-function mainMenu_uninstall($db) {
-	$db->dropTable('main_menu');
+function mainMenu_uninstall($db,$lang="en_us") {
+	$lang = '_'.trim($lang,'_');
+	$db->dropTable('main_menu'.$lang);
 }
 ?>
