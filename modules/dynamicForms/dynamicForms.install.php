@@ -64,6 +64,13 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 			'isEmail'              => SQR_boolean.' DEFAULT \'0\'',
 			'compareTo'            => SQR_ID
 		),
+		'form_fields_options' => array(
+			'id'                   => SQR_IDKey,
+			'formId'               => SQR_ID,
+			'fieldId'              => SQR_ID,
+			'text'                 => 'VARCHAR(127) NOT NULL DEFAULT ""',
+			'value'                 => 'VARCHAR(127) NOT NULL DEFAULT ""'
+		),
 		'form_sidebars' => array(
 			'id'                   => SQR_IDKey,
 			'form'                 => SQR_ID,
@@ -88,6 +95,7 @@ function dynamicForms_install($db,$drop=false,$lang='en_us') {
 
 	$db->createTable($lang.'forms',$structures['forms'],false);
 	$db->createTable($lang.'form_fields',$structures['form_fields'],false);
+	$db->createTable($lang.'form_fields_options',$structures['form_fields_options'],false);
 	$db->createTable('form_rows',$structures['form_rows'],false);
 	$db->createTable('form_values',$structures['form_values'],false);
 	$db->createTable('form_sidebars',$structures['form_sidebars'],false);
@@ -127,6 +135,7 @@ function dynamicForms_uninstall($db,$lang) {
 	
     $db->dropTable($lang.'forms');
     $db->dropTable($lang.'form_fields');
+    $db->dropTable($lang.'form_fields_options');
     $db->dropTable('form_rows');
     $db->dropTable('form_values');
     $db->dropTable('form_sidebars');
