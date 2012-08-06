@@ -42,8 +42,7 @@ function modules_install($db,$drop=false) {
             'sidebar'     => SQR_ID,
             'enabled'     => SQR_boolean,
             'sortOrder'   => SQR_sortOrder.' DEFAULT \'1\'',
-            'UNIQUE KEY `module` (`module`,`sidebar`)',
-            'UNIQUE KEY `module_sortOrder` (`module`,`sortOrder`)'
+            'UNIQUE KEY `module` (`module`,`sidebar`)'
         )
 	);
 	if($drop)

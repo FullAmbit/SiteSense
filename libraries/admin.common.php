@@ -269,7 +269,6 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
 		}
 		$swapSortOrder=$result['sortOrder'];
 	}
-	
 	if(!$error) {
 		// Updating sortOrder effects two items as it is a swap
         if(isset($parentName)) {

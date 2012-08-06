@@ -49,17 +49,17 @@ function admin_modules_addQueries() {
 			ORDER BY name ASC
 		',
 		'getAllSidebars' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 		',
 		'getSidebarById' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 			WHERE id = :id
 		',
 		'getSidebarsByModule' => '
-			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
+			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
 		'getEnabledSidebarsByModule' => '
-				SELECT a.enabled,a.sortOrder,b.* FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
+				SELECT a.enabled,a.sortOrder,b.* FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b WHERE a.module = :module AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 		',
 		'enableSidebar' => '
 			UPDATE !prefix!module_sidebars
