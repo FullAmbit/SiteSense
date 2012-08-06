@@ -5,7 +5,6 @@ common_include('libraries/queries/defines.mysql.php');
 
 function languages_admin_update_build($data,$db){
 	// Build List Of Languages Available To You (Must Have Core Phrase File In modules/langauges/phrases/)
-	
 	$installerFiles = glob("modules/languages/phrases/languages.phrases.*.php",GLOB_BRACE);
 	$languageList = array();
 	// Loop Through And Create List Of All Available Core Languages

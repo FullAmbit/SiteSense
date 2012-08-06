@@ -236,7 +236,7 @@ final class sitesense {
 	$plugins = array(),
 	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(),
 	$banned = false,
-	$language,
+	$language,$languageList,
 	$jsEditor;
 
 	private $db;
