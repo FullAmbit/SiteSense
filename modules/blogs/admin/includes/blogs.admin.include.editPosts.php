@@ -127,7 +127,7 @@ function admin_blogsBuild($data,$db) {
 				$data->output['blogForm']->sendArray[':parsedSummary']=$data->plugins['bbcode']->parse($data->output['blogForm']->sendArray[':rawSummary']);
 			} else {
 				$data->output['blogForm']->sendArray[':parsedContent']=htmlspecialchars($data->output['blogForm']->sendArray[':rawContent']);
-				$data->output['blogForm']->sendArray[':parsedSummary']=htmlspecialchars($data->output['blogForm']->sendArray[':rawContent']);
+				$data->output['blogForm']->sendArray[':parsedSummary']=htmlspecialchars($data->output['blogForm']->sendArray[':rawSummary']);
 			}
 			$data->output['blogForm']->sendArray[':tags']=strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
 			// ---Save To DB---

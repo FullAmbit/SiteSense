@@ -87,6 +87,8 @@ function admin_blogsBuild($data,$db) {
 				$data->output['blogForm']->sendArray[':parsedContent']=htmlspecialchars($data->output['blogForm']->sendArray[':rawContent']);
 				$data->output['blogForm']->sendArray[':parsedSummary']=htmlspecialchars($data->output['blogForm']->sendArray[':rawSummary']);
 			}
+			var_dump($data->output['blogForm']->sendArray[':parsedSummary']);
+			die();
 			$data->output['blogForm']->sendArray[':tags']=strtolower(str_replace(" ","",$data->output['blogForm']->sendArray[':tags']));
 			$data->output['blogForm']->sendArray[':blogId']=$data->action[3];
 			$data->output['blogForm']->sendArray[':user']=$data->user['id'];
