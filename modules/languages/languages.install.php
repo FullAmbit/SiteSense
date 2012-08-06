@@ -7,7 +7,7 @@ function languages_settings(){
 	);
 }
 
-function languages_install($db,$drop = FALSE){
+function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 	$structures = array(
 		'languages'	=>	array(
 			'shortName' =>	'VARCHAR(64) CHARACTER SET utf8 NOT NULL DEFAULT ""',
@@ -46,6 +46,6 @@ function languages_install($db,$drop = FALSE){
 }
 
 function languages_uninstall($db){
+	
 }
-
 ?>

@@ -62,7 +62,7 @@ function admin_sidebars_addQueries() {
 			(name,shortName,enabled,fromFile,side) VALUES (:name,:shortName,false,true,"left")
 		',
 		'insertSidebar' => '
-			INSERT INTO !prefix!sidebars!lang!
+			INSERT INTO !prefix!sidebars_!lang!
 			(name,shortName,enabled,fromFile,title,side,titleURL,rawContent,parsedContent,sortOrder) VALUES (:name,:shortName, true, false, :title, :side, :titleURL, :rawContent,:parsedContent,:sortOrder)
 		',
 		'getFromFiles' => '

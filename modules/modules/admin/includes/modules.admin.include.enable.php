@@ -79,7 +79,7 @@ function admin_modulesBuild($data,$db){
 				} else {
 					// Install Tables For Each Language
 					foreach($data->languageList as $languageItem) {
-						$targetFunction($db,false,$languageItem['shortName']);
+						$targetFunction($db,false,TRUE,$languageItem['shortName']);
 					}
 				}
 				// Install Language Phrases For Module

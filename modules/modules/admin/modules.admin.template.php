@@ -153,9 +153,9 @@ function theme_modulesLanguages($data){
 	}
 	echo '
 		</select>
-		Action:
+		Phrase Action:
 		<select name="action">
-			<option value="0">Clear Table And Start Fresh</option>
+			<option value="0">Clear Phrases And Start Fresh</option>
 			<option value="1">Only Install Phrases That Don\'t Currently Exist</option>
 			<option value="2">Update Existing Phrases And Install New Ones</option>
 		</select>

@@ -36,14 +36,15 @@ function admin_modulesBuild($data, $db) {
 			common_include($installFile);
 			$installFunc = $moduleName.'_install';
 			if (function_exists($installFunc)) {
-				$installFunc($db, FALSE, $_POST['updateLanguage']);
+				$installFunc($db, FALSE, FALSE, $_POST['updateLanguage']);
+				$data->output['responseMessage']='The language tables for this module were created.<br />';
 			}
 		}
 
 		// Load The Phrases
 		$func = 'languages_'.$moduleName.'_'.$_POST['updateLanguage'];
 		if (!function_exists($func)) {
-			$data->output['responseMessage']='The language installer function for this module is missing or corrupt.';
+			$data->output['responseMessage'].='The phrase installation file for this module is either corrupt or missing the function.';
 			return;
 		}
 		$modulePhrases = $func($data, $db);

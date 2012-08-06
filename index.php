@@ -147,6 +147,7 @@ final class dynamicPDO extends PDO {
 		return $result->fetchColumn();
 	}
 	public function createTable($tableName,$structure,$lang=false,$verbose=false) {
+	$verbose = true;
     if($lang) $fullTableName=$tableName.'_'.$lang;
     else $fullTableName=$tableName;
 		//structure is an array of field names and definitions
@@ -180,13 +181,41 @@ final class dynamicPDO extends PDO {
 		}
 	}
 	public function dropTable($tableName,$lang=false,$verbose=false) {
-    if($lang) $tableName=$tableName.'_'.$lang;
-		if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
-
-		if ($this->tableExists($tableName)) {
-			$this->exec('dropTable', 'installer', array('!table!' => $tableName));
-		} else {
-			if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
+    	if($lang){
+    		$verbose=true;
+    		if(!isset($this->languageList)){
+	    		//--Remove Core Table + Language--//
+	    		$tableName = $tableName.'_'.$lang;
+				if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
+		
+				if ($this->tableExists($tableName)) {
+					$this->exec('dropTable', 'installer', array('!table!' => $tableName));
+				} else {
+					if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
+				}
+    		}else{
+	    		foreach($this->languageList as $languageItem){
+	    			$lang = $languageItem['shortName'];
+		    		$fullTableName = $tableName.'_'.$lang;
+					
+					if ($verbose) echo '<p>Dropping ', $fullTableName, '</p>';
+			
+					if ($this->tableExists($fullTableName)) {
+						$this->exec('dropTable', 'installer', array('!table!' => $fullTableName));
+					} else {
+						if ($verbose) echo '<p>Table ', $fullTableName, ' does not exist</p>';
+					}
+				}
+			}
+		}else{
+			//--Remove Core Table--//
+			if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
+	
+			if ($this->tableExists($tableName)) {
+				$this->exec('dropTable', 'installer', array('!table!' => $tableName));
+			} else {
+				if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
+			}
 		}
 	}
 }
