@@ -164,7 +164,7 @@ final class dynamicPDO extends PDO {
 					$qList[].="\n\t`".str_replace(';', '', $field).'` '.str_replace(';', '', $struct);
 				}
 			}
-			$query.=implode(', ', $qList)."\n) ENGINE=MyISAM";
+			$query.=implode(', ', $qList)."\n) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 			if($verbose) echo '<pre>', $query, '</pre>';
 			try {
 				parent::exec($query);
