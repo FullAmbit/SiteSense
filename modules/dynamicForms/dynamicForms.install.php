@@ -124,8 +124,8 @@ function dynamicForms_install($db, $drop=false, $firstInstall=false, $lang='en_u
 				$statement->execute(
 					array(
 						':groupName' => $groupName,
-						':permissionName' => $permissionName
-                    ':value' => '1'
+						':permissionName' => $permissionName,
+						':value' => '1'
 					)
 				);
 			}

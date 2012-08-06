@@ -81,8 +81,8 @@ function pages_install($db,$drop=false,$firstInstall=false,$lang='en_us') {
 	            $statement->execute(
 	                array(
 	                    ':groupName' => $groupName,
-	                    ':permissionName' => $permissionName
-                    ':value' => '0'
+	                    ':permissionName' => $permissionName,
+	                    ':value' => '0'
 	                )
 	            );
 	        }

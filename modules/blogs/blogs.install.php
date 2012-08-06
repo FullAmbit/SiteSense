@@ -221,8 +221,8 @@ function blogs_install($db, $drop=false, $firstRun=false, $lang='en_us') {
 				$statement->execute(
 					array(
 						':groupName' => $groupName,
-						':permissionName' => $permissionName
-                    ':value' => '1'
+						':permissionName' => $permissionName,
+                    	':value' => '1'
 					)
 				);
 			}
