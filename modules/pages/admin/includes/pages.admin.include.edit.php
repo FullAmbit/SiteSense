@@ -99,44 +99,42 @@ function admin_pagesBuild($data,$db) {
 		*/
 		$data->output['pageForm']->caption='Editing Page '.$data->action[3];
 		$data->output['pageForm']->populateFromPostData();
-		$shortName = common_generateShortName($_POST[$data->output['pageForm']->formPrefix.'name']);
+		$shortName = common_generateShortName($data->output['pageForm']->sendArray[':name']);
 		$data->output['pageForm']->sendArray[':shortName'] = $shortName;
+		unset($data->output['pageForm']->fields['name']['cannotEqual']);
 		
 		// Only Run Unique Short Name Check If It's DIFFERENT
-		if($shortName == $data->output['pageItem']['shortName'])
+		if($shortName !== $data->output['pageItem']['shortName'])
 		{
-			unset($data->output['pageForm']->fields['name']['cannotEqual']);
-		} else {
-			$statement = $db->prepare('getExistingShortNames','admin_pages');
-			$statement->execute();
-			$pageShortNameList = $statement->fetchAll();
-			foreach($pageShortNameList as $item)
-			{
-				$cannotEqual[] = $item['shortName'];
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'pages','id',array('shortName'=>$shortName))){
+				$data->output['pageForm']->fields['name']['error']=true;
+	            $data->output['pageForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a page.';
+	            return;
 			}
-			$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
-			// Apply ShortName Convention To Name For Use In Comparison //
-			$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
-            $modifiedShortName='^'.$shortName.'(/.*)?$';
-            $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-            $statement->execute(array(
-                    ':match' => $modifiedShortName
-                )
-            );
-            $result=$statement->fetch();
-            if($result===false) {
-                $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
-                $statement->execute(array(
-                    ':match'    => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
-                    ':newMatch' => '^'.$shortName.'(/.*)?$',
-                    ':replace'  => 'pages/'.$shortName.'\1'
-                ));
-            } else {
-                $data->output['pageForm']->fields['name']['error']=true;
-                $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
-                return;
-            }
-		}
+			// Check And Insert URL Remaps
+		    $modifiedShortName='^'.$shortName.'(/.*)?$';
+		    $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+		    $statement->execute(array(
+		            ':match' => $modifiedShortName,
+		            ':hostname' => ''
+		        )
+		    );
+		    $result=$statement->fetch();
+		    if($result===false) {
+		        $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+		        $statement->execute(array(
+		            ':match'    => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
+		            ':newMatch' => '^'.$shortName.'(/.*)?$',
+		            ':replace'  => 'pages/'.$shortName.'\1'
+		        ));
+		    } else {
+		        $data->output['pageForm']->fields['name']['error']=true;
+		        $data->output['pageForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+		        return;
+		    }
+		}	
+		
 	
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost()) {
@@ -152,13 +150,19 @@ function admin_pagesBuild($data,$db) {
 				}
                 $newParent = $data->output['pageForm']->sendArray[':parent'];
                 if($newParent !== $data->output['pageItem']['parent']) {
-                    $data->output['pageForm']->sendArray[':sortOrder'] = admin_sortOrder_new($db,'pages','sortOrder','parent',$newParent);
+                    $data->output['pageForm']->sendArray[':sortOrder'] = admin_sortOrder_new($data,$db,'pages','sortOrder','parent',$newParent);
                 } else {
                     $data->output['pageForm']->sendArray[':sortOrder'] = $data->output['pageItem']['sortOrder'];
                 }
 				$statement=$db->prepare('updatePageById','admin_pages');
 				$data->output['pageForm']->sendArray[':id']=$data->action[3];
 				$statement->execute($data->output['pageForm']->sendArray);
+				
+				// -- Push The Constant Fields Across Other Languages
+				common_updateAcrossLanguageTables($data,$db,'pages',array('id'=>$data->action[3]),array(
+					'parent' => $data->output['pageForm']->sendArray[':parent'],
+					'live' => $data->output['pageForm']->sendArray[':live']
+				));
 			}
 			
 			$data->output['savedOkMessage']='

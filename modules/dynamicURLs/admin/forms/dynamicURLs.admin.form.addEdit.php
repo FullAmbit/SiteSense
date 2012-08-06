@@ -64,6 +64,27 @@ $this->fields=array(
         )
     )
 );
+
+if($data->output['hostnameList']){
+	$this->fields['hostname'] = array(
+		'tag' => 'select',
+		'label' => 'Hostname',
+		'options' => array(
+			array(
+				'value' => '',
+				'text' => 'Global'
+			)
+		),
+		'value' => (isset($data->output['urlremap']['hostname'])) ? $data->output['urlremap']['hostname'] : ''
+	);
+	foreach($data->output['hostnameList'] as $hostnameItem){
+		$this->fields['hostname']['options'][] = array(
+			'value' => $hostnameItem['hostname'],
+			'text' => $hostnameItem['hostname']
+		);
+	}
+}
+
 if(isset($data->output['urlremap']['regex'])) {
     unset($this->fields['regex']);
 }

@@ -60,6 +60,18 @@ echo '
 	if (isset($data->user['id'])) {
 		echo '
 	<div id="loggedBar" class="buttonList">
+		<form name="frmLanguageSelector" action="" method="post" style="float:left;">
+			<select name="language" onchange="this.form.submit()">';
+			foreach($data->languageList as $languageItem){
+				if($languageItem['shortName']==$data->language){
+				echo '<option value="',$languageItem['shortName'],'" selected="selected">',$languageItem['name'],'</option>';
+				}else{
+					echo '<option value="',$languageItem['shortName'],'">',$languageItem['name'],'</option>';
+				}
+			}
+			echo '
+			</select>
+		</form>
 		<a href="',$data->linkRoot,'logout">Logout</a>
 		You are currently logged in as <b>',$data->user['name'],'</b>
 	</div>';

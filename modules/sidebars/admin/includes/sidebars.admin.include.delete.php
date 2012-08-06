@@ -44,10 +44,9 @@ function admin_sidebarsBuild($data,$db) {
 			} else if (checkPermission('canDeleteSidebarItem','core',$data)) {
 				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
-						$qHandle=$db->prepare('deleteById','admin_sidebars');
-						$qHandle->execute(array(
-							':id' => $data->action[3]
-						));
+						// Delete Across All Languages
+						common_deleteFromLanguageTables($data,$db,'sidebars','id',$data->action[3],TRUE);
+
 						//--Delete Form, Page, and Module Setting For Sidebar--//
 						$vars = array(':sidebar' => $data->action[3]);
 						
@@ -59,8 +58,7 @@ function admin_sidebarsBuild($data,$db) {
 						$q2->execute($vars);
 						$q3->execute($vars);
 						
-						$data->output['deleteCount']=$qHandle->rowCount();
-						if ($data->output['deleteCount']>0) {
+						if ($q1 || $q2 | $q3) {
 							$data->output['delete']='deleted';
 						} else {
 							$data->output['rejectError']='Database Error';

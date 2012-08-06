@@ -42,7 +42,7 @@ function admin_dynamicFormsBuild($data,$db) {
 	$data->output['fieldItem'] = $statement->fetch();
 	if($data->output['fieldItem']  === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Form Doesn\'t Exist</h2>';
+		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
 		return;
 	}
 
@@ -55,18 +55,15 @@ function admin_dynamicFormsBuild($data,$db) {
 		$form->populateFromPostData();
 		
 		if ($form->validateFromPost()) {
-			
-			$form->sendArray[':fieldId'] = $data->output['fieldItem']['id'];
-			$options = ($data->output['fieldItem']['options'] !== NULL) ? unserialize($data->output['fieldItem']['options']) : array();
-			$options[count($options)] = array('text' => $form->sendArray[':text'],'value' => $form->sendArray[':value'],'sortOrder' => count($options) + 1);
-			
-			usort($options,"sortCmp");
-			
-			$form->sendArray[':options'] = serialize($options);
-			unset($form->sendArray[':text'],$form->sendArray[':value']);
-			
-			$statement = $db->prepare('updateOptions','admin_dynamicForms');
+			$form->sendArray[':formId'] = $data->output['fieldItem']['form'];			
+			$form->sendArray[':fieldId'] = $data->output['fieldItem']['id'];			
+			$form->sendArray[':sortOrder'] = admin_sortOrder_new($data,$db,'form_fields_options','sortOrder','fieldId',$data->action[3],true);
+
+			$statement = $db->prepare('addOption','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die($statement->errorInfo());
+			//--Push Form To All Other Languages
+			common_populateLanguageTables($data,$db,'form_fields_options','id',$db->lastInsertId());
+			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Option Saved Successfully</h2>

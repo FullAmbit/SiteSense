@@ -53,13 +53,19 @@ function admin_mainMenuBuild($data,$db) {
 			// Are We Updating Sort-Order Based Off Parent?
 			$newParent = $data->output['MenuItemForm']->sendArray[':parent'];
 			if($newParent !== $data->output['menuItem']['parent']) {
-				$data->output['MenuItemForm']->sendArray[':sortOrder'] = admin_sortOrder_new($db,'main_menu','sortOrder','parent',$newParent);
+				$data->output['MenuItemForm']->sendArray[':sortOrder'] = admin_sortOrder_new($data,$db,'main_menu','sortOrder','parent',$newParent);
 			} else {
 				$data->output['MenuItemForm']->sendArray[':sortOrder'] = $data->output['menuItem']['sortOrder'];
 			}
 			$statement = $db->prepare('editMenuItem','admin_mainMenu');
 			$data->output['MenuItemForm']->sendArray[':id'] = $existing;
 			$statement->execute($data->output['MenuItemForm']->sendArray) or die('Saving Menu Item failed');
+			// -- Push The Constant Fields Across Other Languages
+			common_updateAcrossLanguageTables($data,$db,'main_menu',array('id'=>$data->action[3]),array(
+				'enabled' => $data->output['MenuItemForm']->sendArray[':enabled'],
+				'parent' => $data->output['MenuItemForm']->sendArray[':parent']
+			));
+			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>MenuItem Saved Successfully</h2>

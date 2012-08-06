@@ -22,6 +22,9 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
+
+common_include('modules/languages/admin/languages.admin.common.php');
+
 function admin_modulesBuild($data,$db){
 	if(!checkPermission('enable','modules',$data)) {
 		$data->output['abort'] = true;
@@ -73,7 +76,68 @@ function admin_modulesBuild($data,$db){
 				if(!function_exists($targetFunction)) {
 					$data->output['rejectError']='Improper installation file';
 					$data->output['rejectText']='The module install function could not be found within the module installation file.';
-				} else $targetFunction($db);
+				} else {
+					// Install Tables For Each Language
+					foreach($data->languageList as $languageItem) {
+						$targetFunction($db,false,TRUE,$languageItem['shortName']);
+					}
+				}
+				// Install Language Phrases For Module
+				$languageFileList = glob("modules/".$name."/languages/".$name.".phrases.*.php");
+				foreach($languageFileList as $languageFile){
+					$matches = array();
+					if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$languageFile,$matches) === 0) continue;
+					
+					$languageShortName = $matches[4].'_'.$matches[5];
+					
+					common_include($languageFile); // Modular Language File
+					
+					// Check If Language Is Installed In Database...
+					$statement=$db->prepare('getLanguage','admin_languages');
+
+					if(!isset($data->languageList[$languageShortName])) continue;
+					
+					/*
+					 * Should Not Be Needed...All Modules Should Have Tables Corresponding To Core Languages
+					
+					// Create Table For These Languages
+					$targetFunction($db,false,$languageShortName);
+					**/
+					
+					// Get Phrases For This Module
+					$func = 'languages_'.$name.'_'.$languageShortName;
+					if(!function_exists($func)) continue;
+					
+					$modulePhrases = $func();
+					// Check To See If We Have Any Of These Phrases In The Database Already For This Module
+					// Because If We Do, We'll Need User Input To Decide What Action To Take.
+					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
+					$statement->execute(array(
+						':module' => $result['shortName']
+					));
+					$existingPhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+					$data->output['languageExistsError']=FALSE;
+					foreach($modulePhrases as $phrase => $text){
+						if(isset($existingPhraseList[$phrase])){
+							$data->output['rejectError']='Language Installation Error';
+							$data->output['rejectText'] = 'Existing phrases were found for the language '.$languageItem['name'].'. Please <a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">click here</a> to select an action.';
+							return;
+						}
+					}
+					if($data->output['languageExistsError']==FALSE){
+						// Put In The New Phrases
+						$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageItem['shortName']));
+						foreach($modulePhrases as $phrase => $text){
+							$result = $statement->execute(array(
+								':phrase' => $phrase,
+								':text' => $text,
+								':module' => $result['shortName']
+							));
+							$data->output['rejectError']='Language Installation Error';
+							$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+						}
+					}
+				}
 			}
 		}
 	}

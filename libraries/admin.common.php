@@ -153,39 +153,63 @@ function admin_mainMenuRebuild($data,$db) {
 	}
 }
 
-function admin_sortOrder_new($db,$table,$sortOrderName='sortOrder',$parentName=NULL,$parent=NULL) {
+function admin_sortOrder_new($data,$db,$table,$sortOrderName='sortOrder',$parentName=NULL,$parent=NULL,$language = FALSE) {
+	// Are We Updating A Language Table?
+	if($language){
+		$baseTableName = $table;
+		$table=$table.'_'.$data->language;
+	}
+	
 	if(isset($parentName) && isset($parent)) {
 		// Get Highest Sort Order (Parent)
-		$statement = $db->prepare('getHighestSortOrderParent','admin',$table,$sortOrderName,$parentName);
+		$statement = $db->prepare('getHighestSortOrderParent','admin',array(
+			'!table!' => $table,
+			'!column1!' => $sortOrderName,
+			'!column2!' => $parentName
+		));
 		$statement->execute(array(
 			':parent'        => $parent
-			)
-		);
+		));
 	} else {
 		// Get Highest Sort Order (No Parent)
-        $statement = $db->query('getHighestSortOrder','admin',$table,$sortOrderName);
+        $statement = $db->query('getHighestSortOrder','admin',array(
+        	'!table!' => $table,
+			'!column1!' => $sortOrderName
+        ));
 	}
     $result=$statement->fetch();
 	$sortOrder=$result['sortOrder']+1;
 	return $sortOrder;
 }
 
-function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='sortOrder',$parentName=NULL) {
+function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderName='sortOrder',$parentName=NULL,$language = FALSE) {
+	// Are We Updating A Language Table?
+	if($language){
+		$baseTableName = $table;
+		$table=$table.'_'.$data->language;
+	}
 	// Get Current Sort Order by ID
     if(isset($parentName)) {
-        $statement=$db->prepare('getSortOrderByID','admin',$table,$sortOrderName,$parentName);
+        $statement=$db->prepare('getSortOrderByID','admin',array(
+        	'!table!' => $table,
+        	'!column1!' => $sortOrderName,
+        	'!column2!' => $parentName
+        ));
+
         $statement->execute(array(
-                ':id' => $id
-            )
-        );
+        	':id' => $id
+        ));
+        
         $result=$statement->fetch();
         $parent=$result['parent'];
     } else {
-        $statement=$db->prepare('getSortOrderByIDNoParent','admin',$table,$sortOrderName);
+        $statement=$db->prepare('getSortOrderByIDNoParent','admin',array(
+        	'!table!' => $table,
+        	'!column1!' => $sortOrderName
+        ));
         $statement->execute(array(
                 ':id' => $id
-            )
-        );
+        ));
         $result=$statement->fetch();
     }
     $sortOrder=$result['sortOrder'];
@@ -193,18 +217,23 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
 	if($direction=='up' || $direction=='moveUp') {
 		// Find the next smallest sort order within the parent
         if(isset($parentName)) {
-            $statement=$db->prepare('getNextSmallestSortOrder','admin',$table,$sortOrderName,$parentName);
+            $statement=$db->prepare('getNextSmallestSortOrder','admin',array(
+            	'!table!' => $table,
+            	'!column1!' => $sortOrderName,
+            	'!column2!' => $parentName
+            ));
             $statement->execute(array(
                 ':parent'    => $parent,
                 ':sortOrder' => $sortOrder
-                )
-            );
+            ));
         } else {
-            $statement=$db->prepare('getNextSmallestSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement=$db->prepare('getNextSmallestSortOrderNoParent','admin',array(
+	        	'!table!' => $table,
+	        	'!column1!' => $sortOrderName
+        	));
             $statement->execute(array(
-                    ':sortOrder' => $sortOrder
-                )
-            );
+                ':sortOrder' => $sortOrder
+            ));
         }
         $result=$statement->fetch();
         if ($result===FALSE) {
@@ -215,18 +244,23 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
 	} elseif($direction=='down' || $direction=='moveDown') {
 		// Find the next largest sort order within the parent
         if(isset($parentName)) {
-            $statement=$db->prepare('getNextHighestSortOrder','admin',$table,$sortOrderName,$parentName);
+            $statement=$db->prepare('getNextHighestSortOrder','admin',array(
+            	'!table!' => $table,
+            	'!column1!' => $sortOrderName,
+            	'!column2!' => $parentName
+            ));
             $statement->execute(array(
                 ':parent'    => $parent,
                 ':sortOrder' => $sortOrder
-                )
-            );
+            ));
         } else {
-            $statement=$db->prepare('getNextHighestSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement=$db->prepare('getNextHighestSortOrderNoParent','admin',array(
+	        	'!table!' => $table,
+	        	'!column1!' => $sortOrderName
+        	));
             $statement->execute(array(
-                    ':sortOrder' => $sortOrder
-                )
-            );
+                 ':sortOrder' => $sortOrder
+            ));
         }
         $result=$statement->fetch();
         if ($result===FALSE) {
@@ -239,28 +273,67 @@ function admin_sortOrder_move($db,$table,$direction='down',$id,$sortOrderName='s
 	if(!$error) {
 		// Updating sortOrder effects two items as it is a swap
         if(isset($parentName)) {
-            $statement=$db->prepare('updateSortOrderByParent','admin',$table,$sortOrderName,$parentName);
+            $statement=$db->prepare('updateSortOrderByParent','admin',array(
+            	'!table!' => $table,
+            	'!column1!' => $sortOrderName,
+            	'!column2!' => $parentName
+            ));
             $statement->execute(array(
                 ':sortOrder_new' => $sortOrder,
                 ':sortOrder'     => $swapSortOrder,
                 ':parent'        => $parent
-                )
-            );            
+            ));
+            //---Update Across Other Languages
+            if($language){
+            	$conditions = array(
+            		$sortOrderName => $swapSortOrder,
+	            	$parentName => $parent
+            	);
+            	$values = array(
+	            	$sortOrderName =>  $sortOrder
+            	);
+	            common_updateAcrossLanguageTables($data,$db,$baseTableName,$conditions,$values);
+	        }
         } else {
-            $statement=$db->prepare('updateSortOrderNoParent','admin',$table,$sortOrderName);
+            $statement=$db->prepare('updateSortOrderNoParent','admin',array(
+	        	'!table!' => $table,
+	        	'!column1!' => $sortOrderName
+        	));
             $statement->execute(array(
                     ':sortOrder_new' => $sortOrder,
                     ':sortOrder'     => $swapSortOrder
-                    )
-            );
+            ));
+            
+            //---Update Across Other Languages
+            if($language){
+            	$conditions = array(
+            		$sortOrderName => $swapSortOrder,
+            	);
+            	$values = array(
+	            	$sortOrderName =>  $sortOrder
+            	);
+	            common_updateAcrossLanguageTables($data,$db,$baseTableName,$conditions,$values);
+	        }
         }
-    
-		$statement=$db->prepare('updateSortOrderByID','admin',$table,$sortOrderName);
+		$statement=$db->prepare('updateSortOrderByID','admin',array(
+        	'!table!' => $table,
+        	'!column1!' => $sortOrderName
+    	));
 		$statement->execute(array(
 			':sortOrder' => $swapSortOrder,
 			':id'        => $id
-			)
-		);		
+		));
+		
+		//---Update Across Other Languages
+        if($language){
+        	$conditions = array(
+        		'id' => $id
+        	);
+        	$values = array(
+            	$sortOrderName =>  $swapSortOrder
+        	);
+            common_updateAcrossLanguageTables($data,$db,$baseTableName,$conditions,$values);
+        }
 	}
 }
 ?>

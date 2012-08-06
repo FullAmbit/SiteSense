@@ -80,7 +80,7 @@ function theme_dynamicFormsDeleteFieldDefault($data,$aRoot) {
 }
 
 function theme_dynamicFormsDeleteOptionCancelled($data,$aRoot) {
-	echo 'This option has been deleted. <div class="buttonList"><a href="'.$aRoot.'listOptions/'.$data->output['fieldItem']['id'].'" title="Return To Options">Return Top Options.</a></div>';
+	echo 'You have cancelled the deletion. <div class="buttonList"><a href="'.$aRoot.'listOptions/'.$data->output['optionItem']['fieldId'].'" title="Return To Options">Return To Options.</a></div>';
 }
 
 function theme_dynamicFormsDeleteOptionDeleted($aRoot) {
@@ -89,7 +89,7 @@ function theme_dynamicFormsDeleteOptionDeleted($aRoot) {
 
 function theme_dynamicFormsDeleteOptionDefault($data,$aRoot) {
 	echo '
-		<form action="'.$aRoot.'deleteOption/'.$data->action[3].'/'.$data->action[4].'" method="post" class="verifyForm">
+		<form action="'.$aRoot.'deleteOption/'.$data->action[3].'" method="post" class="verifyForm">
 			<fieldset>
 				<legend>Are you sure you want to delete this field?</legend>
 			</fieldset>
@@ -219,17 +219,17 @@ function theme_dynamicFormsListOptionsNoOptions() {
 		</table>';
 }
 
-function theme_dynamicFormsListOptionsTableRow($data,$option,$optionIndex,$i) {
+function theme_dynamicFormsListOptionsTableRow($data,$option,$i) {
 	echo '
 		<tr class="',($i%2 == 0 ? 'even' : 'odd'),'">';
 	echo '
 			<td>', $option['text'], '</td>
 			<td>', $option['value'], '</td>
 			<td class="buttonList">
-				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/editOption/',$data->output['fieldItem']['id'],'/">Edit</a>
-				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/deleteOption/',$data->output['fieldItem']['id'],'/">Delete</a>
-				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/',$data->output['fieldItem']['id'],'/moveUp/',$optionIndex,'">&uArr;</a>
-				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/',$data->output['fieldItem']['id'],'/moveDown/',$optionIndex,'">&dArr;</a>
+				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/editOption/',$option['id'],'/">Edit</a>
+				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/deleteOption/',$option['id'],'/">Delete</a>
+				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/',$data->output['fieldItem']['id'],'/moveUp/',$option['id'],'">&uArr;</a>
+				<a href="', $data->linkRoot, 'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/',$data->output['fieldItem']['id'],'/moveDown/',$option['id'],'">&dArr;</a>
 			</td>
 		</tr>
 	';

@@ -41,7 +41,7 @@ function admin_dynamicFormsBuild($data,$db)
 	}
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSidebarCount = $db->countRows('sidebars');
+	$maxSidebarCount = $db->countRows($data->language.'_sidebars');
 	$statement = $db->prepare('countSidebarsByForm','admin_dynamicForms');
 	$statement->execute(array(':formId' => $formId));
 	list($rowCount) = $statement->fetch();
@@ -51,13 +51,12 @@ function admin_dynamicFormsBuild($data,$db)
 		$statement->execute();
 		$sidebarList = $statement->fetchAll();
 		foreach($sidebarList as $sidebarItem) {
-			$i++;
 			$statement = $db->prepare('createSidebarSetting','admin_dynamicForms');
 			$statement->execute(array(
 				':formId' => $formId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => admin_sortOrder_new($db,'form_sidebars','sortOrder','form',$formId)
+				':sortOrder' => admin_sortOrder_new($data,$db,'form_sidebars','sortOrder','form',$formId)
 			));
 		}
 	}
@@ -76,7 +75,7 @@ function admin_dynamicFormsBuild($data,$db)
 			break;
 		case 'moveDown':
 		case 'moveUp':
-            admin_sortOrder_move($db,'form_sidebars',$data->action[4],$data->action[5],'sortOrder','form');
+            admin_sortOrder_move($data,$db,'form_sidebars',$data->action[4],$data->action[5],'sortOrder','form');
 		    break;
 	}
 	

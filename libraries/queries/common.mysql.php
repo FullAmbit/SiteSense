@@ -28,6 +28,16 @@
 */
 function common_addQueries() {
     return array(
+    	'getDefaultLanguage' => '
+    		SELECT 
+    			name,shortName 
+    		FROM 
+    			!prefix!languages
+    		WHERE 
+    			isDefault = 1
+    		LIMIT
+    			1
+    	',
     	'setTimeZone' => '
     		SET time_zone = \'+0:00\'
     	',
@@ -35,11 +45,11 @@ function common_addQueries() {
     		SELECT CURRENT_TIMESTAMP
     	',
         'tableExists' => '
-			SHOW TABLES LIKE \'!table!\'
+			SHOW TABLES LIKE "!prefix!!table!"
 		',
         'countRows' => '
 			SELECT COUNT(*) AS COUNT
-			FROM !table!
+			FROM !prefix!!table!
 		',
         'logoutSession' => '
 			DELETE FROM !prefix!sessions
@@ -66,9 +76,10 @@ function common_addQueries() {
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
-        'updateSessionExpiration' => '
+        'updateSessionExpirationAndLanguage' => '
 			UPDATE !prefix!sessions
-			SET expires = :expires
+			SET expires = :expires,
+				language = :language
 			WHERE sessionId = :sessionId
 		',
         'updateLastAccess' => '
@@ -87,84 +98,94 @@ function common_addQueries() {
 			DELETE FROM !prefix!sessions
 			WHERE userId = :userId
 		',
+		'userSessionTimeOut' => '
+			SELECT
+				value
+			FROM
+				!prefix!settings_en_us
+			WHERE 
+				name = "userSessionTimeout"
+			LIMIT 
+				1
+		',
         'updateUserSession' => '
 			INSERT INTO !prefix!sessions
-			(sessionId,userId,expires,ipAddress,userAgent)
+			(sessionId,userId,expires,ipAddress,userAgent,language)
 			VALUES
-			(:sessionId,:userId,:expires,:ipAddress,:userAgent)
+			(:sessionId,:userId,:expires,:ipAddress,:userAgent,:language)
 		',
         'getSettings' => '
-			SELECT * FROM !prefix!settings
+			SELECT * FROM !prefix!settings!lang!
 		',
         'getNewsId' => '
-			SELECT id FROM !prefix!blogs
+			SELECT id FROM !prefix!blogs!lang!
 			WHERE name="news"
 		',
         'getAllNews' => '
-			SELECT * FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE name="news"
 		',
         'getMainMenuOrder' => '
-			SELECT * FROM !prefix!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			ORDER BY sortOrder ASC
 		',
         'getMainMenuOrderLeft' => '
-			SELECT * FROM !prefix!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "left"
 			ORDER BY sortOrder ASC
 		',
         'getMainMenuOrderRight' => '
-			SELECT * FROM !prefix!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "right"
 			ORDER BY sortOrder ASC
 		',
         'getEnabledMainMenuOrderLeft' => '
-			SELECT * FROM !prefix!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "left"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
         'getEnabledMainMenuOrderRight' => '
-			SELECT * FROM !prefix!main_menu
+			SELECT * FROM !prefix!main_menu!lang!
 			WHERE side = "right"
 			AND enabled = 1
 			ORDER BY sortOrder ASC
 		',
         'getSidebars' => '
 			SELECT *
-			FROM !prefix!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE enabled = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getSidebarById' => '
 			SELECT *
-			FROM !prefix!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
         'deleteFromSidebarsById' => '
 			DELETE
-			FROM !prefix!sidebars
+			FROM !prefix!sidebars!lang!
 			WHERE id = :id
 		',
         //No column "showOnParent" in table !prefix!pages
         'getHomePagePages' => '
 			SELECT *
-			FROM !prefix!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4096
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getHomePageSidebarPages' => '
 			SELECT *
-			FROM !prefix!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4097
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
 		',
         'getSidebarPages' => '
 			SELECT *
-			FROM !prefix!pages
+			FROM !prefix!pages!lang!
 			WHERE parent=-4098
 			AND showOnParent = TRUE
 			ORDER BY sortOrder ASC
@@ -292,18 +313,18 @@ function common_addQueries() {
 			ORDER BY name ASC
 		',
         'getAllSidebars' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 		',
         'getSidebarById' => '
-			SELECT * FROM !prefix!sidebars
+			SELECT * FROM !prefix!sidebars!lang!
 			WHERE id = :id
 		',
         'getSidebarsByModule' => '
-			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
+			SELECT a.id,a.module,a.sidebar,a.enabled,a.sortOrder,b.name FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b WHERE a.module = :module AND a.sidebar = b.id ORDER BY a.sortOrder ASC
 		',
         'getEnabledSidebarsByModule' => '
 				SELECT a.enabled,a.sortOrder,b.*
-					FROM !prefix!module_sidebars a, !prefix!sidebars b
+					FROM !prefix!module_sidebars a, !prefix!sidebars!lang! b
 					WHERE a.module = :module
 					AND a.sidebar = b.id
 					AND a.enabled = 1
@@ -401,8 +422,78 @@ function common_addQueries() {
             (:name,:enabled)
         ',
         'findReplacement' => '
-            SELECT r.match,r.replace FROM !prefix!url_remap r WHERE :url RLIKE r.match ORDER BY r.sortOrder ASC
-        '
+            SELECT r.match,r.replace FROM !prefix!url_remap r
+            WHERE :url RLIKE r.match AND (hostname = :hostname OR hostname = "")
+            ORDER BY hostname DESC
+        ',
+        'getCoreAndModulePhrases' => '
+			SELECT
+				IF(module="","core",module) AS module,phrase,text
+			FROM
+				!table!
+			WHERE
+				module = :module
+				OR 
+				module = ""
+			GROUP BY
+				module
+		',
+		'getAllLanguages' => '
+			SELECT 
+				shortName,name 
+			FROM 
+				!prefix!languages
+		',
+		'getAllLanguagesException' => '
+			SELECT
+				name,shortName
+			FROM
+				!prefix!languages
+			WHERE 	
+				shortName != :shortName
+		',
+		'populateLanguageTable' => '
+			INSERT INTO
+				!prefix!!languageTable!
+			SELECT
+				*
+			FROM
+				!prefix!!sourceTable!
+			WHERE
+				!keyColumn! = :keyValue
+		',
+		'duplicateLanguageTable' => '
+			INSERT INTO
+				!prefix!!table!!lang!
+			SELECT
+				* 
+			FROM 
+				!prefix!!table!_en_us
+		',
+		'deleteFromLanguageTable' => '
+			DELETE FROM
+				!prefix!!table!
+			WHERE 
+				!keyColumn! = :keyValue
+		',
+		'updateLanguageTable' => '
+			UPDATE
+				!prefix!!table!
+			SET 
+				!qString! 
+			WHERE 
+				!conditionStatement!
+		',
+		'selectFromLanguageTable' => '
+			SELECT
+				!column! 
+			FROM 
+				!prefix!!table! 
+			WHERE 
+				!qString! 
+			LIMIT 
+				1
+		'
     );
 }
 ?>

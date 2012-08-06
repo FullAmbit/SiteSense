@@ -43,7 +43,7 @@ function admin_pagesBuild($data,$db)
 	}
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSidebarCount = $db->countRows('sidebars');
+	$maxSidebarCount = $db->countRows($data->language.'_sidebars');
 	$statement = $db->prepare('countSidebarsByPage','admin_pages');
 	$statement->execute(array(':pageId' => $pageId));
 	list($rowCount) = $statement->fetch();
@@ -58,7 +58,7 @@ function admin_pagesBuild($data,$db)
 				':pageId' => $pageId,
 				':sidebarId' => $sidebarItem['id'],
 				':enabled' => $sidebarItem['enabled'],
-				':sortOrder' => admin_sortOrder_new($db,'pages_sidebars','sortOrder','page',$pageId)
+				':sortOrder' => admin_sortOrder_new($data,$db,'pages_sidebars','sortOrder','page',$pageId,TRUE)
 			));
 		}
 	}
@@ -77,7 +77,7 @@ function admin_pagesBuild($data,$db)
 			break;
 		case 'moveDown':
 		case 'moveUp':
-            admin_sortOrder_move($db,'pages_sidebars',$data->action[4],$data->action[5],'sortOrder','page');
+            admin_sortOrder_move($data,$db,'pages_sidebars',$data->action[4],$data->action[5],'sortOrder','page',TRUE);
 		    break;
 	}
 	

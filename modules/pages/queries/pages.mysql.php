@@ -29,24 +29,24 @@
 function pages_addQueries() {
 	return array(
 		'getPagesByShortName' => '
-			SELECT * FROM !prefix!pages
+			SELECT * FROM !prefix!pages!lang!
 			WHERE shortName = :shortName
 		',
 		'getPagesByParent' => '
 			SELECT *
-			FROM !prefix!pages
+			FROM !prefix!pages!lang!
 			WHERE parent = :parent
 		',
 		'getPageByShortNameAndParent' => '
-			SELECT * FROM !prefix!pages
+			SELECT * FROM !prefix!pages!lang!
 			WHERE shortName = :shortName
 			AND parent = :parent
 		',
 		'getTopLevelPages' => '
-			SELECT * FROM !prefix!pages WHERE parent = 0
+			SELECT * FROM !prefix!pages!lang! WHERE parent = 0
 		',
 		'getEnabledSidebarsByPage' => '
-			SELECT a.enabled,a.sortOrder,b.* FROM !prefix!pages_sidebars a, !prefix!sidebars b WHERE a.page = :pageId AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
+			SELECT a.enabled,a.sortOrder,b.* FROM !prefix!pages_sidebars a, !prefix!sidebars!lang! b WHERE a.page = :pageId AND a.sidebar = b.id AND a.enabled = 1 ORDER BY a.sortOrder ASC
 				
 		'
 	);

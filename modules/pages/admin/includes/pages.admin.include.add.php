@@ -24,28 +24,6 @@
 */
 common_include('libraries/forms.php');
 
-function admin_mainMenuOptions($db,$parent = 0,$level = 0,$options = array()) {
-	// Get All Items In Current Level
-	$statement = $db->prepare('getMenuItemByParent','admin_mainMenu');
-	$statement->execute(array(
-		':parent' => $parent
-	));
-	$menuItemList = $statement->fetchAll();
-	foreach($menuItemList as $menuItem)
-	{
-		$hypen = '';
-		for($i=0;$i<$level;$i++)
-		{
-			$hypen .= '--';
-		}
-		$options[$menuItem['id']]['text'] = $hypen.' '.$menuItem['text'];
-		$options[$menuItem['id']]['value'] = $menuItem['id'];
-		// Now Get This Item's Children
-		$options = admin_mainMenuOptions($db,$menuItem['id'],$level + 1,$options);
-	}
-	return $options;
-}
-
 function admin_pagesBuild($data, $db) {
 	//permission check for pages add
 	if (!checkPermission('add', 'pages', $data)) {
@@ -54,11 +32,12 @@ function admin_pagesBuild($data, $db) {
 		return;
 	}
 	$data->output['pageForm']=new formHandler('addEdit', $data, true);
+	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 
 	if (($data->action[3]=='childOf') && is_numeric($data->action[4])) {
 		$data->output['pageForm']->fields['parent']['value']=$data->action[4];
 	}
-	
+
 	// Get Menu Items To Select Parent
 	$data->output['pageForm']->fields['menuParent']['options'] = array_merge($data->output['pageForm']->fields['menuParent']['options'], admin_mainMenuOptions($db));
 
@@ -67,16 +46,12 @@ function admin_pagesBuild($data, $db) {
 		$shortName = common_generateShortName($_POST[$data->output['pageForm']->formPrefix.'name']);
 		$data->output['pageForm']->sendArray[':shortName'] = $shortName;
 
-		$statement = $db->prepare('getExistingShortNames', 'admin_pages');
-		$statement->execute();
-		$cannotEqual=array();
-		$pageShortNameList = $statement->fetchAll();
-		foreach ($pageShortNameList as $item) {
-			$cannotEqual[] = $item['shortName'];
+		// Check To See If ShortName Exists Anywhere (Across Any Language)
+		if (common_checkUniqueValueAcrossLanguages($data, $db, 'pages', 'id', array('shortName'=>$shortName))) {
+			$data->output['pageForm']->fields['name']['error']=true;
+			$data->output['pageForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a page.';
+			return;
 		}
-		$data->output['pageForm']->fields['name']['cannotEqual'] = $cannotEqual;
-		// Apply ShortName Convention To Name For Use In Comparison //
-		$_POST[$data->output['pageForm']->formPrefix.'name'] = $shortName;
 
 		// Validate Form
 		if ($data->output['pageForm']->validateFromPost()) {
@@ -84,7 +59,8 @@ function admin_pagesBuild($data, $db) {
 				$modifiedShortName='^'.$shortName.'(/.*)?$';
 				$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
 				$statement->execute(array(
-						':match' => $modifiedShortName
+						':match' => $modifiedShortName,
+						':hostname' => ''
 					)
 				);
 				$result=$statement->fetch();
@@ -93,8 +69,9 @@ function admin_pagesBuild($data, $db) {
 					$statement->execute(array(
 							':match'     => $modifiedShortName,
 							':replace'   => 'pages/'.$shortName.'\1',
-							':sortOrder' => admin_sortOrder_new($db, 'url_remap', 'sortOrder'),
-							':regex'     => 0
+							':sortOrder' => admin_sortOrder_new($data, $db, 'url_remap', 'sortOrder'),
+							':regex'     => 0,
+							':hostname'  => ''
 						));
 				} else {
 					$data->output['pageForm']->fields['name']['error']=true;
@@ -104,7 +81,7 @@ function admin_pagesBuild($data, $db) {
 			}
 			// Get Sort Order
 			$data->output['pageForm']->sendArray[':sortOrder']=
-				admin_sortOrder_new($db, 'pages', 'sortOrder', 'parent', $data->output['pageForm']->sendArray[':parent']);
+				admin_sortOrder_new($data, $db, 'pages', 'sortOrder', 'parent', $data->output['pageForm']->sendArray[':parent'], TRUE);
 
 			// Parse
 			if ($data->settings['useBBCode'] == '1') {
@@ -118,20 +95,22 @@ function admin_pagesBuild($data, $db) {
 			if ($data->output['pageForm']->sendArray[':showOnMenu']) {
 				//----Build The Menu Item----//
 				$title = (isset($data->output['pageForm']->sendArray[':menuText']{1})) ? $data->output['pageForm']->sendArray[':menuText'] : $data->output['pageForm']->sendArray[':name'];
-				// Grab The SortOrder
-				$sortOrder = admin_sortOrder_new($db,'main_menu','sortOrder','parent',$data->output['pageForm']->sendArray[':menuParent']);
-				
+
+                $sortOrder = admin_sortOrder_new($data,$db,'main_menu','sortOrder','parent','0',TRUE);
+
 				$statement = $db->prepare('newMenuItem', 'admin_mainMenu');
 				$statement->execute(array(
 						':text' => $title,
 						':title' => $title,
-						':url' => $data->output['pageForm']->sendArray[':shortName'].'/',
+						':url' => 'pages/'.$data->output['pageForm']->sendArray[':shortName'].'/',
 						':enabled' => '1',
-						':parent' => $data->output['pageForm']->sendArray[':menuParent'],
+						':parent' => '0',
 						':sortOrder' => $sortOrder
-						));
-
+					));
 				$menuId = $db->lastInsertId();
+				
+				//--Push Menu Item To All Other Languages
+				common_populateLanguageTables($data,$db,'main_menu','id',$menuId);
 			}
 
 			unset(
@@ -140,10 +119,12 @@ function admin_pagesBuild($data, $db) {
 				$data->output['pageForm']->sendArray[':menuParent']
 			);
 
+
 			// Save To DB
 			$statement=$db->prepare('insertPage', 'admin_pages');
 			if ($statement->execute($data->output['pageForm']->sendArray)) {
-
+				//--Push Page To All Other Languages
+				common_populateLanguageTables($data,$db,'pages','shortName',$data->output['pageForm']->sendArray[':shortName']);
 
 				$data->output['savedOkMessage']='
 				<h2>Values Saved Successfully</h2>
@@ -161,6 +142,7 @@ function admin_pagesBuild($data, $db) {
 					.
 					'</div>';
 			} else {
+				var_dump($statement->errorInfo());
 				$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
 				<p>

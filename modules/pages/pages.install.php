@@ -28,7 +28,7 @@ function pages_settings() {
 		'shortName' => 'pages'
 	);
 }
-function pages_install($db,$drop=false) {
+function pages_install($db,$drop=false,$firstInstall=false,$lang='en_us') {
 	$structures=array(
 		'pages' => array(
 			'id'              => SQR_IDKey,
@@ -52,77 +52,79 @@ function pages_install($db,$drop=false) {
 		)
 	);
 	if($drop)
-        pages_uninstall($db);
+        pages_uninstall($db,$lang);
 
-	$db->createTable('pages',$structures['pages'],false);
-	$db->createTable('pages_sidebars',$structures['pages_sidebars'],false);
+	$db->createTable('pages',$structures['pages'],$lang);
+	$db->createTable('pages_sidebars',$structures['pages_sidebars']);
 
-    // Set up default permission groups
-    $defaultPermissionGroups=array(
-        'Moderator' => array(
-            'pages_access',
-			'pages_add',
-			'pages_edit',
-			'pages_delete',
-			'pages_publish'
-        ),
-        'Writer' => array(
-            'pages_access',
-			'pages_add',
-			'pages_edit',
-			'pages_delete',
-			'pages_publish'
-        )
-    );
-    foreach($defaultPermissionGroups as $groupName => $permissions) {
-        foreach($permissions as $permissionName) {
-            $statement=$db->prepare('addPermissionByGroupName');
-            $statement->execute(
-                array(
-                    ':groupName' => $groupName,
-                    ':permissionName' => $permissionName,
+	if($firstInstall){
+	    // Set up default permission groups
+	    $defaultPermissionGroups=array(
+	        'Moderator' => array(
+	            'pages_access',
+				'pages_add',
+				'pages_edit',
+				'pages_delete',
+				'pages_publish'
+	        ),
+	        'Writer' => array(
+	            'pages_access',
+				'pages_add',
+				'pages_edit',
+				'pages_delete',
+				'pages_publish'
+	        )
+	    );
+	    foreach($defaultPermissionGroups as $groupName => $permissions) {
+	        foreach($permissions as $permissionName) {
+	            $statement=$db->prepare('addPermissionByGroupName');
+	            $statement->execute(
+	                array(
+	                    ':groupName' => $groupName,
+	                    ':permissionName' => $permissionName
                     ':value' => '0'
-                )
-            );
-        }
-    }
-	if($db->countRows('pages')==0) {
-		try {
-			echo '
-				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationAgreement','installer');
-			echo '
-				<div>
-					Registration Agreement Page Generated!
-				</div><br />
-			';
-		} catch(PDOException $e) {
-			$db->installErrors++;
-			echo '
-				<h2>Failed to create registration agreement!</h2>
-				<pre>'.$e->getMessage().'</pre><br />
-			';
-		}
-		try {
-			echo '
-				<h3>Attempting:</h3>';
-			$db->exec('makeRegistrationEMail','installer');
-			echo '
-				<div>
-					Registration E-Mail Page Generated!
-				</div><br />
-			';
-		} catch(PDOException $e) {
-			$db->installErrors++;
-			echo '
-				<h2>Failed to create registration E-Mail!</h2>
-				<pre>'.$e->getMessage().'</pre><br />
-			';
-		}
-	} else echo '<p class="exists">"pages database" already contains records</p>';
+	                )
+	            );
+	        }
+	    }
+		if($db->countRows('pages'.'_'.$lang)==0) {
+			try {
+				echo '
+					<h3>Attempting:</h3>';
+				$db->exec('makeRegistrationAgreement','installer',array('!lang!'=>$lang));
+				echo '
+					<div>
+						Registration Agreement Page Generated!
+					</div><br />
+				';
+			} catch(PDOException $e) {
+				$db->installErrors++;
+				echo '
+					<h2>Failed to create registration agreement!</h2>
+					<pre>'.$e->getMessage().'</pre><br />
+				';
+			}
+			try {
+				echo '
+					<h3>Attempting:</h3>';
+				$db->exec('makeRegistrationEMail','installer',array('!lang!'=>$lang));
+				echo '
+					<div>
+						Registration E-Mail Page Generated!
+					</div><br />
+				';
+			} catch(PDOException $e) {
+				$db->installErrors++;
+				echo '
+					<h2>Failed to create registration E-Mail!</h2>
+					<pre>'.$e->getMessage().'</pre><br />
+				';
+			}
+		} else echo '<p class="exists">"pages database" already contains records</p>';
+	}
 }
-function pages_uninstall($db) {
-    $db->dropTable('pages');
+function pages_uninstall($db,$lang='en_us') {
+    $db->dropTable('pages',$lang);
     $db->dropTable('pages_sidebars');
 }
 ?>

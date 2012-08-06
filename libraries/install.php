@@ -23,38 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 define("INSTALLER", true);
-$settings=array(
-    'setupPassword'=> 'startitup',
-    'saveToDb' => array(
-        'siteTitle' => 'SiteSense',
-        'homepage' => 'default',
-        'theme' => 'default',
-        'language' => 'en',
-        'characterEncoding' => 'utf-8',
-        'compressionEnabled' => 0,
-        'compressionLevel' => 9,
-        'userSessionTimeOut' => 1800, /* in seconds */
-        'useModRewrite' => true,
-        'hideContentGuests' => 'no',
-        'showPerPage' => 5,
-        'rawFooterContent' => '&copy; SiteSense',
-        'parsedFooterContent' => '&copy; SiteSense',
-        'cdnSmall' => '',
-        'cdnFlash' => '',
-        'cdnLarge' => '',
-        'useCDN' => '0',
-        'cdnBaseDir' => '',
-        'defaultBlog' => 'news',
-        'useBBCode' => '1',
-        'jsEditor' => 'ckeditor',
-        'version' => 'Pre-Alpha',
-        'verifyEmail' => 1,
-        'requireActivation' => 0,
-        'removeAttribution' => 0,
-        'defaultGroup' => 0,
-        'defaultTimeZone' => 'America/New_York'
-    )
-);
+$setupPassword = 'startitup';
 echo '
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -85,10 +54,10 @@ echo '
 ';
 if (
     !isset($_POST['spw']) ||
-    ($_POST['spw']!==$settings['setupPassword'])
+    ($_POST['spw']!==$setupPassword)
 ) {
     echo (
-    (isset($_POST['spw']) && ($_POST['spw']!=$settings['setupPassword'])) ? '
+    (isset($_POST['spw']) && ($_POST['spw']!=$setupPassword)) ? '
 <p class="error">Incorrect Setup Password</p>' :
         ''
     ),'
@@ -104,6 +73,7 @@ if (
   </fieldset>
 </form>';
 } else {
+	$lang = 'en_us';
     $drop = false;
     if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
         $drop = true;
@@ -114,48 +84,27 @@ if (
     echo '<p>Connect to Database Successful</p>';
 
     if($drop) {
-        $data->dropTable('settings');
+        $data->dropTable('settings',$lang);
         $data->dropTable('banned');
         $data->dropTable('sessions');
-        $data->dropTable('sidebars');
-        $data->dropTable('main_menu');
+        $data->dropTable('sidebars',$lang);
+        $data->dropTable('main_menu',$lang);
         $data->dropTable('activations');
         $data->dropTable('url_remap');
         $data->dropTable('modules');
         $data->dropTable('module_sidebars');
+        $data->dropTable('languages');
+        $data->dropTable('languages_phrases',$lang);
+        $data->dropTable('hostnames');
         // Dynamic User Permissions
         $data->dropTable('user_groups');
         $data->dropTable('user_group_permissions');
         $data->dropTable('user_permissions');
     }
-    // Create the settings table
-    if ($data->createTable('settings',$structures['settings'],false)) {
-        try {
-            $statement=$data->prepare('addSetting','installer');
-            echo '
-				<div>';
-            foreach ($settings['saveToDb'] as $key => $value) {
-                $statement->execute(array(
-                    ':name' => $key,
-                    ':category' => 'cms',
-                    ':value' => $value
-                ));
-                $result=$statement->fetchAll();
-                echo '
-					Created ',$key,' Entry<br />';
-            }
-            echo '
-				</div><br />';
-        } catch (PDOException $e) {
-            $data->installErrors++;
-            echo '
-				<h2>Database Connection Error</h2>
-				<pre>'.$e->getMessage().'</pre>';
-        }
-    }
-
+    
     // Install modules
     $coreModules = array(
+    	'settings',
         'sidebars',
         'dynamicForms',
         'dynamicURLs',
@@ -169,7 +118,9 @@ if (
         'users',
         'mainMenu',
         'settings',
-        'modules'
+        'modules',
+        'languages',
+        'hostnames'
     );
 
     $uninstalledModuleFiles = glob('modules/*/*.install.php');
@@ -198,7 +149,7 @@ if (
                 } elseif($moduleName=='users') {
                     $newPassword=$targetFunction($data,$drop);
                 } else {
-                    $targetFunction($data,$drop);
+                    $targetFunction($data,$drop,TRUE);
                 }
                 $targetFunction=$moduleName.'_settings';
                 if(function_exists($targetFunction)) {

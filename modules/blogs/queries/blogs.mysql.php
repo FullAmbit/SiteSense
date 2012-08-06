@@ -29,33 +29,33 @@
 function blogs_addQueries() {
 	return array(
 		'getBlogById' => '
-			SELECT * FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE id = :blogId
 		',
 		'getBlogByName' => '
-			SELECT * FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE shortName = :shortName
 		',
 		'getTopLevelBlogByName' => '
-			SELECT * FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE shortName = :shortName
 			AND topLevel = 1
 		',
 		'getTopLevelBlogs' => '
-			SELECT * FROM !prefix!blogs
+			SELECT * FROM !prefix!blogs!lang!
 			WHERE topLevel = 1
 		',
 		'getBlogPostsByIDandName' => '
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE blogId = :blogId
 			AND shortName = :shortName
 		',
 		'countBlogPosts' => '
 			SELECT count(id) AS count
-			FROM !prefix!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE blogId = :blogId
 			AND live = TRUE
 		',
@@ -63,7 +63,7 @@ function blogs_addQueries() {
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts
+			FROM !prefix!blog_posts!lang!
 			WHERE blogId = :blogId
 			AND live = TRUE
 			ORDER BY postTime DESC
@@ -76,7 +76,7 @@ function blogs_addQueries() {
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
+			FROM !prefix!blog_posts!lang! WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
 		',
 		'getCategoryIdByShortName' => '
 			SELECT * FROM !prefix!blog_categories WHERE shortName = :shortName LIMIT 1
@@ -85,19 +85,19 @@ function blogs_addQueries() {
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts WHERE categoryId = :categoryId AND blogId = :blogId ORDER BY id DESC
+			FROM !prefix!blog_posts!lang! WHERE categoryId = :categoryId AND blogId = :blogId ORDER BY id DESC
 		',
 		'getBlogPostsByParentBlog' => '
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts WHERE blogId = :blogId AND live = 1 ORDER BY id DESC
+			FROM !prefix!blog_posts!lang! WHERE blogId = :blogId AND live = 1 ORDER BY id DESC
 		',
 		'getUniqueAuthorCountByBlog' => '
-			SELECT COUNT(DISTINCT user) FROM !prefix!blog_posts WHERE blogId = :blogId
+			SELECT COUNT(DISTINCT user) FROM !prefix!blog_posts!lang! WHERE blogId = :blogId
 		',
 		'getAllCategoriesByBlogId' => '
-			SELECT * FROM !prefix!blog_categories WHERE blogId = :blogId ORDER BY name ASC
+			SELECT * FROM !prefix!blog_categories!lang! WHERE blogId = :blogId ORDER BY name ASC
 		',
         'getCommentById' => '
 			SELECT *,UNIX_TIMESTAMP(CONCAT(time,"+00:00")) AS time

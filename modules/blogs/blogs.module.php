@@ -27,226 +27,226 @@ common_include('libraries/forms.php');
 function blogs_getUniqueSettings($data) {
 	$data->output['pageTitle']='Blog';
 }
-function blogs_buildContent($data,$db) {
-	require_once('modules/blogs/blogs.common.php');
+function blogs_buildContent($data, $db) {
+	require_once 'modules/blogs/blogs.common.php';
 	$data->output['summarize']=false;
 	$data->output['notFound']=false;
 	// Now Get Users
-	$statement=$db->prepare('getAllUsers','users');
+	$statement=$db->prepare('getAllUsers', 'users');
 	$statement->execute();
 	$data->output['usersList']=$statement->fetchAll();
 	// Get the ID Of The Blog Based On The ShortName
-	if(!is_numeric($data->action[1])) {
-		$statement=$db->prepare('getBlogByName','blogs');
+	if (!is_numeric($data->action[1])) {
+		$statement=$db->prepare('getBlogByName', 'blogs');
 		$statement->execute(array(
-			':shortName' => $data->action[1]
-		));
+				':shortName' => $data->action[1]
+			));
 		$parentBlog=$statement->fetch();
 		$data->output['blogInfo']=$parentBlog;
 		$data->action[1]=$parentBlog['id'];
 	} else {
-		$statement=$db->prepare('getBlogById','blogs');
-		$statement->bindValue(':blogId',$data->action[1]);
+		$statement=$db->prepare('getBlogById', 'blogs');
+		$statement->bindValue(':blogId', $data->action[1]);
 		$statement->execute();
 		$data->output['blogInfo']=$statement->fetch();
 	}
 	// Blog Not Found
-	if($data->output['blogInfo']===false) {
+	if ($data->output['blogInfo']===false) {
 		$data->output['notFound']=true;
-		return; 
+		return;
 	}
 	$data->output['pageShortName']=$data->output['blogInfo']['shortName'];
 	$data->output['pageTitle']=ucwords($data->output['blogInfo']['name']);
 	// Get All Blog Categories
-	$statement=$db->prepare('getAllCategoriesByBlogId','blogs');
+	$statement=$db->prepare('getAllCategoriesByBlogId', 'blogs');
 	$statement->execute(array(
-		':blogId' => $data->output['blogInfo']['id']
-	));
+			':blogId' => $data->output['blogInfo']['id']
+		));
 	$data->output['blogCategoryList']=$statement->fetchAll();
 	// Build a localRoot so that links can account for top-level blogs
-	$result=$db->query('getTopLevelBlogs','blogs');
+	$result=$db->query('getTopLevelBlogs', 'blogs');
 	$data->topLevelBlogs=array();
-	while($row=$result->fetch()) {
+	while ($row=$result->fetch()) {
 		$data->topLevelBlogs[]=$row['name'];
 	}
-	$data->localRoot=$data->linkRoot.(in_array($data->output['blogInfo']['name'],$data->topLevelBlogs)
-	? $data->output['blogInfo']['name'] 
-	: 'blogs/'.$data->output['blogInfo']['shortName']);
+	$data->localRoot=$data->linkRoot.(in_array($data->output['blogInfo']['name'], $data->topLevelBlogs)
+		? $data->output['blogInfo']['name']
+		: 'blogs/'.$data->output['blogInfo']['shortName']);
 	$data->output['rssLink']=isset($data->output['blogInfo']['rssOverride']{1}) ? $data->output['blogInfo']['rssOverride'] : $data->localRoot.'/rss';
 	// If RSS Feed Skip All This
-	if($data->action[2]=='rss') {
+	if ($data->action[2]=='rss') {
 		// Content Type
 		//$data->httpHeaders=NULL;
 		$data->pageSettings['httpHeaders'][0]='Content-Type: application/xml';
 		// Get Blog Info
-		$statement=$db->prepare('getBlogById','blogs');
+		$statement=$db->prepare('getBlogById', 'blogs');
 		$statement->execute(array(
-			':blogId' => $data->action[1]
-		));
+				':blogId' => $data->action[1]
+			));
 		$data->output['blogItem']=$statement->fetch();
-		
+
 		// Get All Posts In Blog
-		$statement=$db->prepare('getBlogPostsByParentBlog','blogs');
+		$statement=$db->prepare('getBlogPostsByParentBlog', 'blogs');
 		$statement->execute(array(
-			':blogId' => $data->action[1]
-		));
+				':blogId' => $data->action[1]
+			));
 		$data->output['postsList']=$statement->fetchAll();
-		
+
 		// Get All Categories in Blog
-		$statement=$db->prepare('getAllCategoriesByBlogId','blogs');
+		$statement=$db->prepare('getAllCategoriesByBlogId', 'blogs');
 		$statement->execute(array(':blogId' => $data->action[1]));
 		$catList=$statement->fetchAll();
-		foreach($catList as $catItem) {
+		foreach ($catList as $catItem) {
 			$data->output['rssCategoryList'][$catItem['id']]=$catItem;
 		}
 		// Get Name Of Blog Owner
-		if($data->output['blogItem']['owner'] != '0') {
-			$statement=$db->prepare('getById','users');
+		if ($data->output['blogItem']['owner'] != '0') {
+			$statement=$db->prepare('getById', 'users');
 			$statement->execute(array(
-				':id' => $blogItem['owner']
-			));
+					':id' => $blogItem['owner']
+				));
 			$data->output['blogOwnerItem']=$statement->fetch();
 		}
 		// Get Total Authors
-		$statement=$db->prepare('getUniqueAuthorCountByBlog','blogs');
+		$statement=$db->prepare('getUniqueAuthorCountByBlog', 'blogs');
 		$statement->execute(array(
-			':blogId' => $data->action[1]
-		));
+				':blogId' => $data->action[1]
+			));
 		$data->output['blogItem']['authorCount']=$statement->fetch();
-		if($data->output['blogItem']['authorCount'] > 1) {
+		if ($data->output['blogItem']['authorCount'] > 1) {
 			// Get A List Of All Users And Resort Using The ID As The Key
-			$statement=$db->prepare("getAllUsers",'users');
+			$statement=$db->prepare("getAllUsers", 'users');
 			$statement->execute();
 			$result=$statement->fetchAll();
-			foreach($result as $index => $userItem) {
+			foreach ($result as $index => $userItem) {
 				$data->output['blogItem']['userList'][$userItem['id']]=$userItem;
 			}
 		}
 	} else {
-        // If No Page Set, Then Start At 0
-        if($data->action[2]===false) $data->action[2]=0;
-        // Show Posts In A Specific Blog (Action[2] would be the page number
-        if(is_numeric($data->action[2])) {
-            $data->output['blogInfo']['startPage']=$data->action[2];
-            $data->output['summarize']=true;
-            blogs_common_buildContent($data,$db);
-            foreach($data->output['newsList'] as &$item) {
-                $statement=$db->prepare('countCommentsByPost','blogs');
-                $statement->execute(array('post' => $item['id']));
-                $item['commentCount']=$statement->fetchColumn();
-            }
-        }
-        else if($data->action[2]=='tags') {
-            // Get  A List Of Posts With A Specific Tag
-            $statement=$db->prepare('getBlogPostsByTag','blogs');
-            $statement->execute(array(
-                ':blogId' => $data->action[1],
-                ':tags' => '%'.$data->action[3]	.'%'
-            ));
-            $data->output['newsList']=$statement->fetchAll();
-            // If No Posts, Return An Error
-            if(empty($data->output['newsList'])) {
-                $data->output['notFound']=true;
-                return;
-            }
-            $data->output['summarize']=true;
-            foreach($data->output['newsList'] as &$item) {
-                $statement=$db->prepare('countCommentsByPost','blogs');
-                $statement->execute(array('post' => $item['id']));
-                $item['commentCount']=$statement->fetchColumn();
-            }
-        } elseif($data->action[2]=='categories') {
-            // Get The ID Of The Category Based Off The ShortName
-            $statement=$db->prepare('getCategoryIdByShortName','blogs');
-            $statement->execute(array(
-                ':shortName' => $data->action[3]
-            ));
-            $data->output['categoryItem']=$statement->fetch();
-            // Get  A List Of Posts With A Specific Category
-            $statement=$db->prepare('getBlogPostsByCategory','blogs');
-            $statement->execute(array(
-                ':blogId' => $data->output['blogInfo']['id'],
-                ':categoryId' => $data->output['categoryItem']['id']
-            ));
-            $data->output['newsList']=$statement->fetchAll();
-            // If No Posts, Return An Error
-            if(empty($data->output['newsList'])) {
-                $data->output['notFound']=true;
-                return;
-            }
-            $data->output['summarize']=true;
-            foreach($data->output['newsList'] as &$item) {
-                $statement=$db->prepare('countCommentsByPost','blogs');
-                $statement->execute(array('post' => $item['id']));
-                $item['commentCount']=$statement->fetchColumn();
-            }
-        } else {
-            // Viewing A Specific Post Within A Blog
-            $statement=$db->prepare('getBlogPostsByIDandName','blogs');
-            $statement->execute(array(
-                ':blogId' => $data->action[1],
-                ':shortName' => $data->action[2]
-            ));
-            $data->output['newsList']=$statement->fetchAll();
-            $data->output['pageTitle']=$data->output['newsList'][0]['title'].' - Blog';
-            // If No Posts, Return An Error
-            if(empty($data->output['newsList'])) {
-                $data->output['notFound']=true;
-                return;
-            }
-            if(($data->output['newsList'][0]['allowComments']=='1')) {
-                $data->output['commentForm']=new formHandler('comment',$data);
-                $data->output['commentForm']->fields['post']['value']=$data->output['newsList'][0]['id'];
+		// If No Page Set, Then Start At 0
+		if ($data->action[2]===false) $data->action[2]=0;
+		// Show Posts In A Specific Blog (Action[2] would be the page number
+		if (is_numeric($data->action[2])) {
+			$data->output['blogInfo']['startPage']=$data->action[2];
+			$data->output['summarize']=true;
+			blogs_common_buildContent($data, $db);
+			foreach ($data->output['newsList'] as &$item) {
+				$statement=$db->prepare('countCommentsByPost', 'blogs');
+				$statement->execute(array('post' => $item['id']));
+				$item['commentCount']=$statement->fetchColumn();
+			}
+		}
+		else if ($data->action[2]=='tags') {
+				// Get  A List Of Posts With A Specific Tag
+				$statement=$db->prepare('getBlogPostsByTag', 'blogs');
+				$statement->execute(array(
+						':blogId' => $data->action[1],
+						':tags' => '%'.$data->action[3] .'%'
+					));
+				$data->output['newsList']=$statement->fetchAll();
+				// If No Posts, Return An Error
+				if (empty($data->output['newsList'])) {
+					$data->output['notFound']=true;
+					return;
+				}
+				$data->output['summarize']=true;
+				foreach ($data->output['newsList'] as &$item) {
+					$statement=$db->prepare('countCommentsByPost', 'blogs');
+					$statement->execute(array('post' => $item['id']));
+					$item['commentCount']=$statement->fetchColumn();
+				}
+			} elseif ($data->action[2]=='categories') {
+			// Get The ID Of The Category Based Off The ShortName
+			$statement=$db->prepare('getCategoryIdByShortName', 'blogs');
+			$statement->execute(array(
+					':shortName' => $data->action[3]
+				));
+			$data->output['categoryItem']=$statement->fetch();
+			// Get  A List Of Posts With A Specific Category
+			$statement=$db->prepare('getBlogPostsByCategory', 'blogs');
+			$statement->execute(array(
+					':blogId' => $data->output['blogInfo']['id'],
+					':categoryId' => $data->output['categoryItem']['id']
+				));
+			$data->output['newsList']=$statement->fetchAll();
+			// If No Posts, Return An Error
+			if (empty($data->output['newsList'])) {
+				$data->output['notFound']=true;
+				return;
+			}
+			$data->output['summarize']=true;
+			foreach ($data->output['newsList'] as &$item) {
+				$statement=$db->prepare('countCommentsByPost', 'blogs');
+				$statement->execute(array('post' => $item['id']));
+				$item['commentCount']=$statement->fetchColumn();
+			}
+		} else {
+			// Viewing A Specific Post Within A Blog
+			$statement=$db->prepare('getBlogPostsByIDandName', 'blogs');
+			$statement->execute(array(
+					':blogId' => $data->action[1],
+					':shortName' => $data->action[2]
+				));
+			$data->output['newsList']=$statement->fetchAll();
+			$data->output['pageTitle']=$data->output['newsList'][0]['title'].' - Blog';
+			// If No Posts, Return An Error
+			if (empty($data->output['newsList'])) {
+				$data->output['notFound']=true;
+				return;
+			}
+			if (($data->output['newsList'][0]['allowComments']=='1')) {
+				$data->output['commentForm']=new formHandler('comment', $data);
+				$data->output['commentForm']->fields['post']['value']=$data->output['newsList'][0]['id'];
 
-                if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->output['commentForm']->fromForm) {
-                    $data->output['commentForm']->populateFromPostData();
-                    if($data->output['commentForm']->validateFromPost()) {
-                        $statement=$db->prepare('makeComment','blogs');
-                        // BBCode Parsing
-                        if($data->settings['useBBCode']=='1') {
-                            if(!isset($data->plugins['bbcode'])) {
-                                common_loadPlugin($data,'bbcode');
-                            }
-                            $data->output['commentForm']->sendArray[':parsedContent']=$data->plugins['bbcode']->parse($data->output['commentForm']->sendArray[':rawContent']);
-                        } else {
-                            $data->output['commentForm']->sendArray[':parsedContent']=htmlspecialchars($data->output['commentForm']->sendArray[':rawContent']);
-                        }
-                        // Remove subscriptions; not stored in our database
-                        unset($data->output['commentForm']->sendArray[':subscription']);
-                        $statement->execute($data->output['commentForm']->sendArray);
-                        unset($data->output['commentForm']);
-                        $data->output['commentSuccess']=true;
-                    }
-                }
-            }
-        }
+				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->output['commentForm']->fromForm) {
+					$data->output['commentForm']->populateFromPostData();
+					if ($data->output['commentForm']->validateFromPost()) {
+						$statement=$db->prepare('makeComment', 'blogs');
+						// BBCode Parsing
+						if ($data->settings['useBBCode']=='1') {
+							if (!isset($data->plugins['bbcode'])) {
+								common_loadPlugin($data, 'bbcode');
+							}
+							$data->output['commentForm']->sendArray[':parsedContent']=$data->plugins['bbcode']->parse($data->output['commentForm']->sendArray[':rawContent']);
+						} else {
+							$data->output['commentForm']->sendArray[':parsedContent']=htmlspecialchars($data->output['commentForm']->sendArray[':rawContent']);
+						}
+						// Remove subscriptions; not stored in our database
+						unset($data->output['commentForm']->sendArray[':subscription']);
+						$statement->execute($data->output['commentForm']->sendArray);
+						unset($data->output['commentForm']);
+						$data->output['commentSuccess']=true;
+					}
+				}
+			}
+		}
 
-        // Call The Theme Functions And Generate The Posts
-        foreach($data->output['newsList'] as &$item) {
-            $statement=$db->prepare('getApprovedCommentsByPost','blogs');
-            $statement->execute(array('post' => $item['id']));
-            $item['comments']=$statement->fetchAll();
-            $item['commentCount']=count($item['comments']);
-            // Get A Count Of All Comments Awaiting Approval
-            $statement=$db->prepare('getCommentsAwaitingApproval','blogs');
-            $statement->execute(array('post' => $item['id']));
-            $result=$statement->fetch();
-            $item['commentsWaiting']=intval($result[0]);
-        }
+		// Call The Theme Functions And Generate The Posts
+		foreach ($data->output['newsList'] as &$item) {
+			$statement=$db->prepare('getApprovedCommentsByPost', 'blogs');
+			$statement->execute(array('post' => $item['id']));
+			$item['comments']=$statement->fetchAll();
+			$item['commentCount']=count($item['comments']);
+			// Get A Count Of All Comments Awaiting Approval
+			$statement=$db->prepare('getCommentsAwaitingApproval', 'blogs');
+			$statement->execute(array('post' => $item['id']));
+			$result=$statement->fetch();
+			$item['commentsWaiting']=intval($result[0]);
+		}
 	}
 }
 function blogs_content($data) {
 	// If RSS Feed Skip All This
-	if($data->pageSettings['httpHeaders'][0]=='Content-Type: application/xml') {
+	if ($data->pageSettings['httpHeaders'][0]=='Content-Type: application/xml') {
 		theme_blogRSSFeed($data);
-        die;
+		die;
 	} else {
     if(is_numeric($data->action[2]) && $data->action[2]>0) {
       $pagination=TRUE;
     } else {
       $pagination=FALSE;
     }
-		blogs_common_pageContent($data,false,$pagination, $data->output['summarize']);
+		blogs_common_pageContent($data, false, $pagination, $data->output['summarize']);
 	}
 }
 ?>

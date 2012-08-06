@@ -100,15 +100,13 @@ function admin_blogsBuild($data,$db) {
 			unset($data->output['blogForm']->fields['name']['cannotEqual']);
 			$newShortName=false;
 		} else {
-			$statement=$db->prepare('getExistingBlogShortNames','admin_blogs');
-			$statement->execute();
-			$blogShortNameList=$statement->fetchAll();
-			foreach($blogShortNameList as $item) {
-				$cannotEqual[]=$item['shortName'];
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'blogs','id',array('shortName'=>$shortName))){
+				$data->output['blogForm']->fields['name']['error']=true;
+	            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog.';
+	            return;
 			}
-			$data->output['blogForm']->fields['name']['cannotEqual']=$cannotEqual;
-			// Apply ShortName Convention To Name For Use In Comparison //
-			$_POST[$data->output['blogForm']->formPrefix.'name']=$shortName;
+			
 			$newShortName=true;
 		}
 		//--Validate All The Form Information--//
@@ -134,7 +132,7 @@ function admin_blogsBuild($data,$db) {
                             $statement->execute(array(
                                 ':match'     => $modifiedShortName,
                                 ':replace'   => 'blogs/'.$shortName.'\1',
-                                ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
+                                ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
                                 ':regex'     => 0
                             ));
                         } else {
@@ -148,7 +146,8 @@ function admin_blogsBuild($data,$db) {
                 $modifiedShortName='^'.$shortName.'(/.*)?$';
                 $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
                 $statement->execute(array(
-                        ':match' => $modifiedShortName
+                        ':match' => $modifiedShortName,
+                        ':hostname' => ''
                     )
                 );
                 $result=$statement->fetch();

@@ -29,12 +29,19 @@ function admin_dynamicURLsBuild($data,$db) {
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
+    // Load Hostnames
+    $statement = $db->prepare('getAllHostnames','admin_hostnames');
+    $statement->execute();
+    $data->output['hostnameList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
     $form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
 		$form->populateFromPostData();
 		if ($form->validateFromPost()) {
+			// Check Hostname
+			if(!isset($form->sendArray[':hostname'])) $form->sendArray[':hostname'] = '';
+			
             if(!$form->sendArray[':regex']) {
                 // Standard
                 $form->sendArray[':match']=str_replace('^','',$form->sendArray[':match']);
@@ -52,7 +59,8 @@ function admin_dynamicURLsBuild($data,$db) {
                 $modifiedMatch=$form->sendArray[':match'];
                 $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
                 $statement->execute(array(
-                        ':match' => $modifiedMatch
+                        ':match' => $modifiedMatch,
+                        ':hostname' => $form->sendArray[':hostname']
                     )
                 );
                 $result=$statement->fetch();
@@ -61,8 +69,9 @@ function admin_dynamicURLsBuild($data,$db) {
                     $statement->execute(array(
                         ':match'     => $modifiedMatch,
                         ':replace'   => $form->sendArray[':replace'],
-                        ':sortOrder' => admin_sortOrder_new($db,'url_remap','sortOrder'),
-                        ':regex'     => 0
+                        ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
+                        ':regex'     => 0,
+                        ':hostname' => $form->sendArray[':hostname']
                     ));
                 } else {
                     $data->output['remapForm']->fields['match']['error']=true;
@@ -70,7 +79,7 @@ function admin_dynamicURLsBuild($data,$db) {
                     return;
                 }
             } else {
-                $form->sendArray[':sortOrder']=admin_sortOrder_new($db,'url_remap','sortOrder');
+                $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'url_remap','sortOrder');
                 $statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
                 $result = $statement->execute($form->sendArray);
                 if($result == FALSE) {

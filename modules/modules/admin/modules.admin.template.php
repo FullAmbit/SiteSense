@@ -83,6 +83,7 @@ function theme_modulesListTableRow($data,$module,$count) {
 		echo '<a href="', $data->linkRoot, 'admin/modules/disable/',$module['shortName'],'">Disable</a>';
 	else
 		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">Enable</a>';
+	echo '<a href="',$data->linkRoot,'admin/modules/languages/',$module['id'],'">Install Language</a>';
 		switch($module['shortName']) {
 			case 'forms':
 				$sidebarsLink = 'admin/dynamic-forms/list/';
@@ -136,5 +137,33 @@ function theme_disabled($data) {
 			Return to the List of Modules
 		</a>
 	</div>';
+}
+
+function theme_modulesLanguages($data){
+	if(isset($data->output['responseMessage'])) echo '<h2>',$data->output['responseMessage'],'</h2>';
+	echo
+	'
+	<form name="updateLanguage" action="" method="post">
+		<caption>Update Languages For <b>',ucwords($data->output['moduleItem']['name']),'</b></caption><br />
+		Language:
+		<select name="updateLanguage">';
+	foreach($data->languageList as $languageItem){
+		echo
+		'	<option value="',$languageItem['shortName'],'">',$languageItem['name'],'</option>';
+	}
+	echo '
+		</select>
+		Phrase Action:
+		<select name="action">
+			<option value="0">Clear Phrases And Start Fresh</option>
+			<option value="1">Only Install Phrases That Don\'t Currently Exist</option>
+			<option value="2">Update Existing Phrases And Install New Ones</option>
+		</select>
+		<input type="submit" name="install" value="Install" />
+	</form>';
+}
+
+function theme_modulesLanguageSuccess($data){
+	echo 'The language has been updated for ',ucwords($data->output['moduleItem']['name']),'.';
 }
 ?>

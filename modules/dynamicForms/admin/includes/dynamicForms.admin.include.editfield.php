@@ -82,6 +82,18 @@ function admin_dynamicFormsBuild($data,$db) {
 			$form->sendArray[':id'] = $field['id'];
 			$statement = $db->prepare('editField','admin_dynamicForms');
 			$statement->execute($form->sendArray) or die(var_dump($statement->errorInfo()));
+			
+			// -- Push The Constant Fields Across Other Languages
+			common_updateAcrossLanguageTables($data,$db,'form_fields',array('id'=>$field['id']),array(
+				'type' => $data->output['fromForm']->sendArray[':type'],
+				'apiFieldToMapTo' => $form->sendArray[':apiFieldToMapTo'],
+				'required' =>  $form->sendArray[':required'],
+				'enabled' =>  $form->sendArray[':enabled'],
+				'isEmail' =>  $form->sendArray[':isEmail'],
+				'compareTo' =>  $form->sendArray[':compareTo'],
+				'moduleHook' =>  $form->sendArray[':moduleHook'],
+			));
+			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Form Field Saved Successfully</h2>

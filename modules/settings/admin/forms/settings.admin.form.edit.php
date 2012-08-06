@@ -53,19 +53,6 @@ $this->fields=array(
 			</p>
 		'
 	),
-	'language' => array(
-		'label' => 'Language',
-		'tag' => 'select',
-		'value' => $data->settings['language'],
-		'options' => array(
-			'en','es','de'
-		),
-		'description' => '
-			<p>
-				<b>Language</b> - Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, <i>and at some point the CMS language strings</i>.
-			</p>
-		'
-	),
 	'defaultTimeZone' => array(
 		'label' => 'Default Time Zone',
 		'tag' => 'select',

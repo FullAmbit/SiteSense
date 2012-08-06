@@ -48,41 +48,13 @@ function admin_dynamicFormsBuild($data,$db){
 	{
 		case 'moveDown':
 		case 'moveUp':
-			$optionArray = unserialize($data->output['fieldItem']['options']);
-			$optionIndex = $data->action[5];
-			// If Option Doesn't Exist, DIP.
-			if(!isset($optionArray[$optionIndex]))
-			{
-				return;
-			}
-			$count = count($optionArray);
-			if($data->action[4] == 'moveUp' && $optionIndex > 0)
-			{
-				$optionArray[$optionIndex]['sortOrder']--;
-				$optionArray[$optionIndex - 1]['sortOrder']++;
-			} else if($data->action[4] =='moveDown' && $optionIndex < ($count-1))
-			{
-				$optionArray[$optionIndex]['sortOrder']++;
-				$optionArray[$optionIndex + 1]['sortOrder']--;
-			}
-			
-			usort($optionArray,'sortCmp');
-			
-			$options = serialize($optionArray);
-			$statement = $db->prepare('updateOptions','admin_dynamicForms');
-			$statement->execute(array(
-				':options' => $options,
-				':fieldId' => $data->action[3]
-			));
+			admin_sortOrder_move($data,$db,'form_fields_options',$data->action[4],$data->action[5],'sortOrder','fieldId',TRUE);
 		break;
 	}
 	// Get Options
 	$statement = $db->prepare('getOptionsByFieldId','admin_dynamicForms');
 	$statement->execute(array(':fieldId' => $data->output['fieldItem']['id']));
-	$optionsSerialized = $statement->fetch();
-	$optionList = unserialize($optionsSerialized[0]);
-		
-	$data->output['optionList'] = $optionList;
+	$data->output['optionList'] = $statement->fetchAll(PDO::FETCH_ASSOC);		
 }
 
 function sortCmp($a,$b)
@@ -109,7 +81,7 @@ function admin_dynamicFormsShow($data){
 	
 	$i = 0;
 	foreach($data->output['optionList'] as $optionIndex => $option){
-		theme_dynamicFormsListOptionsTableRow($data,$option,$optionIndex,$i);
+		theme_dynamicFormsListOptionsTableRow($data,$option,$i);
 		$i++;
 	}
 	theme_dynamicFormsListOptionsTableFoot();

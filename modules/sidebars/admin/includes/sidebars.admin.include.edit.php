@@ -69,25 +69,16 @@ function admin_sidebarsBuild($data,$db) {
 		/**
 		 * Set Up Short Name Check (ONLY if different from currently existing
 		**/
-		$shortName = common_generateShortName($_POST[$data->output['sidebarForm']->formPrefix.'name']);
-		$data->output['sidebarForm']->sendArray[':shortName'] = $shortName;
-		
-		if($shortName == $data->output['sidebarItem']['shortName'])
+		$data->output['sidebarForm']->sendArray[':shortName'] = $shortName = common_generateShortName($data->output['sidebarForm']->sendArray[':name']);
+		unset($data->output['sidebarForm']->fields['name']['cannotEqual']);
+		if($shortName !== $data->output['sidebarItem']['shortName'])
 		{
-			unset($data->output['sidebarForm']->fields['name']['cannotEqual']);
-		} else {
-			// Since we're comparing the name field against shortName, set the name value equal to the new shortName for comparison
-			$_POST[$data->output['sidebarForm']->formPrefix.'name'] = $shortName;
-			// Load All Existing Sidebar ShortNames For Comparison
-			$statement = $db->prepare('getExistingShortNames','admin_sidebars');
-			$statement->execute();
-			$sidebarList = $statement->fetchAll();
-			$existingShortNames = array();
-			foreach($sidebarList as $sidebarItem)
-			{
-				$existingShortNames[] = $sidebarItem['shortName'];
+			// Check To See If ShortName Exists Anywhere (Across Any Language)
+			if(common_checkUniqueValueAcrossLanguages($data,$db,'sidebars','id',array('shortName'=>$shortName))){
+				$data->output['sidebarForm']->fields['name']['error']=true;
+	            $data->output['sidebarForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a sidebar.';
+	            return;
 			}
-			$data->output['sidebarForm']->fields['name']['cannotEqual'] = $existingShortNames;
 		}
 		
 		if ($data->output['sidebarForm']->validateFromPost()) {
@@ -119,6 +110,11 @@ function admin_sidebarsBuild($data,$db) {
 						Return to Page List
 					</a>
 				</div>';
+			// -- Push The Constant Fields Across Other Languages
+			common_updateAcrossLanguageTables($data,$db,'sidebars',array('id'=>$data->action[3]),array(
+				'side' => $data->output['sidebarForm']->sendArray[':side']
+			));
+				
 		} else {
 			$data->output['secondSidebar']='
 				<h2>Error in Data</h2>
