@@ -424,7 +424,7 @@ function common_addQueries() {
         'findReplacement' => '
             SELECT r.match,r.replace FROM !prefix!url_remap r
             WHERE :url RLIKE r.match AND (hostname = :hostname OR hostname = "")
-            ORDER BY hostname DESC
+            ORDER BY hostname, sortOrder DESC
         ',
         'getCoreAndModulePhrases' => '
 			SELECT
