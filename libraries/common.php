@@ -355,7 +355,7 @@ function getUserPermissions($db,&$user){
 			// If Existing Permission Is Allow...Only Override If The New One Is Not A Neutral
 			$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
 		}		
-	}	
+	}
 }
 
 function parsePermissionName($permission){
