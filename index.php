@@ -591,7 +591,7 @@ final class sitesense {
 
 		// Load The Phrases From The Database
 		$moduleShortName = ($this->currentPage == 'admin') ? $this->action[1] : $this->currentPage;
-		$statement = $this->db->prepare('getCoreAndModulePhrases', 'common', 'languages_phrases_'.$this->language);
+		$statement = $this->db->prepare('getCoreAndModulePhrases', 'common', array('!table!' => 'languages_phrases_'.$this->language));
 		$statement->execute(array(
 				':module' => $moduleShortName
 			));

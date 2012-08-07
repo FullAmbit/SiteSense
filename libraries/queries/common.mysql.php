@@ -430,7 +430,7 @@ function common_addQueries() {
 			SELECT
 				IF(module="","core",module) AS module,phrase,text
 			FROM
-				!table!
+				!prefix!!table!
 			WHERE
 				module = :module
 				OR 
