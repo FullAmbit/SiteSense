@@ -591,11 +591,20 @@ final class sitesense {
 
 		// Load The Phrases From The Database
 		$moduleShortName = ($this->currentPage == 'admin') ? $this->action[1] : $this->currentPage;
-		$statement = $this->db->prepare('getCoreAndModulePhrases', 'common', array('!table!' => 'languages_phrases_'.$this->language));
+		$statement = $this->db->prepare('getPhrasesByModule','common');
 		$statement->execute(array(
-				':module' => $moduleShortName
-			));
-		$this->phrases = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+			':module' => ''
+		));
+		while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+			$this->phrases['core'][$row['phrase']] = $row['text'];
+		}
+		
+		$statement->execute(array(
+			':module' => $moduleShortName
+		));
+		while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+			$this->phrases[$moduleShortName][$row['phrase']] = $row['text'];
+		}
 
 		// Run Modular StartUp Files
 		$moduleQuery = $this->db->query('getEnabledModules');

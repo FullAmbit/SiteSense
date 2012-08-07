@@ -22,13 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function theme_welcomeMessage($notification) {
+function theme_welcomeMessage($data,$notification) {
 	echo '
 		<div class="aboutBox">
 			',$notification,'
-			<h2>Welcome to the Control Panel for your CMS installation</h2>
+			<h2>',$data->phrases['dashboard']['welcomeMessageHeading'],'</h2>
 			<p>
-				Please choose from the options on the left to manage your settings.
+				',$data->phrases['dashboard']['welcomeMessage'],'
 			</p>
 		<!-- .aboutBox --></div>
 		';

@@ -119,6 +119,6 @@ function dashboard_admin_content($data) {
 		break;
 	}
 	
-	theme_welcomeMessage($notification);
+	theme_welcomeMessage($data,$notification);
 }
 ?>

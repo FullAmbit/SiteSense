@@ -438,6 +438,14 @@ function common_addQueries() {
 			GROUP BY
 				module
 		',
+		'getPhrasesByModule' => '
+			SELECT
+				phrase,text
+			FROM 
+				!prefix!languages_phrases!lang!
+			WHERE
+				module = :module
+		',
 		'getAllLanguages' => '
 			SELECT 
 				shortName,name 
