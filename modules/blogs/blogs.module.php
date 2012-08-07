@@ -241,11 +241,11 @@ function blogs_content($data) {
 		theme_blogRSSFeed($data);
 		die;
 	} else {
-    if(is_numeric($data->action[2]) && $data->action[2]>0) {
-      $pagination=TRUE;
-    } else {
-      $pagination=FALSE;
-    }
+		if($data->output['blogInfo']['numberOfPosts'] > $data->output['blogInfo']['numberPerPage']){
+			$pagination = true;
+		}else{
+			$pagination = false;
+		}
 		blogs_common_pageContent($data, false, $pagination, $data->output['summarize']);
 	}
 }
