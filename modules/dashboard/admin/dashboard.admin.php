@@ -81,7 +81,8 @@ function dashboard_admin_buildContent($data,$db) {
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 	$data->output['result'] = curl_exec($ch);
-	$data->output['result'] = explode('|',$data->output['result']);
+	$data->output['result'] = json_decode($data->output['result'],TRUE);
+			
 	/* 
 	 *
 	 * 0 = Attribution
@@ -91,13 +92,15 @@ function dashboard_admin_buildContent($data,$db) {
 	$statement = $db->prepare('updateSettings','admin_settings');
 	$statement->execute(array(
 		':name' => 'removeAttribution',
-		':value' => $data->output['result'][0]
+		':value' => $data->output['result']['removeAttribution']
 	));
+	// Push Across All Languages...
+	common_updateAcrossLanguageTables($data,$db,'settings',array('name'=>'removeAttribution'),array('value'=>$data->output['result']['removeAttribution']));
 	
 }
 function dashboard_admin_content($data) {
 	// Check Version
-	switch($data->output['result'][1])
+	switch($data->output['result']['version'])
 	{
 		// Unknown Version
 		case '1':

@@ -160,10 +160,14 @@ function settings_admin_buildContent($data,$db) {
 						);
 				}
 			} else {
-				$data->output['settingsForm']->fields['parsedFooterContent']['newValue']=
-				htmlspecialchars(
-					$data->output['settingsForm']->fields['rawFooterContent']
-				);
+				if(!empty(
+					$data->output['settingsForm']->fields['rawFooterContent']['updated']
+				)) {
+					$data->output['settingsForm']->fields['parsedFooterContent']['newValue']=
+					htmlspecialchars(
+						$data->output['settingsForm']->fields['rawFooterContent']['updated']
+					);
+				}
 			}
 			if(isset($data->output['settingsForm']->fields['parsedFooterContent']['newValue']))
 				$data->output['settingsForm']->fields['parsedFooterContent']['updated']='newValue';
