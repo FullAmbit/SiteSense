@@ -82,7 +82,7 @@ function dashboard_admin_buildContent($data,$db) {
 
 	$data->output['result'] = curl_exec($ch);
 	$data->output['result'] = json_decode($data->output['result'],TRUE);
-			
+
 	/* 
 	 *
 	 * 0 = Attribution
