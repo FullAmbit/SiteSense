@@ -232,8 +232,6 @@ if (
     }
     // Set up default permission groups
     $defaultPermissionGroups=array(
-      // Admin has universal access by defaul, this list is commented just for reference on full list
-		'Administrators' => array(),
 		'Writer' => array(
 			'core_access',
 			'dashboard_access',
@@ -269,15 +267,6 @@ if (
 		'User' => array()
 	);
     foreach($defaultPermissionGroups as $groupName => $permissions) {
-        $statement=$data->prepare('addUserToPermissionGroupNoExpires');
-        if($groupName=='Administrators') {
-            $statement->execute(
-                array(
-                    ':userID'    => '1',
-                    ':groupName' => $groupName
-                )
-            );
-        }
         foreach($permissions as $permissionName) {
             $statement=$data->prepare('addPermissionByGroupName');
             $statement->execute(

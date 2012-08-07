@@ -303,13 +303,14 @@ function getUserPermissions(&$db,&$user) {
 
 function getUserPermissions($db,&$user){
 	if(isset($user['permissions'])) return false;
-	// Finds out if user is Admin with universal access
-    $statement=$db->prepare('isUserAdmin');
-    $statement->execute(array(
-        ':userID' => $user['id']
-    ));
-    $userAdmin=$statement->fetchAll(PDO::FETCH_ASSOC); // Contains isAdmin results
-	if(isset($userAdmin[0])) $user['isAdmin']=1;
+	
+	// Finds out if user is SuperAdmin with universal access
+	$superAdmins = array(1);
+	$user['isSuperAdmin'] = FALSE;
+	if(in_array($user['id'],$superAdmins)){
+		$user['isSuperAdmin']=TRUE;
+		return;
+	}
 	
 	$user['permissions']=array();
 	
@@ -368,7 +369,7 @@ function parsePermissionName($permission){
 function checkPermission($permission,$module,$data) {
     $hasPermission = false;
 	// User is Admin, which is universal access, Return true
-    if(isset($data->user['isAdmin']) && $data->user['isAdmin']==1) {
+    if(isset($data->user['isSuperAdmin']) && $data->user['isSuperAdmin']===TRUE) {
         $hasPermission = true;
     } else {
         if(isset($data->user['permissions'][$module][$permission]) && $data->user['permissions'][$module][$permission] == '1') {

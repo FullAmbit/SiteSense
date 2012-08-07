@@ -97,7 +97,6 @@ function admin_usersBuild($data,$db) {
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
     $data->output['groupList']=$statement->fetchAll();
-    $data->output['groupList'][]['groupName']='Administrators';
     sort($data->output['groupList']);
 
     // Load all groups by userID
