@@ -14,7 +14,11 @@ function languages_core_en_us(){
 		'name'					=> "Name",
 		"controls"				=> "Controls",
 		"messageRedirect" => "You should be auto redirected to the page list in three seconds.",
-		"linkSkipWait" => "Click here if you do not wish to wait"
+		"linkSkipWait" => "Click here if you do not wish to wait",
+		"sidebars" => "Sidebars",
+		"status"   => "Status",
+		'enable' => "Enable",
+		"disable" => "Disable"
 	);
 	
 	return array(
