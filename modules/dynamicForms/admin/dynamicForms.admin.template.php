@@ -24,26 +24,27 @@
 */
 function theme_dynamicFormsDeleteReject($data,$aRoot) {
 	echo '
-		<h2>',$data->output['rejectText'],'</h2>
+		<h2>',$data->phrases['dynamicForms']['deleteFormRejectHeading'],'</h2>
+		',$data->phrases['dynamicForms']['deleteFormRejectMesssage'],'
 		<div class="buttonList">
-			<a href="'.$aRoot.'" title="Return To Forms">Return to Forms</a>
+			<a href="'.$aRoot.'" title="Return To Forms">',$data->phrases['dynamicForms']['returnToForms'],'</a>
 		</div>';
 }
 
 function theme_dynamicFormsDeleteCancelled($aRoot) {
 	echo '
-		<h2>Deletion Cancelled</h2>
+		<h2>',$data->phrases['dynamicForms']['deleteFormCancelledHeading'],'</h2>
 		<p>
-			You should be auto redirected to the forms list in three seconds.
-			<a href="',$aRoot,'list">Click Here if you do not wish to wait.</a>
+			',$data->phrases['core']['messageRedirect'],'
+			<a href="',$aRoot,'list">',$data->phrases['core']['linkSkipWait'],'</a>
 		</p>';
 }
 
 function theme_dynamicFormsDeleteDeleted($aRoot) {
-	echo '
-		This form and all data associated with it has been deleted.
+	echo $data->phrases['dynamicForms']['deleteFormSuccessMessage'],'
+		
 		<div class="buttonList">
-			<a href="'.$aRoot.'" title="Return To Forms">Return to Forms.</a>
+			<a href="'.$aRoot.'" title="Return To Forms">',$data->phrases['dynamicForms']['returnToForms'],'</a>
 		</div>';
 }
 
@@ -51,16 +52,17 @@ function theme_dynamicFormsDeleteDefault($data,$aRoot) {
 	echo '
 		<form action="'.$aRoot.'delete/'.$data->action[3].'" method="post" class="verifyForm">
 			<fieldset>
-				<legend>Are you sure you want to delete this form?</legend>
+				<legend>'.$data->phrases['dynamicForms']['deleteFormConfirmHeading'].'</legend>
 			</fieldset>
-			<input type="submit" name="delete" value="Yes, Delete it" />
-			<input type="submit" name="cancel" value="Cancel" />
+			<input type="submit" name="delete" value="'.$data->phrases['core']['actionConfirmDelete'].'" />
+			<input type="submit" name="cancel" value="'.$data->phrases['core']['actionCancelDelete'].' />
 			<input type="hidden" name="fromForm" value="'.$data->action[3].'" />
 		</form>';
 }
 
 function theme_dynamicFormsDeleteFieldCancelled($data,$aRoot) {
-	echo 'This field has been deleted. <div class="buttonList"><a href="'.$aRoot.'listFields/'.$data->output['formItem']['id'].'" title="Return To Field List">Return to field list.</a></div>';
+	echo 'This field has been deleted.
+		<div class="buttonList"><a href="'.$aRoot.'listFields/'.$data->output['formItem']['id'].'" title="Return To Field List">Return to field list.</a></div>';
 }
 
 function theme_dynamicFormsDeleteFieldDeleted($aRoot) {
