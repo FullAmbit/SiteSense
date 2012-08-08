@@ -164,11 +164,9 @@ function settings_admin_buildContent($data,$db) {
 					$data->output['settingsForm']->fields['rawFooterContent']['updated']
 				)) {
 					$data->output['settingsForm']->fields['parsedFooterContent']['newValue']=
-					htmlspecialchars(
 						$data->output['settingsForm']->fields['rawFooterContent'][
 							$data->output['settingsForm']->fields['rawFooterContent']['updated']
 						]
-					);
 				}
 			}
 			if(isset($data->output['settingsForm']->fields['parsedFooterContent']['newValue']))
