@@ -49,9 +49,9 @@ function admin_List($db, $Parent = 0, $Level = 0){ // Using a function is necess
 function admin_pagesShow($data) {
 	theme_pagesListHead($data);
 	if (empty($data->output['pagesList'])) {
-		theme_pagesListNoPages();
+		theme_pagesListNoPages($data);
 	} else {
-		theme_pagesListTableHead();
+		theme_pagesListTableHead($data);
 		$lastParent=-999;
 		foreach ($data->output['pagesList'] as $item) {
 			theme_pagesListTableRow($data,$item);

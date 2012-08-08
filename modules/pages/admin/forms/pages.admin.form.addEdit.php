@@ -23,12 +23,12 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 $this->formPrefix='pageEdit_';
-$this->caption='Create New Static Page';
-$this->submitTitle='Save Changes';
+$this->caption=$data->phrases['pages']['captionAddPage'];
+$this->submitTitle=$data->phrases['pages']['submitAddEditForm'];
 $this->fromForm='pagesEdit';
 $this->fields=array(
 	'name' => array(
-		'label' => 'Page Name',
+		'label' => $data->phrases['pages']['labelAddEditName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -38,13 +38,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Page Name</b> - Must be unique. Used for the URL.
+				<b>'.$data->phrases['pages']['labelAddEditName'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditName'].'
 			</p>
 		',
 		'cannotEqual' => ''
 	),
 	'title' => array(
-		'label' => 'Page Title',
+		'label' => $data->phrases['pages']['labelAddEditTitle'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -54,7 +55,8 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Page Title</b> - Used as the content of the heading tag for this text.
+				<b>'.$data->phrases['pages']['labelAddEditTitle'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditTitle'].'
 			</p>
 		'
 	),
@@ -76,7 +78,7 @@ $this->fields=array(
 	),
 */
 	'parent' => array(
-		'label' => 'Parent Page',
+		'label' => $data->phrases['pages']['labelAddEditParent'],
 		'tag' => 'select',
 		'value' => 0,
 		'options' => array(
@@ -95,12 +97,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Parent Page</b> - If sidebar navigation is enabled this sub-page will appear in a separate menu off the parent. If you choose to enable "show on parent" the sub-page will appear as a second contentBox and H2 below the parent. The order child pages are shown can be controlled from the \'list\' page.
+				<b>'.$data->phrases['pages']['labelAddEditParent'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditParent'].'
 			</p>
 		'
 	),
 	'showOnMenu' => array(
-		'label' => 'Create Main Menu Link',
+		'label' => $data->phrases['pages']['labelAddEditShowOnMenu'],
 		'tag' => 'input',
 		'hideChild' => 'menuTitle',
 		'params' => array(
@@ -108,12 +111,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Show on Menu</b> - Adds this static page to the main menu
+				<b>'.$data->phrases['pages']['labelAddEditShowOnMenu'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditShowOnMenu'].'
 			</p>
 		'
 	),
 	'menuParent' => array(
-		'label' => "Parent Menu Item",
+		'label' => $data->phrases['pages']['labelAddEditMenuParent'],
 		'tag' => "select",
 		'options' => array(
 			array(
@@ -123,7 +127,7 @@ $this->fields=array(
 		)
 	),
 	'menuText' => array(
-		'label' => 'Menu Link Text',
+		'label' => $data->phrases['pages']['labelAddEditMenuText'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
@@ -132,12 +136,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Menu Title</b> - if this element is to be shown on the menu, this is the text that will be shown inside it\'s anchor.
+				<b>'.$data->phrases['pages']['labelAddEditMenuText'].'</b> <br />
+				'.$data->phrases['pages']['descriptionAddEditMenuText'].'
 			</p>
 		'
 	),
 	'rawContent' => array(
-		'label' => 'Page Content',
+		'label' => $data->phrases['pages']['labelAddEditRawContent'],
 		'tag' => 'textarea',
 		'required' => true,
 		'value' => '',
@@ -148,13 +153,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Page Content</b> - The actual text that will go inside the automatically generated \'contentBox\'. HTML is allowed in here, though any sub-headings you wish to use should start at H3, since \'Page Title\' is used as the h2.
+				<b>'.$data->phrases['pages']['labelAddEditRawContent'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditRawContent'].'
 			</p>
 		',
 		'addEditor' => $data->jsEditor->addEditor($this->formPrefix.'rawContent')
 	),
 	'live' => array(
-		'label' => 'Live',
+		'label' => $data->phrases['pages']['labelAddEditLive'],
 		'tag' => 'input',
 		'checked' => '',
 		'params' => array(
@@ -162,7 +168,8 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Live</b> - By default new blog entries are \'hidden\' from normal users until you check this box or enable them on the blog post list.
+				<b>'.$data->phrases['pages']['labelAddEditLive'].'</b><br />
+				'.$data->phrases['pages']['descriptionAddEditLive'].'
 			</p>
 		'
 	)

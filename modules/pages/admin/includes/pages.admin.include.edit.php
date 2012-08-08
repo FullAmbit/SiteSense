@@ -72,7 +72,7 @@ function admin_pagesBuild($data,$db) {
 	}
 	
 	$data->output['pageForm']= $form = new formHandler('addEdit',$data,true);
-		$data->output['pageForm']->caption='Editing Page "'.$data->output['pageItem']['title'].'"';
+		$data->output['pageForm']->caption=$data->phrases['pages']['captionEditPage'].' '.$data->output['pageItem']['title'];
 
 	$data->output['pageForm']->fields['parent']['options'] = admin_pageOptions($db);
 	// Unset Main Menu Options

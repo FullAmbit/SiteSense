@@ -60,24 +60,24 @@ function theme_pagesListHead($data) {
 	echo '
 		<div class="panel buttonList">
 			<a href="',$data->linkRoot,'admin/pages/add/">
-				Add New Page
+				',$data->phrases['pages']['addNewPage'],'
 			</a>
 		</div>';
 }
 
-function theme_pagesListNoPages() {
+function theme_pagesListNoPages($data) {
 	echo '
-		<p class="pageListNoPages">No pages exist</p>';
+		<p class="pageListNoPages">',$data->phrases['pages']['noPagesExist'],'</p>';
 }
 
-function theme_pagesListTableHead() {
+function theme_pagesListTableHead($data) {
 	echo '
 		<table class="pagesList">
-			<caption>Manage Pages</caption>
+			<caption>',$data->phrases['pages']['managePagesHeading'],'</caption>
 			<thead>
 				<tr>
-					<th class="name">Name</th>
-					<th class="controls">Controls</th>
+					<th class="name">',$data->phrases['core']['name'],'</th>
+					<th class="controls">',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead><tbody>';
 }
@@ -91,9 +91,9 @@ function theme_pagesListTableRow($data,$item) {
           <td class="buttonList">
             <a href="',$data->linkRoot,'admin/pages/list/moveUp/',$item['id'],'" title="Move Up">&uArr;</a>
             <a href="',$data->linkRoot,'admin/pages/list/moveDown/',$item['id'],'" title="Move Down">&dArr;</a>
-            <a href="',$data->linkRoot,'admin/pages/sidebars/',$item['id'],'">Sidebars</a>
-            <a href="',$data->linkRoot,'admin/pages/add/childOf/',$item['id'],'">Add Child</a>
-            <a href="',$data->linkRoot,'admin/pages/delete/',$item['id'],'">Delete</a>
+            <a href="',$data->linkRoot,'admin/pages/sidebars/',$item['id'],'">',$data->phrases['core']['sidebars'],'</a>
+            <a href="',$data->linkRoot,'admin/pages/add/childOf/',$item['id'],'">',$data->phrases['pages']['addChild'],'</a>
+            <a href="',$data->linkRoot,'admin/pages/delete/',$item['id'],'">',$data->phrases['core']['actionDelete'],'</a>
           </td>
         </tr>';
 }
@@ -108,7 +108,7 @@ function theme_pagesListFoot($data) {
 	echo '
 		<div class="panel buttonList">
 			<a href="',$data->linkRoot,'admin/pages/add/">
-				Add New Page
+				',$data->phrases['pages']['addNewPage'],'
 			</a>
 		</div>';
 }
@@ -116,12 +116,12 @@ function theme_pagesListFoot($data) {
 function theme_sidebarsTableHead($data) {
 	echo '
 		<table class="sidebarList">
-			<caption>Manage Sidebars on the "',$data->output['pageItem']['title'],'" Page</caption>
+			<caption>',$data->phrases['pages']['manageSidebarsHeading'],'</caption>
 			<thead>
 				<tr>
-					<th class="name">Name</th>
-					<th>Status</th>
-					<th>Controls</th>
+					<th class="name">',$data->phrases['core']['name'],'</th>
+					<th>',$data->phrases['core']['status'],'</th>
+					<th>',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead><tbody>';
 }
@@ -130,10 +130,10 @@ function theme_sidebarsTableList($data,$sidebar,$count,$action) {
 	echo '
 		<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 			<td class="name">',$sidebar['name'],'</td>
-			<td>', ($sidebar['enabled'] ? 'Yes' : 'No'), '</td>
+			<td>', ($sidebar['enabled'] ? $data->phrases['core']['yes'] : $data->phrases['core']['no']), '</td>
 			<td class="buttonList">
 				<a href="', $data->linkRoot, 'admin/pages/sidebars/', $data->output['pageItem']['id'], '/', $action, '/', $sidebar['id'], '">
-					', ucfirst($action), '
+					', ($action=='enable') ? $data->phrases['core']['enable'] : $data->phrases['core']['disable'], '
 				</a>
 				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveUp/',$sidebar['id'],'" title="Move Up">&uArr;</a>
 				<a href="',$data->linkRoot,'admin/pages/sidebars/',$data->output['pageItem']['id'],'/moveDown/',$sidebar['id'],'" title="Move Down">&dArr;</a>
