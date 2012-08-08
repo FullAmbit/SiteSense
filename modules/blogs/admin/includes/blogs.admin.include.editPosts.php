@@ -66,22 +66,26 @@ function admin_blogsBuild($data,$db) {
 		$statement->execute(array(
 			'id' => $data->action[4]
 		));
-		if($data->output['blogItem']=$item=$statement->fetch()) {
-			// Load Form
-			$data->output['blogForm']=new formHandler('editPosts',$data,true);
-			$data->output['blogForm']->caption=$data->phrases['blogs']['captionEditPost'];
-			//--Fill Up Fields--
-			foreach($data->output['blogForm']->fields as $key => $value) {
-				if(
-					(!empty($value['params']['type'])) &&
-					($value['params']['type']=='checkbox')
-				) {
-					$data->output['blogForm']->fields[$key]['checked']=(
-						$item[$key] ? 'checked' : ''
-					);
-				} else {
-					$data->output['blogForm']->fields[$key]['value']=html_entity_decode($item[$key]);
-				}
+		if(($data->output['blogItem']=$statement->fetch())==FALSE){
+			$data->output['abort']=true;
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
+			return;
+		}
+		$item = $data->output['blogItem'];
+		// Load Form
+		$data->output['blogForm']=new formHandler('editPosts',$data,true);
+		$data->output['blogForm']->caption=$data->phrases['blogs']['captionEditPost'];
+		//--Fill Up Fields--
+		foreach($data->output['blogForm']->fields as $key => $value) {
+			if(
+				(!empty($value['params']['type'])) &&
+				($value['params']['type']=='checkbox')
+			) {
+				$data->output['blogForm']->fields[$key]['checked']=(
+					$item[$key] ? 'checked' : ''
+				);
+			} else {
+				$data->output['blogForm']->fields[$key]['value']=html_entity_decode($item[$key]);
 			}
 		}
 	} else {
