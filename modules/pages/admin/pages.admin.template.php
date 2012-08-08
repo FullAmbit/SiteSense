@@ -24,12 +24,12 @@
 */
 function theme_pagesDeleteDeteled($data) {
 	echo '
-		<h2>Entry #',$data->action[3],' Deleted</h2>
+		<h2>',$data->phrases['pages']['pageDeleteSuccessHeading'],'</h2>
 		<p>
-			This action deleted a total of ',$data->output['deleteCount'],' pages!
+			',$data->phrases['pages']['pageDeleteSuccessMessage'],': ',$data->output['deleteCount'],'
 		</p>
 		<div class="buttonList">
-			<a href="',$data->linkRoot,'admin/pages/list">Return to List</a>
+			<a href="',$data->linkRoot,'admin/pages/list">',$data->phrases['pages']['returnToPages'],'</a>
 		</div>
 		';
 }
@@ -38,8 +38,8 @@ function theme_pagesDeleteCancelled($data) {
 	echo '
 		<h2>Deletion Cancelled</h2>
 		<p>
-			You should be auto redirected to the page list in three seconds.
-			<a href="',$data->linkRoot,'admin/pages/list">Click Here if you don not wish to wait.</a>
+			',$data->phrases['core']['messageRedirect'],'
+			<a href="',$data->linkRoot,'admin/pages/list">',$data->phrases['core']['linkSkipWait'],'</a>
 		</p>';
 }
 
@@ -47,10 +47,10 @@ function theme_pagesDeleteDefault($data) {
 	echo '
 		<form action="',$data->linkRoot,'admin/pages/delete/',$data->action[3],'" method="post" class="verifyForm">
 			<fieldset>
-				<legend><span>Are you sure you want to delete entry #',$data->action[3],'?</span></legend>
-				<p class="warning">*** WARNING *** This will also delete any child pages</p>
-				<input type="submit" name="delete" value="Yes, Delete it" />
-				<input type="submit" name="cancel" value="Cancel" />
+				<legend><span>',$data->phrases['pages']['pageDeleteConfirmHeading'],'</span></legend>
+				<p class="warning">',$data->phrases['pages']['pageDeleteConfirmMessage'],'</p>
+				<input type="submit" name="delete" value="',$data->phrases['core']['actionConfirmDelete'],'" />
+				<input type="submit" name="cancel" value="',$data->phrases['core']['actionCancelDelete'],'" />
 				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
