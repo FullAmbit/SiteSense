@@ -4,7 +4,7 @@ function languages_blogs_en_us(){
 		"returnToBlogs"                       => "Return To Blogs",
 		"returnToPosts"                       => "Return To Posts",
 		"returnToCategories"                  => "Return To Categories",
-		"returnToComments" => "Return To Comments",
+		"returnToComments"                    => "Return To Comments",
 		"categories"                          => "Categories",
 		"deleteBlogSuccessHeading"            => "Blog Deleted",
 		"deleteBlogCancelledHeading"          => "Blog Deletion Cancelled",
@@ -53,7 +53,7 @@ function languages_blogs_en_us(){
 		"labelCommentItemAuthorFirstName"     => "First Name",
 		"labelCommentItemAuthorLastName"      => "Last Name",
 		"labelCommentItemEmail"               => "Email",
-		"labelCommentItemRawContent"          => "Raw Content",
+		"labelCommentItemRawContent"          => "Content",
 		"submitCommentItemForm"               => "Save Comment",
 		"submitEditForm"                      => "Save Blog",
 		"captionAddBlog"                      => "Create New Blog",
@@ -98,12 +98,12 @@ function languages_blogs_en_us(){
 		"descriptionEditPostsRawContent"      => "Pretty self explanatory; The content of the post you are writing/editing.",
 		"labelEditPostsAllowComments"         => "Allow Comments",
 		"labelEditPostsLive"                  => "Live",
-		"savePostSuccessHeading" => "Success!",
-		"savePostSuccessMessage" => "Your post was saved to the database.",
-		"captionEditPost" => "Edit Post",
-		"approveCommentSuccessHeading" => "Comment Approved",
-		"disapproveCommentSuccessHeading" => "Comment Disapproved",
-		"saveCommentSuccessHeading" => "Comment Saved"
+		"savePostSuccessHeading"              => "Success!",
+		"savePostSuccessMessage"              => "Your post was saved to the database.",
+		"captionEditPost"                     => "Edit Post",
+		"approveCommentSuccessHeading"        => "Comment Approved",
+		"disapproveCommentSuccessHeading"     => "Comment Disapproved",
+		"saveCommentSuccessHeading"           => "Comment Saved"
 	);
 }
 
