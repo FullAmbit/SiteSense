@@ -28,12 +28,12 @@ if(!isset($data->output['blogItem'])) {
 	$checked='';
 }
 $this->formPrefix='blogEdit_';
-$this->caption='Create New Blog Post For '.$data->output['parentBlog']['name'];
-$this->submitTitle='Save Changes';
+$this->caption=$data->phrases['blogs']['captionAddPost'];
+$this->submitTitle=$data->phrases['blogs']['submitEditPostsForm'];
 $this->fromForm='blogEdit';
 $this->fields=array(
 	'name' => array(
-		'label' => 'Post Name',
+		'label' => $data->phrases['blogs']['labelEditPostsName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -43,12 +43,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Post Name</b> -  Used to generate the URL. Must be unique!
+				<b>'.$data->phrases['blogs']['labelEditPostsName'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditPostsName'].'
 			</p>
 		'
 	),
 	'title' => array(
-		'label' => 'Post title',
+		'label' => $data->phrases['blogs']['labelEditPostsTitle'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -58,12 +59,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Post title</b> -  Shown as the Heading for this post and in the TITLE attribute on the page.
+				<b>'.$data->phrases['blogs']['labelEditPostsTitle'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditPostsTitle'].'
 			</p>
 		'
 	),
 	'tags' => array(
-		'label' => 'Tags',
+		'label' => $data->phrases['blogs']['labelEditPostsTags'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => '',
@@ -72,22 +74,23 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<bTags</b> - Assign tags to the post. Seperate each tag with a comma, no spaces.
+				<b>'.$data->phrases['blogs']['labelEditPostsTags'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditPostsTag'].'
 			</p>
 		'
 	),
 	'categoryId' => array(
-		'label' => 'Categories',
+		'label' => $data->phrases['blogs']['labelEditPostsCategoryId'],
 		'tag' => 'select',
 		'options' => array(
 			array(
 				'value' => '0',
-				'text' => 'No Category'
+				'text' => $data->phrases['blogs']['optionEditPostsCategoryIdNoCategory']
 			)
 		)
 	),
 	'rawSummary' => array(
-		'label' => 'Summary',
+		'label' => $data->phrases['blogs']['labelEditPostsRawSummary'],
 		'tag' => 'textarea',
 		'required' => true,
 		'value' => isset($data->output['rawSummary']) ? $data->output['rawSummary'] : '',
@@ -98,13 +101,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>???
-				<b>Summary</b> - What will the user see when viewing the list of posts?
+				<b>'.$data->phrases['blogs']['labelEditPostsRawSummary'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditPostsRawSummary'].'
 			</p>
 		',
 		'addEditor' => $data->jsEditor->addEditor($this->formPrefix.'rawSummary')
 	),
 	'rawContent' => array(
-		'label' => 'Content',
+		'label' => $data->phrases['blogs']['labelEditPostsRawContent'],
 		'tag' => 'textarea',
 		'required' => true,
 		'value' => isset($data->output['rawContent']) ? $data->output['rawContent'] : '',
@@ -115,13 +119,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>???
-				<b>Content</b> - Pretty self explanatory; The content of the post you are writing/editing.
+				<b>'.$data->phrases['blogs']['labelEditPostsRawContent'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditPostsRawContent'].'
 			</p>
 		',
 		'addEditor' => $data->jsEditor->addEditor($this->formPrefix.'rawContent')
 	),
 	'allowComments' => array(
-		'label' => 'Allow Comments',
+		'label' => $data->phrases['blogs']['labelEditPostsAllowComments'],
 		'tag' => 'input',
 		'value' => '1',
 		'checked' => $checked,
@@ -130,17 +135,12 @@ $this->fields=array(
 		)
 	),
 	'live' => array(
-		'label' => 'Live',
+		'label' => $data->phrases['blogs']['labelEditPostsLive'],
 		'tag' => 'input',
 		'checked' => ((isset($data->output['live']) && $data->output['live']) ? 'checked' : ''),
 		'params' => array(
 			'type' => 'checkbox'
-		),
-		'description' => '
-			<p>
-				<b>Live</b> - By default new blog entries are \'hidden\' from normal users until you check this box or enable them on the blog post list.
-			</p>
-		'
+		)
 	)
 );
 ?>

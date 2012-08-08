@@ -25,8 +25,8 @@
 function admin_blogsBuild($data,$db) {
 	// Make Sure We Have An ID
 	if(!is_numeric($data->action[3])) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No ID # was entered to be deleted';
+        $data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	// Get The Comment Info So Far
@@ -43,13 +43,13 @@ function admin_blogsBuild($data,$db) {
 		if($data->user['id'] != $blogItem['owner']) {
             if(!checkPermission('accessOthers','blogs',$data)) {
                 $data->output['abort']=true;
-                $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
                 return;
             }
 		}
 	} else {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	// Approve Comment
@@ -57,10 +57,10 @@ function admin_blogsBuild($data,$db) {
 	$statement->execute(array(':id' => $data->action[3]));
 	if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Comment Approved Successfully</h2>
+					<h2>'.$data->phrases['blogs']['approveCommentSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/blogs/listComments/'.$data->output['commentItem']['post'].'">
-							Return to Comments List
+							'.$data->phrases['blogs']['returnToComments'].'
 						</a>
 					</div>';
 	}

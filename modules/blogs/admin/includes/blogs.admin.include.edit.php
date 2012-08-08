@@ -37,15 +37,15 @@ function admin_blogsCheckShortName($db,$shortName) {
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('blogEdit','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     global $languageText;
 	$aRoot=$data->linkRoot.'admin/blogs/';
 	// Check If The Blog ID Is Supplied
 	if(!is_numeric($data->action[3])) {
-		$data->output['rejectError']='Insufficient Parameters';
-		$data->output['rejectText']='Please provide a blog ID';
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--
@@ -61,8 +61,8 @@ function admin_blogsBuild($data,$db) {
 	}
 	// Make Sure A Blog Was Found
 	if(($blogItem=$data->output['blogItem']=$statement->fetch())===FALSE) {
-		$data->output['rejectError']='Invalid Parameters';
-		$data->output['rejectText']='The blog you requested could not be found.';
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->output['blogForm']=new formHandler('edit',$data,true);
@@ -103,7 +103,7 @@ function admin_blogsBuild($data,$db) {
 			// Check To See If ShortName Exists Anywhere (Across Any Language)
 			if(common_checkUniqueValueAcrossLanguages($data,$db,'blogs','id',array('shortName'=>$shortName))){
 				$data->output['blogForm']->fields['name']['error']=true;
-	            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog.';
+		        $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 	            return;
 			}
 			
@@ -123,7 +123,8 @@ function admin_blogsBuild($data,$db) {
                         $modifiedShortName='^'.$shortName.'(/.*)?$';
                         $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
                         $statement->execute(array(
-                                ':match' => $modifiedShortName
+                                ':match' => $modifiedShortName,
+                                ':hostname' => ''
                             )
                         );
                         $result=$statement->fetch();
@@ -133,11 +134,12 @@ function admin_blogsBuild($data,$db) {
                                 ':match'     => $modifiedShortName,
                                 ':replace'   => 'blogs/'.$shortName.'\1',
                                 ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
-                                ':regex'     => 0
+                                ':regex'     => 0,
+                                ':hostname' => ''
                             ));
                         } else {
                             $data->output['blogForm']->fields['name']['error']=true;
-                            $data->output['blogForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                            $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                             return;
                         }
                         break;
@@ -160,7 +162,7 @@ function admin_blogsBuild($data,$db) {
                     ));
                 } else {
                     $data->output['blogForm']->fields['name']['error']=true;
-                    $data->output['blogForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                    $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                     return;
                 }
             }
@@ -180,23 +182,23 @@ function admin_blogsBuild($data,$db) {
 			$statement=$db->prepare('updateBlogById','admin_blogs');
 			$statement->execute($data->output['blogForm']->sendArray);
 			$data->output['savedOkMessage']='
-				<h2>Values Saved Successfully</h2>
+				<h2>'.$data->phrases['blogs']['saveBlogSuccessHeading'].'</h2>
 				<p>
-					Auto generated short name was: '.$shortName.'
+					'.$data->phrases['blogs']['saveBlogSuccessMessage'].' - '.$shortName.'
 				</p>
 				<div class="panel buttonList">
 					<a href="'.$aRoot.'add/">
-						Add New Blog
+						'.$data->phrases['blogs']['addNewBlog'].'
 					</a>
 					<a href="'.$aRoot.'list/">
-						Return to Page List
+						'.$data->phrases['blogs']['returnToBlogs'].'
 					</a>
 				</div>';
 		} else {
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

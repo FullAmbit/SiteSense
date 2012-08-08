@@ -24,12 +24,12 @@
 */
 $this->enctype='multipart/form-data';
 $this->formPrefix='blogEdit_';
-$this->caption='Create New Blog';
-$this->submitTitle='Save Changes';
+$this->caption=$data->phrases['blogs']['captionAddBlog'];
+$this->submitTitle=$data->phrases['blogs']['submitEditForm'];
 $this->fromForm='blogEdit';
 $this->fields=array(
 	'name' => array(
-		'label' => 'Blog Name',
+		'label' => $data->phrases['blogs']['labelEditName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -39,13 +39,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Blog Name</b> - The name used for creating the URL. It must be unique!
+				<b>'.$data->phrases['blogs']['labelEditName'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditName'].'
 			</p>
 		',
 		'cannotEqual' => array()
 	),
 	'title' => array(
-		'label' => 'Blog Title',
+		'label' => $data->phrases['blogs']['labelEditTitle'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -55,13 +56,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Blog Title</b> - The title of this blog
+				<b>'.$data->phrases['blogs']['labelEditTitle'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditTitle'].'
 			</p>
 		',
 		'cannotEqual' => array()
 	),
 	'owner' => array(
-		'label' => 'Blog Owner',
+		'label' => $data->phrases['blogs']['labelEditOwner'],
 		'tag' => 'select',
 		'options' => array(
 			array(
@@ -71,14 +73,15 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Blog Owner</b> - Who owns this blog, will always have post/edit/reply approval rights regardless of user access level.
+				<b>'.$data->phrases['blogs']['labelEditOwner'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditOwner'].'
 			</p>
 		'
 	),
 	'picture' => array(
 		'contentAfter' => (is_numeric($data->action[3])) ? '<a href="'.$data->settings['cdnLarge'].$data->themeDir.'images/blogs/'.$data->output['blogItem']['shortName'].'/rss.jpg">Current Image</a>' : '',
 		'required' => false,
-		'label' => 'RSS Channel Image',
+		'label' => $data->phrases['blogs']['labelEditPicture'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'file',
@@ -100,25 +103,33 @@ $this->fields=array(
 		)
 	),
 	'managingEditor' => array(
-		'label' => 'Managing Editor',
+		'label' => $data->phrases['blogs']['labelEditManagingEditor'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
 			'size' => 256
 		),
-		'description' => '<p><b>RSS Managing Editor</b> - The managing editor email that will be displayed on the RSS feed.</p>'
+		'description' => '
+			<p>
+				<b>'.$data->phrases['blogs']['labelEditManagingEditor'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditManagingEditor'].'
+			</p>'
 	),
 	'webMaster' => array(
-		'label' => 'Web Master',
+		'label' => $data->phrases['blogs']['labelEditWebMaster'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
 			'size' => 256
 		),
-		'description' => '<p><b>RSS WebMaster</b> - The webmaster email that will be displayed on the RSS feed.</p>'
+		'description' => '
+			<p>
+				<b>'.$data->phrases['blogs']['labelEditWebMaster'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditWebMaster'].'
+			</p>'
 	),
 	'commentsRequireLogin' => array(
-		'label' => 'Require login to comment?',
+		'label' => $data->phrases['blogs']['labelEditCommentsRequireLogin'],
 		'tag' => 'input',
 		'checked' => ((isset($data->output['commentsRequireLogin']) && $data->output['commentsRequireLogin']) ? 'checked' : ''),
 		'params' => array(
@@ -126,12 +137,12 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				Do you want readers to have to log-in before being able to comment on this blog? 
+				'.$data->phrases['blogs']['descriptionEditCommentsRequireLogin'].'
 			</p>
 		'
 	),
 	'topLevel' => array(
-		'label' => 'Make Blog A Top-Level Page?',
+		'label' => $data->phrases['blogs']['labelEditTopLevel'],
 		'tag' => 'input',
 		'checked' => ((isset($data->output['topLevel']) && $data->output['topLevel']) ? 'checked' : ''),
 		'params' => array(
@@ -139,24 +150,24 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				Do you want to access this blog by /blogname as an alternative to /blogs/blogname ?
+				'.$data->phrases['blogs']['descriptionEditTopLevel'].'
 			</p>
 		'
 	),
 	'allowComments' => array(
-		'label' => 'Allow Comments',
+		'label' => $data->phrases['blogs']['labelEditAllowComments'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'checkbox',
 		),
 		'description' => '
 			<p>
-				<b>Allow Comments</b> - Allow comments in blog?
+				'.$data->phrases['blogs']['descriptionEditAllowComments'].'
 			</p>
 		'
 	),
 	'numberPerPage' => array(
-		'label' => 'Number Per Page',
+		'label' => $data->phrases['blogs']['labelEditNumberPerPage'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
@@ -164,24 +175,26 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Number Per Page</b> - The number of post entries to show on a page
+				<b>'.$data->phrases['blogs']['labelEditNumberPerPage'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditNumberPerPage'].'
 			</p>
 		'
 	),
 	'rssOverride' => array(
-		'label' => 'RSS Link Override',
+		'label' => $data->phrases['blogs']['labelEditRSSLinkOverride'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
 		),
 		'description' => '
 			<p>
-				<b>RSS Link Override</b> - Entering a link here will change the links of the "Subscribe" buttons on the blog pages. This is useful, for example, for a Feedburner URL.
+				<b>'.$data->phrases['blogs']['labelEditRSSLinkOverride'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditRSSLinkOverride'].'
 			</p>
 		',
 	),
 	'description' => array(
-		'label' => 'Description',
+		'label' => $data->phrases['blogs']['labelEditDescription'],
 		'tag' => 'textarea',
 		'required' => true,
 		'value' => isset($data->output['content']) ? $data->output['content'] : '',
@@ -191,7 +204,8 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Description</b> - Just some short text to describe this blog. Not actually used anywhere the end user can see it (yet)
+				<b>'.$data->phrases['blogs']['labelEditDescription'].'</b><br />
+				'.$data->phrases['blogs']['descriptionEditDescription'].'
 			</p>
 		'
 	)

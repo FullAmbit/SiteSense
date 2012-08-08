@@ -25,8 +25,8 @@
 function admin_blogsBuild($data,$db) {
 	$data->output['delete']='';
 	if(empty($data->action[3]) || !is_numeric($data->action[3])) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No ID # was entered to be deleted';
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 	} else {
 		if(checkPermission('postDelete','blogs',$data)) {
 
@@ -45,8 +45,8 @@ function admin_blogsBuild($data,$db) {
 			}
 			if(($data->output['thisBlog']=$qHandle->fetch())==FALSE)
 			{
-				$data->output['rejectError']='invalid parameters';
-				$data->output['rejectText']='The blog you specified was not found.';
+				$data->output['abort']=true;
+				$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 				return;
 			}
 				
@@ -63,8 +63,8 @@ function admin_blogsBuild($data,$db) {
 					if($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';
 					} else {
-						$data->output['rejectError']='Database Error';
-						$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
+						$data->output['rejectError']=$data->phrases['core']['databaseErrorHeading'];
+						$data->output['rejectText']=$data->phrases['core']['databaseErrorMessage'];
 					}
 				} else {
 					/* from form plus not deleted must==cancelled. */
@@ -72,8 +72,8 @@ function admin_blogsBuild($data,$db) {
 				}
 			}
 		} else {
-			$data->output['rejectError']='Insufficient User Permissions';
-			$data->output['rejectText']='You do not have sufficient access to perform this action.';
+            $data->output['abort']=true;
+            $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		}
 	}
 }

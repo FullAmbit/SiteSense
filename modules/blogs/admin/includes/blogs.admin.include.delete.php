@@ -25,8 +25,8 @@
 function admin_blogsBuild($data,$db) {
 	$data->output['delete']='';
 	if(empty($data->action[3]) || !is_numeric($data->action[3])) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No ID # was entered to be deleted';
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 	} else {
 		if(checkPermission('blogDelete','blogs',$data)) {
 			if(!checkPermission('accessOthers','blogs',$data)) {
@@ -42,8 +42,8 @@ function admin_blogsBuild($data,$db) {
 				));
 			}
 			if(($data->output['thisBlog']=$qHandle->fetch())==FALSE) {
-				$data->output['rejectError']='invalid parameters';
-				$data->output['rejectText']='The blog you specified was not found.';
+				$data->output['abort']=true;
+				$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 				return;
 			}
 			if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
@@ -73,8 +73,8 @@ function admin_blogsBuild($data,$db) {
 							$edgeCast->delete($data->settings['cdnBaseDir'].'themes/'.$data->settings['theme'].'/images/blogs/'.$data->output['thisBlog']['shortName'].'/',true);
 						}
 					} else {
-						$data->output['rejectError']='Database Error';
-						$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
+						$data->output['rejectError']=$data->phrases['core']['databaseErrorHeading'];
+						$data->output['rejectText']=$data->phrases['core']['databaseErrorMessage'];
 					}
 				} else {
 					// From form plus not deleted must==cancelled.
@@ -83,7 +83,7 @@ function admin_blogsBuild($data,$db) {
 			}
 		} else {
             $data->output['abort']=true;
-            $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+            $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
             return;
         }
 	}
