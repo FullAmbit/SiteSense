@@ -146,60 +146,60 @@ final class dynamicPDO extends PDO {
 		$result=$this->query('countRows', 'common', array('!table!'=>$tableName));
 		return $result->fetchColumn();
 	}
-	public function createTable($tableName,$structure,$lang=false,$verbose=false) {
-	$verbose = true;
-    if($lang) $fullTableName=$tableName.'_'.$lang;
-    else $fullTableName=$tableName;
+	public function createTable($tableName, $structure, $lang=false, $verbose=false) {
+		$verbose = true;
+		if ($lang) $fullTableName=$tableName.'_'.$lang;
+		else $fullTableName=$tableName;
 		//structure is an array of field names and definitions
-		if($this->tableExists($fullTableName)) {
-			if($verbose) echo '<p>Table ', $fullTableName, ' already exists</p>';
+		if ($this->tableExists($fullTableName)) {
+			if ($verbose) echo '<p>Table ', $fullTableName, ' already exists</p>';
 			return false;
 		} else {
 			$query='CREATE TABLE `'.$this->tablePrefix.$fullTableName.'` (';
 			$qList=array();
 			foreach ($structure as $field => $struct) {
-				if(is_int($field)) { //no field name, so it's a command - e.g. INDEX(`blogId`) etc
+				if (is_int($field)) { //no field name, so it's a command - e.g. INDEX(`blogId`) etc
 					$qList[].="\n\t" . str_replace(';', '', $struct);
 				} else {
 					$qList[].="\n\t`".str_replace(';', '', $field).'` '.str_replace(';', '', $struct);
 				}
 			}
 			$query.=implode(', ', $qList)."\n) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-			if($verbose) echo '<pre>', $query, '</pre>';
+			if ($verbose) echo '<pre>', $query, '</pre>';
 			try {
 				parent::exec($query);
 			} catch(PDOException $e) {
-				if($verbose) {
+				if ($verbose) {
 					echo '
 						<p class="error">Failed to create '.$fullTableName.' table!</p>
 						<pre>'.$e->getMessage().'</pre>';
 				}
 				return false;
 			}
-			if($lang) $this->query('duplicateLanguageTable','common',array('!lang!'=>'_'.$lang,'!table!'=>$tableName));
+			if ($lang) $this->query('duplicateLanguageTable', 'common', array('!lang!'=>'_'.$lang, '!table!'=>$tableName));
 			return true;
 		}
 	}
-	public function dropTable($tableName,$lang=false,$verbose=false) {
-    	if($lang){
-    		$verbose=true;
-    		if(!isset($this->languageList)){
-	    		//--Remove Core Table + Language--//
-	    		$tableName = $tableName.'_'.$lang;
+	public function dropTable($tableName, $lang=false, $verbose=false) {
+		if ($lang) {
+			$verbose=true;
+			if (!isset($this->languageList)) {
+				//--Remove Core Table + Language--//
+				$tableName = $tableName.'_'.$lang;
 				if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
-		
+
 				if ($this->tableExists($tableName)) {
 					$this->exec('dropTable', 'installer', array('!table!' => $tableName));
 				} else {
 					if ($verbose) echo '<p>Table ', $tableName, ' does not exist</p>';
 				}
-    		}else{
-	    		foreach($this->languageList as $languageItem){
-	    			$lang = $languageItem['shortName'];
-		    		$fullTableName = $tableName.'_'.$lang;
-					
+			}else {
+				foreach ($this->languageList as $languageItem) {
+					$lang = $languageItem['shortName'];
+					$fullTableName = $tableName.'_'.$lang;
+
 					if ($verbose) echo '<p>Dropping ', $fullTableName, '</p>';
-			
+
 					if ($this->tableExists($fullTableName)) {
 						$this->exec('dropTable', 'installer', array('!table!' => $fullTableName));
 					} else {
@@ -207,10 +207,10 @@ final class dynamicPDO extends PDO {
 					}
 				}
 			}
-		}else{
+		}else {
 			//--Remove Core Table--//
 			if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
-	
+
 			if ($this->tableExists($tableName)) {
 				$this->exec('dropTable', 'installer', array('!table!' => $tableName));
 			} else {
@@ -236,7 +236,7 @@ final class sitesense {
 	$plugins = array(),
 	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(),
 	$banned = false,
-	$language,$languageList,
+	$language, $languageList,
 	$jsEditor;
 
 	private $db;
@@ -301,83 +301,82 @@ final class sitesense {
 					':sessionID' => $_COOKIE[$userCookieName]
 				));
 		} else if (!empty($_COOKIE[$userCookieName])) { // User doing anything else besides trying to logout
-			// Check to see if the user's session is expired
-			$userCookieValue=$_COOKIE[$userCookieName];
-			// Purge expired sessions
-			$this->db->query('purgeExpiredSessions');
-			// Pull session record if still present after purge
-			$statement=$this->db->prepare('getSessionById');
-			$statement->execute(array(
-					':sessionId' => $userCookieValue
-				));
-			if ($session=$statement->fetch(PDO::FETCH_ASSOC)) { // User's session has not expired
-				// Session IP and userAgent match user's IP and userAgent
-				if (($session['ipAddress']==$_SERVER['REMOTE_ADDR']) && ($session['userAgent']==$_SERVER['HTTP_USER_AGENT'])) {
-					// Pull user info
-					$statement=$this->db->prepare('pullUserInfoById');
-					$statement->execute(array(
-							':userId' => $session['userId']
-						));
-					if ($user=$statement->fetch()) {
-	
-						$this->user=$user;
-						// Set User TimeZone
-						if (!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
-							date_default_timezone_set($this->user['timeZone']);
-							ini_set('date.timezone', $this->user['timeZone']);
-						}
-						// Load permissions
-						getUserPermissions($this->db, $this->user);
-						$this->user['sessions']=$session;
-						// Push expiration ahead
-						$statement=$this->db->query("userSessionTimeOut");
-						$this->settings['userSessionTimeOut'] = $statement->fetchColumn();
-						$expires=time()+$this->settings['userSessionTimeOut'];
-						$session['expires']=$session['expires'];
-						if ($expires<$session['expires']) {
-							/*
+				// Check to see if the user's session is expired
+				$userCookieValue=$_COOKIE[$userCookieName];
+				// Purge expired sessions
+				$this->db->query('purgeExpiredSessions');
+				// Pull session record if still present after purge
+				$statement=$this->db->prepare('getSessionById');
+				$statement->execute(array(
+						':sessionId' => $userCookieValue
+					));
+				if ($session=$statement->fetch(PDO::FETCH_ASSOC)) { // User's session has not expired
+					// Session IP and userAgent match user's IP and userAgent
+					if (($session['ipAddress']==$_SERVER['REMOTE_ADDR']) && ($session['userAgent']==$_SERVER['HTTP_USER_AGENT'])) {
+						// Pull user info
+						$statement=$this->db->prepare('pullUserInfoById');
+						$statement->execute(array(
+								':userId' => $session['userId']
+							));
+						if ($user=$statement->fetch()) {
+
+							$this->user=$user;
+							// Set User TimeZone
+							if (!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
+								date_default_timezone_set($this->user['timeZone']);
+								ini_set('date.timezone', $this->user['timeZone']);
+							}
+							// Load permissions
+							getUserPermissions($this->db, $this->user);
+							$this->user['sessions']=$session;
+							// Push expiration ahead
+							$statement=$this->db->query("userSessionTimeOut");
+							$this->settings['userSessionTimeOut'] = $statement->fetchColumn();
+							$expires=time()+$this->settings['userSessionTimeOut'];
+							$session['expires']=$session['expires'];
+							if ($expires<$session['expires']) {
+								/*
 							If the current expiration is ahead of our calculated one,
 							they must have hit 'keep me logged in' - so let's tack on
 							a week.
 							*/
-							$expires+=604800;
+								$expires+=604800;
+							}
+							setcookie($userCookieName, $userCookieValue, $expires, $this->linkHome, '', '', true);
+							// Update and sync cookie to server values
+							$expires=gmdate("Y-m-d H:i:s", $expires);
+							$statement=$this->db->prepare('updateSessionExpiration');
+
+							$statement->execute(array(
+									':expires' => $expires,
+									':sessionId' => $session['sessionId']
+								)) or die('Session Database failed updating expiration');
+							// Update last access
+							$statement=$this->db->prepare('updateLastAccess');
+							$statement->execute(array(
+									':id' => $user['id']
+								)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
+							/**
+							 *
+							 * Why is this code here?....
+							 * -------
+							 //Load profile pictures
+							 $profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
+							 $profilePictures->execute(array(':user' => $this->user['id']));
+							 $this->user['profilePictures'] = $profilePictures->fetchAll();
+
+							 //Load albums
+							 $albums = $this->db->prepare('getAlbumsByUser', 'gallery');
+							 $albums->execute(array(':userId' => $this->user['id']));
+							 $this->user['albums'] = $albums->fetchAll();
+
+							 **/
+							$this->loginResult=true;
 						}
-						setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
-						// Update and sync cookie to server values
-						$expires=gmdate("Y-m-d H:i:s", $expires);
-						$statement=$this->db->prepare('updateSessionExpirationAndLanguage');
-	
-						$statement->execute(array(
-								':expires' => $expires,
-								':language' => (isset($_POST['language'])) ? $_POST['language'] : $session['language'],
-								':sessionId' => $session['sessionId']
-							)) or die('Session Database failed updating expiration');
-						// Update last access
-						$statement=$this->db->prepare('updateLastAccess');
-						$statement->execute(array(
-								':id' => $user['id']
-							)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-						/**
-						 *
-						 * Why is this code here?....
-						 * -------
-						 //Load profile pictures
-						 $profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
-						 $profilePictures->execute(array(':user' => $this->user['id']));
-						 $this->user['profilePictures'] = $profilePictures->fetchAll();
-	
-						 //Load albums
-						 $albums = $this->db->prepare('getAlbumsByUser', 'gallery');
-						 $albums->execute(array(':userId' => $this->user['id']));
-						 $this->user['albums'] = $albums->fetchAll();
-	
-						 **/
-						$this->loginResult=true;
 					}
 				}
 			}
-		}
-				
+
 		// User Trying To Login?
 		if (isset($_POST['login']) && $_POST['login']==$_SERVER['REMOTE_ADDR']) {
 			$statement=$this->db->prepare('checkPassword');
@@ -407,13 +406,13 @@ final class sitesense {
 				$statement=$this->db->query("userSessionTimeOut");
 				$this->settings['userSessionTimeOut'] = $statement->fetchColumn();
 				$expires=time()+$this->settings['userSessionTimeOut'];
-				
+
 				if (isset($_POST['keepLogged']) && $_POST['keepLogged']=='on') {
 					$expires = time()+604800; // 1 week
 				}
-				
+
 				// Update and sync cookie to server values
-				setcookie($userCookieName, $userCookieValue, $expires, $this->linkHome,'','',true);
+				setcookie($userCookieName, $userCookieValue, $expires, $this->linkHome, '', '', true);
 				$expires=gmdate("Y-m-d H:i:s", $expires);
 				$statement=$this->db->prepare('updateUserSession');
 				$statement->execute(array(
@@ -421,28 +420,31 @@ final class sitesense {
 						':userId'    => $user['id'],
 						':expires'   => $expires,
 						':ipAddress' => $_SERVER['REMOTE_ADDR'],
-						':userAgent' => $_SERVER['HTTP_USER_AGENT'],
-						':language'  => isset($_POST['language']) ? $_POST['language'] : $this->user['defaultLanguage']
+						':userAgent' => $_SERVER['HTTP_USER_AGENT']
 					));
 				$this->loginResult=true;
 			}
 		}
-		
 
-		// What Language Will We Be Loading?
-		if (isset($_POST['language'])) {
-			$this->language = $_POST['language'];
-		}elseif (isset($this->user['sessions']['language']) && $this->user['sessions']['language']!=='') {
-			$this->language = $this->user['sessions']['language'];
+		// What Language Will We Be Loading? (Set Language Cookies As Well)
+		if (isset($_GET['language'])) {
+			$this->language = $_GET['language'];
+		}elseif (isset($_COOKIE["myLanguage"]) && $_COOKIE["myLanguage"]!=='') {
+			$this->language = $_COOKIE["myLanguage"];
 		}elseif (isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!=='') {
 			$this->language = $this->user['defaultLanguage'];
-		}else {
+		}else{
 			$useDefaultLang = true;
 			$statement=$this->db->query("getDefaultLanguage");
 			$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
 			$this->language=$languageItem['shortName'];
 		}
 
+		// Set New Language Cookie
+		if (!isset($_COOKIE['myLanguage']) || $_COOKIE['myLanguage'] !== $this->language) {
+			setcookie("myLanguage", $this->language, time()+604800, $this->linkHome, '', '', TRUE);
+		}
+		
 		// Pass DB the New Current Language (So It Knows To Pull / Insert All Queries To This One)
 		$this->db->lang = $this->language;
 
@@ -591,18 +593,18 @@ final class sitesense {
 
 		// Load The Phrases From The Database
 		$moduleShortName = ($this->currentPage == 'admin') ? $this->action[1] : $this->currentPage;
-		$statement = $this->db->prepare('getPhrasesByModule','common');
+		$statement = $this->db->prepare('getPhrasesByModule', 'common');
 		$statement->execute(array(
-			':module' => ''
-		));
-		while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+				':module' => ''
+			));
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->phrases['core'][$row['phrase']] = $row['text'];
 		}
-		
+
 		$statement->execute(array(
-			':module' => $moduleShortName
-		));
-		while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+				':module' => $moduleShortName
+			));
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->phrases[$moduleShortName][$row['phrase']] = $row['text'];
 		}
 

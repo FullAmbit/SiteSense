@@ -76,10 +76,9 @@ function common_addQueries() {
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
-        'updateSessionExpirationAndLanguage' => '
+        'updateSessionExpiration' => '
 			UPDATE !prefix!sessions
-			SET expires = :expires,
-				language = :language
+			SET expires = :expires
 			WHERE sessionId = :sessionId
 		',
         'updateLastAccess' => '
@@ -110,9 +109,9 @@ function common_addQueries() {
 		',
         'updateUserSession' => '
 			INSERT INTO !prefix!sessions
-			(sessionId,userId,expires,ipAddress,userAgent,language)
+			(sessionId,userId,expires,ipAddress,userAgent)
 			VALUES
-			(:sessionId,:userId,:expires,:ipAddress,:userAgent,:language)
+			(:sessionId,:userId,:expires,:ipAddress,:userAgent)
 		',
         'getSettings' => '
 			SELECT * FROM !prefix!settings!lang!

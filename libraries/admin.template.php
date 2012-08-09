@@ -62,7 +62,7 @@ echo '
 	<div id="loggedBar" class="buttonList">';
 		if($data->action[1]=='dashboard'){
 			echo '
-			<form name="frmLanguageSelector" action="" method="post" style="float:left;">
+			<form name="frmLanguageSelector" action="" method="get" style="float:left;">
 				<select name="language" onchange="this.form.submit()">';
 				foreach($data->languageList as $languageItem){
 					if($languageItem['shortName']==$data->language){
