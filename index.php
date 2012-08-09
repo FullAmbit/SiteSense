@@ -428,18 +428,30 @@ final class sitesense {
 
 		// What Language Will We Be Loading? (Set Language Cookies As Well)
 		if (isset($_GET['language'])) {
-			$this->language = $_GET['language'];
-		}elseif (isset($_COOKIE["myLanguage"]) && $_COOKIE["myLanguage"]!=='') {
-			$this->language = $_COOKIE["myLanguage"];
-		}elseif (isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!=='') {
-			$this->language = $this->user['defaultLanguage'];
-		}else{
-			$useDefaultLang = true;
-			$statement=$this->db->query("getDefaultLanguage");
-			$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
-			$this->language=$languageItem['shortName'];
+			// Check If Language Exists
+			$statement = $this->db->prepare('getLanguageByShortName','common');
+			$statement->execute(array(
+				':shortName' => $_GET['language']
+			));
+			if($statement->fetchColumn()){
+				$this->language = $_GET['language'];
+			}
 		}
-
+		
+		// If Still No language Set By Get...
+		if(!isset($this->language)){
+			if (isset($_COOKIE["myLanguage"]) && $_COOKIE["myLanguage"]!=='') {
+				$this->language = $_COOKIE["myLanguage"];
+			}elseif (isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!=='') {
+				$this->language = $this->user['defaultLanguage'];
+			}else{
+				$useDefaultLang = true;
+				$statement=$this->db->query("getDefaultLanguage");
+				$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
+				$this->language=$languageItem['shortName'];
+			}
+		}
+		
 		// Set New Language Cookie
 		if (!isset($_COOKIE['myLanguage']) || $_COOKIE['myLanguage'] !== $this->language) {
 			setcookie("myLanguage", $this->language, time()+604800, $this->linkHome, '', '', TRUE);

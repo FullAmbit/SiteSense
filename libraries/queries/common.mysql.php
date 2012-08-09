@@ -445,6 +445,14 @@ function common_addQueries() {
 			WHERE
 				module = :module
 		',
+		'getLanguageByShortName' => '
+			SELECT
+				name
+			FROM 
+				!prefix!languages 
+			WHERE
+				shortName = :shortName
+		',
 		'getAllLanguages' => '
 			SELECT 
 				shortName,name 
