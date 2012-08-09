@@ -459,7 +459,7 @@ final class sitesense {
 		
 		// Pass DB the New Current Language (So It Knows To Pull / Insert All Queries To This One)
 		$this->db->lang = $this->language;
-
+				
 		// Load settings
 		$statement=$this->db->query('getSettings');
 		while ($row=$statement->fetch()) {
