@@ -27,7 +27,7 @@ function admin_dynamicFormsBuild($data, $db) {
 	//permission check for forms add
 	if (!checkPermission('add', 'dynamicForms', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	$data->output['fromForm'] = new formHandler('forms', $data, true);
@@ -50,7 +50,7 @@ function admin_dynamicFormsBuild($data, $db) {
 		$data->output['fromForm']->sendArray[':shortName'] = $shortName = common_generateShortName($data->output['fromForm']->sendArray[':name']);
 		if (common_checkUniqueValueAcrossLanguages($data, $db, 'forms', 'id', array('shortName'=>$shortName))) {
 			$data->output['fromForm']->fields['name']['error']=true;
-			$data->output['fromForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a form.';
+		    $data->output['fromForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 			return;
 		}
 
@@ -63,8 +63,7 @@ function admin_dynamicFormsBuild($data, $db) {
 				$statement->execute(array(
 						':match' => $modifiedShortName,
 						':hostname' => ''
-					)
-				);
+				));
 				$result=$statement->fetch();
 				if ($result===false) {
 					$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
@@ -77,7 +76,7 @@ function admin_dynamicFormsBuild($data, $db) {
 						));
 				} else {
 					$data->output['fromForm']->fields['name']['error']=true;
-					$data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+					$data->output['fromForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 					return;
 				}
 				break;
@@ -129,26 +128,23 @@ function admin_dynamicFormsBuild($data, $db) {
 				common_populateLanguageTables($data,$db,'forms','shortName',$shortName);
 
 				$data->output['savedOkMessage']='
-					<h2>Form Saved Successfully</h2>
+					<h2>'.$data->phrases['dynamic-forms']['saveFormSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/add">
-							Add New Form
+							'.$data->phrases['dynamic-forms']['addForm'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/list/">
-							Return to Form List
+							'.$data->phrases['dynamic-forms']['returnToForms'].'
 						</a>
 					</div>';
 			} else {
-				$data->output['savedOkMessage'] =
-					'<h2>Error</h2>
-				We were unable to save to the database at this time
-				';
+				$data->output['savedOkMessage'] = '<h2>'.$data->phrases['databaseErrorHeading'].'</h2>'.$data->phrases['databaseErrorMessage'];
 			}
 		} else {
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

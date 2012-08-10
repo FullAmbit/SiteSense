@@ -26,20 +26,20 @@ function admin_dynamicFormsBuild($data, $db) {
 	//permission check for forms edit
 	if (!checkPermission('edit', 'dynamicForms', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	$data->output['delete'] = "";
 
 	if ($data->action[3] === false) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	// Check for User Permissions
 	if (!checkPermission('canDeleteFormOption', 'dynamicForms', $data)) {
-		$data->output['rejectError']='Insufficient User Permissions';
-		$data->output['rejectText']='You do not have sufficient access to perform this action.';
+		$data->output['abort'] = true;
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	// Get Option
@@ -47,7 +47,7 @@ function admin_dynamicFormsBuild($data, $db) {
 	$statement->execute(array(':id' => $data->action[3]));
 	if (($data->output['optionItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Option Not Found</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 
@@ -60,15 +60,15 @@ function admin_dynamicFormsBuild($data, $db) {
 			// Success Message
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-				  <h2>Option Deleted Successfully</h2>
-				  <div class="panel buttonList">
-					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addOption/'.$data->output['optionItem']['fieldId'].'">
-						  Add New Option
-					  </a>
-					  <a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/'.$data->output['optionItem']['fieldId'].'">
-						  Return to Options List
-					  </a>
-				  </div>';
+					<h2>'.$data->phrases['dynamic-forms']['saveOptionSuccessHeading'].'</h2>
+					<div class="panel buttonList">
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addOption/' . $data->output['fieldItem']['id'] . '">
+							'.$data->phrases['dynamic-forms']['addOption'].'
+						</a>
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/' . $data->output['fieldItem']['id'] . '">
+							'.$data->phrases['dynamic-forms']['returnToOptions'].'
+						</a>
+					</div>';
 			}
 		} else {
 			$data->output['delete']='cancelled';
@@ -83,7 +83,7 @@ function admin_dynamicFormsShow($data) {
 			theme_dynamicFormsDeleteOptionCancelled($data, $aRoot);
 			break;
 		case 'deleted':
-			theme_dynamicFormsDeleteOptionDeleted($aRoot);
+			theme_dynamicFormsDeleteOptionDeleted($data,$aRoot);
 			break;
 		default:
 			theme_dynamicFormsDeleteOptionDefault($data, $aRoot);

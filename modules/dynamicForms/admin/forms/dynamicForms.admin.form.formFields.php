@@ -22,11 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->caption='Create/Edit Custom Form';
-$this->submitTitle='Save';
+$this->caption=$data->phrases['dynamic-forms']['captionFormFieldsAddField'];
+$this->submitTitle=$data->phrases['dynamic-forms']['submitFormFields'];
 $this->fields=array(
 	'name' => array(
-		'label' => 'Name',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['field']['name']) ? $data->output['field']['name'] : '',
@@ -36,21 +36,27 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Name</b> - What is the field called?
+				<b>'.$data->phrases['dynamic-forms']['labelFormFieldsName'].'</b><br />
+				'.$data->phrases['dynamic-forms']['descriptionFormFieldsName'].'
 			</p>
 		'
 	),
 	'description' => array(
-		'label' => 'Description',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsDescription'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text'
 		),
-		'description' => 'This is the text that will go in this popup here. It is not required.',
+		'description' => '
+			<p>
+				<b>'.$data->phrases['dynamic-forms']['labelFormFieldsDescription'].'</b><br />
+				'.$data->phrases['dynamic-forms']['descriptionFormFieldsDescription'].'
+			</p>
+		',
 		'required' => false
 	),
 	'type' => array(
-		'label' => 'Type',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsType'],
 		'tag' => 'select',
 		'options' => array(
 			'textbox', 'textarea', 'checkbox', 'select' , 'timezone', 'password'
@@ -61,12 +67,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Type</b> - What is the field?
+				<b>'.$data->phrases['dynamic-forms']['labelFormFieldsType'].'</b><br />
+				'.$data->phrases['dynamic-forms']['descriptionFormFieldsType'].'
 			</p>
 		'
 	),
 	'apiFieldToMapTo' => array(
-		'label' => 'API Field',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsAPIFieldToMapTo'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => isset($data->output['field']['apiFieldToMapTo']) ? $data->output['field']['apiFieldToMapTo'] : '',
@@ -76,7 +83,7 @@ $this->fields=array(
 		)
 	),
 	'required' => array(
-		'label' => 'Required',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsRequired'],
 		'tag' => 'input',
 		'value' => '1',
 		'checked' => (isset($data->output['field']['required']) && $data->output['field']['required'] == '0') ? '' : 'checked',
@@ -85,7 +92,7 @@ $this->fields=array(
 		)
 	),
 	'enabled' => array(
-		'label' => 'Enabled',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsEnabled'],
 		'tag' => 'input',
 		'value' => 1,
 		'checked' => (isset($data->output['field']['enabled']) && $data->output['field']['enabled'] == '0') ? '' : 'checked',
@@ -94,16 +101,16 @@ $this->fields=array(
 		)
 	),
 	'isEmail' => array(
-		'label' => 'E-Mail Validaton',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsIsEmail'],
 		'tag' => 'input',
 		'value' => 1,
-		'checked' => (isset($data->output['field']['isEmail']) && $data->output['field']['isEmail'] == '0') ? '' : 'checked',
 		'params' => array(
-			'type' => 'checkbox'
+			'type' => 'checkbox',
+			'checked' => (isset($data->output['field']['isEmail']) && $data->output['field']['isEmail'] == '1') ? 'checked' : '',
 		)
 	),
 	'compareTo' => array(
-		'label' => 'Compare To',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsCompareTo'],
 		'tag' => 'select',
 		'options' => $data->output['fieldList'],
 		'value' => isset($data->output['field']['compareTo']) ? $data->output['field']['compareTo'] : '',
@@ -112,12 +119,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Compare To</b> - Does it match the selected field?
+				<b>'.$data->phrases['dynamic-forms']['labelFormFieldsCompareTo'].'</b><br />
+				'.$data->phrases['dynamic-forms']['descriptionFormFieldsCompareTo'].'
 			</p>
 		'
 	),
 	'moduleHook' => array(
-		'label' => 'Module Hook',
+		'label' => $data->phrases['dynamic-forms']['labelFormFieldsModuleHook'],
 		'tag' => 'select',
 		'options' => array(
 			array(
@@ -128,7 +136,8 @@ $this->fields=array(
 		'value' => isset($data->output['field']['moduleHook']) ? $data->output['field']['moduleHook'] : '',
 		'description' => '
 			<p>
-				<b>Module Hook</b> - Should another module process the data from this field?
+				<b>'.$data->phrases['dynamic-forms']['labelFormFieldsModuleHook'].'</b><br />
+				'.$data->phrases['dynamic-forms']['descriptionFormFieldsModuleHook'].'
 			</p>
 		'
 	)

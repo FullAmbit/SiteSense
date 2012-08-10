@@ -21,6 +21,8 @@ function languages_core_en_us(){
 		"status"                     => "Status",
 		'enable'                     => "Enable",
 		"disable"                    => "Disable",
+		"text"						=> "Text",
+		"value" => "Value",
 		"formValidationErrorHeading" => "Error in Data",
 		"formValidationErrorMessage" => "There were one or more errors. Please correct the fields with the red X next to them and try again.",
 		'invalidID'                  => "The ID you specified was not found in the database.",

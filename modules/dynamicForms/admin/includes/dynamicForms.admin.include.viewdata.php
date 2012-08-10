@@ -26,12 +26,12 @@ function admin_dynamicFormsBuild($data,$db){
 	//permission check for forms access
 	if(!checkPermission('viewData','dynamicForms',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}	
 	if($data->action[3] === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>No Form ID Given</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
@@ -40,7 +40,7 @@ function admin_dynamicFormsBuild($data,$db){
 	$form = $statement->fetch();
 	if($form === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Form Doesn\'t Exist</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->output['form'] = $form;

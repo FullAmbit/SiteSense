@@ -28,12 +28,12 @@ function admin_dynamicFormsBuild($data,$db) {
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}	
 	if($data->action[3] === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
@@ -42,7 +42,7 @@ function admin_dynamicFormsBuild($data,$db) {
 	$data->output['fieldItem'] = $statement->fetch();
 	if($data->output['fieldItem']  === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Field Doesn\'t Exist</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 
@@ -66,13 +66,13 @@ function admin_dynamicFormsBuild($data,$db) {
 			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Form Option Saved Successfully</h2>
+					<h2>'.$data->phrases['dynamic-forms']['saveOptionSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addOption/' . $data->output['fieldItem']['id'] . '">
-							Add New Option
+							'.$data->phrases['dynamic-forms']['addOption'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/listOptions/' . $data->output['fieldItem']['id'] . '">
-							Return to Options List
+							'.$data->phrases['dynamic-forms']['returnToOptions'].'
 						</a>
 					</div>';
 			}
@@ -81,9 +81,9 @@ function admin_dynamicFormsBuild($data,$db) {
 				invalid data, so we want to show the form again
 			*/
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

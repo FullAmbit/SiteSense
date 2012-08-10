@@ -95,7 +95,7 @@ function admin_dynamicFormsShow($data)
 					theme_dynamicFormsDeleteFieldCancelled($data,$aRoot);
 				break;
 			case 'cancelled':
-					theme_dynamicFormsDeleteFieldDeleted($aRoot);
+					theme_dynamicFormsDeleteFieldDeleted($data,$aRoot);
 				break;
 			default:
 					theme_dynamicFormsDeleteFieldDefault($data,$aRoot);

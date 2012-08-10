@@ -22,12 +22,12 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->submitTitle = 'Save';
+$this->submitTitle = $data->phrases['dynamic-forms']['submitOptions'];
 
 $this->fields = array(
 
 	'text' => array(
-		'label' => 'Text',
+		'label' => $data->phrases['dynamic-forms']['labelOptionsText'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
@@ -37,7 +37,7 @@ $this->fields = array(
 		'value' => isset($data->output['optionItem']) ? $data->output['optionItem']['text'] : ''
 	),
 	'value' => array(
-		'label' => 'Value',
+		'label' => $data->phrases['dynamic-forms']['labelOptionsValue'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
