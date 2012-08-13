@@ -58,7 +58,7 @@ function admin_pagesBuild($data, $db) {
 		if ($data->output['pageForm']->validateFromPost()) {
 			if ($data->output['pageForm']->sendArray[':parent']==0) {
 				$modifiedShortName='^'.$shortName.'(/.*)?$';
-				$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+				$statement=$db->prepare('getUrlRemapByMatch', 'admin_urls');
 				$statement->execute(array(
 						':match' => $modifiedShortName,
 						':hostname' => ''
@@ -66,7 +66,7 @@ function admin_pagesBuild($data, $db) {
 				);
 				$result=$statement->fetch();
 				if ($result===false) {
-					$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
+					$statement=$db->prepare('insertUrlRemap', 'admin_urls');
 					$statement->execute(array(
 							':match'     => $modifiedShortName,
 							':replace'   => 'pages/'.$shortName.'\1',

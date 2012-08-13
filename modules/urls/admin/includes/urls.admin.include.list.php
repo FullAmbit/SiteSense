@@ -22,37 +22,26 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_dynamicURLsBuild($data,$db) {
-    if(!checkPermission('delete','dynamicURLs',$data)) {
+function admin_urlsBuild($data,$db) {
+    if(!checkPermission('list','urls',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    $staff=false;
-	if (empty($data->action[3])) {
-		$data->output['abort'] = true;
-		$data->output['abortremap'] = '<h2>No ID Given</h2>';
-	}else{
-		$remap = $db->prepare('getUrlRemapById','admin_dynamicURLs');
-		$remap->execute(array(':id' => (int)$data->action[3]));
-		$remap = $remap->fetch();
-		$data->output['exists'] = $remap !== false;
-		if($data->action[4] == 'confirm'){
-			$remaps = $db->prepare('deleteUrlRemap','admin_dynamicURLs');
-			$remaps->execute(array(':id' => (int)$data->action[3]));
-			$data->output['success'] = ($remaps->rowCount() == 1);
-		}
-	}
+    if($data->action[3]=='moveUp' || $data->action[3]=='moveDown') {
+        admin_sortOrder_move($data,$db,'urls',$data->action[3],$data->action[4]);
+    }
+    $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
+	$messages = $db->query('getAllUrlRemaps','admin_urls');
+	$data->output['remapList'] = $messages->fetchAll();
 }
-function admin_dynamicURLsShow($data) {
-	if(isset($data->output['success'])){
-		if($data->output['success']){
-			theme_dynamicURLsDeleteSuccess($data->linkRoot);
-		}else{
-			theme_dynamicURLsDeleteError($data->output['exists'],$data->linkRoot);
-		}
-	}else{
-		theme_dynamicURLsDeleteConfirm($data->action[3],$data->linkRoot);
+function admin_urlsShow($data) {
+	theme_urlsListTableHead($data->linkRoot);
+	$key = 0;
+	foreach($data->output['remapList'] as $key => $remap) {
+		theme_urlsListTableRow($remap,$data->linkRoot,$key);
 	}
+	$key++;
+	theme_urlsListTableFoot($data->linkRoot);
 }
-?>
+?>	

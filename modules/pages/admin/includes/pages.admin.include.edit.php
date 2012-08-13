@@ -114,7 +114,7 @@ function admin_pagesBuild($data,$db) {
 			}
 			// Check And Insert URL Remaps
 		    $modifiedShortName='^'.$shortName.'(/.*)?$';
-		    $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+		    $statement=$db->prepare('getUrlRemapByMatch','admin_urls');
 		    $statement->execute(array(
 		            ':match' => $modifiedShortName,
 		            ':hostname' => ''
@@ -122,7 +122,7 @@ function admin_pagesBuild($data,$db) {
 		    );
 		    $result=$statement->fetch();
 		    if($result===false) {
-		        $statement=$db->prepare('updateUrlRemapByMatch','admin_dynamicURLs');
+		        $statement=$db->prepare('updateUrlRemapByMatch','admin_urls');
 		        $statement->execute(array(
 		            ':match'    => '^'.$data->output['pageItem']['shortName'].'(/.*)?$',
 		            ':newMatch' => '^'.$shortName.'(/.*)?$',

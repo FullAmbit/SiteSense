@@ -49,7 +49,7 @@ function admin_pagesBuild($data, $db) {
 		if (isset($_POST['fromForm'])) {
 			if ($_POST['fromForm']==$data->action[3] && !empty($_POST['delete'])) {
 				if ($data->output['pageItem']['parent']==0) {
-					$statement=$db->prepare('deleteReplacementByMatch', 'admin_dynamicURLs');
+					$statement=$db->prepare('deleteReplacementByMatch', 'admin_urls');
 					$statement->execute(array(
 							':match' => '^'.$data->output['pageItem']['shortName'].'(/.*)?$'
 						));

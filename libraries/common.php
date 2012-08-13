@@ -261,7 +261,7 @@ function loadPermissions($data) {
         'list'          => 'List sidebars'
     );
 
-    $data->permissions['dynamicURLs']=array(
+    $data->permissions['urls']=array(
         'access'        => 'URL Remap Access',
         'add'           => 'Add URL Remaps',
         'delete'        => 'Delete URL Remaps',

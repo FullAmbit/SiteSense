@@ -77,14 +77,14 @@ function admin_dynamicFormsBuild($data, $db) {
 			if (intval($data->output['fromForm']->sendArray[':topLevel'])!==intval($data->output['formItem']['topLevel'])) {
 				switch ($data->output['fromForm']->sendArray[':topLevel']) {
 				case 0:
-					$statement=$db->prepare('deleteReplacementByMatch', 'admin_dynamicURLs');
+					$statement=$db->prepare('deleteReplacementByMatch', 'admin_urls');
 					$statement->execute(array(
 							':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
 						));
 					break;
 				case 1:
 					$modifiedShortName='^'.$shortName.'(/.*)?$';
-					$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+					$statement=$db->prepare('getUrlRemapByMatch', 'admin_urls');
 					$statement->execute(array(
 							':match' => $modifiedShortName,
 							':hostname' => ''
@@ -92,7 +92,7 @@ function admin_dynamicFormsBuild($data, $db) {
 					);
 					$result=$statement->fetch();
 					if ($result===false) {
-						$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
+						$statement=$db->prepare('insertUrlRemap', 'admin_urls');
 						$statement->execute(array(
 								':match'     => $modifiedShortName,
 								':replace'   => 'dynamic-forms/'.$shortName.'\1',
@@ -111,14 +111,14 @@ function admin_dynamicFormsBuild($data, $db) {
 			} elseif ($newShortName) {
 				if ($data->output['fromForm']->sendArray[':topLevel']) {
 					$modifiedShortName='^'.$shortName.'(/.*)?$';
-					$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+					$statement=$db->prepare('getUrlRemapByMatch', 'admin_urls');
 					$statement->execute(array(
 							':match' => $modifiedShortName
 						)
 					);
 					$result=$statement->fetch();
 					if ($result===false) {
-						$statement=$db->prepare('updateUrlRemapByMatch', 'admin_dynamicURLs');
+						$statement=$db->prepare('updateUrlRemapByMatch', 'admin_urls');
 						$statement->execute(array(
 								':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$',
 								':newMatch'   => '^'.$shortName.'(/.*)?$',

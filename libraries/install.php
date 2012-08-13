@@ -107,7 +107,7 @@ if (
     	'settings',
         'sidebars',
         'dynamicForms',
-        'dynamicURLs',
+        'urls',
         'default',
         'blogs',
         'pages',
@@ -251,11 +251,11 @@ if (
 			'sidebars_edit',
 			'sidebars_list',
 
-			'dynamicURLs_access',
-			'dynamicURLs_add',
-			'dynamicURLs_delete',
-			'dynamicURLs_edit',
-			'dynamicURLs_list'
+			'urls_access',
+			'urls_add',
+			'urls_delete',
+			'urls_edit',
+			'urls_list'
 		),
 		'Moderator' => array(
 			'core_access',

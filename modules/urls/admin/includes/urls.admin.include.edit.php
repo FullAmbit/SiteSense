@@ -23,17 +23,37 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 common_include('libraries/forms.php');
-function admin_dynamicURLsBuild($data,$db) {
-    if(!checkPermission('add','dynamicURLs',$data)) {
+function admin_urlsBuild($data,$db) {
+    if(!checkPermission('edit','urls',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
+    }
+	$remapId = (int)$data->action[3];
+	$check = $db->prepare('getUrlRemapById','admin_urls');
+	$check->execute(array(
+		':id' => $remapId
+	));
+	// Check To Make Sure It Exists
+	if(($data->output['urlremap'] = $check->fetch()) === FALSE){
+		$data->output['abort'] = true;
+		$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
+		return;
+	}
+    if(!$data->output['urlremap']['regex']) {
+        // Standard Mode
+        $data->output['urlremap']['match']=str_replace('^','',$data->output['urlremap']['match']);
+        $data->output['urlremap']['match']=str_replace('(/.*)?$','',$data->output['urlremap']['match']);
+        $data->output['urlremap']['replace']=str_replace('\1','',$data->output['urlremap']['replace']);
     }
     // Load Hostnames
     $statement = $db->prepare('getAllHostnames','admin_hostnames');
     $statement->execute();
     $data->output['hostnameList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
-    $form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
+    
+	// Create The Form
+	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
+	$form->caption = 'Editing URL Remap';
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
@@ -42,8 +62,8 @@ function admin_dynamicURLsBuild($data,$db) {
 			// Check Hostname
 			if(!isset($form->sendArray[':hostname'])) $form->sendArray[':hostname'] = '';
 			
-            if(!$form->sendArray[':regex']) {
-                // Standard
+			if(!$data->output['urlremap']['regex']) {
+                // Remove
                 $form->sendArray[':match']=str_replace('^','',$form->sendArray[':match']);
                 $form->sendArray[':match']=str_replace('(/.*)?$','',$form->sendArray[':match']);
                 $form->sendArray[':replace']=str_replace('\1','',$form->sendArray[':replace']);
@@ -55,40 +75,17 @@ function admin_dynamicURLsBuild($data,$db) {
                 // Add Regex
                 $form->sendArray[':match']='^'.$form->sendArray[':match'].'(/.*)?$';
                 $form->sendArray[':replace']=$form->sendArray[':replace'].'\1';
-
-                $modifiedMatch=$form->sendArray[':match'];
-                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
-                $statement->execute(array(
-                        ':match' => $modifiedMatch,
-                        ':hostname' => $form->sendArray[':hostname']
-                    )
-                );
-                $result=$statement->fetch();
-                if($result===false) {
-                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
-                    $statement->execute(array(
-                        ':match'     => $modifiedMatch,
-                        ':replace'   => $form->sendArray[':replace'],
-                        ':sortOrder' => admin_sortOrder_new($data,$db,'urls','sortOrder','hostname',$form->sendArray[':hostname']),
-                        ':regex'     => 0,
-                        ':hostname' => $form->sendArray[':hostname'],
-                        ':isRedirect' => $form->sendArray[':isRedirect']
-                    ));
-                } else {
-                    $data->output['remapForm']->fields['match']['error']=true;
-                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different match.';
-                    return;
-                }
-            } else {
-                $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'urls','sortOrder');
-                $statement = $db->prepare('insertUrlRemap','admin_dynamicURLs','sortOrder','hostname',$form->sendArray[':hostname']);
-                $result = $statement->execute($form->sendArray);
-                if($result == FALSE) {
-                    $data->output['remapForm']->fields['match']['error']=true;
-                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
-                    return;
-                }
             }
+            $statement = $db->prepare('editUrlRemap','admin_urls');
+            $form->sendArray[':id'] = $remapId;
+            $result = $statement->execute($form->sendArray) ;
+			
+			if($result == FALSE) {
+                $data->output['remapForm']->fields['match']['error']=true;
+                $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
+                return;
+			}
+			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
 					<h2>Remap Saved Successfully</h2>
@@ -101,13 +98,19 @@ function admin_dynamicURLsBuild($data,$db) {
 						</a>
 					</div>';
 			}
-			
+		} else {
+			/*
+				invalid data, so we want to show the form again
+			*/
+			$data->output['secondSidebar']='
+				<h2>Error in Data</h2>
+				<p>
+					There were one or more errors. Please correct the fields with the red X next to them and try again.
+				</p>';
 		}
 	}
 }
-
-function admin_dynamicURLsShow($data)
-{
+function admin_urlsShow($data) {
 	if (isset($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];
 	} else {

@@ -22,8 +22,8 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicURLs_startup($data,$db) {
-	$data->permissions['dynamicURLs']=array(
+function urls_startup($data,$db) {
+	$data->permissions['urls']=array(
         'access'               => 'Access Dynamic URLs',
         'add'                  => 'Add Dynamic URLs',
         'delete'               => 'Delete Dynamic URLs',

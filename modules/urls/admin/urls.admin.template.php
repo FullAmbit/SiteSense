@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function theme_dynamicURLsListTableHead($linkRoot) {
+function theme_urlsListTableHead($linkRoot) {
 	echo '
 		<div class="panel buttonList">
-			<a href="',$linkRoot,'admin/dynamic-urls/add/">
+			<a href="',$linkRoot,'admin/urls/add/">
 				Add New URL Remap
 			</a>
 		</div>
@@ -45,7 +45,7 @@ function theme_dynamicURLsListTableHead($linkRoot) {
 	';
 }
 
-function theme_dynamicURLsListTableRow($remap,$linkRoot,$key) {
+function theme_urlsListTableRow($remap,$linkRoot,$key) {
 	if(!$remap['regex']) {
         $remap['match']=str_replace('^','',$remap['match']);
         $remap['match']=str_replace('(/.*)?$','',$remap['match']);
@@ -59,49 +59,49 @@ function theme_dynamicURLsListTableRow($remap,$linkRoot,$key) {
 			<td class="hostname">',($remap['hostname']=='') ? 'Global' : $remap['hostname'],'</td>
             <td class="replacement">', ($remap['regex'] ? 'Regular Expressions':'Standard'), '</td>
 			<td class="buttonList">
-			    <a href="',$linkRoot,'admin/dynamic-urls/list/moveUp/',$remap['id'],'" title="Move Up">&uArr;</a>
-		        <a href="',$linkRoot,'admin/dynamic-urls/list/moveDown/',$remap['id'],'" title="Move Down">&dArr;</a>
-				<a href="',$linkRoot,'admin/dynamic-urls/edit/',$remap['id'],'">Modify</a>
-				<a href="',$linkRoot,'admin/dynamic-urls/delete/',$remap['id'],'">Delete</a>
+			    <a href="',$linkRoot,'admin/urls/list/moveUp/',$remap['id'],'" title="Move Up">&uArr;</a>
+		        <a href="',$linkRoot,'admin/urls/list/moveDown/',$remap['id'],'" title="Move Down">&dArr;</a>
+				<a href="',$linkRoot,'admin/urls/edit/',$remap['id'],'">Modify</a>
+				<a href="',$linkRoot,'admin/urls/delete/',$remap['id'],'">Delete</a>
 			</td>
 		</tr>';
 }
 
-function theme_dynamicURLsListTableFoot($linkRoot) {
+function theme_urlsListTableFoot($linkRoot) {
 	echo '
 			</tbody>
 		</table>
 		<div class="panel buttonList">
-			<a href="',$linkRoot,'admin/dynamic-urls/add/">
+			<a href="',$linkRoot,'admin/urls/add/">
 				Add New URL Remap
 			</a>
 		</div>
 		';
 }
 
-function theme_dynamicURLsDeleteSuccess($linkRoot) {
+function theme_urlsDeleteSuccess($linkRoot) {
 	echo '
 			<h2>Removal Successful</h2>
 			<p>The remap has been successfully deleted</p>
-			<p><a href="',$linkRoot, 'admin/dynamic-urls/list">Return to remap list</a></p>
+			<p><a href="',$linkRoot, 'admin/urls/list">Return to remap list</a></p>
 		';
 }
 
-function theme_dynamicURLsDeleteError($exists,$linkRoot) {
+function theme_urlsDeleteError($exists,$linkRoot) {
 	echo '
 			<h2>Cannot remove remap</h2>
 			<p>The remap cannot be removed. It ',($exists ? 'does' : 'doesn\'t'), ' exist in the database.</p>
-			<p><a href="',$linkRoot, 'admin/dynamic-urls/list">Return to remap list</a></p>
+			<p><a href="',$linkRoot, 'admin/urls/list">Return to remap list</a></p>
 		';
 }
 
-function theme_dynamicURLsDeleteConfirm($action3,$linkRoot) {
+function theme_urlsDeleteConfirm($action3,$linkRoot) {
 	echo '
 		<h2>Confirm Removal</h2>
 		<p>Are you sure that you want to remove this remap?</p>
 		<div class="buttonList">
-			<a href="',$linkRoot, 'admin/dynamic-urls/delete/',$action3, '/confirm">Yes, Confirm Delete</a>
-			<a href="',$linkRoot, 'admin/dynamic-urls/list">No, Cancel Delete</a>
+			<a href="',$linkRoot, 'admin/urls/delete/',$action3, '/confirm">Yes, Confirm Delete</a>
+			<a href="',$linkRoot, 'admin/urls/list">No, Cancel Delete</a>
 		</div>
 		';
 }

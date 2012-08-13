@@ -22,13 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicURLs_settings() {
+function urls_settings() {
 	return array(
-		'name'      => 'dynamicURLs',
-		'shortName' => 'dynamic-urls'
+		'name'      => 'URLs',
+		'shortName' => 'urls'
 	);
 }
-function dynamicURLs_install($db,$drop=false) {
+function urls_install($db,$drop=false) {
 	$structures = array(
 		'urls' => array(
 			'id'        => SQR_IDKey,
@@ -42,11 +42,11 @@ function dynamicURLs_install($db,$drop=false) {
 		)
 	);
 	if($drop)
-		dynamicURLs_uninstall($db);
+		urls_uninstall($db);
 
 	$db->createTable('urls',$structures['urls'],false);
 }
-function dynamicURLs_uninstall($db) {
+function urls_uninstall($db) {
 	$db->dropTable('urls');
 }
 ?>

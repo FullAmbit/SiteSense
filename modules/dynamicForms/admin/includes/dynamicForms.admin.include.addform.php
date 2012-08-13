@@ -59,14 +59,14 @@ function admin_dynamicFormsBuild($data, $db) {
 			switch ($data->output['fromForm']->sendArray[':topLevel']) {
 			case 1:
 				$modifiedShortName='^'.$shortName.'(/.*)?$';
-				$statement=$db->prepare('getUrlRemapByMatch', 'admin_dynamicURLs');
+				$statement=$db->prepare('getUrlRemapByMatch', 'admin_urls');
 				$statement->execute(array(
 						':match' => $modifiedShortName,
 						':hostname' => ''
 				));
 				$result=$statement->fetch();
 				if ($result===false) {
-					$statement=$db->prepare('insertUrlRemap', 'admin_dynamicURLs');
+					$statement=$db->prepare('insertUrlRemap', 'admin_urls');
 					$statement->execute(array(
 							':match'     => $modifiedShortName,
 							':replace'   => 'dynamic-forms/'.$shortName.'\1',

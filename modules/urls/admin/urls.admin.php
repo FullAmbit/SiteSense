@@ -22,12 +22,12 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function dynamicURLs_admin_buildContent($data,$db) {
+function urls_admin_buildContent($data,$db) {
 	
 	/**
 	 *	Permissions: Admin Only
 	**/
-	if(!checkPermission('access','dynamicURLs',$data)) {
+	if(!checkPermission('access','urls',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage'] = '
 			<h2>Insufficient Permissions</h2>
@@ -40,23 +40,23 @@ function dynamicURLs_admin_buildContent($data,$db) {
 		$data->action[2]='list';
 	}
 	if ($data->action[2]=='list') {
-		$statement=$db->query('getAllUrlRemaps','admin_dynamicURLs');
+		$statement=$db->query('getAllUrlRemaps','admin_urls');
         $data->output['urlremapList']=$statement->fetchAll();
 	}
-	$target='modules/dynamicURLs/admin/includes/dynamicURLs.admin.include.'.$data->action[2].'.php';
+	$target='modules/urls/admin/includes/urls.admin.include.'.$data->action[2].'.php';
 	if (file_exists($target)) {
 		common_include($target);
 		$data->output['function']=$data->action[2];
 	}
-	if (function_exists('admin_dynamicURLsBuild')) admin_dynamicURLsBuild($data,$db);
+	if (function_exists('admin_urlsBuild')) admin_urlsBuild($data,$db);
 	$data->output['pageTitle']='URL Remaps';
 }
-function dynamicURLs_admin_content($data) {
+function urls_admin_content($data) {
 	if ($data->output['abort']) {
 		echo $data->output['abortMessage'];
 	} else {
 		if (!empty($data->output['function'])) {
-			admin_dynamicURLsShow($data);
+			admin_urlsShow($data);
 		} else admin_unknown();
 	}
 }

@@ -49,7 +49,7 @@ function admin_dynamicFormsBuild($data,$db)
 		if(!empty($_POST['delete']))
 		{
       if($data->output['formItem']['topLevel']) {
-        $statement=$db->prepare('deleteReplacementByMatch','admin_dynamicURLs');
+        $statement=$db->prepare('deleteReplacementByMatch','admin_urls');
         $statement->execute(array(
           ':match' => '^'.$data->output['formItem']['shortName'].'(/.*)?$'
           

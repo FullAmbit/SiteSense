@@ -26,7 +26,7 @@
 	!table! = $tableName
 	!prefix! = dynamicPDO::tablePrefix
 */
-function admin_dynamicURLs_addQueries() {
+function admin_urls_addQueries() {
 	return array(
 		'getAllUrlRemaps' => '
 			SELECT * FROM !prefix!urls

@@ -22,7 +22,7 @@ function hostnames_admin_delete_build($data,$db){
 			));
 			if($r){
 				// Delete URL Remaps
-				$statement = $db->prepare('deleteByHostname','admin_dynamicURLs');
+				$statement = $db->prepare('deleteByHostname','admin_urls');
 				$r = $statement->execute(array(
 					':hostname' => $data->output['hostnameItem']['hostname']
 				));

@@ -22,26 +22,37 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function admin_dynamicURLsBuild($data,$db) {
-    if(!checkPermission('list','dynamicURLs',$data)) {
+function admin_urlsBuild($data,$db) {
+    if(!checkPermission('delete','urls',$data)) {
         $data->output['abort'] = true;
         $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
         return;
     }
-    if($data->action[3]=='moveUp' || $data->action[3]=='moveDown') {
-        admin_sortOrder_move($data,$db,'urls',$data->action[3],$data->action[4]);
-    }
-    $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
-	$messages = $db->query('getAllUrlRemaps','admin_dynamicURLs');
-	$data->output['remapList'] = $messages->fetchAll();
-}
-function admin_dynamicURLsShow($data) {
-	theme_dynamicURLsListTableHead($data->linkRoot);
-	$key = 0;
-	foreach($data->output['remapList'] as $key => $remap) {
-		theme_dynamicURLsListTableRow($remap,$data->linkRoot,$key);
+    $staff=false;
+	if (empty($data->action[3])) {
+		$data->output['abort'] = true;
+		$data->output['abortremap'] = '<h2>No ID Given</h2>';
+	}else{
+		$remap = $db->prepare('getUrlRemapById','admin_urls');
+		$remap->execute(array(':id' => (int)$data->action[3]));
+		$remap = $remap->fetch();
+		$data->output['exists'] = $remap !== false;
+		if($data->action[4] == 'confirm'){
+			$remaps = $db->prepare('deleteUrlRemap','admin_urls');
+			$remaps->execute(array(':id' => (int)$data->action[3]));
+			$data->output['success'] = ($remaps->rowCount() == 1);
+		}
 	}
-	$key++;
-	theme_dynamicURLsListTableFoot($data->linkRoot);
 }
-?>	
+function admin_urlsShow($data) {
+	if(isset($data->output['success'])){
+		if($data->output['success']){
+			theme_urlsDeleteSuccess($data->linkRoot);
+		}else{
+			theme_urlsDeleteError($data->output['exists'],$data->linkRoot);
+		}
+	}else{
+		theme_urlsDeleteConfirm($data->action[3],$data->linkRoot);
+	}
+}
+?>

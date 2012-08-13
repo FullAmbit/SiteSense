@@ -54,7 +54,7 @@ function admin_blogsBuild($data,$db) {
 		if($data->output['blogForm']->validateFromPost($data)) {
 		    if($data->output['blogForm']->sendArray[':topLevel']==1) {
                 $modifiedShortName='^'.$shortName.'(/.*)?$';
-                $statement=$db->prepare('getUrlRemapByMatch','admin_dynamicURLs');
+                $statement=$db->prepare('getUrlRemapByMatch','admin_urls');
                 $statement->execute(array(
                         ':match' => $modifiedShortName,
                         ':hostname' => ''
@@ -62,7 +62,7 @@ function admin_blogsBuild($data,$db) {
                 );
                 $result=$statement->fetch();
                 if($result===false) {
-                    $statement=$db->prepare('insertUrlRemap','admin_dynamicURLs');
+                    $statement=$db->prepare('insertUrlRemap','admin_urls');
                     $statement->execute(array(
                         ':match'     => $modifiedShortName,
                         ':replace'   => 'blogs/'.$shortName.'\1',
