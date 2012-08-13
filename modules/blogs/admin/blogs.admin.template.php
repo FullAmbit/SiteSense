@@ -24,19 +24,19 @@
 */
 function theme_blogsDeleteDeleted($data,$aRoot) {
 	echo '
-		<h2>Entry #',$data->action[3],' - ',$data->output['thisBlog']['name'],' Deleted</h2>
+		<h2>',$data->phrases['blogs']['deleteBlogSuccessHeading'],' - ',$data->output['thisBlog']['name'],' Deleted</h2>
 		<div class="buttonList">
-			<a href="',$aRoot,'list">Return to List</a>
+			<a href="',$aRoot,'list">',$data->phrases['blogs']['returnToBlogs'],'</a>
 		</div>
 		';
 }
 
 function theme_blogsDeleteCancelled($aRoot) {
 	echo '
-		<h2>Deletion Cancelled</h2>
+		<h2>',$data->phrases['blogs']['deleteBlogCancelledHeading'],'</h2>
 		<p>
-			You should be auto redirected to the blog list in three seconds.
-			<a href="',$aRoot,'list">Click Here if you don not wish to wait.</a>
+			',$data->phrases['core']['messageRedirect'],'
+			<a href="',$aRoot,'list">',$data->phrases['core']['linkSkipWait'],'</a>
 		</p>';
 }
 
@@ -44,72 +44,69 @@ function theme_blogsDeleteDefault($data,$aRoot) {
 	echo '
 		<form action="',$aRoot,'delete/',$data->action[3],'" method="post" class="verifyForm">
 			<fieldset>
-				<legend><span>Are you sure you want to delete blog #',$data->action[3],' "',$data->output['thisBlog']['name'],'"?</span></legend>
-				<input type="submit" name="delete" value="Yes, Delete it" />
-				<input type="submit" name="cancel" value="Cancel" />
+				<legend><span>',$data->phrases['blogs']['deleteBlogConfirmMessage'],' - ',$data->output['thisBlog']['name'],'</span></legend>
+				<input type="submit" name="delete" value="',$data->phrases['core']['actionConfirmDelete'],'" />
+				<input type="submit" name="cancel" value="',$data->phrases['core']['actionCancelDelete'],'" />
 				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
 }
 
 function theme_blogsDeleteCatDeleted($data,$aRoot) {
-	echo 'This category has been deleted. <div class="buttonList"><a href="'.$aRoot.'listCategories/'.$data->output['blogItem']['id'].'" title="Return To Categories">Return to blogs.</a></div>';
+	echo $data->phrases['blogs']['deleteCategorySuccessMessage'].'<div class="buttonList"><a href="'.$aRoot.'listCategories/'.$data->output['blogItem']['id'].'" title="Return To Categories">'.$data->phrases['blogs']['returnToCategories'].'</a></div>';
 }
 
-function theme_blogsDeleteCatCancelled($aRoot) {
-	echo '<h2>Deletion Cancelled</h2><p>You should be auto redirected to the blogs list in three seconds. <a href="',$aRoot,'list">Click Here if you do not wish to wait.</a></p>';
+function theme_blogsDeleteCatCancelled($data,$aRoot) {
+	echo '<h2>',$data->phrases['blogs']['deleteCategoryCancelledHeading'],'</h2><p>',$data->phrases['core']['messageRedirect'],'<a href="',$aRoot,'list">',$data->phrases['core']['linkSkipWait'],'</a></p>';
 }
 
 function theme_blogsDeleteCatDefault($data,$aRoot) {
 	echo '
 		<form action="'.$aRoot.'deleteCategory/'.$data->action[3].'" method="post" class="verifyForm">
 			<fieldset>
-				<legend>Are you sure you want to delete this category?</legend>
+				<legend>',$data->phrases['blogs']['deleteCategoryConfirmMessage'],'</legend>
 			</fieldset>
-			<input type="submit" name="delete" value="Yes, Delete it" />
-			<input type="submit" name="cancel" value="Cancel" />
+			<input type="submit" name="delete" value="',$data->phrases['core']['actionConfirmDelete'],'" />
+			<input type="submit" name="cancel" value="',$data->phrases['core']['actionCancelDelete'],'" />
 			<input type="hidden" name="fromForm" value="'.$data->action[3].'" />
 		</form>';
 }
 
-function theme_blogsDeleteCommentDeleted($aRoot) {
-	echo 'This comment has been deleted. <div class="buttonList"><a href="'.$aRoot.'" title="Return To Blogs">Return to blogs.</a></div>';
+function theme_blogsDeleteCommentDeleted($data,$aRoot) {
+	echo $data->phrases['blogs']['deleteCommentSuccessMessage'].'<div class="buttonList"><a href="'.$aRoot.'" title="Return To Blogs">'.$data->phrases['blogs']['returnToBlogs'].'</a></div>';
 }
 
-function theme_blogsDeleteCommentCancelled($aRoot) {
-	echo '<h2>Deletion Cancelled</h2><p>You should be auto redirected to the blog list in three seconds. <a href="',$aRoot,'list">Click Here if you don not wish to wait.</a></p>';
+function theme_blogsDeleteCommentCancelled($data,$aRoot) {
+	echo $data->phrases['blogs']['deleteCommentCancelledHeading'],'<p>',$data->phrases['core']['messageRedirect'],'<a href="',$aRoot,'list">',$data->phrases['core']['linkSkipWait'],'</a></p>';
 }
 
 function theme_blogsDeleteCommentDefault($data,$aRoot) {
 	echo '
 		<form action="'.$aRoot.'deleteComment/'.$data->action[3].'" method="post" class="verifyForm">
 			<fieldset>
-				<legend>Are you sure you want to delete this comment?</legend>
+				<legend>'.$data->phrases['blogs']['deleteCommentConfirmMessage'].'</legend>
 			</fieldset>
-			<input type="submit" name="delete" value="Yes, Delete it" />
-			<input type="submit" name="cancel" value="Cancel" />
+			<input type="submit" name="delete" value="',$data->phrases['core']['actionConfirmDelete'],'" />
+			<input type="submit" name="cancel" value="',$data->phrases['core']['actionCancelDelete'],'" />
 			<input type="hidden" name="fromForm" value="'.$data->action[3].'" />
 		</form>';
 }
 
 function theme_blogsDeletePostsDeleted($data,$aRoot) {
 	echo '
-		<h2>Entry #',$data->action[3],' Deleted</h2>
-		<p>
-			This action deleted a total of ',$data->output['deleteCount'],' post items!
-		</p>
+		<h2>',$data->phrases['blogs']['deletePostSuccessHeading'],' - ',$data->action[3],'</h2>
 		<div class="buttonList">
-			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['blogId'],'">Return to List</a>
+			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['blogId'],'">',$data->phrases['blogs']['returnToPosts'],'</a>
 		</div>
 		';
 }
 
 function theme_blogsDeletePostsCancelled($data,$aRoot) {
 	echo '
-		<h2>Deletion Cancelled</h2>
+		<h2>',$data->phrases['blogs']['deletePostCancelledHeading'],'</h2>
 		<p>
-			You should be auto redirected to the post list in three seconds.
-			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['blogId'],'">Click Here if you don not wish to wait.</a>
+			',$data->phrases['core']['messageRedirect'],'
+			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['blogId'],'">',$data->phrases['core']['linkSkipWait'],'</a>
 		</p>';
 }
 
@@ -117,43 +114,43 @@ function theme_blogsDeletePostsDefault($data,$aRoot) {
 	echo '
 		<form action="',$aRoot,'deletePosts/',$data->action[3],'" method="post" class="verifyForm">
 			<fieldset>
-				<legend><span>Are you sure you want to delete blog post id#',$data->action[3],'?</span></legend>
-				<input type="submit" name="delete" value="Yes, Delete it" />
-				<input type="submit" name="cancel" value="Cancel" />
+				<legend><span>',$data->phrases['blogs']['deletePostConfirmHeading'],' - ',$data->action[3],'</span></legend>
+			<input type="submit" name="delete" value="',$data->phrases['core']['actionConfirmDelete'],'" />
+			<input type="submit" name="cancel" value="',$data->phrases['core']['actionCancelDelete'],'" />
 				<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 			</fieldset>
 		</form>';
 }
 
-function theme_blogsListHead($aRoot) {
+function theme_blogsListHead($data,$aRoot) {
 	echo '
 		<div class="navPanel buttonList">
 			<a href="',$aRoot,'add">
-				Add New Blog
+				',$data->phrases['blogs']['addNewBlog'],'
 			</a>
 		</div>';
 }
 
-function theme_blogsListNoBlogs() {
+function theme_blogsListNoBlogs($data) {
 	echo '
-		<p class="blogsListNoBlogs">No Blogs exist</p>';
+		<p class="blogsListNoBlogs">',$data->phrases['blogs']['noBlogsExist'],'</p>';
 }
 
-function theme_blogsListTableHead() {
+function theme_blogsListTableHead($data) {
 	echo '
 		<table class="blogsList">
-		<caption>Manage Blogs</caption>
+		<caption>',$data->phrases['blogs']['manageBlogsHeading'],'</caption>
 			<thead>
 				<tr>
-					<th class="shortName">Blog Title</th>
-					<th class="module">Owner</th>
-					<th class="module">Entries</th>
-					<th class="controls">Controls</th>
+					<th class="shortName">',$data->phrases['blogs']['blogTitle'],'</th>
+					<th class="module">',$data->phrases['blogs']['owner'],'</th>
+					<th class="module">',$data->phrases['blogs']['entries'],'</th>
+					<th class="controls">',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_blogsListTableRow($item,$aRoot,$count) {
+function theme_blogsListTableRow($data,$item,$aRoot,$count) {
 	echo '
 		<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 			<td class="shortName">
@@ -165,9 +162,9 @@ function theme_blogsListTableRow($item,$aRoot,$count) {
 				',$item['ownerName'],'
 			<td class="module">',$item['count'],'</td>
 			<td class="buttonList">
-				<a href="'.$aRoot.'addPost/'.$item['id'].'/new">New Post</a>
-				<a href="',$aRoot,'edit/',$item['id'],'">Modify Blog</a>
-				<a href="'.$aRoot.'delete/'.$item['id'].'">Delete</a>
+				<a href="'.$aRoot.'addPost/'.$item['id'].'/new">',$data->phrases['blogs']['newPost'],'</a>
+				<a href="',$aRoot,'edit/',$item['id'],'">',$data->phrases['core']['actionModify'],'</a>
+				<a href="'.$aRoot.'delete/'.$item['id'].'">',$data->phrases['core']['actionDelete'],'</a>
 			</td>
 		</tr>';
 }
@@ -178,46 +175,46 @@ function theme_blogsListTableFoot() {
 		</table>';
 }
 
-function theme_blogsListFoot($aRoot) {
+function theme_blogsListFoot($data,$aRoot) {
 	echo '
 		<div class="navPanel buttonList">
 			<a href="',$aRoot,'add">
-				Add New Blog
+				',$data->phrases['blogs']['addNewBlog'],'
 			</a>
 		</div>';
 }
 
 function theme_blogsListCatTableHead($data,$aRoot) {
 	echo '
-		<h2 class="preTable">Categories of the blog titled ',$data->output['blogItem']['name'],'</h2>
+		<h2 class="preTable">',$data->phrases['blogs']['manageCategoriesHeading'],' - ',$data->output['blogItem']['name'],'</h2>
 		<div class="navPanel buttonList">
-			<a href="',$aRoot,'addCategory/',$data->output['blogItem']['id'],'">Add Category</a>
+			<a href="',$aRoot,'addCategory/',$data->output['blogItem']['id'],'">',$data->phrases['blogs']['addCategory'],'</a>
 		</div>
 		<table class="pagesList">
 			<thead>
 				<tr>
-					<th class="title">Category Title</th>
-					<th class="controls">Controls</th>
+					<th class="title">',$data->phrases['core']['title'],'</th>
+					<th class="controls">',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead>
 		';
 }
 
-function theme_blogsListCatNoCats() {
+function theme_blogsListCatNoCats($data) {
 	echo '
 			<tr>
-				<td colspan="2">No categories found</td>
+				<td colspan="2">',$data->phrases['blogs']['noCategoriesFound'],'</td>
 			</tr>
 		';
 }
 
-function theme_blogsListCatTableRow($categoryItem,$aRoot,$count) {
+function theme_blogsListCatTableRow($data,$categoryItem,$aRoot,$count) {
 	echo
 		'<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 			<td class="title">'.$categoryItem['name'].'</td>
 			<td class="buttonList">
-				<a href="'.$aRoot.'editCategory/'.$categoryItem['id'].'">Modify Category</a>
-				<a href="'.$aRoot.'deleteCategory/'.$categoryItem['id'].'">Delete Category</a>
+				<a href="'.$aRoot.'editCategory/'.$categoryItem['id'].'">',$data->phrases['core']['actionModify'],'</a>
+				<a href="'.$aRoot.'deleteCategory/'.$categoryItem['id'].'">',$data->phrases['core']['actionDelete'],'</a>
 			</td>
 		</tr>';
 }
@@ -226,20 +223,20 @@ function theme_blogsListCatTableFoot() {
 	echo '</table>';
 }
 
-function theme_blogsListCommentsNoComments() {
-	echo 'No comments were found for this blog post.';
+function theme_blogsListCommentsNoComments($data) {
+	echo $data->phrases['blogs']['noCommentsFound'];
 }
 
-function theme_blogsListCommentsPendingTableHead() {
+function theme_blogsListCommentsPendingTableHead($data) {
 	echo '
 	<table class="pagesList">
-		<caption>Comments Awaiting Approval</caption>
+		<caption>',$data->phrases['blogs']['manageCommentsPendingHeading'],'</caption>
 		<tr>
-			<th class="title">Author</th>
-			<th>Comment</th>
-			<th class="time">Time</th>
-			<th class="loggedIP">IP Address</th>
-			<th class="buttonList">Controls</th>
+			<th class="title">',$data->phrases['blogs']['author'],'</th>
+			<th>',$data->phrases['blogs']['comment'],'</th>
+			<th class="time">',$data->phrases['core']['time'],'</th>
+			<th class="loggedIP">',$data->phrases['blogs']['ipAddress'],'</th>
+			<th class="buttonList">',$data->phrases['core']['controls'],'</th>
 		</tr>
 	';
 }
@@ -251,31 +248,31 @@ function theme_blogsListCommentsPendingTableRow($data,$item,$count) {
 				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
 				<td class="loggedIP">'.$item['loggedIP'].'</td>
 				<td class="buttonList">
-					<a href="'.$data->linkRoot.'admin/blogs/approveComment/'.$item['id'].'" title="Approve Comment">Approve</a>
-					<a href="'.$data->linkRoot.'admin/blogs/disapproveComment/'.$item['id'].'" title="Disapprove Comment">Disapprove</a>
-					<a href="'.$data->linkRoot.'admin/blogs/editComment/'.$item['id'].'" title="Edit Comment">Edit</a>
-					<a href="'.$data->linkRoot.'admin/blogs/deleteComment/'.$item['id'].'" title="Delete Comment">Delete</a>
+					<a href="'.$data->linkRoot.'admin/blogs/approveComment/'.$item['id'].'" title="Approve Comment">'.$data->phrases['blogs']['approve'],'</a>
+					<a href="'.$data->linkRoot.'admin/blogs/disapproveComment/'.$item['id'].'" title="Disapprove Comment">'.$data->phrases['blogs']['disapprove'].'</a>
+					<a href="'.$data->linkRoot.'admin/blogs/editComment/'.$item['id'].'" title="Edit Comment">'.$data->phrases['core']['actionEdit'].'</a>
+					<a href="'.$data->linkRoot.'admin/blogs/deleteComment/'.$item['id'].'" title="Delete Comment">'.$data->phrases['core']['actionDelete'].'</a>
 				</td>
 			</tr>';
 }
 
-function theme_blogsListCommentsNoPending() {
+function theme_blogsListCommentsNoPending($data) {
 	echo '
 		<tr>
-			<td colspan="5">No comments awaiting approval.</td>
+			<td colspan="5">',$data->phrases['blogs']['noCommentsPending'],'</td>
 		</tr>';
 }
 
-function theme_blogsListCommentsApprovedTableHead() {
+function theme_blogsListCommentsApprovedTableHead($data) {
 	echo '
 	<table class="pagesList">
-		<caption>Approved Comments</caption>
+		<caption>',$data->phrases['blogs']['manageCommentsApprovedHeading'],'</caption>
 		<tr>
-			<th class="title">Author</th>
-			<th>Comment</th>
-			<th class="time">Time</th>
-			<th class="loggedIP">IP Address</th>
-			<th class="buttonList">Controls</th>
+			<th class="title">',$data->phrases['blogs']['author'],'</th>
+			<th>',$data->phrases['blogs']['comment'],'</th>
+			<th class="time">',$data->phrases['core']['time'],'</th>
+			<th class="loggedIP">',$data->phrases['blogs']['ipAddress'],'</th>
+			<th class="buttonList">',$data->phrases['core']['controls'],'</th>
 		</tr>
 	';
 }
@@ -287,30 +284,30 @@ function theme_blogsListCommentsApprovedTableRow($data,$item,$count) {
 				<td class="time">'.date('F j, Y \a\t g:i A',$item['time']).'</td>
 				<td class="loggedIP">'.$item['loggedIP'].'</td>
 				<td class="buttonList">
-					<a href="'.$data->linkRoot.'admin/blogs/disapproveComment/'.$item['id'].'" title="Disapprove Comment">Disapprove</a>
-					<a href="'.$data->linkRoot.'admin/blogs/editComment/'.$item['id'].'" title="Edit Comment">Edit</a>
-					<a href="'.$data->linkRoot.'admin/blogs/deleteComment/'.$item['id'].'" title="Delete Comment">Delete</a>
+					<a href="'.$data->linkRoot.'admin/blogs/disapproveComment/'.$item['id'].'" title="Disapprove Comment">'.$data->phrases['blogs']['disapprove'].'</a>
+					<a href="'.$data->linkRoot.'admin/blogs/editComment/'.$item['id'].'" title="Edit Comment">'.$data->phrases['core']['actionEdit'].'</a>
+					<a href="'.$data->linkRoot.'admin/blogs/deleteComment/'.$item['id'].'" title="Delete Comment">'.$data->phrases['core']['actionDelete'].'</a>
 				</td>
 			</tr>';
 }
 
-function theme_blogsListCommentsNoApproved() {
+function theme_blogsListCommentsNoApproved($data) {
 	echo '
 		<tr>
-			<td colspan="5">No approved comments exist for this post.</td>
+			<td colspan="5">',$data->phrases['blogs']['noCommentsApproved'],'</td>
 		</tr>';
 }
 
-function theme_blogsListCommentsDisapprovedTableHead() {
+function theme_blogsListCommentsDisapprovedTableHead($data) {
 	echo '
 	<table class="pagesList">
-		<caption>Disapproved</caption>
+		<caption>',$data->phrases['blogs']['manageCommentsDisapprovedHeading'],'</caption>
 		<tr>
-			<th class="title">Author</th>
-			<th>Comment</th>
-			<th class="time">Time</th>
-			<th class="loggedIP">IP Address</th>
-			<th class="buttonList">Controls</th>
+			<th class="title">',$data->phrases['blogs']['author'],'</th>
+			<th>',$data->phrases['blogs']['comment'],'</th>
+			<th class="time">',$data->phrases['core']['time'],'</th>
+			<th class="loggedIP">',$data->phrases['blogs']['ipAddress'],'</th>
+			<th class="buttonList">',$data->phrases['core']['controls'],'</th>
 		</tr>
 	';
 }
@@ -329,10 +326,10 @@ function theme_blogsListCommentsDisapprovedTableRow($data,$item,$count) {
 			</tr>';
 }
 
-function theme_blogsListCommentsNoDisapproved() {
+function theme_blogsListCommentsNoDisapproved($data) {
 	echo '
 		<tr>
-			<td colspan="5">No disapproved comments.</td>
+			<td colspan="5">',$data->phrases['blogs']['noCommentsDisapproved'],'</td>
 		</tr>';
 }
 
@@ -343,36 +340,36 @@ function theme_blogsListCommentsTableFoot() {
 function theme_blogsListPostsHead($data,$aRoot) {
 	echo '
 		<div class="navPanel buttonList">
-			<a href="',$aRoot,'listCategories/'.$data->output['parentBlog']['id'].'">Categories</a>
+			<a href="',$aRoot,'listCategories/'.$data->output['parentBlog']['id'].'">',$data->phrases['blogs']['categories'],'</a>
 			<a href="',$aRoot,'addPost/'.$data->output['parentBlog']['id'].'">
-				Add New Post
+				',$data->phrases['blogs']['addNewPost'],'
 			</a>
 			<a href="'.$aRoot.'list">
-				Back to Blog List
+				',$data->phrases['blogs']['returnToBlogs'],'
 			</a>
 		</div>';
 }
 
-function theme_blogsListPostsNoPosts() {
+function theme_blogsListPostsNoPosts($data) {
 	echo '
-		<p class="blogPostsListNoBlogPosts">No blogs posts exist</p>';
+		<p class="blogPostsListNoBlogPosts">',$data->phrases['noPostsExist'],'</p>';
 }
 
 function theme_blogsListsPostsTableHead($data) {
 	echo '
 		<table class="blogPostsList">
-			<caption>Manage Posts in the "',$data->output['parentBlog']['title'],'" Blog</caption>
+			<caption>',$data->phrases['blogs']['managePostsHeading'],' - ',$data->output['parentBlog']['title'],'</caption>
 			<thead>
 				<tr>
-					<th class="title">Post Title</th>
-					<th class="date">Date Created</th>
-					<th class="date">Last Edited</th>
-					<th class="controls">Controls</th>
+					<th class="title">',$data->phrases['core']['title'],'</th>
+					<th class="date">',$data->phrases['blogs']['dateCreated'],'</th>
+					<th class="date">',$data->phrases['blogs']['lastEdited'],'</th>
+					<th class="controls">',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead><tbody>';
 }
 
-function theme_blogsListPostsTableRow($item,$aRoot,$count) {
+function theme_blogsListPostsTableRow($data,$item,$aRoot,$count) {
     echo '
 		<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 			<td class="title">
@@ -389,8 +386,8 @@ function theme_blogsListPostsTableRow($item,$aRoot,$count) {
 				<span>'.date('H:i T',$item['modifiedTime']).'</span>
 			</td>
 			<td class="buttonList">
-				<a href="'.$aRoot.'listComments/',$item['id'],'">Edit Comments</a>
-				<a href="'.$aRoot.'deletePosts/',$item['id'],'">Delete</a>
+				<a href="'.$aRoot.'listComments/',$item['id'],'">',$data->phrases['blogs']['editComments'],'</a>
+				<a href="'.$aRoot.'deletePosts/',$item['id'],'">',$data->phrases['core']['actionDelete'],'</a>
 			</td>
 		</tr>';
 }
@@ -404,12 +401,12 @@ function theme_blogsListPostsTableFoot() {
 function theme_blogsListPostsFoot($data,$aRoot) {
 	echo '
 			<div class="navPanel buttonList">
-				<a href="',$aRoot,'listCategories/'.$data->output['parentBlog']['id'].'">Categories</a>
+			<a href="',$aRoot,'listCategories/'.$data->output['parentBlog']['id'].'">',$data->phrases['blogs']['categories'],'</a>
 				<a href="',$aRoot,'addPost/'.$data->output['parentBlog']['id'].'">
-					Add New Post
+				',$data->phrases['blogs']['addNewPost'],'
 				</a>
 				<a href="'.$aRoot.'list">
-					Back to Blog List
+				',$data->phrases['blogs']['returnToBlogs'],'
 				</a>
 		</div>';
 }

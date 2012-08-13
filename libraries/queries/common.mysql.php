@@ -76,10 +76,9 @@ function common_addQueries() {
 			SELECT id FROM !prefix!users
 			WHERE name = :name
 		',
-        'updateSessionExpirationAndLanguage' => '
+        'updateSessionExpiration' => '
 			UPDATE !prefix!sessions
-			SET expires = :expires,
-				language = :language
+			SET expires = :expires
 			WHERE sessionId = :sessionId
 		',
         'updateLastAccess' => '
@@ -110,9 +109,9 @@ function common_addQueries() {
 		',
         'updateUserSession' => '
 			INSERT INTO !prefix!sessions
-			(sessionId,userId,expires,ipAddress,userAgent,language)
+			(sessionId,userId,expires,ipAddress,userAgent)
 			VALUES
-			(:sessionId,:userId,:expires,:ipAddress,:userAgent,:language)
+			(:sessionId,:userId,:expires,:ipAddress,:userAgent)
 		',
         'getSettings' => '
 			SELECT * FROM !prefix!settings!lang!
@@ -424,7 +423,7 @@ function common_addQueries() {
         'findReplacement' => '
             SELECT r.match,r.replace FROM !prefix!url_remap r
             WHERE :url RLIKE r.match AND (hostname = :hostname OR hostname = "")
-            ORDER BY hostname DESC
+            ORDER BY hostname, sortOrder ASC
         ',
         'getCoreAndModulePhrases' => '
 			SELECT
@@ -437,6 +436,22 @@ function common_addQueries() {
 				module = ""
 			GROUP BY
 				module
+		',
+		'getPhrasesByModule' => '
+			SELECT
+				phrase,text
+			FROM 
+				!prefix!languages_phrases!lang!
+			WHERE
+				module = :module
+		',
+		'getLanguageByShortName' => '
+			SELECT
+				name
+			FROM 
+				!prefix!languages 
+			WHERE
+				shortName = :shortName
 		',
 		'getAllLanguages' => '
 			SELECT 

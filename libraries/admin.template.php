@@ -52,17 +52,17 @@ echo '
 <title>
 	',(
 		empty($data->output['pageTitle']) ? '' : $data->output['pageTitle'].' '
-	),'Control Panel - ',$data->settings['siteTitle'],'
+	),$data->phrases['core']['adminHeading'],' - ',$data->settings['siteTitle'],'
 </title>
 </head><body>
 <div id="pageWrapper">
-	<h1>Control Panel - <a href="',$data->domainName,$data->linkRoot,'">',$data->settings['siteTitle'],'</a></h1>';
+	<h1>',$data->phrases['core']['adminHeading'],' - <a href="',$data->domainName,$data->linkRoot,'">',$data->settings['siteTitle'],'</a></h1>';
 	if (isset($data->user['id'])) {
 		echo '
 	<div id="loggedBar" class="buttonList">';
 		if($data->action[1]=='dashboard'){
 			echo '
-			<form name="frmLanguageSelector" action="" method="post" style="float:left;">
+			<form name="frmLanguageSelector" action="" method="get" style="float:left;">
 				<select name="language" onchange="this.form.submit()">';
 				foreach($data->languageList as $languageItem){
 					if($languageItem['shortName']==$data->language){

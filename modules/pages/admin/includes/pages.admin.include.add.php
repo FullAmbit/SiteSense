@@ -39,6 +39,7 @@ function admin_pagesBuild($data, $db) {
 	}
 
 	// Get Menu Items To Select Parent
+	common_include('modules/mainMenu/admin/includes/mainMenu.admin.include.add.php');
 	$data->output['pageForm']->fields['menuParent']['options'] = array_merge($data->output['pageForm']->fields['menuParent']['options'], admin_mainMenuOptions($db));
 
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['pageForm']->fromForm)) {

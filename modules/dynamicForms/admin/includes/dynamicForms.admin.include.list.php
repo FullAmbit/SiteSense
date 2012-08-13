@@ -35,14 +35,14 @@ function admin_dynamicFormsBuild($data,$db){
 function admin_dynamicFormsShow($data){
 	theme_dynamicFormsListNewButton($data);
 	if (empty($data->output['forms'])) {
-		theme_dynamicFormsListNoForms();
+		theme_dynamicFormsListNoForms($data);
 	} else {
-		theme_dynamicFormsListTableHead();
+		theme_dynamicFormsListTableHead($data);
 	$count=0;
 	foreach($data->output['forms'] as $form){
 		theme_dynamicFormsListTableRow($data,$form,$count);
 		$count++;
 	}
-	theme_dynamicFormsListTableFoot();
+	theme_dynamicFormsListTableFoot($data);
   }
 }

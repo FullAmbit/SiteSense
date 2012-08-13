@@ -25,7 +25,7 @@
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('postList','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(is_numeric($data->action[3])) {
@@ -43,7 +43,7 @@ function admin_blogsBuild($data,$db) {
 		// Check For Results
 		if(($data->output['parentBlog']=$check->fetch())===FALSE) {
 			$data->output['abort']=true;
-			$data->output['abortMessage']='<h2>The ID does not exist in database</h2>';
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 			return;
 		}
 		$statement=$db->prepare('countBlogPostsByBlogId','admin_blogs');
@@ -77,12 +77,12 @@ function admin_blogsShow($data) {
 	);
 	theme_blogsListPostsHead($data,$aRoot);
 	if(empty($data->output['blogPosts'])) {
-		theme_blogsListPostsNoPosts();
+		theme_blogsListPostsNoPosts($data);
 	} else {
 		theme_blogsListsPostsTableHead($data);
 		$count=0;
 		foreach($data->output['blogPosts'] as $item) {
-			theme_blogsListPostsTableRow($item,$aRoot,$count);
+			theme_blogsListPostsTableRow($data,$item,$aRoot,$count);
 			$count++;
 		}
 	    theme_blogsListPostsTableFoot();

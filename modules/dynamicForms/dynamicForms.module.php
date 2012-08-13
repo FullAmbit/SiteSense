@@ -270,11 +270,11 @@ function dynamicForms_content($data) {
 			break;
 		}
 	}else if(isset($data->output['success'])){
-		theme_contentBoxHeader($data->output['form']['name']);
+		theme_contentBoxHeader($data->output['form']['title']);
 		echo $data->output['success'];
 		theme_contentBoxFooter();
 	}else{
-		theme_contentBoxHeader($data->output['form']['name']);
+		theme_contentBoxHeader($data->output['form']['title']);
 		echo htmlspecialchars_decode($data->output['form']['parsedContentBefore']);
 		$data->output['customForm']->build();
 		echo htmlspecialchars_decode($data->output['form']['parsedContentAfter']);

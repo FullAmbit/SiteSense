@@ -37,7 +37,7 @@ function admin_blogPostsCheckShortName($db,$shortName) {
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('postEdit','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     global $languageText;
@@ -57,9 +57,8 @@ function admin_blogsBuild($data,$db) {
 			));
 		}
 		if(($data->output['parentBlog']=$statement->fetch())==FALSE) {
-			$data->output['savedOkMessage']='
-			<h2>Invalid Parameters</h2>
-			The blog you specified could not be found.';
+        	$data->output['abort']=true;
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 			return;
 		}
 		//---Load Blog Post---
@@ -67,21 +66,26 @@ function admin_blogsBuild($data,$db) {
 		$statement->execute(array(
 			'id' => $data->action[4]
 		));
-		if($data->output['blogItem']=$item=$statement->fetch()) {
-			// Load Form
-			$data->output['blogForm']=new formHandler('editPosts',$data,true);
-			//--Fill Up Fields--
-			foreach($data->output['blogForm']->fields as $key => $value) {
-				if(
-					(!empty($value['params']['type'])) &&
-					($value['params']['type']=='checkbox')
-				) {
-					$data->output['blogForm']->fields[$key]['checked']=(
-						$item[$key] ? 'checked' : ''
-					);
-				} else {
-					$data->output['blogForm']->fields[$key]['value']=html_entity_decode($item[$key]);
-				}
+		if(($data->output['blogItem']=$statement->fetch())==FALSE){
+			$data->output['abort']=true;
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
+			return;
+		}
+		$item = $data->output['blogItem'];
+		// Load Form
+		$data->output['blogForm']=new formHandler('editPosts',$data,true);
+		$data->output['blogForm']->caption=$data->phrases['blogs']['captionEditPost'];
+		//--Fill Up Fields--
+		foreach($data->output['blogForm']->fields as $key => $value) {
+			if(
+				(!empty($value['params']['type'])) &&
+				($value['params']['type']=='checkbox')
+			) {
+				$data->output['blogForm']->fields[$key]['checked']=(
+					$item[$key] ? 'checked' : ''
+				);
+			} else {
+				$data->output['blogForm']->fields[$key]['value']=html_entity_decode($item[$key]);
 			}
 		}
 	} else {
@@ -111,7 +115,7 @@ function admin_blogsBuild($data,$db) {
 			// Check To See If ShortName Exists Anywhere (Across Any Language)
 			if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_posts','id',array('shortName'=>$shortName))){
 				$data->output['blogForm']->fields['name']['error']=true;
-	            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog.';
+		        $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 	            return;
 			}
 		}
@@ -139,23 +143,23 @@ function admin_blogsBuild($data,$db) {
 				'live' => $data->output['blogForm']->sendArray[':live']
 			));
 			$data->output['savedOkMessage']='
-				<h2>Values Saved Successfully</h2>
+				<h2>'.$data->phrases['blogs']['savePostSuccessHeading'].'</h2>
 				<p>
-					Auto generated short name was: '.$shortName.'
+					'.$data->phrases['blogs']['savePostSuccessMessage'].'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$aRoot.'editPosts/'.$data->action[3].'/new">
-						Add New Post to "'.$data->output['parentBlog']['name'].'"
+					<a href="'.$aRoot.'addPost/'.$data->action[3].'/">
+						'.$data->phrases['blogs']['addNewPost'].'
 					</a>
 					<a href="'.$aRoot.'listPosts/'.$data->action[3].'">
-						Return to Page List
+						'.$data->phrases['blogs']['returnToPosts'].'
 					</a>
 				</div>';
 		} else {
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

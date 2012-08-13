@@ -50,7 +50,7 @@ function admin_dynamicFormsBuild($data,$db){
 	{
 		case 'moveUp':
 		case 'moveDown':
-            admin_sortOrder_move($data,$db,'form_fields',$data->action[4],$data->action[5],'sortOrder','form');
+            admin_sortOrder_move($data,$db,'form_fields',$data->action[4],$data->action[5],'sortOrder','form',TRUE);
 		break;
 	}
 	

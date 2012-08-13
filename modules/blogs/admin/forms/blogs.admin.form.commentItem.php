@@ -22,10 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->submitTitle='Save Comment';
+$this->submitTitle=$data->phrases['blogs']['submitCommentItemForm'];
 $this->fields=array(
 	'authorFirstName' => array(
-		'label' => 'First Name',
+		'label' => $data->phrases['blogs']['labelCommentItemAuthorFirstName'],
 		'tag' => 'input',
 		'value' => isset($data->output['commentItem']['authorFirstName']) ? $data->output['commentItem']['authorFirstName'] : '',
 		'params' => array(
@@ -33,7 +33,7 @@ $this->fields=array(
 		),
 	),
 	'authorLastName' => array(
-		'label' => 'Last Name',
+		'label' => $data->phrases['blogs']['labelCommentItemAuthorLastName'],
 		'tag' => 'input',
 		'value' => isset($data->output['commentItem']['authorLastName']) ? $data->output['commentItem']['authorLastName'] : '',
 		'params' => array(
@@ -41,7 +41,7 @@ $this->fields=array(
 		),
 	),
 	'email' => array(
-		'label' => 'Email',
+		'label' => $data->phrases['blogs']['labelCommentItemEmail'],
 		'tag' => 'input',
 		'value' => isset($data->output['commentItem']['email']) ? $data->output['commentItem']['email'] : '',
 		'params' => array(
@@ -49,7 +49,7 @@ $this->fields=array(
 		),
 	),
 	'rawContent' => array(
-		'label' => 'Message',
+		'label' => $data->phrases['blogs']['labelCommentItemRawContent'],
 		'tag' => 'textarea',
 		'value' => isset($data->output['commentItem']['rawContent']) ? $data->output['commentItem']['rawContent'] : '',
 		'params' => array(

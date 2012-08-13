@@ -26,7 +26,7 @@ common_include('libraries/forms.php');
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('blogAdd','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     $data->output['blogForm']=new formHandler('edit',$data,true);
@@ -47,7 +47,7 @@ function admin_blogsBuild($data,$db) {
 		// Check To See If ShortName Exists Anywhere (Across Any Language)
 		if(common_checkUniqueValueAcrossLanguages($data,$db,'blogs','id',array('shortName'=>$shortName))){
 			$data->output['blogForm']->fields['name']['error']=true;
-            $data->output['blogForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog post.';
+		    $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
             return;
 		}
 		// Validate Form
@@ -72,7 +72,7 @@ function admin_blogsBuild($data,$db) {
                     ));
                 } else {
                     $data->output['blogForm']->fields['name']['error']=true;
-                    $data->output['blogForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+                    $data->output['blogForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                     return;
                 }
             }
@@ -93,25 +93,25 @@ function admin_blogsBuild($data,$db) {
 			}
 			$aRoot=$data->linkRoot . 'admin/blogs/';
 			$data->output['savedOkMessage']='
-				<h2>Values Saved Successfully</h2>
+				<h2>'.$data->phrases['blogs']['saveBlogSuccessHeading'].'</h2>
 				<p>
-					Auto generated short name was: '.$shortName.'
+					'.$data->phrases['blogs']['saveBlogSuccessMessage'].' - '.$shortName.'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$aRoot.'add">
-						Add Another Blog
+					<a href="'.$aRoot.'add/">
+						'.$data->phrases['blogs']['addNewBlog'].'
 					</a>
 					<a href="'.$aRoot.'list/">
-						Return to Blog List
+						'.$data->phrases['blogs']['returnToBlogs'].'
 					</a>
 				</div>';
 
 		} else {
 			// Form Validation Fail
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

@@ -26,12 +26,12 @@ function admin_dynamicFormsBuild($data,$db){
 	//permission check for forms edit
 	if(!checkPermission('edit','dynamicForms',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}	
 	if($data->action[3] === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->action[3] = intval($data->action[3]);
@@ -40,7 +40,7 @@ function admin_dynamicFormsBuild($data,$db){
 	$data->output['fieldItem'] = $statement->fetch();
 	if($data->output['fieldItem'] === false || $data->output['fieldItem']['type'] !== 'select'){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Select Field Doesn\'t Exist</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	//----Modification?----//
@@ -70,11 +70,11 @@ function sortCmp($a,$b)
 function admin_dynamicFormsShow($data){
 	theme_dynamicFormsListOptionsButtons($data);
 	
-	theme_dynamicFormsListOptionsTableHead();
+	theme_dynamicFormsListOptionsTableHead($data);
 			
 	if(empty($data->output['optionList']))
 	{
-		theme_dynamicFormsListOptionsNoOptions();
+		theme_dynamicFormsListOptionsNoOptions($data);
 		return;
 	} 
 	

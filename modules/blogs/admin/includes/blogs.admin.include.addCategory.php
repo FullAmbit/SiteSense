@@ -27,7 +27,7 @@ function admin_blogsBuild($data,$db) {
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--//
     if(!checkPermission('categoryAdd','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(!checkPermission('accessOthers','blogs',$data)) {
@@ -42,7 +42,7 @@ function admin_blogsBuild($data,$db) {
 	}
 	if(($data->output['blogItem']=$check->fetch())===FALSE) {
 		$data->output['abort']=true;
-		$data->output['abortMessage']='<h2>The blog ID does not exist in database</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->output['categoryForm']=new formHandler('category',$data,true);
@@ -54,7 +54,7 @@ function admin_blogsBuild($data,$db) {
 			// Check To See If ShortName Exists Anywhere (Across Any Language)
 			if(common_checkUniqueValueAcrossLanguages($data,$db,'blog_categories','id',array('shortName'=>$shortName))){
 				$data->output['categoryForm']->fields['name']['error']=true;
-	            $data->output['categoryForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a blog category.';
+		            $data->output['categoryForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 	            return;
 			}
 			$data->output['categoryForm']->sendArray[':blogId']=$data->output['blogItem']['id'];
@@ -65,22 +65,22 @@ function admin_blogsBuild($data,$db) {
 			
 			if(empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Category Item Saved Successfully</h2>
+					<h2>'.$data->phrases['blogs']['saveCategorySuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/blogs/addCategory/'.$data->output['blogItem']['id'].'">
-							Add New Category
+							'.$data->phrases['blogs']['addCategory'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/blogs/listCategories/'.$data->output['blogItem']['id'].'">
-							Return to Categories List
+							'.$data->phrases['blogs']['returnToCategories'].'
 						</a>
 					</div>';
 			}
 		} else {
 			// Invalid Data
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

@@ -91,14 +91,14 @@ function admin_blogsShow($data) {
 		$data->output['blogsStart'],
 		$aRoot.'list/'
 	);
-	theme_blogsListHead($aRoot);
+	theme_blogsListHead($data,$aRoot);
 	if(empty($data->output['blogs'])) {
-		theme_blogsListNoBlogs();
+		theme_blogsListNoBlogs($data);
 	} else {
-		theme_blogsListTableHead();
+		theme_blogsListTableHead($data);
 		$count=0;
 		foreach($data->output['blogs'] as $item) {
-			theme_blogsListTableRow($item,$aRoot,$count);
+			theme_blogsListTableRow($data,$item,$aRoot,$count);
 			$count++;
 		}
 	    theme_blogsListTableFoot();
@@ -108,6 +108,6 @@ function admin_blogsShow($data) {
 		$data->output['blogsStart'],
 		$aRoot.'list/'
 	);
-	theme_blogsListFoot($aRoot);
+	theme_blogsListFoot($data,$aRoot);
 }
 ?>

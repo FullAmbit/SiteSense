@@ -50,7 +50,7 @@ function users_install($db, $drop=false) {
 			'expires'             => SQR_time,
 			'ipAddress'           => SQR_IP,
 			'userAgent'           => 'VARCHAR(255)',
-			//'language'            => 'VARCHAR(64) NOT NULL DEFAULT""',
+            //'language'            => 'VARCHAR(64) NOT NULL DEFAULT""',
 			'KEY `userId` (`userId`,`expires`)'
 		),
 		'users' => array(

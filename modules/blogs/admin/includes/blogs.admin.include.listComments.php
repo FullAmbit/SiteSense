@@ -33,13 +33,13 @@ function admin_blogsBuild($data,$db) {
     	if($data->user['id'] != $blogItem['owner']) {
             if(!checkPermission('accessOthers','blogs',$data)) {
                 $data->output['abort']=true;
-                $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
                 return;
             }
     	}
     } else {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	// Retrieve List Of All Approved Blog Comments
@@ -61,11 +61,11 @@ function admin_blogsBuild($data,$db) {
 }
 function admin_blogsShow($data) {
 	if(count($data->output['commentList']) < 1) {
-		theme_blogsListCommentsNoComments();
+		theme_blogsListCommentsNoComments($data);
 		return;
 	}
 	// Comments Awaiting Approval
-	theme_blogsListCommentsPendingTableHead();
+	theme_blogsListCommentsPendingTableHead($data);
 	$count=0;
 	if(count($data->output['commentList']['queue']) > 0) {
 		foreach($data->output['commentList']['queue'] as $item) {
@@ -73,11 +73,11 @@ function admin_blogsShow($data) {
 			$count++;
 		}
 	} else {
-		theme_blogsListCommentsNoPending();
+		theme_blogsListCommentsNoPending($data);
 	}
 	theme_blogsListCommentsTableFoot();
 	// Approved Comments
-	theme_blogsListCommentsApprovedTableHead();
+	theme_blogsListCommentsApprovedTableHead($data);
 	$count=0;
 	if(count($data->output['commentList']['approved']) > 0) {
 		foreach($data->output['commentList']['approved'] as $item) {
@@ -85,11 +85,11 @@ function admin_blogsShow($data) {
 			$count++;
 		}
 	} else {
-		theme_blogsListCommentsNoApproved();
+		theme_blogsListCommentsNoApproved($data);
 	}
 	theme_blogsListCommentsTableFoot();
 	// Disapproved Comments
-	theme_blogsListCommentsDisapprovedTableHead();
+	theme_blogsListCommentsDisapprovedTableHead($data);
 	$count=0;
 	if(count($data->output['commentList']['disapproved']) > 0) {
 		foreach($data->output['commentList']['disapproved'] as $item) {
@@ -97,7 +97,7 @@ function admin_blogsShow($data) {
 			$count++;
 		}
 	} else {
-		theme_blogsListCommentsNoDisapproved();
+		theme_blogsListCommentsNoDisapproved($data);
 	}
 	theme_blogsListCommentsTableFoot();
 }

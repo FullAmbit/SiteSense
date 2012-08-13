@@ -25,7 +25,7 @@
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('categoryList','blogs',$data)) {
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	// ---If You're a Blogger, You Can Only Load Your OWN Blog--
@@ -42,7 +42,7 @@ function admin_blogsBuild($data,$db) {
 	// Check For Results
 	if(($data->output['blogItem']=$check->fetch())===FALSE) {
 		$data->output['abort']=true;
-		$data->output['abortMessage']='<h2>The ID does not exist in database</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	// Get All Categories //
@@ -57,10 +57,10 @@ function admin_blogsShow($data) {
 	theme_blogsListCatTableHead($data,$aRoot) ;
 	$count=0;
 	if(count($data->output['categoryList']) < 1) {
-		theme_blogsListCatNoCats();
+		theme_blogsListCatNoCats($data);
 	}
 	foreach($data->output['categoryList'] as $categoryItem) {
-		theme_blogsListCatTableRow($categoryItem,$aRoot,$count);
+		theme_blogsListCatTableRow($data,$categoryItem,$aRoot,$count);
 		$count++;
 	}
 	theme_blogsListCatTableFoot();

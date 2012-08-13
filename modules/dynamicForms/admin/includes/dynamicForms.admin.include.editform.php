@@ -27,7 +27,7 @@ function admin_dynamicFormsBuild($data, $db) {
 	//permission check for forms edit
 	if (!checkPermission('edit', 'dynamicForms', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	// Check If Form Exists //
@@ -36,7 +36,7 @@ function admin_dynamicFormsBuild($data, $db) {
 	$check->execute(array(':id' => $formId));
 	if (($data->output['formItem'] = $check->fetch()) === FALSE) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 
@@ -66,7 +66,7 @@ function admin_dynamicFormsBuild($data, $db) {
 			// Check To See If ShortName Exists Anywhere (Across Any Language)
 			if(common_checkUniqueValueAcrossLanguages($data,$db,'pages','id',array('shortName'=>$shortName))){
 				$data->output['fromForm']->fields['name']['error']=true;
-	            $data->output['fromForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a form.';
+				$data->output['fromForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 	            return;
 			}
 			$newShortName=TRUE;
@@ -102,7 +102,7 @@ function admin_dynamicFormsBuild($data, $db) {
 							));
 					} else {
 						$data->output['fromForm']->fields['name']['error']=true;
-						$data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+						$data->output['fromForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 						return;
 					}
 					break;
@@ -125,7 +125,7 @@ function admin_dynamicFormsBuild($data, $db) {
 							));
 					} else {
 						$data->output['fromForm']->fields['name']['error']=true;
-						$data->output['fromForm']->fields['name']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different name.';
+						$data->output['fromForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
 						return;
 					}
 				}
@@ -160,13 +160,13 @@ function admin_dynamicFormsBuild($data, $db) {
 
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Form Saved Successfully</h2>
+					<h2>'.$data->phrases['dynamic-forms']['saveFormSuccessHeading'].'</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/addForm">
-							Add New Form
+						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/add">
+							'.$data->phrases['dynamic-forms']['addForm'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/list/">
-							Return to Form List
+							'.$data->phrases['dynamic-forms']['returnToForms'].'
 						</a>
 					</div>';
 			}
@@ -175,9 +175,9 @@ function admin_dynamicFormsBuild($data, $db) {
 				invalid data, so we want to show the form again
 			*/
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

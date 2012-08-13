@@ -25,7 +25,7 @@
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('categoryDelete','blogs',$data))	{
         $data->output['abort']=true;
-        $data->output['abortMessage']='<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	$data->output['delete']='';
@@ -36,7 +36,7 @@ function admin_blogsBuild($data,$db) {
     ));
 	if(($data->output['categoryItem']=$check->fetch())===FALSE)	{
 		$data->output['abort']=true;
-		$data->output['abortMessage']='<h2>The ID does not exist in database</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	//---If You're a Blogger, You Can Only Load Your OWN Blog--
@@ -53,8 +53,8 @@ function admin_blogsBuild($data,$db) {
 		));
 	}
 	if(($data->output['blogItem']=$check->fetch())===FALSE)	{
-		$data->output['rejectError']='Invalid Parameters';
-		$data->output['rejectText']='The blog you specified could not be found.';
+		$data->output['abort']=true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	if(isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {

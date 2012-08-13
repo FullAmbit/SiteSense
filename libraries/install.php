@@ -119,6 +119,7 @@ if (
         'mainMenu',
         'settings',
         'modules',
+        'dashboard',
         'languages',
         'hostnames'
     );
