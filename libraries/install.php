@@ -90,7 +90,7 @@ if (
         $data->dropTable('sidebars',$lang);
         $data->dropTable('main_menu',$lang);
         $data->dropTable('activations');
-        $data->dropTable('url_remap');
+        $data->dropTable('urls');
         $data->dropTable('modules');
         $data->dropTable('module_sidebars');
         $data->dropTable('languages');

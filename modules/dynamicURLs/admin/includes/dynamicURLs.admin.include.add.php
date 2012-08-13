@@ -69,9 +69,10 @@ function admin_dynamicURLsBuild($data,$db) {
                     $statement->execute(array(
                         ':match'     => $modifiedMatch,
                         ':replace'   => $form->sendArray[':replace'],
-                        ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
+                        ':sortOrder' => admin_sortOrder_new($data,$db,'urls','sortOrder','hostname',$form->sendArray[':hostname']),
                         ':regex'     => 0,
-                        ':hostname' => $form->sendArray[':hostname']
+                        ':hostname' => $form->sendArray[':hostname'],
+                        ':isRedirect' => $form->sendArray[':isRedirect']
                     ));
                 } else {
                     $data->output['remapForm']->fields['match']['error']=true;
@@ -79,8 +80,8 @@ function admin_dynamicURLsBuild($data,$db) {
                     return;
                 }
             } else {
-                $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'url_remap','sortOrder');
-                $statement = $db->prepare('insertUrlRemap','admin_dynamicURLs');
+                $form->sendArray[':sortOrder']=admin_sortOrder_new($data,$db,'urls','sortOrder');
+                $statement = $db->prepare('insertUrlRemap','admin_dynamicURLs','sortOrder','hostname',$form->sendArray[':hostname']);
                 $result = $statement->execute($form->sendArray);
                 if($result == FALSE) {
                     $data->output['remapForm']->fields['match']['error']=true;

@@ -29,39 +29,39 @@
 function admin_dynamicURLs_addQueries() {
 	return array(
 		'getAllUrlRemaps' => '
-			SELECT * FROM !prefix!url_remap
+			SELECT * FROM !prefix!urls
 			ORDER BY sortOrder ASC
 		',
 		'getUrlRemapById' => '
-			SELECT * FROM !prefix!url_remap WHERE id = :id
+			SELECT * FROM !prefix!urls WHERE id = :id
 			ORDER BY sortOrder ASC
 		',
         'getUrlRemapByMatch' => '
-			SELECT * FROM !prefix!url_remap WHERE `match` = :match AND `hostname` = :hostname
+			SELECT * FROM !prefix!urls WHERE `match` = :match AND `hostname` = :hostname
 			ORDER BY sortOrder ASC
 		',
 		'editUrlRemap' => '
-			UPDATE !prefix!url_remap
-			SET `match` = :match, `replace` = :replace, `hostname` = :hostname
+			UPDATE !prefix!urls
+			SET `match` = :match, `replace` = :replace, `hostname` = :hostname, `isRedirect` = :isRedirect
 			WHERE id = :id
 		',
 		'insertUrlRemap' => '
-			INSERT INTO !prefix!url_remap
-			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder, `regex`=:regex, `hostname` = :hostname
+			INSERT INTO !prefix!urls
+			SET `match` = :match, `replace` = :replace, `sortOrder` = :sortOrder, `regex`=:regex, `hostname` = :hostname, `isRedirect` = :isRedirect
 		',
 		'deleteUrlRemap' => '
-			DELETE FROM !prefix!url_remap WHERE id = :id
+			DELETE FROM !prefix!urls WHERE id = :id
 		',
 		
 		'deleteByHostname' => '
-			DELETE FROM !prefix!url_remap WHERE hostname = :hostname
+			DELETE FROM !prefix!urls WHERE hostname = :hostname
 		',
 		'deleteReplacementByMatch' => '
-      DELETE FROM !prefix!url_remap
+      DELETE FROM !prefix!urls
       WHERE `match` = :match
     ',
     'updateUrlRemapByMatch' => '
-			UPDATE !prefix!url_remap
+			UPDATE !prefix!urls
 			SET `match` = :newMatch, `replace` = :replace
 			WHERE `match` = :match
     '

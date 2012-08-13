@@ -70,9 +70,10 @@ function admin_pagesBuild($data, $db) {
 					$statement->execute(array(
 							':match'     => $modifiedShortName,
 							':replace'   => 'pages/'.$shortName.'\1',
-							':sortOrder' => admin_sortOrder_new($data, $db, 'url_remap', 'sortOrder'),
+							':sortOrder' => admin_sortOrder_new($data, $db, 'urls', 'sortOrder','hostname',''),
 							':regex'     => 0,
-							':hostname'  => ''
+							':hostname'  => '',
+							':isRedirect' => 0
 						));
 				} else {
 					$data->output['pageForm']->fields['name']['error']=true;

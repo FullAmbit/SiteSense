@@ -54,19 +54,7 @@ $this->fields=array(
 			</p>
 		'
 	),
-    'regex' => array(
-        'label' => 'Use Regular Expressions',
-        'tag' => 'input',
-        'value' => 1,
-        'checked' => (isset($data->output['urlremap']['regex']) && $data->output['urlremap']['regex'] == '1') ? 'checked' : '',
-        'params' => array(
-            'type' => 'checkbox'
-        )
-    )
-);
-
-if($data->output['hostnameList']){
-	$this->fields['hostname'] = array(
+	'hostname' => array(
 		'tag' => 'select',
 		'label' => 'Hostname',
 		'options' => array(
@@ -76,7 +64,28 @@ if($data->output['hostnameList']){
 			)
 		),
 		'value' => (isset($data->output['urlremap']['hostname'])) ? $data->output['urlremap']['hostname'] : ''
-	);
+	),
+    'regex' => array(
+        'label' => 'Use Regular Expressions',
+        'tag' => 'input',
+        'value' => 1,
+        'checked' => (isset($data->output['urlremap']['regex']) && $data->output['urlremap']['regex'] == '1') ? 'checked' : '',
+        'params' => array(
+            'type' => 'checkbox'
+        )
+    ),
+    'isRedirect' => array(
+    	'label' => "Redirect",
+    	'tag' => 'input',
+    	'value' => 1,
+    	'checked' => (isset($data->output['urlremap']['isRedirect']) && $data->output['urlremap']['isRedirect']=='1') ? 'checked' : '',
+    	'params' => array(
+    		'type' => 'checkbox'
+    	)
+    )
+);
+
+if(isset($data->output['hostnameList'])){
 	foreach($data->output['hostnameList'] as $hostnameItem){
 		$this->fields['hostname']['options'][] = array(
 			'value' => $hostnameItem['hostname'],

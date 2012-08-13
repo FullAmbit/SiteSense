@@ -272,12 +272,36 @@ final class sitesense {
 			if (strpos($queryString, 'index.php')===0) $queryString=substr($queryString, 9);
 		}
 		$queryString = trim($queryString, '/').'/';
-
-		// Check For URL Replacement
+		
+		// Check For URL Replacement Or A Redirect
 		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if ($row=$statement->fetch()) {
 			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
+			// Redirect
+			if($row['isRedirect']){
+				header ('HTTP/1.1 301 Moved Permanently');
+				header ('Location: '.$this->linkHome.$queryString);
+				die();
+			}
+		} else{
+			// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
+			$statement = $this->db->prepare("findReverseReplacementNoRedirect");
+			$statement->execute(array(
+				':url' => rtrim($queryString,"/"),
+				':hostname' => $this->hostname
+			));
+			if($row=$statement->fetch(PDO::FETCH_ASSOC)){
+				// We Found One. Now Redirect To The "Matched" URL
+				$replacement = $row['match'];
+				$replacement = str_replace('^','',$replacement);
+				$replacement = str_replace('(/.*)?$','',$replacement);
+				
+				$url = str_replace($queryString,$replacement,$queryString);
+				header ('HTTP/1.1 301 Moved Permanently');
+				header ('Location: '.$this->linkHome.$url);
+				die();
+			}
 		}
 
 		// Break URL up into action array

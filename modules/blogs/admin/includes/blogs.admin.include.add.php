@@ -66,9 +66,10 @@ function admin_blogsBuild($data,$db) {
                     $statement->execute(array(
                         ':match'     => $modifiedShortName,
                         ':replace'   => 'blogs/'.$shortName.'\1',
-                        ':sortOrder' => admin_sortOrder_new($data,$db,'url_remap','sortOrder'),
+                        ':sortOrder' => admin_sortOrder_new($data,$db,'urls','sortOrder','hostname',''),
                         ':regex'     => 0,
-                        ':hostname' => ''
+                        ':hostname' => '',
+                        ':isRedirect' => 0
                     ));
                 } else {
                     $data->output['blogForm']->fields['name']['error']=true;

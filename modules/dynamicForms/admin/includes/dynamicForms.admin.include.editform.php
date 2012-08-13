@@ -96,9 +96,10 @@ function admin_dynamicFormsBuild($data, $db) {
 						$statement->execute(array(
 								':match'     => $modifiedShortName,
 								':replace'   => 'dynamic-forms/'.$shortName.'\1',
-								':sortOrder' => admin_sortOrder_new($data, $db, 'url_remap', 'sortOrder'),
+								':sortOrder' => admin_sortOrder_new($data, $db, 'urls', 'sortOrder','hostname',''),
 								':regex'     => 0,
-								':hostname' => ''
+								':hostname' => '',
+								':isRedirect' => 0
 							));
 					} else {
 						$data->output['fromForm']->fields['name']['error']=true;
