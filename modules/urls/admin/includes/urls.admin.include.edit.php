@@ -90,10 +90,10 @@ function admin_urlsBuild($data,$db) {
 				$data->output['savedOkMessage']='
 					<h2>Remap Saved Successfully</h2>
 					<div class="panel buttonList">
-						<a href="'.$data->linkRoot.'admin/dynamic-urls/add">
+						<a href="'.$data->linkRoot.'admin/urls/add">
 							Add New URL Remap
 						</a>
-						<a href="'.$data->linkRoot.'admin/dynamic-urls/list/">
+						<a href="'.$data->linkRoot.'admin/urls/list/">
 							Return to URL Remap List
 						</a>
 					</div>';
