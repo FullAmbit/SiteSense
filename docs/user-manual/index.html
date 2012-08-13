@@ -570,7 +570,7 @@
 <hr />
 
 <h3 id="url-routing">10. URL Routing</h3>
-<p>All page requests are routed through the URL Remap module. Patterns will be matched from top to bottom, stopping at the first match. Once a match has been found, the pattern will be replaced with the specified replacement.</p>
+<p>All page requests are routed through the URL module. Patterns will be matched from top to bottom, stopping at the first match. Once a match has been found, the pattern will be replaced with the specified replacement. Replacement URLs will be force-redirected to their matches as well, to prevent duplicate content for different URLs.</p>
   <h4>Properties</h4>
     <ul>
       <li><b>Pattern</b><br>
@@ -578,6 +578,12 @@
       </li>
       <li><b>Replacement</b><br>
         Sets what the matched pattern will be replaced with
+      </li>
+      <li><b>Hostname</b><br>
+      	Sets a specific hostname (domain) for the URL remap. Hostnames can be added through the hostnames module. Setting it to global will match the pattern across any of your domains.
+      </li>
+      <li><b>Redirect</b><br>
+      	Forces a Header 301 permanent redirect to the replacement URL.
       </li>
       <li><b>Use Regular Expressions</b><br>
         When checked, the pattern and replacement will utilize regular expressions. (Advanced Users Only)
@@ -596,6 +602,80 @@
       </li>
     </ul>
 
+<hr />
+
+<h3 id="languages">11. Languages</h3>
+<p>Languages allow support for your international users. Phrases allow you to output static content in any language you have installed. They can be specific to a module or global throughout the site. Modules that have language support enabled will also have separate tables to contain language-specific input.</p>
+	<h4>Properties</h4>
+	<ul>
+		<li><b>Default</b><br>
+			The language that viewers first see on your website.
+		</li>
+	</ul>
+	<h4>Controls</h4>
+	<ul>
+		<li><b>Make Default</b><br>
+		 Sets the language as the default for viewers on your site.
+		</li>
+		<li><b>Update From Filesystem</b><br>
+		 Updates the phrases for a language and can reinstall languages for all modules.
+		</li>
+	</ul>
+	<h4 id="languages-entity-update">11.1 Update From FileSystem</h4>
+	<h5>Properties</h5>
+	<ul>
+		<li><b>Update Modules</b><br>
+		 Setting this will also reinstall the module for the language you specify (provided it has language support) and any additional phrase packs.
+		</li>
+		<li><b>Action</b><br>
+		 Choose how to handle the installation of phrases. You can clear all existing phrases, only update existing ones, or update existing ones and install new phrases.	
+		</li>
+	</ul>
+	
+	
+	<h4 id="languages-entity-phrases">11.2 Phrases</h4>
+	<h5>Controls</h5>
+		<ul>
+			<li><b>Add A Phrase</b><br>
+			 Add a new phrase for your language. It is suggested you add the same phrase for each language, to keep the website consistent.
+			</li>
+			<li><b>Modify</b><br>
+			 Edit an existing phrase.
+			</li>
+		</ul>
+	<h5>Properties</h5>
+	<ul>
+		<li><b>Phrase</b><br>
+		 The name of the phrase. This is also how you would refer to it in the code.
+		</li>
+		<li><b>Text</b><br>
+		 The value of the phrase for the language you are working in.
+		</li>
+		<li><b>Module</b><br>
+		 The module to which the phrase belongs. Phrases can also be global and will be loaded on every page of the website.
+	</ul>
+	
+<hr />
+
+<h3 id="hostnames">12. Hostnames</h3>
+<p>Hostnames allow a single installation of SiteSense to have a unique group of settings across different domains. You do not need to add a hostname if you are only using your website on one domain.</p>
+	<h4>Properties</h4>
+	<ul>
+		<li><b>Theme</b><br>
+		 The theme that people will see when accessing your website from this hostname.
+		</li>
+		<li><b>Language</b><br>
+		 The default language that will be displayed to people browsing this hostname.
+		</li>
+		<li><b>Homepage</b><br>
+		 The first page that users will see when coming to this hostname.
+	</ul>
+	<h4>Controls</h4>
+	<ul>
+		<li><b>Add A Hostname</b><br>
+		 Add a specific domain to use this installation of SiteSense.
+		</li>
+	</ul>
 <hr />
 
 <h2 id="user-management">User Management</h2>
