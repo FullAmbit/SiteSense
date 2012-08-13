@@ -345,7 +345,7 @@ final class sitesense {
 						setcookie($userCookieName,$userCookieValue,$expires,$this->linkHome,'','',true);
 						// Update and sync cookie to server values
 						$expires=gmdate("Y-m-d H:i:s", $expires);
-						$statement=$this->db->prepare('updateSessionExpirationAndLanguage');
+						$statement=$this->db->prepare('updateSessionExpiration');
 	
 						$statement->execute(array(
 								':expires' => $expires,
