@@ -510,7 +510,14 @@ final class sitesense {
 			$this->language = (isset($useDefaultLang) && $useDefaultLang) ? $hostnameItem['defaultLanguage'] : $this->language;
 			$this->settings['homepage'] = $hostnameItem['homepage'];
 		}
-
+		
+		//Is The URL Trying To Go To The Homepage?
+		if($queryString == $this->settings['homepage']){
+			header ('HTTP/1.1 301 Moved Permanently');
+			header ('Location: '.$this->linkHome);
+			die();
+		}
+		
 		// Set Default TimeZone
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);
