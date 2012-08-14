@@ -27,7 +27,7 @@ common_include('libraries/forms.php');
 function admin_sidebarsBuild($data, $db) {
 	if (!checkPermission('add', 'sidebars', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+		$data->output['abortMessage'] = '<h2>'.$data->phrases['sidebars']['insufficientUserPermissions'].'</h2>'.$data->phrases['sidebars']['insufficientUserPermissions2'];
 		return;
 	}
 	// Load Form
@@ -40,7 +40,7 @@ function admin_sidebarsBuild($data, $db) {
 		// Check To See If ShortName Exists Anywhere (Across Any Language)
 		if (common_checkUniqueValueAcrossLanguages($data, $db, 'sidebars', 'id', array('shortName'=>$shortName))) {
 			$data->output['sidebarForm']->fields['name']['error']=true;
-			$data->output['sidebarForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a sidebar.';
+			$data->output['sidebarForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['sidebars']['uniqueNameConflict'].'</h2>'.$data->phrases['sidebars']['uniqueNameConflict2'];
 			return;
 		}
 
@@ -65,7 +65,7 @@ function admin_sidebarsBuild($data, $db) {
 			$sortOrder=$data->output['sidebarForm']->sendArray[':sortOrder'];
 			// Duplicate Across Other Languages
 			common_populateLanguageTables($data,$db,'sidebars','shortName',$shortName);
-			
+
 			//---Pages---//
 			$pageQ = $db->prepare('createSidebarSetting', 'admin_pages');
 			$statement = $db->prepare('getAllPageIds', 'admin_pages');
@@ -111,24 +111,24 @@ function admin_sidebarsBuild($data, $db) {
 			}
 
 			$data->output['savedOkMessage']='
-				<h2>Values Saved Successfully</h2>
+				<h2>'.$data->phrases['sidebars']['valuesSaved'].'</h2>
 				<p>
-					Auto generated short name was: '.$shortName.'
+					'.$data->phrases['sidebars']['valuesSaved2'].$shortName.'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$data->linkRoot.'admin/sidebars/add/">
-						Add New Sidebar
+					<a href="'.$aRoot.'edit/new">
+						'.$data->phrases['sidebars']['addPage'].'
 					</a>
-					<a href="'.$data->linkRoot.'admin/sidebars/list/">
-						Return to Sidebar List
+					<a href="'.$aRoot.'list/">
+						'.$data->phrases['sidebars']['returnToPageList'].'
 					</a>
 				</div>';
 		} else {
 			// Throw Form Error //
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['sidebars']['errorInData'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['sidebars']['errorInData2'].'
 				</p>';
 		}
 	}
@@ -136,7 +136,7 @@ function admin_sidebarsBuild($data, $db) {
 
 function admin_sidebarsShow($data) {
 	if (isset($data->output['error']) && $data->output['error'] === TRUE) {
-		echo 'There was an error in saving your sidebar at this time.';
+		echo $data->phrases['sidebars']['errorSaving'];
 	}
 	else if (isset($data->output['savedOkMessage'])) {
 			echo $data->output['savedOkMessage'];

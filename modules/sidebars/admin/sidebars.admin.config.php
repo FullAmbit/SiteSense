@@ -27,7 +27,7 @@ function sidebars_admin_config($data,$db) {
 		$data->admin['menu'][]=array(
 			'category'	=> 'Site Management',
 			'command' 	=> 'sidebars/list',
-			'name'			=> 'Sidebars',
+			'name'		=> $data->phrases['sidebars']['sidebarsMenuTitle'],
 			'sortOrder' => 6
 		);
 	}

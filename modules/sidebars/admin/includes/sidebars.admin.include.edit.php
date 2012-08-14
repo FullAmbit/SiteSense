@@ -27,11 +27,11 @@ common_include('libraries/forms.php');
 function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('edit','sidebars',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['sidebars']['insufficientUserPermissions'].'</h2>'.$data->phrases['sidebars']['insufficientUserPermissions2'];
         return;
     }
 	$aRoot=$data->linkRoot.'admin/sidebars/';
-	
+
 	// Check To See If Sidebar Exists
 	$sidebarId = $data->action[3];
 
@@ -42,7 +42,7 @@ function admin_sidebarsBuild($data,$db) {
 	$data->output['sidebarItem'] = $item = $statement->fetch();
 	if($data->output['sidebarItem'] == FALSE)
 	{
-		$data->output['pagesError'] = 'unknown function';
+		$data->output['pagesError'] = $data->phrases['sidebars']['unknownFunction'];
 		return;
 	}
 	// Load Form
@@ -57,15 +57,15 @@ function admin_sidebarsBuild($data,$db) {
 				$item[$key] ? 'checked' : ''
 			);
 		} else {
-			
+
 			$data->output['sidebarForm']->fields[$key]['value']=$item[$key];
 		}
 	}
-	
+
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$data->output['sidebarForm']->fromForm))
 	{
 		$data->output['sidebarForm']->populateFromPostData();
-		
+
 		/**
 		 * Set Up Short Name Check (ONLY if different from currently existing
 		**/
@@ -76,13 +76,13 @@ function admin_sidebarsBuild($data,$db) {
 			// Check To See If ShortName Exists Anywhere (Across Any Language)
 			if(common_checkUniqueValueAcrossLanguages($data,$db,'sidebars','id',array('shortName'=>$shortName))){
 				$data->output['sidebarForm']->fields['name']['error']=true;
-	            $data->output['sidebarForm']->fields['name']['errorList'][]='<h2>Unique Name Conflict</h2> This name already exists for a sidebar.';
+	            $data->output['sidebarForm']->fields['name']['errorList'][]='<h2>'.$data->phrases['sidebars']['uniqueNameConflict'].'</h2>'.$data->phrases['sidebars']['uniqueNameConflict2'];
 	            return;
 			}
 		}
-		
+
 		if ($data->output['sidebarForm']->validateFromPost()) {
-			
+
 			//--Parsing--//
 			if($data->settings['useBBCode'] == '1')
 			{
@@ -91,41 +91,41 @@ function admin_sidebarsBuild($data,$db) {
 			} else {
 				$data->output['sidebarForm']->sendArray[':parsedContent'] = htmlspecialchars($data->output['sidebarForm']->sendArray[':rawContent']);
 			}
-			
+
 			// Save TO DB
 			$statement=$db->prepare('updateById','admin_sidebars');
 			$data->output['sidebarForm']->sendArray[':id'] = $data->action[3];
 			$statement->execute($data->output['sidebarForm']->sendArray);
-				
+
 			$data->output['savedOkMessage']='
-				<h2>Values Saved Successfully</h2>
+				<h2>'.$data->phrases['sidebars']['valuesSaved'].'</h2>
 				<p>
-					Auto generated short name was: '.$shortName.'
+					'.$data->phrases['sidebars']['valuesSaved2'].$shortName.'
 				</p>
 				<div class="panel buttonList">
 					<a href="'.$aRoot.'edit/new">
-						Add New Page
+						'.$data->phrases['sidebars']['addPage'].'
 					</a>
 					<a href="'.$aRoot.'list/">
-						Return to Page List
+						'.$data->phrases['sidebars']['returnToPageList'].'
 					</a>
 				</div>';
 			// -- Push The Constant Fields Across Other Languages
 			common_updateAcrossLanguageTables($data,$db,'sidebars',array('id'=>$data->action[3]),array(
 				'side' => $data->output['sidebarForm']->sendArray[':side']
 			));
-				
+
 		} else {
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['sidebars']['errorInData'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['sidebars']['errorInData2'].'
 				</p>';
 		}
 	}
 }
 function admin_sidebarsShow($data) {
-	if ($data->output['pagesError']=='unknown function') {
+	if ($data->output['pagesError']==$data->phrases['sidebars']['unknownFunction']) {
 		admin_unknown();
 	} else if (!empty($data->output['savedOkMessage'])) {
 		echo $data->output['savedOkMessage'];

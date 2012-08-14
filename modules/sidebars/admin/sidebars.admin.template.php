@@ -34,12 +34,12 @@ function theme_sidebarsDeleteDeleted($data,$aRoot) {
 			';
 }
 
-function theme_sidebarsDeleteCancelled($aRoot) {
+function theme_sidebarsDeleteCancelled($data,$aRoot) {
 	echo '
 			<h2>Deletion Cancelled</h2>
 			<p>
-				You should be auto redirected to the page list in three seconds.
-				<a href="',$aRoot,'list">Click Here if you do not wish to wait.</a>
+				',$data->phrases['sidebars']['redirectedInThreeSeconds'],'
+				<a href="',$aRoot,'list">',$data->phrases['sidebars']['clickToWait'],'</a>
 			</p>';
 }
 
@@ -47,57 +47,57 @@ function theme_sidebarsDeleteDefault($data,$aRoot) {
 	echo '
 			<form action="',$aRoot,'delete/',$data->action[3],'" method="post" class="verifyForm">
 				<fieldset>
-					<legend><span>Are you sure you want to delete sidebar #',$data->action[3],'?</span></legend>
-					<input type="submit" name="delete" value="Yes, Delete it" />
-					<input type="submit" name="cancel" value="Cancel" />
+					<legend><span>',$data->phrases['sidebars']['deleteSidebarSure'],$data->action[3],'?</span></legend>
+					<input type="submit" name="delete" value="',$data->phrases['sidebars']['yesToDelete'],'" />
+					<input type="submit" name="cancel" value="',$data->phrases['sidebars']['delete'],'" />
 					<input type="hidden" name="fromForm" value="',$data->action[3],'" />
 				</fieldset>
 			</form>';
 }
 
-function theme_sidebarsListAddNewButton($aRoot) {
+function theme_sidebarsListAddNewButton($data,$aRoot) {
 	echo '
 			<div class="panel buttonList">
 				<a href="',$aRoot,'add">
-					Add New Sidebar
+					',$data->phrases['sidebars']['addNewSidebar'],'
 				</a>
 			</div>';
 }
 
-function theme_sidebarsListNoSidebars() {
+function theme_sidebarsListNoSidebars($data) {
 	echo '
-			<p class="sidebarListNoSidebars">No sidebars exist</p>';
+			<p class="sidebarListNoSidebars">',$data->phrases['sidebars']['noSidebars'],'</p>';
 }
 
-function theme_sidebarsListTableHead() {
+function theme_sidebarsListTableHead($data) {
 	echo '
 			<table class="sidebarList">
-				<caption>Manage Sidebars</caption>
+				<caption>',$data->phrases['sidebars']['manageSidebars'],'</caption>
 				<thead>
 					<tr>
-						<th class="name">Sidebar Title</th>
-						<th>Side</td>
-						<th>Controls</th>
+						<th class="name">',$data->phrases['sidebars']['sidebarTitle'],'</th>
+						<th>',$data->phrases['sidebars']['side'],'</td>
+						<th>',$data->phrases['sidebars']['controls'],'</th>
 					</tr>
 				</thead><tbody>';
 }
 
-function theme_sidebarsListTableRow($item,$aRoot,$titleStartTag,$titleEndTag,$count) {
+function theme_sidebarsListTableRow($data) {
 	echo '
-			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
+			<tr class="',($data->output['count']%2==0 ? 'odd' : 'even'),'">
 				<td class="name">
-					',$titleStartTag,$item['name'],$titleEndTag,'
+					',$data->output['titleStartTag'],$data->output['item']['name'],$data->output['titleEndTag'],'
 				</td>
-				<td>',$item['side'],'</td>
+				<td>',$data->output['item']['side'],'</td>
 				<td class="buttonList">
-				    <a href="',$aRoot,'list/moveUp/',$item['id'],'" title="Move Up">&uArr;</a>
-					<a href="',$aRoot,'list/moveDown/',$item['id'],'" title="Move Down">&dArr;</a>
+				    <a href="',$data->output['aRoot'],'list/moveUp/',$data->output['item']['id'],'" title="',$data->phrases['sidebars']['moveUp'],'">&uArr;</a>
+					<a href="',$data->output['aRoot'],'list/moveDown/',$data->output['item']['id'],'" title="',$data->phrases['sidebars']['moveDown'],'">&dArr;</a>
 					',(
-						$item['fromFile'] ?
+						$data->output['item']['fromFile'] ?
 						'' :
-						'<a href="'.$aRoot.'delete/'.$item['id'].'">Delete</a> '
+						'<a href="'.$data->output['aRoot'].'delete/'.$data->output['item']['id'].'">'.$data->phrases['sidebars']['delete'].'</a> '
 					),'
-					<a href="',$aRoot,'list/switch/',$item['id'],'" title="Switch Side">Switch Side</a>
+					<a href="',$data->output['aRoot'],'list/switch/',$data->output['item']['id'],'" title="'.$data->phrases['sidebars']['switchSide'].'">'.$data->phrases['sidebars']['switchSide'].'</a>
 				</td>
 			</tr>';
 }

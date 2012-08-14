@@ -25,13 +25,13 @@
 function admin_sidebarsBuild($data,$db) {
     if(!checkPermission('delete','sidebars',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['sidebars']['insufficientUserPermissions'].'</h2>'.$data->phrases['sidebars']['insufficientUserPermissions2'];
         return;
     }
     $data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No ID # was entered to be deleted';
+		$data->output['rejectError']=$data->phrases['sidebars']['insufficientParameters'];
+		$data->output['rejectText']=$data->phrases['sidebars']['noIdEntered'];
 	} else {
 		$qHandle=$db->prepare('getFromFileById','admin_sidebars');
 		$qHandle->execute(array(
@@ -39,8 +39,8 @@ function admin_sidebarsBuild($data,$db) {
 		));
 		if ($item=$qHandle->fetch()) {
 			if ($item['fromFile']) {
-				$data->output['rejectError']='Locked Sidebar Element';
-				$data->output['rejectText']='That sidebar element cannot be deleted from the admin panel. Either disable it, or delete it\'s associated module files.';
+				$data->output['rejectError']=$data->phrases['sidebars']['lockedSidebarElement'];
+				$data->output['rejectText']=$data->phrases['sidebars']['lockedSidebarElement2'];
 			} else if (checkPermission('canDeleteSidebarItem','core',$data)) {
 				if (isset($_POST['fromForm']) && $_POST['fromForm']==$data->action[3]) {
 					if (!empty($_POST['delete'])) {
@@ -49,20 +49,20 @@ function admin_sidebarsBuild($data,$db) {
 
 						//--Delete Form, Page, and Module Setting For Sidebar--//
 						$vars = array(':sidebar' => $data->action[3]);
-						
+
 						$q1 = $db->prepare('deleteSidebarSettingBySidebar','admin_dynamicForms');
 						$q2 = $db->prepare('deleteSidebarSettingBySidebar','admin_modules');
 						$q3 = $db->prepare('deleteSidebarSettingBySidebar','admin_pages');
-						
+
 						$q1->execute($vars);
 						$q2->execute($vars);
 						$q3->execute($vars);
-						
+
 						if ($q1 || $q2 | $q3) {
-							$data->output['delete']='deleted';
+							$data->output['delete']='cancelled';
 						} else {
-							$data->output['rejectError']='Database Error';
-							$data->output['rejectText']='You attempted to delete a record, are you sure that record existed?';
+							$data->output['rejectError']=$data->phrases['sidebars']['databaseError'];
+							$data->output['rejectText']=$data->phrases['sidebars']['databaseError2'];
 						}
 					} else {
 						/* from form plus not deleted must == cancelled. */
@@ -70,8 +70,8 @@ function admin_sidebarsBuild($data,$db) {
 					}
 				}
 			} else {
-				$data->output['rejectError']='Insufficient User Permissions';
-				$data->output['rejectText']='You do not have sufficient access to perform this action.';
+				$data->output['rejectError']=$data->phrases['sidebars']['insufficientUserPermissions'];
+				$data->output['rejectText']=$data->phrases['sidebars']['insufficientUserPermissions2'];
 			}
 		}
 	}
@@ -84,7 +84,7 @@ function admin_sidebarsShow($data) {
 				theme_sidebarsDeleteDeleted($data,$aRoot);
 			break;
 			case 'cancelled':
-				theme_sidebarsDeleteCancelled($aRoot);
+				theme_sidebarsDeleteCancelled($data,$aRoot);
 			break;
 			default:
 				theme_sidebarsDeleteDefault($data,$aRoot);

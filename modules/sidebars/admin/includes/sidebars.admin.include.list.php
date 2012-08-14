@@ -25,7 +25,7 @@
 function admin_sidebarsBuild($data, $db) {
 	if (!checkPermission('list', 'sidebars', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+		$data->output['abortMessage'] = '<h2>'.$data->phrases['sidebars']['insufficientUserPermissions'].'</h2>'.$data->phrases['sidebars']['insufficientUserPermissions2'];
 		return;
 	}
 	if (is_numeric($data->action[4])) {
@@ -56,11 +56,11 @@ function admin_sidebarsBuild($data, $db) {
 }
 function admin_sidebarsShow($data) {
 	$aRoot=$data->linkRoot.'admin/sidebars/';
-	theme_sidebarsListAddNewButton($aRoot);
+	theme_sidebarsListAddNewButton($data,$aRoot);
 	if (empty($data->output['sidebars'])) {
-		theme_sidebarsListNoSidebars();
+		theme_sidebarsListNoSidebars($data);
 	} else {
-		theme_sidebarsListTableHead();
+		theme_sidebarsListTableHead($data);
 		$count=0;
 		foreach ($data->output['sidebars'] as $item) {
 			$titleStartTag='';
@@ -76,11 +76,16 @@ function admin_sidebarsShow($data) {
 				$titleStartTag.='<a href="'.$aRoot.'edit/'.$item['id'].'">';
 				$titleEndTag='</a>'.$titleEndTag;
 			}
-			theme_sidebarsListTableRow($item, $aRoot, $titleStartTag, $titleEndTag, $count);
+			$data->output['item'] = $item;
+			$data->output['aRoot'] = $aRoot;
+			$data->output['titleStartTag'] = $titleStartTag;
+			$data->output['titleEndTag'] = $titleEndTag;
+			$data->output['count'] = $count;
+			theme_sidebarsListTableRow($data);
 			$count++;
 		}
 		theme_sidebarsListTableFoot();
 	}
-	theme_sidebarsListAddNewButton($aRoot);
+	theme_sidebarsListAddNewButton($data,$aRoot);
 }
 ?>
