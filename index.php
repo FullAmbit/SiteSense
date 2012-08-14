@@ -290,7 +290,7 @@ final class sitesense {
 				':url' => rtrim($queryString,"/"),
 				':hostname' => $this->hostname
 			));
-			if($row=$statement->fetch(PDO::FETCH_ASSOC)){
+			if($row=$statement->fetch(PDO::FETCH_ASSOC)){				
 				// We Found One. Now Redirect To The "Matched" URL
 				$replacement = $row['match'];
 				$replacement = str_replace('^','',$replacement);
@@ -302,6 +302,7 @@ final class sitesense {
 				$pos = strpos($_SERVER['REQUEST_URI'],'?');				
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
 				$url = $queryString.$params;
+
 				header ('HTTP/1.1 301 Moved Permanently');
 				header ('Location: '.$this->linkHome.$url);
 				die();
