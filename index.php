@@ -300,7 +300,7 @@ final class sitesense {
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
 				$url = str_replace($queryString,$replacement,$queryString).$params;
 				header ('HTTP/1.1 301 Moved Permanently');
-				header ('Location: '.$this->linkHome.'/'.$url);
+				header ('Location: '.$this->linkHome.$url);
 				die();
 			}
 		}
