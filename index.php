@@ -295,10 +295,13 @@ final class sitesense {
 				$replacement = $row['match'];
 				$replacement = str_replace('^','',$replacement);
 				$replacement = str_replace('(/.*)?$','',$replacement);
+				$replacement = $replacement.'\1';
+								
+				$queryString = preg_replace('~'.$row['reverseMatch'].'~',$replacement,$queryString);
 				
 				$pos = strpos($_SERVER['REQUEST_URI'],'?');				
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
-				$url = str_replace($queryString,$replacement,$queryString).$params;
+				$url = $queryString.$params;
 				header ('HTTP/1.1 301 Moved Permanently');
 				header ('Location: '.$this->linkHome.$url);
 				die();

@@ -426,9 +426,17 @@ function common_addQueries() {
             ORDER BY hostname, sortOrder ASC
         ',
         'findReverseReplacementNoRedirect' => '
-        	SELECT r.match,r.replace,r.isRedirect FROM !prefix!urls r
-            WHERE :url = SUBSTR(r.replace,1,LOCATE("\1",r.replace)-2) AND (hostname = :hostname OR hostname = "") AND r.isRedirect = 0
-            ORDER BY hostname, sortOrder ASC
+        	SELECT
+        		r.match,
+        		CONCAT("^",SUBSTR(r.replace,1,LOCATE("\1",r.replace)-2),"(/.*)?$") AS reverseMatch,
+        		r.isRedirect
+        	FROM
+        		!prefix!urls r
+        	WHERE
+        		:url RLIKE CONCAT("^",SUBSTR(r.replace,1,LOCATE("\1",r.replace)-2),"(/.*)?$")
+        		AND (hostname = :hostname OR hostname = "")
+        	ORDER BY
+        		hostname,sortOrder ASC
         ',
         'getCoreAndModulePhrases' => '
 			SELECT
