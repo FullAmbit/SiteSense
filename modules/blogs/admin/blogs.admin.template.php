@@ -96,7 +96,7 @@ function theme_blogsDeletePostsDeleted($data,$aRoot) {
 	echo '
 		<h2>',$data->phrases['blogs']['deletePostSuccessHeading'],' - ',$data->action[3],'</h2>
 		<div class="buttonList">
-			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['blogId'],'">',$data->phrases['blogs']['returnToPosts'],'</a>
+			<a href="',$aRoot,'listPosts/',$data->output['thisBlog']['id'],'">',$data->phrases['blogs']['returnToPosts'],'</a>
 		</div>
 		';
 }

@@ -272,7 +272,6 @@ final class sitesense {
 			if (strpos($queryString, 'index.php')===0) $queryString=substr($queryString, 9);
 		}
 		$queryString = trim($queryString, '/').'/';
-		
 		// Check For URL Replacement Or A Redirect
 		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));

@@ -38,9 +38,9 @@ function admin_blogsBuild($data,$db) {
 					':owner' => $data->user['id']
 				));
 			} else {
-				$qHandle=$db->prepare('getBlogById','admin_blogs');
+				$qHandle=$db->prepare('getBlogByPost','admin_blogs');
 				$qHandle->execute(array(
-					':id' => $data->action[3]
+					':postId' => $data->action[3]
 				));
 			}
 			if(($data->output['thisBlog']=$qHandle->fetch())==FALSE)

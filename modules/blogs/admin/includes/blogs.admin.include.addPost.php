@@ -26,6 +26,7 @@ common_include('libraries/forms.php');
 
 function admin_blogsBuild($data,$db) {
     if(!checkPermission('postAdd','blogs',$data)) {
+    	die("WTF");
         $data->output['abort']=true;
         $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
