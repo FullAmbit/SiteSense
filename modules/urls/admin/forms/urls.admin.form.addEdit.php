@@ -22,11 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->caption='Create URL Remap';
-$this->submitTitle='Save URL Remap';
+$this->caption=$data->phrases['urls']['captionAddRemap'];
+$this->submitTitle=$data->phrases['urls']['submitAddEditForm'];
 $this->fields=array(
 	'match' => array(
-		'label' => 'Pattern',
+		'label' => $data->phrases['urls']['pattern'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['urlremap']['match']) ? $data->output['urlremap']['match'] : '',
@@ -36,12 +36,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Match</b> - Regex matching pattern
+				<b>'.$data->phrases['urls']['labelMatch'].'</b><br />
+				'.$data->phrases['urls']['descriptionMatch'].'
 			</p>
 		'
 	),
 	'replace' => array(
-		'label' => 'Replacement',
+		'label' => $data->phrases['urls']['replacement'],
         'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['urlremap']['replace']) ? $data->output['urlremap']['replace'] : '',
@@ -50,13 +51,15 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Replacement</b> - $i (where i is an integer) means the match in the "$i"th bracket. $0 is the entire match.
+				<b>'.$data->phrases['urls']['replacement'].'</b><br />
+				'.$data->phrases['urls']['descriptionReplacement'].'
+				$i (where i is an integer) means the match in the "$i"th bracket. $0 is the entire match.
 			</p>
 		'
 	),
 	'hostname' => array(
 		'tag' => 'select',
-		'label' => 'Hostname',
+		'label' => $data->phrases['urls']['hostname'],
 		'options' => array(
 			array(
 				'value' => '',
@@ -66,7 +69,7 @@ $this->fields=array(
 		'value' => (isset($data->output['urlremap']['hostname'])) ? $data->output['urlremap']['hostname'] : ''
 	),
     'regex' => array(
-        'label' => 'Use Regular Expressions',
+        'label' => $data->phrases['urls']['labelRegex'],
         'tag' => 'input',
         'value' => 1,
         'checked' => (isset($data->output['urlremap']['regex']) && $data->output['urlremap']['regex'] == '1') ? 'checked' : '',
@@ -75,7 +78,7 @@ $this->fields=array(
         )
     ),
     'isRedirect' => array(
-    	'label' => "Redirect",
+    	'label' => $data->phrases['urls']['labelIsRedirect'],
     	'tag' => 'input',
     	'value' => 1,
     	'checked' => (isset($data->output['urlremap']['isRedirect']) && $data->output['urlremap']['isRedirect']=='1') ? 'checked' : '',

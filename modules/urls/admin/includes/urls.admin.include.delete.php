@@ -25,13 +25,13 @@
 function admin_urlsBuild($data,$db) {
     if(!checkPermission('delete','urls',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     $staff=false;
 	if (empty($data->action[3])) {
 		$data->output['abort'] = true;
-		$data->output['abortremap'] = '<h2>No ID Given</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 	}else{
 		$remap = $db->prepare('getUrlRemapById','admin_urls');
 		$remap->execute(array(':id' => (int)$data->action[3]));
@@ -47,12 +47,12 @@ function admin_urlsBuild($data,$db) {
 function admin_urlsShow($data) {
 	if(isset($data->output['success'])){
 		if($data->output['success']){
-			theme_urlsDeleteSuccess($data->linkRoot);
+			theme_urlsDeleteSuccess($data);
 		}else{
-			theme_urlsDeleteError($data->output['exists'],$data->linkRoot);
+			theme_urlsDeleteError($data);
 		}
 	}else{
-		theme_urlsDeleteConfirm($data->action[3],$data->linkRoot);
+		theme_urlsDeleteConfirm($data);
 	}
 }
 ?>

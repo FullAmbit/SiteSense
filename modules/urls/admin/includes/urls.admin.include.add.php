@@ -26,7 +26,7 @@ common_include('libraries/forms.php');
 function admin_urlsBuild($data,$db) {
     if(!checkPermission('add','urls',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     // Load Hostnames
@@ -76,7 +76,7 @@ function admin_urlsBuild($data,$db) {
                     ));
                 } else {
                     $data->output['remapForm']->fields['match']['error']=true;
-                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> The top level route has already been assigned. Please choose a different match.';
+                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                     return;
                 }
             } else {
@@ -85,19 +85,19 @@ function admin_urlsBuild($data,$db) {
                 $result = $statement->execute($form->sendArray);
                 if($result == FALSE) {
                     $data->output['remapForm']->fields['match']['error']=true;
-                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
+                    $data->output['remapForm']->fields['match']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                     return;
                 }
             }
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Remap Saved Successfully</h2>
+					<h2>'.$data->phrases['urls']['saveRemapSuccess'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/urls/add">
-							Add New URL Remap
+							'.$data->phrases['urls']['addRemap'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/urls/list/">
-							Return to URL Remap List
+							'.$data->phrases['urls']['returnToList'].'
 						</a>
 					</div>';
 			}

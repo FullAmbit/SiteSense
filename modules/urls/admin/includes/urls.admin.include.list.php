@@ -25,7 +25,7 @@
 function admin_urlsBuild($data,$db) {
     if(!checkPermission('list','urls',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if($data->action[3]=='moveUp' || $data->action[3]=='moveDown') {
@@ -36,12 +36,12 @@ function admin_urlsBuild($data,$db) {
 	$data->output['remapList'] = $messages->fetchAll();
 }
 function admin_urlsShow($data) {
-	theme_urlsListTableHead($data->linkRoot);
+	theme_urlsListTableHead($data);
 	$key = 0;
 	foreach($data->output['remapList'] as $key => $remap) {
 		theme_urlsListTableRow($remap,$data->linkRoot,$key);
 	}
 	$key++;
-	theme_urlsListTableFoot($data->linkRoot);
+	theme_urlsListTableFoot($data);
 }
 ?>	

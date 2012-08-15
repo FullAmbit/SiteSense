@@ -28,23 +28,25 @@ function urls_settings() {
 		'shortName' => 'urls'
 	);
 }
-function urls_install($db,$drop=false) {
-	$structures = array(
-		'urls' => array(
-			'id'        => SQR_IDKey,
-			'match'     => 'VARCHAR(127) NOT NULL',
-			'replace'   => 'VARCHAR(127) NOT NULL',
-			'hostname'	=> 'VARCHAR(64) NOT NULL DEFAULT ""',
-            'regex'     => SQR_boolean,
-            'sortOrder' => SQR_sortOrder,
-            'isRedirect'=> SQR_boolean,
-            'UNIQUE KEY `match_hostName` (`match`,`hostname`)'
-		)
-	);
-	if($drop)
-		urls_uninstall($db);
-
-	$db->createTable('urls',$structures['urls'],false);
+function urls_install($db,$drop=false,$firstInstall = FALSE,$lang = "en_us") {
+	if($firstInstall){
+		$structures = array(
+			'urls' => array(
+				'id'        => SQR_IDKey,
+				'match'     => 'VARCHAR(127) NOT NULL',
+				'replace'   => 'VARCHAR(127) NOT NULL',
+				'hostname'	=> 'VARCHAR(64) NOT NULL DEFAULT ""',
+	            'regex'     => SQR_boolean,
+	            'sortOrder' => SQR_sortOrder,
+	            'isRedirect'=> SQR_boolean,
+	            'UNIQUE KEY `match_hostName` (`match`,`hostname`)'
+			)
+		);
+		if($drop)
+			urls_uninstall($db);
+	
+		$db->createTable('urls',$structures['urls'],false);
+	}
 }
 function urls_uninstall($db) {
 	$db->dropTable('urls');

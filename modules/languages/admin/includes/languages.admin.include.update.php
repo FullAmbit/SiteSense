@@ -61,7 +61,7 @@ function languages_admin_update_build($data,$db){
 		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
 			$temp=array('sidebars' => $data->output['moduleShortName']['sidebars']);
-			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['users'],$data->output['moduleShortName']['urls'],$data->output['moduleShortName']['modules']);
+			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['users'],$data->output['moduleShortName']['modules']);
 			$data->output['moduleShortName']=$temp+$data->output['moduleShortName'];
 						
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){

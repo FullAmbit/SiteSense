@@ -22,23 +22,23 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function theme_urlsListTableHead($linkRoot) {
+function theme_urlsListTableHead($data) {
 	echo '
 		<div class="panel buttonList">
-			<a href="',$linkRoot,'admin/urls/add/">
-				Add New URL Remap
+			<a href="',$data->linkRoot,'admin/urls/add/">
+				',$data->phrases['urls']['addRemap'],'
 			</a>
 		</div>
 		<table class="remapList">
-			<caption>URL Remaps</caption>
+			<caption>',$data->phrases['urls']['manageURLsHeading'],'</caption>
 			<thead>
 				<tr>
-					<th class="match">Pattern</th>
-					<th class="replacement">Replacement</th>
-					<th class="type">Type</th>
-					<th class="hostname">Hostname</th>
-					<th class="replacement">Mode</th>
-					<th class="buttonList">Controls</th>
+					<th class="match">',$data->phrases['urls']['pattern'],'</th>
+					<th class="replacement">',$data->phrases['urls']['replacement'],'</th>
+					<th class="type">',$data->phrases['urls']['type'],'</th>
+					<th class="hostname">',$data->phrases['urls']['hostname'],'</th>
+					<th class="replacement">',$data->phrases['urls']['mode'],'</th>
+					<th class="buttonList">',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -67,41 +67,41 @@ function theme_urlsListTableRow($remap,$linkRoot,$key) {
 		</tr>';
 }
 
-function theme_urlsListTableFoot($linkRoot) {
+function theme_urlsListTableFoot($data) {
 	echo '
 			</tbody>
 		</table>
 		<div class="panel buttonList">
-			<a href="',$linkRoot,'admin/urls/add/">
-				Add New URL Remap
+			<a href="',$data->linkRoot,'admin/urls/add/">
+				',$data->phrases['urls']['addRemap'],'
 			</a>
 		</div>
 		';
 }
 
-function theme_urlsDeleteSuccess($linkRoot) {
+function theme_urlsDeleteSuccess($data) {
 	echo '
-			<h2>Removal Successful</h2>
-			<p>The remap has been successfully deleted</p>
-			<p><a href="',$linkRoot, 'admin/urls/list">Return to remap list</a></p>
+			<h2>',$data->phrases['urls']['deleteURLSuccessHeading'],'</h2>
+			<p>',$data->phrases['urls']['deleteURLSuccessMessage'],'</p>
+			<p><a href="',$data->linkRoot, 'admin/urls/list">',$data->phrases['urls']['returnToList'],'</a></p>
 		';
 }
 
-function theme_urlsDeleteError($exists,$linkRoot) {
+function theme_urlsDeleteError($data) {
 	echo '
-			<h2>Cannot remove remap</h2>
-			<p>The remap cannot be removed. It ',($exists ? 'does' : 'doesn\'t'), ' exist in the database.</p>
-			<p><a href="',$linkRoot, 'admin/urls/list">Return to remap list</a></p>
+			<h2>',$data->phrases['urls']['deleteURLErrorHeading'],'</h2>
+			<p>',($data->output['exists']) ? $data->phrases['deleteURLErrorMessageDoesNotExist'] : $data->phrases['deleteURLErrorMessageDoesExist'],'</p>
+			<p><a href="',$data->linkRoot, 'admin/urls/list">',$data->phrases['urls']['returnToList'],'</a></p>
 		';
 }
 
-function theme_urlsDeleteConfirm($action3,$linkRoot) {
+function theme_urlsDeleteConfirm($data) {
 	echo '
-		<h2>Confirm Removal</h2>
-		<p>Are you sure that you want to remove this remap?</p>
+		<h2>',$data->phrases['urls']['deleteURLConfirmHeading'],'</h2>
+		<p>',$data->phrases['urls']['deleteURLConfirmMessage'],'</p>
 		<div class="buttonList">
-			<a href="',$linkRoot, 'admin/urls/delete/',$action3, '/confirm">Yes, Confirm Delete</a>
-			<a href="',$linkRoot, 'admin/urls/list">No, Cancel Delete</a>
+			<a href="',$data->linkRoot, 'admin/urls/delete/',$data->action[3], '/confirm">',$data->phrases['core']['actionConfirmDelete'],'</a>
+			<a href="',$data->linkRoot, 'admin/urls/list">',$data->phrases['core']['actionCancelDelete'],'</a>
 		</div>
 		';
 }

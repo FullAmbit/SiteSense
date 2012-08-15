@@ -26,7 +26,7 @@ common_include('libraries/forms.php');
 function admin_urlsBuild($data,$db) {
     if(!checkPermission('edit','urls',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	$remapId = (int)$data->action[3];
@@ -37,7 +37,7 @@ function admin_urlsBuild($data,$db) {
 	// Check To Make Sure It Exists
 	if(($data->output['urlremap'] = $check->fetch()) === FALSE){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
     if(!$data->output['urlremap']['regex']) {
@@ -53,7 +53,7 @@ function admin_urlsBuild($data,$db) {
     
 	// Create The Form
 	$form = $data->output['remapForm'] = new formHandler('addEdit',$data,true);
-	$form->caption = 'Editing URL Remap';
+	$form->caption = $data->phrases['urls']['captionEditRemap'];
 	
 	if ((!empty($_POST['fromForm'])) && ($_POST['fromForm']==$form->fromForm)) {
 		// Populate The Send Array
@@ -82,30 +82,27 @@ function admin_urlsBuild($data,$db) {
 			
 			if($result == FALSE) {
                 $data->output['remapForm']->fields['match']['error']=true;
-                $data->output['remapForm']->fields['match']['errorList'][]='<h2>URL Routing Conflict:</h2> Duplicate Regular Expression Exists';
+                $data->output['remapForm']->fields['match']['errorList'][]='<h2>'.$data->phrases['core']['uniqueNameConflictHeading'].'</h2>'.$data->phrases['core']['uniqueNameConflictMessage'];
                 return;
 			}
 			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>Remap Saved Successfully</h2>
+					<h2>'.$data->phrases['urls']['saveRemapSuccess'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/urls/add">
-							Add New URL Remap
+							'.$data->phrases['urls']['addRemap'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/urls/list/">
-							Return to URL Remap List
+							'.$data->phrases['urls']['returnToList'].'
 						</a>
 					</div>';
 			}
 		} else {
-			/*
-				invalid data, so we want to show the form again
-			*/
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}
