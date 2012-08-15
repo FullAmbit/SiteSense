@@ -95,8 +95,8 @@ function settings_admin_buildContent($data,$db) {
 		foreach($pageList as $pageItem)
 		{
 			$option = array(
-				'text' => $pageItem['shortName'],
-				'value' => $pageItem['shortName'],
+				'text' =>  $pageItem['shortName'],
+				'value' => 'pages/'.$pageItem['shortName'],
 				'optgroup' => 'Pages'
 			);
 			$data->output['settingsForm']->fields['homepage']['options'][] = $option;

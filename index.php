@@ -261,7 +261,8 @@ final class sitesense {
 			strlen($this->linkHome)
 		);
 		if (
-			$hasIndex || ($getDataPos==$getDataLoc)
+			!isset($_GET['language']) && 
+			($hasIndex || ($getDataPos==$getDataLoc))
 		) {
 			/* if using get, action based on query string */
 			$queryString=$_SERVER['QUERY_STRING'];
@@ -513,8 +514,11 @@ final class sitesense {
 		
 		//Is The URL Trying To Go To The Homepage?
 		if($queryString == $this->settings['homepage']){
+			// Grab Get Parameters
+			$pos = strpos($_SERVER['REQUEST_URI'],'?');	
+			$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],$pos);
 			header ('HTTP/1.1 301 Moved Permanently');
-			header ('Location: '.$this->linkHome);
+			header ('Location: '.$this->linkHome.$params);
 			die();
 		}
 		
@@ -568,12 +572,11 @@ final class sitesense {
 			($url=='index.php?')) {
 			// On default, go to homepage
 			if (isset($this->settings['homepage']) && $this->action[0]=='default') {
-				$targetInclude='modules/'.$this->settings['homepage'].'/'.$this->settings['homepage'].'.module.php';
+				$homeURL = explode('/',$this->settings['homepage']);
+				$targetInclude='modules/'.$homeURL[0].'/'.$homeURL[0].'.module.php';
 				if (file_exists($targetInclude)) {
-					$this->action[0]=$this->settings['homepage'];
-				} else {
-					$this->action[0]='pages';
-					$this->action[1]=$this->settings['homepage'];
+					$this->action[0]=$homeURL[0];
+					$this->action[1]=$homeURL[1];
 				}
 			} else {
 				$this->action[0] = 'default';
