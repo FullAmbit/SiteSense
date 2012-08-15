@@ -24,7 +24,7 @@
 */
 function urls_settings() {
 	return array(
-		'name'      => 'URLs',
+		'name'      => 'urls',
 		'shortName' => 'urls'
 	);
 }
