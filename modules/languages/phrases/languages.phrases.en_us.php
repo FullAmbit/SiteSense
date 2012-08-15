@@ -31,7 +31,8 @@ function languages_core_en_us(){
 		"uniqueNameConflictHeading"  => "Unique Name Conflict",
 		"uniqueNameConflictMessage"  => "That name already exists in the database.",
 		"databaseErrorHeading"       => "Database Error",
-		"databaseErrorMessage"       => "There was an error in accessing the database."
+		"databaseErrorMessage"       => "There was an error in accessing the database.",
+		"emailFailMessage"           => "Please provide a valid email address."
 	);
 	
 	return array(
