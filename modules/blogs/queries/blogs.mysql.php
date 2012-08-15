@@ -79,7 +79,7 @@ function blogs_addQueries() {
 			FROM !prefix!blog_posts!lang! WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
 		',
 		'getCategoryIdByShortName' => '
-			SELECT * FROM !prefix!blog_categories WHERE shortName = :shortName LIMIT 1
+			SELECT * FROM !prefix!blog_categories!lang! WHERE shortName = :shortName LIMIT 1
 		',
 		'getBlogPostsByCategory' => '
 			SELECT *,

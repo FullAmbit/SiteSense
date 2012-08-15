@@ -168,7 +168,8 @@ function blogs_buildContent($data, $db) {
 					':blogId' => $data->output['blogInfo']['id'],
 					':categoryId' => $data->output['categoryItem']['id']
 				));
-			$data->output['newsList']=$statement->fetchAll();
+			$data->output['newsList']=$statement->fetchAll(PDO::FETCH_ASSOC);
+			$data->output['blogInfo']['numberOfPosts'] = count($data->output['newsList']);
 			// If No Posts, Return An Error
 			if (empty($data->output['newsList'])) {
 				$data->output['notFound']=true;
