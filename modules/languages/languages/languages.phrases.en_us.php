@@ -34,7 +34,8 @@ function languages_languages_en_us(){
 		"setDefaultError"          => "There was an error in setting the new default language.",
 		"setDefaultSuccess"        => "The new default language has been set successfully.",
 		"phraseExistsForModule"    => "The phrase you specified already exists for this module.",
-		"saveToDBError"            => "There was an error in saving to the database."
+		"saveToDBError"            => "There was an error in saving to the database.",
+		"makeDefault"              => "Make Default"
 		
 	);
 }
