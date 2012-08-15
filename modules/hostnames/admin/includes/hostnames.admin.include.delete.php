@@ -14,7 +14,7 @@ function hostnames_admin_delete_build($data,$db){
 	}
 	// We Getting Any Post?
 	if(!empty($_POST)){
-		if(isset($_POST['yes']) && $_POST['yes'] === 'Yes'){
+		if(isset($_POST['yes'])){
 			// Okay...Delete This
 			$statement = $db->prepare('deleteHostname','admin_hostnames');
 			$r = $statement->execute(array(

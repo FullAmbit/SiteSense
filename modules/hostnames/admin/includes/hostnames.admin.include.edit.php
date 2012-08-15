@@ -43,7 +43,7 @@ function hostnames_admin_edit_build($data,$db){
 		{
 			$option = array(
 				'text' => $pageItem['shortName'],
-				'value' => $pageItem['shortName'],
+				'value' => 'pages/'.$pageItem['shortName'],
 				'optgroup' => 'Pages'
 			);
 			$data->output['hostnameForm']->fields['homepage']['options'][] = $option;

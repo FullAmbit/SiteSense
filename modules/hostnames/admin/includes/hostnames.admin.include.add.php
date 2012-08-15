@@ -4,7 +4,7 @@ common_include('libraries/forms.php');
 
 function hostnames_admin_add_build($data,$db){
 	$data->output['hostnameForm'] = new formHandler('hostnameItem',$data,true);
-	$data->output['hostnameForm']->caption = 'Add A Hostname';
+	$data->output['hostnameForm']->caption = $data->phrases['hostnames']['captionAddHostname'];
 	$list=glob('themes/*');
 	foreach ($list as $theme) {
 		if (filetype($theme)=='dir') {
@@ -33,7 +33,7 @@ function hostnames_admin_add_build($data,$db){
 		{
 			$option = array(
 				'text' => $pageItem['shortName'],
-				'value' => $pageItem['shortName'],
+				'value' => 'pages/'.$pageItem['shortName'],
 				'optgroup' => 'Pages'
 			);
 			$data->output['hostnameForm']->fields['homepage']['options'][] = $option;
