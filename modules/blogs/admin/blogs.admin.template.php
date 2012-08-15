@@ -31,7 +31,7 @@ function theme_blogsDeleteDeleted($data,$aRoot) {
 		';
 }
 
-function theme_blogsDeleteCancelled($aRoot) {
+function theme_blogsDeleteCancelled($data,$aRoot) {
 	echo '
 		<h2>',$data->phrases['blogs']['deleteBlogCancelledHeading'],'</h2>
 		<p>

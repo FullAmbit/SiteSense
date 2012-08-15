@@ -69,10 +69,10 @@ function admin_blogsShow($data) {
 	if (empty($data->output['rejectError'])) {
 		switch ($data->output['delete']) {
 		case 'deleted':
-			theme_blogsDeleteCommentDeleted($aRoot);
+			theme_blogsDeleteCommentDeleted($data,$aRoot);
 			break;
 		case 'cancelled':
-			theme_blogsDeleteCommentCancelled($aRoot);
+			theme_blogsDeleteCommentCancelled($data,$aRoot);
 			break;
 		default:
 			theme_blogsDeleteCommentDefault($data, $aRoot);
