@@ -26,7 +26,7 @@ function languages_admin_update_build($data,$db){
 	if(isset($_POST['install'])){
 		// Make Sure The Language We Specified Has A Core File
 		if(!isset($languageList[$_POST['updateLanguage']])){
-			$data->output['responseMessage'] = 'The language you selected does not have a core installer file.';
+			$data->output['responseMessage'] = $data->phrases['languages']['missingCoreInstallerFile'];
 			return;
 		}
 		
@@ -40,7 +40,7 @@ function languages_admin_update_build($data,$db){
 			$statement = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>$_POST['updateLanguage']));
 			$result = $statement->execute();
 			if($result == FALSE){
-				$data->output['responseMessage'] = 'There was an error in creating the phrases table for the langauge.';
+				$data->output['responseMessage'] = $data->phrases['languages']['createPhraseTableError'];
 				return;
 			}
 
@@ -51,7 +51,7 @@ function languages_admin_update_build($data,$db){
 			));
 			
 			if($result == FALSE){
-				$data->output['responseMessage'] = 'There was an error in adding the language to the database.';
+				$data->output['responseMessage'] = $data->phrases['languages']['addLanguageDBError'];
 				return;
 			}
 		}
@@ -61,9 +61,9 @@ function languages_admin_update_build($data,$db){
 		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
 			$temp=array('sidebars' => $data->output['moduleShortName']['sidebars']);
-			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['languages'],$data->output['moduleShortName']['users'],$data->output['moduleShortName']['urls'],$data->output['moduleShortName']['modules']);
+			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['users'],$data->output['moduleShortName']['urls'],$data->output['moduleShortName']['modules']);
 			$data->output['moduleShortName']=$temp+$data->output['moduleShortName'];
-			
+						
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
 				// Create A Duplicate Table For This Module For Installation Purposes
 				$installFile = 'modules/'.$moduleName.'/'.$moduleName.'.install.php';

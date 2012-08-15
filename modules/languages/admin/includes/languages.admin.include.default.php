@@ -12,13 +12,13 @@ function languages_admin_default_build($data,$db){
 	}
 	// Check If Default Already
 	if($languageItem['isDefault']=='1'){
-		$data->output['responseMessage'] = 'This language is already the default.';
+		$data->output['responseMessage'] = $data->phrases['languages']['alreadyDefault'];
 		return;
 	}
 	// Remove The Other Default Language
 	$remove = $statement=$db->query('disableDefaultLanguage','admin_languages');
 	if(!$remove){
-		$data->output['responseMessage'] = 'There was an error in disabling the previous default language.';
+		$data->output['responseMessage'] = $data->phrases['languages']['disableDefaultError'];
 		return;
 	}
 	// Make This The Default Language
@@ -27,9 +27,9 @@ function languages_admin_default_build($data,$db){
 		':shortName' => $languageItem['shortName']
 	));
 	if(!$result){
-		$data->output['responseMessage'] = 'There was an error in setting '.$languageItem['name'].' as the default language.';
+		$data->output['responseMessage'] = $data->phrases['languages']['setDefaultError'].' Language: '.$languageItem['name'];
 	}else{
-		$data->output['responseMessage'] = 'The new default language is '.$languageItem['name'].'.';
+		$data->output['responseMessage'] = $data->phrases['languages']['setDefaultSuccess'].' Languages: '.$languageItem['name'];
 	}
 }
 

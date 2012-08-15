@@ -26,7 +26,7 @@ function languages_admin_addphrase_build($data,$db){
 				// Throw Form Error, Phrase Taken.
 				$data->output['phraseForm']->error = true;
 				$data->output['phraseForm']->fields['phrase']['error'] = true;
-				$data->output['phraseForm']->fields['phrase']['errorList'][] = 'The phrase you specified already exists for this module.';
+					$data->output['phraseForm']->fields['phrase']['errorList'][] = $data->phrases['languages']['phraseExistsForModule'];
 				return;
 			}
 			// Save To Database
@@ -35,7 +35,7 @@ function languages_admin_addphrase_build($data,$db){
 			if($result){
 				$data->output['themeOverride'] = 'AddPhraseSuccess';
 			}else{
-				$data->output['responseMessage'] = 'There was an error in saving to the database.';
+				$data->output['responseMessage'] = $data->phrases['languages']['saveToDBError'];
 			}			
 		}
 	}
