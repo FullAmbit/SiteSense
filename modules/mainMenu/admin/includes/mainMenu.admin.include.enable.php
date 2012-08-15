@@ -50,15 +50,15 @@ function admin_mainMenuBuild($data,$db) {
 	// Success Message
 	if (empty($data->output['secondSidebar'])) {
 	  $data->output['savedOkMessage']='
-		  <h2>Menu Item Enabled Successfully</h2>
-		  <div class="panel buttonList">
-			  <a href="'.$data->linkRoot.'admin/main-menu/add/">
-				  Add New Menu Item
-			  </a>
-			  <a href="'.$data->linkRoot.'admin/main-menu/list/">
-				  Return to Menu List
-			  </a>
-		  </div>';
+		<h2>'.$data->phrases['main-menu']['enableItemSuccessHeading'].'</h2>
+		<div class="panel buttonList">
+			<a href="'.$data->linkRoot.'admin/main-menu/add/">
+				'.$data->phrases['main-menu']['addMenuItem'].'
+			</a>
+			<a href="'.$data->linkRoot.'admin/main-menu/list/">
+				'.$data->phrases['main-menu']['returnToMenuItems'].'
+			</a>
+		</div>';
   }
 }
 function admin_mainMenuShow($data)

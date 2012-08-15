@@ -87,13 +87,13 @@ function admin_mainMenuShow($data)
 		switch($data->output['delete'])
 		{
 			case 'deleted':
-				theme_menuDeleteDeleted($aRoot);
+				theme_menuDeleteDeleted($data,$aRoot);
 				break;
 			case 'cancelled':
-				theme_menuDeleteCancelled($aRoot);
+				theme_menuDeleteCancelled($data,$aRoot);
 				break;
 			default:
-				theme_menuDeleteDefault($aRoot,$data);
+				theme_menuDeleteDefault($data,$aRoot);
 				break;
 		}
 	} else {

@@ -26,7 +26,7 @@ common_include('libraries/forms.php');
 function admin_mainMenuBuild($data,$db) {
     if(!checkPermission('edit','mainMenu',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if($data->action[3] === false){
@@ -37,7 +37,7 @@ function admin_mainMenuBuild($data,$db) {
 		$check->execute(array(':id' => $existing));
 		if(($data->output['menuItem'] = $check->fetch()) === false){
 			$data->output['abort'] = true;
-			$data->output['abortMessage'] = '<h2>ID does not exist in database</h2>';
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 			return;
 		}
 	}
@@ -68,24 +68,22 @@ function admin_mainMenuBuild($data,$db) {
 			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>MenuItem Saved Successfully</h2>
+					<h2>'.$data->phrases['main-menu']['saveItemSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/main-menu/add/">
-							Add New Menu Item
+							'.$data->phrases['main-menu']['addMenuItem'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/main-menu/list/">
-							Return to MenuItem List
+							'.$data->phrases['main-menu']['returnToMenuItems'].'
 						</a>
 					</div>';
 			}
 		} else {
-			/*
-				invalid data, so we want to show the form again
-			*/
+			// Invalid Data
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

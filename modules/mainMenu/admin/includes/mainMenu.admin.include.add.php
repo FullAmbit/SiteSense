@@ -26,11 +26,10 @@ common_include('libraries/forms.php');
 function admin_mainMenuBuild($data,$db) {
 	if(!checkPermission('add','mainMenu',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     $data->output['MenuItemForm'] = new formHandler('item',$data,true);
-	$data->output['MenuItemForm']->caption = 'New Menu Item';
 	$options = admin_mainMenuOptions($db);
 	$data->output['MenuItemForm']->fields['parent']['options'] = array_merge($data->output['MenuItemForm']->fields['parent']['options'], admin_mainMenuOptions($db));
 	if(!empty($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['MenuItemForm']->fromForm))
@@ -51,22 +50,22 @@ function admin_mainMenuBuild($data,$db) {
 			if(empty($data->output['secondSidebar']))
 			{
 				$data->output['savedOkMessage']='
-					<h2>Menu Item Saved Successfully</h2>
+					<h2>'.$data->phrases['main-menu']['saveItemSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/main-menu/add/">
-							Add New Menu Item
+							'.$data->phrases['main-menu']['addMenuItem'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/main-menu/list/">
-							Return to Menu Item List
+							'.$data->phrases['main-menu']['returnToMenuItems'].'
 						</a>
 					</div>';
 			}
 		} else {
 			// Invalid Data
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 		}
 	}

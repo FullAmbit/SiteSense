@@ -22,11 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->caption='Create/Edit Module';
-$this->submitTitle='Save Module';
+$this->caption=$data->phrases['main-menu']['captionAddItem'];
+$this->submitTitle=$data->phrases['main-menu']['submitItemForm'];
 $this->fields=array(
 	'text' => array(
-		'label' => 'Text',
+		'label' => $data->phrases['main-menu']['labelItemText'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => isset($data->output['menuItem']['text']) ? $data->output['menuItem']['text'] : '',
@@ -36,12 +36,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Text</b> - What will the user see as the text on the menu item?
+				<b>'.$data->phrases['main-menu']['labelItemText'].'</b><br />
+				'.$data->phrases['main-menu']['descriptionItemText'].'
+				
 			</p>
 		'
 	),
 	'title' => array(
-		'label' => 'Title',
+		'label' => $data->phrases['main-menu']['labelItemTitle'],
 		'tag' => 'input',
 		'required' => false,
 		'value' => isset($data->output['menuItem']['title']) ? $data->output['menuItem']['title'] : '',
@@ -50,12 +52,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Title</b> - What will the user see in the tooltip when they keep their mouse over the menu item?
+				<b>'.$data->phrases['main-menu']['labelItemTitle'].'</b><br />
+				'.$data->phrases['main-menu']['descriptionItemTitle'].'
 			</p>
 		'
 	),
 	'url' => array(
-		'label' => 'URL',
+		'label' => $data->phrases['main-menu']['labelItemURL'],
 		'tag' => 'input',
 		'value' => isset($data->output['menuItem']['url']) ? $data->output['menuItem']['url'] : '',
 		'params' => array(
@@ -63,7 +66,8 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>URL</b> - Where is this menu item linking to? Placing a \'|\' at the beginning will prepend your local URL.
+				<b>'.$data->phrases['main-menu']['labelItemURL'].'</b><br />
+				'.$data->phrases['main-menu']['descriptionItemURL'].'
 			</p>
 		'
 	),
@@ -82,7 +86,7 @@ $this->fields=array(
 		'
 	),*/
 	'enabled' => array(
-		'label' => 'Enable?',
+		'label' => $data->phrases['main-menu']['labelItemEnable'],
 		'tag' => 'input',
 		'value' => 1,
 		'checked' => (isset($data->output['menuItem']['enabled']) && $data->output['menuItem']['enabled'] == 1) ? 'checked' : '',
@@ -91,12 +95,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Enabled</b> - Will the user see this menu item?
+				<b>'.$data->phrases['main-menu']['labelItemEnable'].'</b><br />
+				'.$data->phrases['main-menu']['descriptionItemEnable'].'
 			</p>
 		'
 	),
 	'parent' => array(
-		'label' => 'Parent Menu Item',
+		'label' => $data->phrases['main-menu']['labelItemParent'],
 		'tag' => 'select',
 		'options' => array(
 			array(

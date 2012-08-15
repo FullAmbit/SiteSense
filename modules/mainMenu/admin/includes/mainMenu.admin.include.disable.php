@@ -25,7 +25,7 @@
 function admin_mainMenuBuild($data,$db) {
     if(!checkPermission('disable','mainMenu',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	// Check To See If The Project Exists
@@ -34,7 +34,7 @@ function admin_mainMenuBuild($data,$db) {
 	if(($data->output['menuItem'] = $check->fetch()) === FALSE)
 	{
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>The ID does not exist in database</h2>';
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	// Disable
@@ -48,15 +48,15 @@ function admin_mainMenuBuild($data,$db) {
 	// Success Message
 	if (empty($data->output['secondSidebar'])) {
 	  $data->output['savedOkMessage']='
-		  <h2>Menu Item Disabled Successfully</h2>
-		  <div class="panel buttonList">
-			  <a href="'.$data->linkRoot.'admin/main-menu/add/">
-				  Add New Menu Item
-			  </a>
-			  <a href="'.$data->linkRoot.'admin/main-menu/list/">
-				  Return to Menu List
-			  </a>
-		  </div>';
+		<h2>'.$data->phrases['main-menu']['disableItemSuccessHeading'].'</h2>
+		<div class="panel buttonList">
+			<a href="'.$data->linkRoot.'admin/main-menu/add/">
+				'.$data->phrases['main-menu']['addMenuItem'].'
+			</a>
+			<a href="'.$data->linkRoot.'admin/main-menu/list/">
+				'.$data->phrases['main-menu']['returnToMenuItems'].'
+			</a>
+		</div>';
   }
 }
 function admin_mainMenuShow($data)
