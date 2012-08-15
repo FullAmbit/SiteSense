@@ -34,7 +34,8 @@ function blogs_common_buildContent($data,$db) {
     $statement=$db->prepare('getBlogPostsDelimited','blogs');
     $statement->bindValue(':blogId',$data->output['blogInfo']['id']);
     /* LIMIT must be done using ::bindValue with typecasting!!! */
-    $start=(intval($data->output['blogInfo']['startPage']) > 1) ? $data->output['blogInfo']['startPage']+1 : 0;
+    $start=(intval($data->output['blogInfo']['startPage']) <= 1) ? 0 : $data->output['blogInfo']['startPage']-1;
+    $start = ($start > 0) ? ($start * $data->output['blogInfo']['numberPerPage']) : $start;
     $statement->bindValue(':start',(int)$start,PDO::PARAM_INT);
     $statement->bindValue(':count',(int)$data->output['blogInfo']['numberPerPage'],PDO::PARAM_INT);
     $statement->execute();
