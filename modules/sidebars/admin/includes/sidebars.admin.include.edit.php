@@ -47,6 +47,7 @@ function admin_sidebarsBuild($data,$db) {
 	}
 	// Load Form
 	$data->output['sidebarForm']=new formHandler('sidebars',$data,true);
+	$data->output['sidebarForm']->caption = $data->phrases['sidebars']['captionSidebarsEdit'];
 	// Populate With Data
 	foreach ($data->output['sidebarForm']->fields as $key => $value) {
 		if (

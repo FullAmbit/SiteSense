@@ -23,12 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 $this->formPrefix='sidebarEdit_';
-$this->caption='Create New Sidebar';
-$this->submitTitle='Save Changes';
+$this->caption=$data->phrases['sidebars']['captionSidebarsAdd'];
+
+$this->submitTitle=$data->phrases['sidebars']['submitSidebarsForm'];
 $this->fromForm='sidebarEdit';
 $this->fields=array(
 	'name' => array(
-		'label' => 'Name',
+		'label' => $data->phrases['sidebars']['labelSidebarsName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => '',
@@ -38,11 +39,12 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Name</b> - Used for reference in the admin panel. Must be unique.
+				<b>'.$data->phrases['sidebars']['labelSidebarsName'].'</b><br />
+				'.$data->phrases['sidebars']['descriptionSidebarsName'].'
 		'
 	),
 	'title' => array(
-		'label' => 'Title',
+		'label' => $data->phrases['sidebars']['labelSidebarsTitle'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => '',
@@ -52,12 +54,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Title</b> - The title displayed over the sidebar on the user end.
+				<b>'.$data->phrases['sidebars']['labelSidebarsTitle'].'</b><br />
+				'.$data->phrases['sidebars']['descriptionSidebarsTitle'].'
 			</p>
 		'
 	),
 	'titleURL' => array(
-		'label' => 'Title URL',
+		'label' => $data->phrases['sidebars']['labelSidebarsTitleURL'],
 		'tag' => 'input',
 		'value' => '',
 		'params' => array(
@@ -66,26 +69,27 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Title URL</b> - Optional Field that will turn the title into a link. Should be a full url - IF the first character is a vertical break (|) then the \'linkRoot\' will be appended before it -- in other words a local link in the CMS.
+				<b>'.$data->phrases['sidebars']['labelSidebarsTitleURL'].'</b><br />
+				'.$data->phrases['sidebars']['descriptionSidebarsTitleURL'].'
 			</p>
 		'
 	),
 	'side' => array(
-		'label' => 'Side',
+		'label' => $data->phrases['sidebars']['labelSidebarsSide'],
 		'tag' => 'select',
 		'options' => array(
 			array(
-				'value' => 'left',
-				'text' => 'left'
+				'value' => $data->phrases['sidebars']['left'],
+				'text'  => $data->phrases['sidebars']['left']
 			),
 			array(
-				'value' => 'right',
-				'text' => 'right',
+				'value' => $data->phrases['sidebars']['right'],
+				'text'  => $data->phrases['sidebars']['right']
 			)
 		)
 	),
 	'rawContent' => array(
-		'label' => 'Content Text',
+		'label' => $data->phrases['sidebars']['labelSidebarsRawContent'],
 		'tag' => 'textarea',
 		'required' => true,
 		'params' => array(
@@ -95,7 +99,8 @@ $this->fields=array(
 		'useEditor' => true,
 		'description' => '
 			<p>
-				<b>Quote Text</b> - The actual text that will go inside the automatically generated <code>blockquote</code> tag. HTML is allowed in here, though any sub-headings you wish to use should start at H3, since H2 is already in use.
+				<b>'.$data->phrases['sidebars']['labelSidebarsRawContent'].'</b><br />
+				'.$data->phrases['sidebars']['descriptionSidebarsRawContent'].'
 			</p>
 		',
 		'addEditor' => $data->jsEditor->addEditor($this->formPrefix.'rawContent')
