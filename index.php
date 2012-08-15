@@ -576,7 +576,7 @@ final class sitesense {
 				$targetInclude='modules/'.$homeURL[0].'/'.$homeURL[0].'.module.php';
 				if (file_exists($targetInclude)) {
 					$this->action[0]=$homeURL[0];
-					$this->action[1]=$homeURL[1];
+					$this->action[1]= isset($homeURL[1]) ? $homeURL[1] : false;
 				}
 			} else {
 				$this->action[0] = 'default';
