@@ -62,7 +62,7 @@ function admin_buildContent($data,$db) {
 				':module' => $data->action[1],
 				':isAdmin' => 1
 			));
-		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$data->phrases[$data->action[1]][$row['phrase']] = $row['text'];
 		}
 				
