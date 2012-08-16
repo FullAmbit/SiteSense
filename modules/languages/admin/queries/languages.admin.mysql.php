@@ -41,9 +41,9 @@ function admin_languages_addQueries(){
 		'addPhraseByLanguage' => '
 			INSERT INTO 
 				!prefix!languages_phrases_!lang!
-				(phrase,text,module)
+				(phrase,text,module,isAdmin)
 			VALUES
-				(:phrase,:text,:module)
+				(:phrase,:text,:module,:isAdmin)
 		',
 		'getPhraseByLanguageAndModule' => '
 			SELECT
@@ -81,7 +81,8 @@ function admin_languages_addQueries(){
 			SET 
 				phrase = :phrase,
 				text = :text,
-				module = :module
+				module = :module,
+				isAdmin = :isAdmin
 			WHERE
 				id = :id
 		',
@@ -91,8 +92,9 @@ function admin_languages_addQueries(){
 			  `phrase` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT "",
 			  `text` text CHARACTER SET utf8,
 			  `module` varchar(64) DEFAULT NULL,
+			  `isAdmin` TINYINT(1) NOT NULL DEFAULT `0`
 			  PRIMARY KEY (`id`),
-			  UNIQUE KEY `phrase` (`phrase`,`module`)
+			  UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)
 			) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 		',
 		'deletePhrasesByModuleAndLanguage' => '
@@ -128,6 +130,9 @@ function admin_languages_addQueries(){
 				isDefault = 1
 			WHERE 
 				shortName = :shortName
-		'
+		',
+		'truncatePhrases' => '
+			TRUNCATE !prefix!languages_phrases_!lang!
+		',
 	);
 }

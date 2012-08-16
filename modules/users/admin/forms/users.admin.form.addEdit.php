@@ -32,12 +32,12 @@ $levelOptions = array();
 
 $this->fields=array(
 	'id' => array(
-		'label' => 'ID #',
+		'label' => $data->phrases['users']['labelAddEditIDNumber'],
 		'tag' => 'span',
 		'value' => (empty($data->output['userForm']['id']) ? '' : $data->output['userForm']['id'])
 	),
 	'firstName' => array(
-		'label' => 'Full Name',
+		'label' => $data->phrases['users']['labelAddEditFirstName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['userForm']['firstName']{0}) ? '' : $data->output['userForm']['firstName']),
@@ -47,22 +47,29 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Full Name</b> - The full name of the user.
+				<b>'.$data->phrases['users']['labelAddEditFirstName'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditFirstName'].'
 			</p>
 		'
 	),
 	'lastName' => array(
-		'label' => 'Last Name',
+		'label' => $data->phrases['users']['labelAddEditLastName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['userForm']['lastName']{0}) ? '' : $data->output['userForm']['lastName']),
 		'params' => array(
 			'type' => 'text',
 			'size' => 128,
-		)
+		),
+		'description' => '
+			<p>
+				<b>'.$data->phrases['users']['labelAddEditLastName'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditLastName'].'
+			</p>
+		'
 	),
 	'name' => array(
-		'label' => 'Username',
+		'label' => $data->phrases['users']['labelAddEditName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['userForm']['name']) ? '' : $data->output['userForm']['name']),
@@ -72,27 +79,28 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Username</b> - The name the user logs in with. This is different from displayName.
+				<b>'.$data->phrases['users']['labelAddEditName'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditName'].'
 			</p>
 		'
 	),
 	'registeredDate' => array(
-		'label' => 'Registered on',
+		'label' => $data->phrases['users']['labelAddEditRegisteredDate'],
 		'tag' => 'span',
 		'value' => (empty($data->output['userForm']['registeredDate']) ? '' : $data->output['userForm']['registeredDate']),
 	),
 	'registeredIP' => array(
-		'label' => 'Registered From',
+		'label' => $data->phrases['users']['labelAddEditRegisteredIP'],
 		'tag' => 'span',
 		'value' => (empty($data->output['userForm']['registeredIP']) ? '' : $data->output['userForm']['registeredIP']),
 	),
 	'lastAccess' => array(
-		'label' => 'Last Access',
+		'label' => $data->phrases['users']['labelAddEditLastAccess'],
 		'tag' => 'span',
 		'value' => (empty($data->output['userForm']['lastAccess']) ? '' : $data->output['userForm']['lastAccess']),
 	),
 	'contactEMail' => array(
-		'label' => 'Contact E-Mail',
+		'label' => $data->phrases['users']['labelAddEditContactEmail'],
 		'tag' => 'input',
 		'value' => (empty($data->output['userForm']['contactEMail']) ? '' : $data->output['userForm']['contactEMail']),
 		'params' => array(
@@ -101,12 +109,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Contact E-Mail</b> - E-mail Staff can use to contact user.
+				<b>'.$data->phrases['users']['labelAddEditContactEmail'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditContactEmail'].'
 			</p>
 		'
 	),
 	'publicEMail' => array(
-		'label' => 'Public E-Mail',
+		'label' => $data->phrases['users']['labelAddEditPublicEmail'],
 		'tag' => 'input',
 		'value' => (empty($data->output['userForm']['publicEMail']) ? '' : $data->output['viewUser']['publicEMail']),
 		'params' => array(
@@ -115,12 +124,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Public E-Mail</b> - E-mail shown to the public on the user\'s profile.
+				<b>'.$data->phrases['users']['labelAddEditPublicEmail'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditPublicEmail'].'
 			</p>
 		'
 	),
 	'password' => array(
-		'label' => 'Password',
+		'label' => $data->phrases['users']['labelAddEditPassword'],
 		'tag' => 'input',
 		'value' => '',
 		'params' => array(
@@ -129,12 +139,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Password</b> - What the user logs in with for a password
+				<b>'.$data->phrases['users']['labelAddEditPassword'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditPassword'].'
 			</p>
 		',
 	),
 	'password2' => array(
-		'label' => 'Retype Password',
+		'label' => $data->phrases['users']['labelAddEditPassword2'],
 		'compareTo' => 'password',
 		'tag' => 'input',
 		'value' => '',
@@ -144,13 +155,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Retype Password</b> - Enter the new password a second time to verify changes.
+				<b>'.$data->phrases['users']['labelAddEditPassword2'].'</b><br />
+				'.$data->phrases['users']['descriptionAddEditPassword2'].'
 			</p>
 		',
-		'compareFailMessage' => 'The passwords you entered do not match!'
+		'compareFailMessage' => $data->phrases['users']['passwordsMismatch']
 	),
     'timeZone' => array(
-        'label' => 'Default Time Zone',
+		'label' => $data->phrases['users']['labelAddEditTimeZone'],
         'required' => true,
         'tag' => 'select',
         'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
@@ -179,7 +191,7 @@ foreach($data->output['groupList'] as $value) {
         $this->fields[$value['groupName']]=array(
             'label'   => $value['groupName'],
             'tag'     => 'input',
-            'group'   => 'User Groups',
+            'group'   => $data->phrases['users']['userGroupsHeading'],
             'value'   => 'checked',
             'checked' => $checked,
             'params' => array(
@@ -187,44 +199,44 @@ foreach($data->output['groupList'] as $value) {
             )
         );
         $this->fields[$value['groupName'].'_expiration']=array(
-            'label' => 'Expires',
+            'label' => $data->phrases['users']['labelAddEditExpires'],
             'tag' => 'span',
             'value' => $expires,
 
         );
         $this->fields[$value['groupName'].'_update']=array(
-            'label'   => 'Update Expiration',
+            'label'   => $data->phrases['users']['labelAddEditUpdateExpiration'],
             'tag'     => 'select',
-            'group'   => 'User Groups',
+            'group'   => $data->phrases['users']['userGroupsHeading'],
             'options' => array(
-                'No change',
-                'Never',
-                '15 minutes',
-                '1 hour',
-                '2 hours',
-                '1 day',
-                '2 days',
-                '1 week'
+                $data->phrases['users']['optionUpdateExpirationNoChange'],
+                $data->phrases['users']['optionUpdateExpirationNever'],
+                $data->phrases['users']['optionUpdateExpiration15Min'],
+                $data->phrases['users']['optionUpdateExpiration1Hr'],
+                $data->phrases['users']['optionUpdateExpiration2Hr'],
+                $data->phrases['users']['optionUpdateExpiration1Day'],
+                $data->phrases['users']['optionUpdateExpiration2Day'],
+                $data->phrases['users']['optionUpdateExpiration1Week'],
             ),
-            'value'   => 'No change'
+            'value'   => $data->phrases['users']['optionUpdateExpirationNoChange']
         );
         $state = (!isset($data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'])) ? '0' : $data->output['userForm']['permissions']['manageGroups'][$value['groupName']]['value'];
         $this->fields['manageGroups_'.$value['groupName']]=array(
-            'label'   => 'Manage Membership',
+            'label'   => $data->phrases['users']['labelAddEditManageMembership'],
             'tag'     => 'select',
-            'group'   => 'User Groups',
+            'group'   => $data->phrases['users']['userGroupsHeading'],
             'options' => array(
                 array(
                 	'value' => '1',
-                	'text' => 'Allow'
+                	'text' => $data->phrases['users']['optionPermissionAllow']
                 ),
                 array(
                 	'value' => '0',
-                	'text' => 'Neutral'
+                	'text' => $data->phrases['users']['optionPermissionNeutral']
                 ),
                 array(
                 	'value' => '-1',
-                	'text' => 'Forbid'
+                	'text' => $data->phrases['users']['optionPermissionForbid']
                 )
             ),
             'value'   => $state
@@ -237,21 +249,21 @@ foreach($data->permissions as $category => $permissions) {
     	$value = (!isset($data->output['userForm']['permissions'][$category]['permissions']['value'])) ? '0' : $data->output['userForm']['permissions'][$category]['permissions']['value'];
     	
         $this->fields[$category.'_permissions']=array(
-            'label'   => 'Manage Permissions',
+            'label'   => $data->phrases['users']['labelAddEditManagePermissions'],
             'tag'     => 'select',
-            'group'   => ucfirst($category).' Permissions',
+            'group'   => ucfirst($category).' '.$data->phrases['users']['permissions'],
             'options' => array(
                 array(
                 	'value' => '1',
-                	'text' => 'Allow'
+                	'text' => $data->phrases['users']['optionPermissionAllow']
                 ),
                 array(
                 	'value' => '0',
-                	'text' => 'Neutral'
+                	'text' => $data->phrases['users']['optionPermissionNeutral']
                 ),
                 array(
                 	'value' => '-1',
-                	'text' => 'Forbid'
+                	'text' => $data->phrases['users']['optionPermissionForbid']
                 )
             ),
             'value'   => $value
@@ -262,14 +274,14 @@ foreach($data->permissions as $category => $permissions) {
         	        	
         	if(isset($data->output['userFinalPermissions'][$category][$permissionName])){
 	        	if($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '0'){
-		        	$verdict = 'Neutral';
+		        	$verdict = $data->phrases['users']['optionPermissionNeutral'];
 	        	}elseif($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '-1'){
-	        		$verdict = 'Forbidden by '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
+	        		$verdict = $data->phrases['users']['permissionVerdictForbidden'].': '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
 		        }elseif($data->output['userFinalPermissions'][$category][$permissionName]['value'] == '1'){
-	        		$verdict = 'Allowed by '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
+	        		$verdict = $data->phrases['users']['permissionVerdictAllowed'].': '.$data->output['userFinalPermissions'][$category][$permissionName]['source'];
 		        }
         	} else{
-	        	$verdict = 'Neutral';
+	        	$verdict = $data->phrases['users']['optionPermissionNeutral'];
         	}
         	
         	
@@ -280,20 +292,20 @@ foreach($data->permissions as $category => $permissions) {
                 'options' => array(
                     array(
                 		'value' => '1',
-                		'text' => 'Allow'
+                		'text' => $data->phrases['users']['optionPermissionAllow']
 	                ),
 	                array(
 	                	'value' => '0',
-	                	'text' => 'Neutral'
+	                	'text' => $data->phrases['users']['optionPermissionNeutral']
 	                ),
 	                array(
 	                	'value' => '-1',
-	                	'text' => 'Forbid'
+	                	'text' => $data->phrases['users']['optionPermissionForbid']
 	                )
 	            ),
                 'value' => $value,
                 'description' => '
-                	<p><b>Vedict:</b> '.$verdict.'</p>'
+                	<p><b>'.$data->phrases['users']['verdict'].':</b> '.$verdict.'</p>'
             );
         }
     }

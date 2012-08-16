@@ -26,11 +26,11 @@ $this->formPrefix='permissionGroup_';
 $this->caption=ucfirst($data->action[4]).'ing Group'.(
 	empty($data->action[5]) ? '' : ': '.ucfirst($data->action[5])
 );
-$this->submitTitle='Save';
+$this->submitTitle=$data->phrases['users']['savePermissionsButton'];
 $this->fromForm='permissionGroup';
 $this->fields=array(
 	'groupName' => array(
-		'label'     => 'Group Name',
+		'label'     => $data->phrases['users']['labelGroupName'],
 		'required'  => true,
 		'tag'       => 'input',
 		'value'     => ($data->action[5]) ? $data->action[5] : '',
@@ -45,22 +45,22 @@ foreach($data->permissions as $category => $permissions) {
     	$value = (!isset($data->output['permissionList'][$category]['permissions']['value'])) ? '0' : $data->output['permissionList'][$category]['permissions']['value'];
 
         $this->fields[$category.'_permissions']=array(
-            'label'   => 'Manage Permissions',
+            'label'   => $data->phrases['users']['labelAddEditManagePermissions'],
             'tag'     => 'select',
-            'group'   => ucfirst($category).' Permissions',
+            'group'   => ucfirst($category).' '.$data->phrases['users']['permissions'],
             'value' => $value,
             'options' => array(
 	        	array(
 	        		'value' => '1',
-	        		'text' => 'Allow'
+                	'text' => $data->phrases['users']['optionPermissionAllow']
 	            ),
 	            array(
 	            	'value' => '0',
-	            	'text' => 'Neutral'
+                	'text' => $data->phrases['users']['optionPermissionNeutral']
 	            ),
 	            array(
 	            	'value' => '-1',
-	            	'text' => 'Forbid'
+                	'text' => $data->phrases['users']['optionPermissionForbid']
 	            )
 		    )
         );
@@ -74,16 +74,16 @@ foreach($data->permissions as $category => $permissions) {
 	            'value'   => $value,
 	            'options' => array(
 		        	array(
-		        	'value' => '1',
-		        	'text' => 'Allow'
+		        		'value' => '1',
+                		'text' => $data->phrases['users']['optionPermissionAllow']
 		            ),
 		            array(
 		            	'value' => '0',
-		            	'text' => 'Neutral'
+		            	'text' => $data->phrases['users']['optionPermissionNeutral']
 		            ),
 		            array(
 		            	'value' => '-1',
-		            	'text' => 'Forbid'
+		            	'text' => $data->phrases['users']['optionPermissionForbid']
 		            )
 		        )
             );

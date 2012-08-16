@@ -642,21 +642,26 @@ final class sitesense {
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
 
-		// Load The Phrases From The Database
-		$moduleShortName = ($this->currentPage == 'admin') ? $this->action[1] : $this->currentPage;
-		$statement = $this->db->prepare('getPhrasesByModule', 'common');
-		$statement->execute(array(
-				':module' => ''
-			));
-		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-			$this->phrases['core'][$row['phrase']] = $row['text'];
-		}
-
-		$statement->execute(array(
-				':module' => $moduleShortName
-			));
-		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-			$this->phrases[$moduleShortName][$row['phrase']] = $row['text'];
+		if($this->currentPage !== 'admin'){
+			// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
+			$moduleShortName = $this->currentPage;
+			$statement = $this->db->prepare('getPhrasesByModule', 'common');
+			// Core Phrases
+			$statement->execute(array(
+					':module' => '',
+					':isAdmin' => 0
+				));
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+				$this->phrases['core'][$row['phrase']] = $row['text'];
+			}
+			// Module-Specific Phrases
+			$statement->execute(array(
+					':module' => $moduleShortName,
+					':isAdmin' => 0
+				));
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+				$this->phrases[$moduleShortName][$row['phrase']] = $row['text'];
+			}
 		}
 
 		// Run Modular StartUp Files

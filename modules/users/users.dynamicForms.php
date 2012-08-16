@@ -163,7 +163,7 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
         $content='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<title>'.phrases['users']['activateAccountPageTitle'].'</title>
+<title>'.$data->phrases['users']['activateAccountPageTitle'].'</title>
 </head><body>
 '.$mailBody.'
 </body></html>';

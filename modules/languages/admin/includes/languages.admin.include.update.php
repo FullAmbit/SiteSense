@@ -56,7 +56,15 @@ function languages_admin_update_build($data,$db){
 			}
 		}
 		// Add Core Phrases
-		if(language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$languageList[$_POST['updateLanguage']]['phrases']) === FALSE) return;
+		if($_POST['action']==0){
+			// Empty Table And Prep For Phrase Entry
+			$statement=$db->query("truncatePhrases","admin_languages",array("!lang!"=>$languageShortName));
+		}
+		// Save Admin & User-End Core Phrases
+		if((language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$languageList[$_POST['updateLanguage']]['user_phrases']) === FALSE) ||
+		   (language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$languageList[$_POST['updateLanguage']]['admin_phrases'],TRUE) === FALSE)){
+		   	return;
+		}
 		
 		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
@@ -75,14 +83,36 @@ function languages_admin_update_build($data,$db){
 					}
 				}
 				
-				// Load The Phrases
+				// Load The Phrases ( Front End )
 				if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php')) {
 					common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php');
 					$func = 'languages_'.$moduleName.'_'.$_POST['updateLanguage'];
 					if (function_exists($func)) {
-						$modulePhrases = $func($data, $db);
+						$phrases = $func($data, $db);
+						
+						if(isset($phrases['core']) && is_array($phrases['core']) && !empty($phrases['core'])){
+							// Add Additional Core Phrases
+							language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$phrases['core']);
+							unset($phrases['core']);
+						}
 						// Save The Phrases
-						language_admin_savePhrases($data, $db, $_POST['updateLanguage'], $moduleName, $modulePhrases);
+						language_admin_savePhrases($data, $db, $_POST['updateLanguage'], $moduleName, $phrases);
+					}
+				}
+				
+				// Load The Phrases (Admin End)
+				if (file_exists('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.'.$_POST['updateLanguage'].'.php')) {
+					common_include('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.'.$_POST['updateLanguage'].'.php');
+					$func = 'languages_'.$moduleName.'_admin_'.$_POST['updateLanguage'];
+					if (function_exists($func)) {
+						$phrases = $func($data, $db);
+						if(isset($phrases['core']) && is_array($phrases['core']) && !empty($phrases['core'])){
+							// Add Additional Core Phrases, set isADMIN To True
+							language_admin_savePhrases($data,$db,$_POST['updateLanguage'],'',$phrases['core'],TRUE);
+							unset($phrases['core']);
+						}
+						// Save The Modular Phrases, Set isADMIN To True
+						language_admin_savePhrases($data, $db, $_POST['updateLanguage'], $moduleName, $phrases, TRUE);
 					}
 				}
 			}	

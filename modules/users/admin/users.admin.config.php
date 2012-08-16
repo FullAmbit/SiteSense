@@ -26,37 +26,37 @@ function users_admin_config($data,$db) {
 	if (checkPermission('access','users',$data)) {
 		if (checkPermission('add','users',$data)) {
 			$data->admin['menu'][]=array(
-				'category'  => $data->phrase['users']['userManagement'],
+				'category'  => $data->phrases['core']['userManagement'],
 				'command'   => 'users/add',
-				'name'      => $data->phrase['users']['add'],
+				'name'      => $data->phrases['core']['add'],
 				'sortOrder' => 1
 			);
 		}
         if (checkPermission('accessOthers','users',$data)) {
             $data->admin['menu'][]=array(
-                'category'  => $data->phrase['users']['userManagement'],
+                'category'  => $data->phrases['core']['userManagement'],
                 'command'   => 'users/list',
-                'name'      => $data->phrase['users']['browse'],
+                'name'      => $data->phrases['core']['browse'],
                 'sortOrder' => 2
             );
 			$data->admin['menu'][]=array(
-				'category'  => $data->phrase['users']['userManagement'],
+				'category'  => $data->phrases['core']['userManagement'],
 				'command'   => 'users/search',
-				'name'      => $data->phrase['users']['search'],
+				'name'      => $data->phrases['core']['search'],
 				'sortOrder' => 3
 			);
 			/* Disabled until feature completely built
             $data->admin['menu'][]=array(
-				'category'  => $data->phrase['users']['userManagement'],
+				'category'  => $data->phrases['users']['userManagement'],
 				'command'   => 'users/activation',
-				'name'      => $data->phrase['users']['activate'],
+				'name'      => $data->phrases['users']['activate'],
 				'sortOrder' => 4
 			);
 			*/
 			$data->admin['menu'][]=array(
-				'category'  => $data->phrase['users']['userManagement'],
+				'category'  => $data->phrases['core']['userManagement'],
 				'command'   => 'users/permissions',
-				'name'      => $data->phrase['users']['permissions'],
+				'name'      => $data->phrases['core']['permissions'],
 				'sortOrder' => 5
 			);
 		}

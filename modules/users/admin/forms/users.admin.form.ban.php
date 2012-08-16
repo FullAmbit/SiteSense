@@ -22,12 +22,12 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->caption = 'Ban User: ' . $data->output['userItem']['name'];
-$this->submitTitle = 'Ban User';
+$this->caption = $data->phrases['users']['captionBan'] . $data->output['userItem']['name'];
+$this->submitTitle = $data->phrases['users']['banUserSubmit'];
 
 $this->fields = array(
 	'banTime' => array(
-		'label' => 'Ban Time',
+		'label' => $data->phrases['users']['labelBanBanTime'],
 		'tag' => 'input',
 		'params' => array(
 			'type' => 'text',
@@ -35,7 +35,7 @@ $this->fields = array(
 		)
 	),
 	'banUnit' => array(
-		'label' => 'Ban Time Unit',
+		'label' => $data->phrases['users']['labelBanBanTimeUnit'],
 		'tag' => 'select',
 		'options' => array(
 			array(
@@ -65,7 +65,7 @@ $this->fields = array(
 		)
 	),
 	'banEmail' => array(
-		'label' => 'Ban Email Address',
+		'label' => $data->phrases['users']['labelBanBanEmail'],
 		'tag' => 'select',
 		'options' => array(
 			array(
@@ -80,7 +80,7 @@ $this->fields = array(
 		'value' => 1
 	),
 	'banIp' => array(
-		'label' => 'Ban IP Address',
+		'label' => $data->phrases['users']['labelBanBanIP'],
 		'tag' => 'select',
 		'options' => array(
 			array(

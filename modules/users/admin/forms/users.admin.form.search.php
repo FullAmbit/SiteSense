@@ -24,13 +24,13 @@
 */
 $this->action=$data->linkRoot.'admin/users/search/';
 $this->formPrefix='searchUser_';
-$this->caption='Searching Users';
-$this->submitTitle='Search';
+$this->caption=$data->phrases['users']['captionSearchUsers'];
+$this->submitTitle=$data->phrases['users']['searchButton'];
 $this->fromForm='searchUser';
 
 $this->fields=array(
 	'name' => array(
-		'label' => 'Username',
+		'label' => $data->phrases['users']['username'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => '%',
@@ -40,7 +40,7 @@ $this->fields=array(
 		)
 	),
 	'firstName' => array(
-		'label' => 'First Name',
+		'label' => $data->phrases['users']['firstName'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => '%',
@@ -50,7 +50,7 @@ $this->fields=array(
 		)
 	),
 	'lastName' => array(
-		'label' => 'Last Name',
+		'label' => $data->phrases['users']['lastName'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => '%',

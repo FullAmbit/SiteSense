@@ -84,7 +84,7 @@ function admin_usersBuild($data,$db) {
 }
 function admin_usersShow($data) {
 global $languageText;
-	theme_usersListTableHead($data->output['userList'],$data->output['userListStart']);
+	theme_usersListTableHead($data);
 	foreach($data->output['userList'] as $key => $user) {
         $admin=false;
         if(isset($data->output['userList'][$key]['groups'])) {
@@ -96,9 +96,9 @@ global $languageText;
         if($data->user['id']==$user['id']) {
             $self=true;
         }
-		theme_usersListTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],$data->linkRoot,$key,$admin,$self);
+		theme_usersListTableRow($data,$user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],$data->linkRoot,$key,$admin,$self);
 		
 	}
-	theme_usersListTableFoot($data->linkRoot);
+	theme_usersListTableFoot($data);
 }
 ?>

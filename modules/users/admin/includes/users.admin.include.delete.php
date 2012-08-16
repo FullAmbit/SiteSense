@@ -26,33 +26,14 @@ function admin_usersBuild($data,$db) {
 	//permission check for users access
     if($data->user['id']!==$data->action[3] && !checkPermission('accessOthers','users',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
-    // Admin check
-    $admin=false;
-    $statement=$db->prepare('getGroupsByUserID');
-    $statement->execute(array(
-        ':userID'   => $data->action[3]
-    ));
-    $groups=$statement->fetchAll();
-    foreach($groups as $group) {
-       if($group['groupName']=='Administrators') {
-           $admin=true;
-       }
-    }
-    if($admin) {
-        // Admins can only delete themselves
-        if($data->user['id']!==$data->action[3]) {
-            $data->output['abort'] = true;
-            $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
-            return;
-        }
-    }
+
 	$data->output['delete']='';
 	if (empty($data->action[3]) || !is_numeric($data->action[3])) {
 		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No ID # was entered to be deleted';
+		$data->output['rejectText']=$data->phrases['core']['invalidID'];
 	} else {
 		if (checkPermission('delete','users',$data)) {
 			if (@$_POST['fromForm']==$data->action[3]) {
@@ -76,8 +57,8 @@ function admin_usersBuild($data,$db) {
 					if ($data->output['deleteCount']>0) {
 						$data->output['delete']='deleted';
 					} else {
-						$data->output['rejectError']='Database Error';
-						$data->output['rejectText']='You attempted to delete a user, are you sure that user exists?';
+						$data->output['rejectError']=$data->phrases['core']['databaseErrorHeading'];
+						$data->output['rejectText']=$data->phrases['core']['databaseErrorMessage'];
 					}
 				} else {
 					/* from form plus not deleted must == cancelled. */
@@ -85,8 +66,8 @@ function admin_usersBuild($data,$db) {
 				}
 			}
 		} else {
-			$data->output['rejectError']='Insufficient User Permissions';
-			$data->output['rejectText']='You do not have sufficient access to perform this action.';
+       	 	$data->output['abort'] = true;
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		}
 	}
 }
@@ -94,13 +75,13 @@ function admin_usersShow($data) {
 	if (empty($data->output['rejectError'])) {
 		switch ($data->output['delete']) {
 			case 'deleted':
-				theme_usersDeleteDeleted($data->action[3],$data->output['deleteCount'],$data->linkRoot);
+				theme_usersDeleteDeleted($data);
 			break;
 			case 'cancelled':
-				theme_usersDeleteCancelled($data->linkRoot);
+				theme_usersDeleteCancelled($data);
 			break;
 			default:
-				theme_usersDeleteDefault($data->action[3],$data->linkRoot);
+				theme_usersDeleteDefault($data);
 			break;
 		}
 	} else {

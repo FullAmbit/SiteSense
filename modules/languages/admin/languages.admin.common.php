@@ -1,24 +1,32 @@
 <?php
 
-function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases){
+function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases,$isAdmin = FALSE){
 	$moduleShortName = (isset($data->output['moduleShortName'][$moduleName])) ? $data->output['moduleShortName'][$moduleName] : '';
 	switch($_POST['action']){
 		case 0:
-			// Clear Table And Start Fresh
-			$statement=$db->prepare("deletePhrasesByModuleAndLanguage","admin_languages",array("!lang!"=>$languageShortName));
-			$statement->execute(array(
-				':module' => $moduleShortName
-			));
+			/**
+			DEPRECATED...A Truncate Is Run In Language.update.php
+			// Clear Table And Start Fresh ONLY If Not A Core Module, Else Previous Core Entries From Other Modules Will Be Erased.
+			// The initial erase is handled in the language update file.
+			if($moduleName = ''){
+				$statement=$db->prepare("deletePhrasesByModuleAndLanguage","admin_languages",array("!lang!"=>$languageShortName));
+				$statement->execute(array(
+					':module' => $moduleShortName
+				));
+			}
+			**/
+			
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageShortName));
 			foreach($modulePhrases as $phrase => $text){
 				$result = $statement->execute(array(
 					':phrase' => $phrase,
 					':text' => $text,
-					':module' => $moduleShortName
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
 				));
 				if($result == FALSE){
-					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
+					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.(($moduleName == '') ? 'core' : $moduleName);
 					return FALSE;
 				}
 			}
@@ -39,7 +47,8 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				$result = $statement->execute(array(
 					':phrase' => $phrase,
 					':text' => $text,
-					':module' => $moduleShortName
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
 				));
 				
 				if($result == FALSE){
@@ -66,14 +75,16 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 						':phrase' => $phrase,
 						':text' => $text,
 						':module' => $moduleShortName,
-						':id' => $existingModuleList[$phrase][0]['id']
+						':id' => $existingModuleList[$phrase][0]['id'],
+						':isAdmin' => $isAdmin
 					));
 				}else{
 					// insert New One
 					$result = $insert->execute(array(
 						':phrase' => $phrase,
 						':text' => $text,
-						':module' => $moduleShortName
+						':module' => $moduleShortName,
+						':isAdmin' => $isAdmin
 					));
 				}
 				

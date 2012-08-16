@@ -55,9 +55,9 @@ function admin_usersShow($data) {
 	if(empty($data->output['userList'])){
 		theme_usersActivationNone();
 	}else{
-		theme_usersActivationTableHead($data->output['userList'],$data->output['userListStart']);
+		theme_usersActivationTableHead($data);
 		foreach($data->output['userList'] as $key => $user) {
-			theme_usersActivationTableRow($user,$data->output['userListStart'],$data->linkRoot,$key);
+			theme_usersActivationTableRow($data,$user,$data->output['userListStart'],$data->linkRoot,$key);
 		}
 		theme_usersActivationTableFoot();
 	}

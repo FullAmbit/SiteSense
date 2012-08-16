@@ -37,6 +37,7 @@ function admin_buildContent($data,$db) {
 	if (checkPermission('access','core',$data)) {
 		if(empty($data->action[1])) {
 			$module['name']='dashboard';
+			$data->action[1]='dashboard';
 		} else {
 			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $data->action[1]));
@@ -45,6 +46,26 @@ function admin_buildContent($data,$db) {
 				common_redirect($data->linkRoot.'admin');
 			}
 		}
+		
+		// Load The Phrases From The Database
+		$statement = $db->prepare('getPhrasesByModule', 'common');
+		// Core Phrases
+		$statement->execute(array(
+				':module' => '',
+				':isAdmin' => 1
+			));
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$data->phrases['core'][$row['phrase']] = $row['text'];
+		}
+		// Module-Specific Phrases
+		$statement->execute(array(
+				':module' => $data->action[1],
+				':isAdmin' => 1
+			));
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$data->phrases[$data->action[1]][$row['phrase']] = $row['text'];
+		}
+				
 		$data->currentModule=$module['name'];
         common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
 		$currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.admin.template.php';

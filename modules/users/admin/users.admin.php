@@ -26,7 +26,7 @@ function users_admin_buildContent($data,$db) {
 	//permission check for users access
 	if(!checkPermission('access','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>'.$data->phrase['users']['insufficientUserPermissions'].'</h2>'.$data->phrase['users']['youDoNotHaveAccessToArea'];	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	

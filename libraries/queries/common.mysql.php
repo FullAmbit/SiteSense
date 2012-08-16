@@ -457,6 +457,8 @@ function common_addQueries() {
 				!prefix!languages_phrases!lang!
 			WHERE
 				module = :module
+				AND
+				isAdmin = :isAdmin
 		',
 		'getLanguageByShortName' => '
 			SELECT

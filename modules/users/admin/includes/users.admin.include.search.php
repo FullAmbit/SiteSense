@@ -34,7 +34,7 @@ function admin_usersBuild($data,$db) {
 	//permission check for users access
 	if(!checkPermission('access','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	$data->output['userForm']=new formHandler('search',$data,true);
@@ -54,7 +54,7 @@ function admin_usersShow($data) {
 	global $languageText;
 	theme_buildForm($data->output['userForm']);
 	if($data->output['userList'] !== false){
-		theme_usersSearchTableHead();
+		theme_usersSearchTableHead($data);
 		foreach($data->output['userList'] as $key => $user) {
 			theme_usersSearchTableRow($user['id'],$user['name'],$user['firstName'],$user['lastName'],$user['contactEMail'],'',$data->linkRoot,$key);
 		}

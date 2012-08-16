@@ -1,14 +1,11 @@
 <?php
-function languages_sidebars_en_us(){
+function languages_users_en_us(){
 	return array(
 		'nameAlreadyExists'             => 'Name already exists',
 		'activationLink1'               => 'Your Activation Link has been e-mailed to ',
 		'activationLink2'               => '. It should arrive within a few minutes. If it does not arrive within 48 hours please use our contact form to have one of our staff assist you. Activation links and their associated accounts are automatically deleted after two weeks.',
 		'activationEmailDeleted'        => 'The activation E-Mail appears to have been deleted from this CMS. Please use our contact form to notify the administrator of this problem.',
 		'activateAccountPageTitle'      => 'Activating Your Account',
-		'usersDatabasePopulated'        => '"users database" already contains records',
-		'failedToCreateAdminAcct'       => 'Failed to create administrator account!',
-		'adminAccountAutoGened'         => 'Administrator account automatically generated!',
 		'addingAdminUser'               => 'Attempting to add admin user',
 		'userDetailsSaved'              => 'User Details Saved Successfully',
 		'beRedirectedShortly'           => 'You will be redirected to your user page shortly.',
@@ -48,7 +45,7 @@ function languages_sidebars_en_us(){
 		'contactEmail2'                 => ' - E-mail Staff can use to contact user.',
 		'publicEmail1'                  => 'Public E-Mail',
 		'publicEmail2'                  => ' - E-mail shown to the public on your profile.',
-		'changePassword'                => 'Change Password'
+		'changePassword'                => 'Change Password',
 		'password1'                     => 'Password',
 		'password2'                     => ' - What the user logs in with for a password',
 		'retypePassword1'               => 'Retype Password',
@@ -65,25 +62,7 @@ function languages_sidebars_en_us(){
 		'browse'                        => 'Browse Users',
 		'search'                        => 'Search Users',
 		'activate'                      => 'Activate Users',
-		'permissions'                   => 'Permissions',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => '',
-		''                              => ''
-			);
+		'permissions'                   => 'Permissions'
+	);
 }
 ?>

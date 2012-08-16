@@ -27,7 +27,7 @@ function admin_usersBuild($data,$db) {
 	//permission check for users ban
 	if(!checkPermission('ban','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	$userId = $data->action[3];
@@ -38,7 +38,7 @@ function admin_usersBuild($data,$db) {
 	));
 	if(($data->output['userItem'] = $userItem = $statement->fetch()) == FALSE) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Invalid User ID</h2>The user you specified could not be found';
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	// Cannot Ban Anything Admin Or Greater

@@ -65,14 +65,15 @@ function admin_usersBuild($data,$db) {
 	//permission check for users edit
     if(!checkPermission('edit','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
     if($data->user['id']!==$data->action[3] && !checkPermission('accessOthers','users',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
+    /**
     // Admin check
     $admin=false;
     $statement=$db->prepare('getGroupsByUserID');
@@ -92,7 +93,8 @@ function admin_usersBuild($data,$db) {
             $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
             return;
         }
-    }
+    }**/
+    
     // Load all groups
     $db->query('purgeExpiredGroups');
     $statement=$db->query('getAllGroups','admin_users');
@@ -240,12 +242,10 @@ function admin_usersBuild($data,$db) {
 		if($existing)
 		{
 			$data->output['secondSidebar']='
-				  <h2>Error in Data</h2>
-				  <p>
-					  There were one or more errors. Please correct the fields with the red X next to them and try again.
-				  </p><p>
-					  <strong>That username is already taken!</strong>
-				  </p>';
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
+				<p>
+					'.$data->phrases['core']['formValidationErrorMessage'].'
+				</p>';
 				  
 			$data->output['userForm']->fields['name']['error'] = true;
 				  
@@ -422,13 +422,13 @@ function admin_usersBuild($data,$db) {
 			
 			if (empty($data->output['secondSidebar'])) {
 				$data->output['savedOkMessage']='
-					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>
+					<h2>'.$data->phrases['users']['saveUserSuccessMessage'].' - <em>'.$data->output['userForm']->sendArray[':name'].'</em></h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/users/add">
-							Add New User
+							'.$data->phrases['users']['addUser'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/users/list/">
-							Return to User List
+							'.$data->phrases['users']['returnToUserList'].'
 						</a>
 					</div>';
 			}
@@ -437,21 +437,21 @@ function admin_usersBuild($data,$db) {
 				invalid data, so we want to show the form again
 			*/
 			$data->output['secondSidebar']='
-				<h2>Error in Data</h2>
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
 				<p>
-					There were one or more errors. Please correct the fields with the red X next to them and try again.
+					'.$data->phrases['core']['formValidationErrorMessage'].'
 				</p>';
 			if ($existing) {
 				$data->output['secondSidebar'].='
 				<p>
-					<strong>Username Already Exists!</strong>
+					<strong>'.$data->phrases['users']['userAlreadyExists'].'</strong>
 				</p>';
 				$data->output['userForm']->fields['name']['error']=true;
 			}
 			if ($_POST['viewUser_password']!=$_POST['viewUser_password2']) {
 				$data->output['secondSidebar'].='
 				<p>
-					<strong>Password fields do not match!</strong>
+					<strong>'.$data->phrases['users']['passwordMismatch'].'</strong>
 				</p>';
 				$data->output['userForm']->fields['password']['error']=true;
 				$data->output['userForm']->fields['password2']['error']=true;

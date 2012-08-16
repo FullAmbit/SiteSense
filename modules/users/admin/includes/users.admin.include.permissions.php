@@ -36,7 +36,7 @@ function admin_usersBuild($data,$db) {
 	//permission check for users permissions
 	if(!checkPermission('groups','users',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';	
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	if(empty($data->action[3])){ // Display List of Groups
@@ -63,12 +63,10 @@ function admin_usersBuild($data,$db) {
 
                 if($existing) {
                     $data->output['secondSidebar']='
-                      <h2>Error in Data</h2>
-                      <p>
-                          There were one or more errors. Please correct the fields with the red X next to them and try again.
-                      </p><p>
-                          <strong>That group name is already taken!</strong>
-                      </p>';
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
+				<p>
+					'.$data->phrases['core']['formValidationErrorMessage'].'
+				</p>';
                     $data->output['permissionGroup']->fields['groupName']['error']=true;
                     return;
                 }
@@ -89,13 +87,13 @@ function admin_usersBuild($data,$db) {
 	                }
                 }
                 $data->output['savedOkMessage']='
-					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
+                	<h2>'.$data->phrases['users']['saveGroupSuccessHeading'].' - <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'</em></h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/users/permissions/group/add">
-							Add New Group
+							'.$data->phrases['users']['addGroup'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/users/permissions/">
-							Return to Group List
+							'.$data->phrases['users']['returnToGroupList'].'
 						</a>
 					</div>';
                 return;
@@ -103,7 +101,7 @@ function admin_usersBuild($data,$db) {
         } elseif($data->action[4]=='edit') { // Edit Group
             if($data->action[5]=='Administrators') {
                 $data->output['abort'] = true;
-                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
                 return;
             }
             getPermissions($data,$db);
@@ -119,7 +117,7 @@ function admin_usersBuild($data,$db) {
             }
             if(!$existing) {
                 $data->output['abort'] = true;
-                $data->output['abortMessage']='The group you specified could not be found';
+                $data->output['abortMessage']=$data->phrases['users']['groupNotFound'];
                 return;
             }
             
@@ -146,13 +144,11 @@ function admin_usersBuild($data,$db) {
                     ));
                     if($statement->fetchColumn()) {
                         // Returned result, groupName already exists
-                        $data->output['secondSidebar']='
-                        <h2>Error in Data</h2>
-                        <p>
-                            There were one or more errors. Please correct the fields with the red X next to them and try again.
-                        </p><p>
-                            <strong>That group name is already taken!</strong>
-                        </p>';
+                       $data->output['secondSidebar']='
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
+				<p>
+					'.$data->phrases['core']['formValidationErrorMessage'].'
+				</p><p>'.$data->phrases['users']['groupNameTaken'].'</p>';
                         $data->output['permissionGroup']->fields['groupName']['error']=true;
                           return;
                     }
@@ -187,13 +183,13 @@ function admin_usersBuild($data,$db) {
                 }
 
                 $data->output['savedOkMessage']='
-					<h2>Group <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'<em> Saved Successfully</h2>
+                	<h2>'.$data->phrases['users']['saveGroupSuccessHeading'].' - <em>'.$data->output['permissionGroup']->sendArray[':groupName'].'</em></h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/users/permissions/group/add">
-							Add New Group
+							'.$data->phrases['users']['addGroup'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/users/permissions/">
-							Return to Group List
+							'.$data->phrases['users']['returnToGroupList'].'
 						</a>
 					</div>';
                 return;
@@ -201,13 +197,13 @@ function admin_usersBuild($data,$db) {
         } elseif($data->action[4]=='delete') { // Delete Group
             if($data->action[5]=='Administrators') {
                 $data->output['abort'] = true;
-                $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+                $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
                 return;
             }
             $data->output['delete']='';
             if(empty($data->action[5])) {
-                $data->output['rejectError']='insufficient parameters';
-                $data->output['rejectText']='No group name was entered to be deleted';
+                $data->output['abort']=true;
+                $data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
             } else {
                 if (@$_POST['fromForm']==$data->action[5]) {
                     if (!empty($_POST['delete'])) {
@@ -229,8 +225,8 @@ function admin_usersBuild($data,$db) {
                         if($success) {
                             $data->output['delete']='deleted';
                         } else {
-                            $data->output['rejectError']='Database Error';
-                            $data->output['rejectText']='You attempted to delete a group, are you sure that group exists?';
+                            $data->output['rejectError']=$data->phrases['core']['databaseErrorHeading'];
+                            $data->output['rejectText']=$data->phrases['core']['databaseErrorMessage'];
                         }
                     } else {
                         /* from form plus not deleted must == cancelled. */
@@ -244,11 +240,11 @@ function admin_usersBuild($data,$db) {
 function admin_usersShow($data) {
     if(empty($data->action[3])){ // Display List of Groups
 
-        theme_GroupsListTableHead();
+        theme_GroupsListTableHead($data);
         foreach($data->output['groupList'] as $key => $group) {
-            theme_GroupsListTableRow($group['groupName'],$data->linkRoot,$key);
+            theme_GroupsListTableRow($data,$group['groupName'],$data->linkRoot,$key);
         }
-        theme_GroupsListTableFoot($data->linkRoot);
+        theme_GroupsListTableFoot($data);
     } elseif($data->action[3]=='group') {
         if($data->action[4]=='add') { //Add a new Group
             if (isset($data->output['pagesError']) && $data->output['pagesError'] == 'unknown function') {
@@ -269,13 +265,13 @@ function admin_usersShow($data) {
         } elseif($data->action[4]=='delete') { //Delete Group
             switch ($data->output['delete']) {
                 case 'deleted':
-                    theme_groupDeleteDeleted($data->action[5],$data->linkRoot);
+                    theme_groupDeleteDeleted($data);
                     break;
                 case 'cancelled':
-                    theme_groupDeleteCancelled($data->linkRoot);
+                    theme_groupDeleteCancelled($data);
                     break;
                 default:
-                    theme_groupDeleteDefault($data->action[5],$data->linkRoot);
+                    theme_groupDeleteDefault($data);
                     break;
             }
         }

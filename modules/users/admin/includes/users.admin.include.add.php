@@ -69,7 +69,7 @@ function admin_usersBuild($data, $db) {
 	//permission check for users add
 	if (!checkPermission('add', 'users', $data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	// Load all groups
@@ -100,12 +100,10 @@ function admin_usersBuild($data, $db) {
 		$existing = checkUserName($form->sendArray[':name'], $db);
 		if ($existing) {
 			$data->output['secondSidebar']='
-				  <h2>Error in Data</h2>
-				  <p>
-					  There were one or more errors. Please correct the fields with the red X next to them and try again.
-				  </p><p>
-					  <strong>That username is already taken!</strong>
-				  </p>';
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
+				<p>
+					'.$data->phrases['core']['formValidationErrorMessage'].'
+				</p>';
 
 			$data->output['userForm']->fields['name']['error'] = true;
 
@@ -117,12 +115,11 @@ function admin_usersBuild($data, $db) {
 			// Make Sure We Have A Password..
 			if (empty($data->output['userForm']->sendArray[':password'])) {
 				$data->output['secondSidebar']='
-				  <h2>Error in Data</h2>
-				  <p>
-					  There were one or more errors. Please correct the fields with the red X next to them and try again.
-				  </p><p>
-					  <strong>New User Accounts must include Password!</strong>
-				  </p>';
+				<h2>'.$data->phrases['core']['formValidationErrorHeading'].'</h2>
+				<p>
+					'.$data->phrases['core']['formValidationErrorMessage'].'
+				</p><p><strong>'.$data->phrases['core']['addUserErrorRequirePassword'].'</strong></p>';
+
 				$data->output['userForm']->fields['password']['error']=true;
 
 				return;
@@ -234,7 +231,7 @@ function admin_usersBuild($data, $db) {
 				}
 			}
 			if ($result == FALSE) {
-				$data->output['savedOkMessage'] = 'There was an error in saving to the database';
+				$data->output['savedOkMessage'] = $data->phrases['users']['addUserErrorDatabase'];
 				return;
 			}
 
@@ -243,13 +240,13 @@ function admin_usersBuild($data, $db) {
 			$profileAlbum->execute(array(':userId' => $id, ':name' => 'Profile Pictures', ':shortName' => 'profile-pictures', 'allowComments' => 0));
 			// All Is Good
 			$data->output['savedOkMessage']='
-					<h2>User <em>'.$data->output['userForm']->sendArray[':name'].'<em> Saved Successfully</h2>
+					<h2>'.$data->phrases['users']['addUserSuccessMessage'].' - <em>'.$data->output['userForm']->sendArray[':name'].'</em></h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/users/add">
-							Add New User
+							'.$data->phrases['users']['addUser'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/users/list/">
-							Return to User List
+							'.$data->phrases['users']['returnToUserList'].'
 						</a>
 					</div>';
 		}
