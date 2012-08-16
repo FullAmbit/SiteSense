@@ -6,7 +6,6 @@ function languages_users_en_us(){
 		'activationLink2'               => '. It should arrive within a few minutes. If it does not arrive within 48 hours please use our contact form to have one of our staff assist you. Activation links and their associated accounts are automatically deleted after two weeks.',
 		'activationEmailDeleted'        => 'The activation E-Mail appears to have been deleted from this CMS. Please use our contact form to notify the administrator of this problem.',
 		'activateAccountPageTitle'      => 'Activating Your Account',
-		'addingAdminUser'               => 'Attempting to add admin user',
 		'userDetailsSaved'              => 'User Details Saved Successfully',
 		'beRedirectedShortly'           => 'You will be redirected to your user page shortly.',
 		'errorInData'                   => 'Error in Data',

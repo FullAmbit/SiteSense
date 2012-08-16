@@ -10,14 +10,21 @@ function languages_settings(){
 function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 	if($firstInstall){
 		$structures = array(
-			'languages'	=>	array(
-				'shortName' =>	'VARCHAR(64) CHARACTER SET utf8 NOT NULL DEFAULT ""',
-				'name'		=>	'VARCHAR(64) CHARACTER SET utf8 NOT NULL DEFAULT""',
-				'isDefault'	=>	'TINYINT(1) NOT NULL DEFAULT "0"'
+			'languages' => array(
+				'shortName'  =>	SQR_shortName,
+				'name'		   =>	SQR_name,
+				'isDefault'	 =>	SQR_boolean
+			),
+			'languages_phrases' => array(
+        'phrase'     => 'VARCHAR(255) NOT NULL',
+        'text'       => 'TEXT NOT NULL',
+        'module'     => SQR_moduleName,
+        'isAdmin'    => SQR_boolean
 			)
 		);
 		
 		$db->createTable('languages',$structures['languages'],false);
+		$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
 		
 		// Install English //
 		common_include('modules/languages/admin/languages.admin.common.php');
@@ -31,17 +38,22 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 			':shortName' => 'en_us',
 			':name' => $languageItem['name']
 		));
-	
-		// Install Phrases (creat lang table first)
-		$create = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>"en_us"));
-		$create->execute();
 		
 		$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>"en_us"));
-		foreach($languageItem['phrases'] as $phrase => $text){
+		foreach($languageItem['user_phrases'] as $phrase => $text) {
 			$statement->execute(array(
 				':phrase' => $phrase,
 				':text' => $text,
-				':module' => ''
+				':module' => '',
+				':isAdmin' => 0
+			));
+		}
+		foreach($languageItem['admin_phrases'] as $phrase => $text) {
+			$statement->execute(array(
+				':phrase' => $phrase,
+				':text' => $text,
+				':module' => '',
+				':isAdmin' => 1
 			));
 		}
 	}

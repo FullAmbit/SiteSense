@@ -148,7 +148,7 @@ if (
                     $data->output['rejectError']='Improper installation file';
                     $data->output['rejectText']='The module install function could not be found within the module installation file.';
                 } elseif($moduleName=='users') {
-                    $newPassword=$targetFunction($data,$drop);
+                    $newPassword=$targetFunction($data,$drop,TRUE);
                 } else {
                     $targetFunction($data,$drop,TRUE);
                 }

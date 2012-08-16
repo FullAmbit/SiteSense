@@ -146,7 +146,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 			try {
 				$newPassword=common_randomPassword();
 				echo '
-					<h3>',$data->phrases['users']['addingAdminUser'],'</h3>';
+					<h3>Attempting to add admin user</h3>';
 				$statement=$db->prepare('addUser', 'installer');
 				$statement->execute(array(
 						':name' => 'admin',
