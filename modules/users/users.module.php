@@ -72,13 +72,13 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
         $content='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<title>Activating Your Account</title>
+<title>',$data->phrases['users']['activateAccountPageTitle'],'</title>
 </head><body>
 '.$mailBody.'
 </body></html>';
         $data->output['messages'][]='
 	  	<p>
-	  		Your Activation Link has been e-mailed to '.$sendToEmail.'. It should arrive within a few minutes. If it does not arrive within 48 hours please use our contact form to have one of our staff assist you. Activation links and their associated accounts are automatically deleted after two weeks.
+	  		'.$data->phrases['users']['activationLink1'].$sendToEmail.$data->phrases['users']['activationLink2'].'
 	  	</p>
 	  ';
         if (mail(
@@ -92,7 +92,7 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
     } else {
         $data->output['messages'][]='
 			<p>
-				The activation E-Mail appears to have been deleted from this CMS. Please use our contact form to notify the administrator of this problem.
+				'.$data->phrases['users']['activationEmailDeleted'].'
 			</p>
 		';
     }
@@ -131,8 +131,8 @@ function users_buildContent($data,$db) {
                     $statement->execute($data->output['userForm']->sendArray);
                     if (empty($data->output['secondSidebar'])) {
                         $data->output['savedOkMessage']='
-						<h2>User Details Saved Successfully</h2>
-						<p>You will be redirected to your user page shortly.</p>
+						<h2>'.$data->phrases['users']['userDetailsSaved'].'</h2>
+						<p>'.$data->phrases['users']['beRedirectedShortly'].'</p>
 					' . _common_timedRedirect($data->linkRoot . 'users/');
                     }
                 } else {
@@ -140,21 +140,21 @@ function users_buildContent($data,$db) {
                   invalid data, so we want to show the form again
                  */
                     $data->output['secondSidebar']='
-					<h2>Error in Data</h2>
+					<h2>'.$data->phrases['users']['errorInData'].'</h2>
 					<p>
-						There were one or more errors. Please correct the fields with the red X next to them and try again.
+						'.$data->phrases['users']['validationError'].'
 					</p>';
                     if ($data->output['userForm']->sendArray[':password'] != $data->output['userForm']->sendArray[':password2']) {
                         $data->output['secondSidebar'].='
 					<p>
-						<strong>Password fields do not match!</strong>
+						<strong>'.$data->phrases['users']['passwordMismatch'].'</strong>
 					</p>';
                         $data->output['userForm']->fields['password']['error']=true;
                         $data->output['userForm']->fields['password2']['error']=true;
                     }
                 }
             } else {
-                $data->output['userForm']->caption='Editing User Details';
+                $data->output['userForm']->caption=$data->phrases['users']['editingUserDetails'];
                 $statement=$db->prepare('getById','users');
                 $statement->execute(array(
                     ':id' => $data->user['id']
@@ -193,7 +193,7 @@ function users_buildContent($data,$db) {
                 if($data->output['registerForm']->validateFromPost()) {
                     if($data->getUserIdByName($data->output['registerForm']->sendArray[':name'])) {
                         $data->output['registerForm']->fields['name']['error']='true';
-                        $data->output['registerForm']->fields['name']['errorList'][]='Name already exists';
+                        $data->output['registerForm']->fields['name']['errorList'][]=$data->phrases['users']['nameExists'];
                     } else {
                         unset($data->output['registerForm']->sendArray[':password2']);
                         unset($data->output['registerForm']->sendArray[':verifyEMail']);
@@ -229,13 +229,13 @@ function users_buildContent($data,$db) {
                         } else if($data->settings['requireActivation'] == 0) {
                             $data->output['messages'][]='
                                             <p>
-                                                Your account has been registered.
-                                                <a href="'.$data->linkRoot.'login">Click here to Log in</a>
+                                                '.$data->phrases['users']['accountRegistered'].'
+                                                <a href="'.$data->linkRoot.'login">'.$data->phrases['users']['clickLogin'].'</a>
                                             </p>';
                         } else if($data->settings['requireActivation'] == 1) {
                             $data->output['messages'][]='
                                             <p>
-                                                Your account has been registered and is awaiting administrator approval.
+                                                '.$data->phrases['users']['awaitingApproval'].'
                                             </p>';
                         }
                         $data->output['showForm']=false;
@@ -286,21 +286,21 @@ function users_buildContent($data,$db) {
                             if($data->settings['requireActivation']==0) {
                                 $data->output['messages'][]='
                                         <p>
-                                            Your account has been activated.
-                                            <a href="'.$data->linkRoot.'login">Click here to Log in</a>
+                                            '.$data->phrases['users']['accountActivated'].'
+                                            <a href="'.$data->linkRoot.'login">'.$data->phrases['users']['clickLogin'].'</a>
                                         </p>
                                     ';
                             } else {
                                 $data->output['messages'][]='
                                         <p>
-                                            Your email address have been verified. Please wait for an administrator to review and activate your account.
+                                            '.$data->phrases['users']['emailVerified'].'
                                         </p>
                                     ';
                             }
                         } else {
                             $data->output['messages'][]='
                                     <p>
-                                        That user ID or Security Code do not exist in our database. Activation Codes are removed after two weeks. Please try and resubmit your activation.
+                                        '.$data->phrases['users']['userIdOrCodeDoesNotExist'].'
                                     </p>
                                 ';
                         }
@@ -317,14 +317,14 @@ function users_content($data){
 			if(isset($data->output['savedOkMessage'])) {
 				echo $data->output['savedOkMessage'];
 			} else {
-				theme_contentBoxHeader('Editing User Details');
+				theme_contentBoxHeader($data->phrases['users']['editingUser']);
 				//theme_EditSettings($data);
 				theme_buildForm($data->output['userForm']);
 				theme_contentBoxFooter();
 			}
 		break;
         case 'login':
-            theme_contentBoxHeader('User Login');
+            theme_contentBoxHeader($data->phrases['users']['userLogin']);
             $data->loadModuleTemplate('users');
             theme_loginForm($data);
             theme_contentBoxFooter();
@@ -336,7 +336,7 @@ function users_content($data){
         	if ($data->output['showForm']) {
         		$data->output['registerForm']->build();
         	} else {
-	        	theme_contentBoxHeader('Account Registration &amp; Activation');
+	        	theme_contentBoxHeader($data->phrases['users']['accountRegistrationActivation']);
 	        	foreach ($data->output['messages'] as $message) {
 		        	echo '<p>',$message,'</p>';
 		        }

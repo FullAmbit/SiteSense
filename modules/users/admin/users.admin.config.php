@@ -26,37 +26,37 @@ function users_admin_config($data,$db) {
 	if (checkPermission('access','users',$data)) {
 		if (checkPermission('add','users',$data)) {
 			$data->admin['menu'][]=array(
-				'category'  => 'User Management',
+				'category'  => $data->phrase['users']['userManagement'],
 				'command'   => 'users/add',
-				'name'      => 'Add New User',
+				'name'      => $data->phrase['users']['add'],
 				'sortOrder' => 1
 			);
 		}
         if (checkPermission('accessOthers','users',$data)) {
             $data->admin['menu'][]=array(
-                'category'  => 'User Management',
+                'category'  => $data->phrase['users']['userManagement'],
                 'command'   => 'users/list',
-                'name'      => 'Browse Users',
+                'name'      => $data->phrase['users']['browse'],
                 'sortOrder' => 2
             );
 			$data->admin['menu'][]=array(
-				'category'  => 'User Management',
+				'category'  => $data->phrase['users']['userManagement'],
 				'command'   => 'users/search',
-				'name'      => 'Search Users',
+				'name'      => $data->phrase['users']['search'],
 				'sortOrder' => 3
 			);
 			/* Disabled until feature completely built
             $data->admin['menu'][]=array(
-				'category'  => 'User Management',
+				'category'  => $data->phrase['users']['userManagement'],
 				'command'   => 'users/activation',
-				'name'      => 'Activate Users',
+				'name'      => $data->phrase['users']['activate'],
 				'sortOrder' => 4
 			);
 			*/
 			$data->admin['menu'][]=array(
-				'category'  => 'User Management',
+				'category'  => $data->phrase['users']['userManagement'],
 				'command'   => 'users/permissions',
-				'name'      => 'Permissions',
+				'name'      => $data->phrase['users']['permissions'],
 				'sortOrder' => 5
 			);
 		}

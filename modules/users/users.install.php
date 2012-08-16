@@ -146,7 +146,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 			try {
 				$newPassword=common_randomPassword();
 				echo '
-					<h3>Attempting to add admin user</h3>';
+					<h3>',$data->phrases['users']['addingAdminUser'],'</h3>';
 				$statement=$db->prepare('addUser', 'installer');
 				$statement->execute(array(
 						':name' => 'admin',
@@ -154,14 +154,14 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 						':registeredIP' => $_SERVER['REMOTE_ADDR']
 					));
 				echo '
-					<p>Administrator account automatically generated!</p>';
+					<p>',$data->phrases['users']['adminAccountAutoGened'],'</p>';
 			} catch(PDOException $e) {
 				$db->installErrors++;
 				echo '
-					<h3 class="error">Failed to create administrator account!</h3>
+					<h3 class="error">',phrases['users']['failedToCreateAdminAcct'],'</h3>
 					<pre>', $e->getMessage(), '</pre><br />';
 			}
-		} else echo '<p class="exists">"users database" already contains records</p>';
+		} else echo '<p class="exists">',$data->phrases['users']['usersDatabasePopulated'],'</p>';
 		return $newPassword;
 	}
 }

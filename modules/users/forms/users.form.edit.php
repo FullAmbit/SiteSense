@@ -26,7 +26,7 @@ $this->caption='Editing Your Account';
 $this->submitTitle='Save Changes';
 $this->fields=array(
 	'firstName' => array(
-		'label' => 'First Name',
+		'label' => $data->phrases['users']['firstName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (isset($data->user['firstName'])) ? $data->user['firstName'] : NULL,
@@ -36,7 +36,7 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Full Name</b>
+				<b>',$data->phrases['users']['fullName'],'</b>
 			</p>
 		'
 	),
@@ -51,21 +51,21 @@ $this->fields=array(
 		)
 	),
 	'contactEMail' => array(
-		'label' => 'Contact E-Mail',
+		'label' => $data->phrases['users']['contactEmail'],
 		'tag' => 'input',
-		'value' => (isset($data->user['contactEmail'])) ? $data->user['contactEMail'] : NULL,
+		'value' => (isset($data->user['contactEmail1'])) ? $data->user['contactEMail'] : NULL,
 		'params' => array(
 			'type' => 'text',
 			'size' => 128
 		),
 		'description' => '
 			<p>
-				<b>Contact E-Mail</b> - E-mail Staff can use to contact user.
+				<b>',$data->phrases['users']['contactEmail'],'</b>',$data->phrases['users']['contactEmail2'],'
 			</p>
 		'
 	),
 	'publicEMail' => array(
-		'label' => 'Public E-Mail',
+		'label' => $data->phrases['users']['publicEmail'],
 		'tag' => 'input',
 		'value' => (isset($data->user['publicEmail'])) ? $data->user['publicEMail'] : NULL,
 		'params' => array(
@@ -74,12 +74,12 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Public E-Mail</b> - E-mail shown to the public on your profile.
+				<b>',$data->phrases['users']['publicEmail1'],'</b>',$data->phrases['users']['publicEmail2'],'
 			</p>
 		'
 	),
 	'password' => array(
-		'label' => 'Change Password',
+		'label' => $data->phrases['users']['changePassword'],
 		'tag' => 'input',
 		'value' => '',
 		'params' => array(
@@ -88,12 +88,12 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Password</b> - What the user logs in with for a password
+				<b>',$data->phrases['users']['password1'],'</b>',$data->phrases['users']['password2'],'
 			</p>
 		'
 	),
 	'password2' => array(
-		'label' => 'Retype Password',
+		'label' => $data->phrases['users']['retypePassword1'],
 		'compareTo' => 'password',
 		'tag' => 'input',
 		'value' => '',
@@ -103,9 +103,9 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Retype Password</b> - Enter the new password a second time to verify changes.
+				<b>',$data->phrases['users']['retypePassword1'],'</b>',$data->phrases['users']['retypePassword2'],'
 			</p>
 		',
-		'compareFailMessage' => 'The passwords you entered do not match!'
+		'compareFailMessage' => $data->phrases['users']['passwordMismatch']
 	)
 );

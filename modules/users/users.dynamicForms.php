@@ -35,7 +35,7 @@ function users_validateDynamicFormField($data,$db,$field,$fieldValue){
 			if($data->getUserIdByName($username)) {
 				$formError = true;
             	$fieldRef['error']=true;
-            	$fieldRef['errorList'][]='Name already exists';
+            	$fieldRef['errorList'][]=$data->phrases['users']['nameAlreadyExists'];
             }
 		break;
 		case 'password':
@@ -163,13 +163,13 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
         $content='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <html><head>
-<title>Activating Your Account</title>
+<title>'.phrases['users']['activateAccountPageTitle'].'</title>
 </head><body>
 '.$mailBody.'
 </body></html>';
         $data->output['messages'][]='
 	  	<p>
-	  		Your Activation Link has been e-mailed to '.$sendToEmail.'. It should arrive within a few minutes. If it does not arrive within 48 hours please use our contact form to have one of our staff assist you. Activation links and their associated accounts are automatically deleted after two weeks.
+	  		'.$data->phrases['users']['activationLink1'].$sendToEmail.$data->phrases['users']['activationLink1'].'
 	  	</p>
 	  ';
         if (mail(
@@ -183,7 +183,7 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
     } else {
         $data->output['messages'][]='
 			<p>
-				The activation E-Mail appears to have been deleted from this CMS. Please use our contact form to notify the administrator of this problem.
+				'.$data->phrases['users']['activationEmailDeleted'].'
 			</p>
 		';
     }

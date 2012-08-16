@@ -30,8 +30,8 @@ function theme_loginForm($data) {
 				class="bigLoginForm"
 			>
 				<div class="fieldsetWrapper"><fieldset>
-					<legend><span>Please Log In</span></legend>
-					<label for="username">Username:</label>
+					<legend><span>',$data->phrases['users']['pleaseLogin'],'</span></legend>
+					<label for="username">'.$data->phrases['users']['username'].'</label>
 					<input type="text"
 						name="username"
 						id="username"
@@ -41,7 +41,7 @@ function theme_loginForm($data) {
 							''
 						),'
 					/><br />
-					<label for="password">Password:</label>
+					<label for="password">',$data->phrases['users']['password'],'</label>
 					<input type="password"
 						name="password"
 						id="password"
@@ -57,7 +57,7 @@ function theme_loginForm($data) {
 						value="',$data->action[1],'"
 					/>
 					<label for="keepLogged">
-						Keep me Logged in:
+						',$data->phrases['users']['keepMeLoggedIn'],'
 						<input type="checkbox"
 							name="keepLogged"
 							id="keepLogged"
@@ -72,13 +72,13 @@ function theme_loginForm($data) {
 	} else {
 		if (isset($_POST['lastPage']) && ($_POST['lastPage'] == 'login' || $_POST['lastPage'] == 'logout')) {
 			echo '
-			<p>You have successfully logged in.</p>';
+			<p>',$data->phrases['users']['successfulLogin'],'</p>';
 		} else {
 			echo '
-			<p>You are already logged in as ',$data->user['name'],'</p>';
+			<p>',$data->phrases['users']['alreadyLoggingAs'],$data->user['name'],'</p>';
 		}
 		echo '
-			<p><a href="',$data->linkRoot,'users/logout">Log Out</a></p>';
+			<p><a href="',$data->linkRoot,'users/logout">',$data->phrases['users']['logout'],'</a></p>';
 	}
 }
 ?>

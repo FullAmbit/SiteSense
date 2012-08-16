@@ -25,11 +25,11 @@
 $this->action=$data->linkRoot.'users/register/';
 $this->formPrefix='register_';
 
-$this->submitTitle='Join Now';
+$this->submitTitle=$data->phrases['users']['joinNow'];
 $this->fromForm='register';
 $this->fields=array(
 	'firstName' => array(
-		'label' => 'First Name',
+		'label' => $data->phrases['users']['firstName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['firstName']),
@@ -40,7 +40,7 @@ $this->fields=array(
 		)
 	),
 	'lastName' => array(
-		'label' => 'Last Name',
+		'label' => $data->phrases['users']['lastName'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['lastName']),
@@ -51,7 +51,7 @@ $this->fields=array(
 		)
 	),
 	'name' => array(
-		'label' => 'Desired Username',
+		'label' => $data->phrases['users']['desiredUsername'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['name']),
@@ -62,7 +62,7 @@ $this->fields=array(
 		),
 	),
 	'contactEMail' => array(
-		'label' => 'Contact E-Mail',
+		'label' => $data->phrases['users']['contactEmail1'],
 		'tag' => 'input',
 		'value' => (empty($data->output['viewUser']) ? '' : $data->output['viewUser']['contactEMail']),
 		'required' => true,
@@ -87,10 +87,10 @@ $this->fields=array(
 			'maxlength' => 255
 		),
 		'compareFailMessage' => 'The E-Mails you entered do not match!',
-		'eMailFailMessage' => 'Invalid E-Mail Address'
+		'eMailFailMessage' => $data->phrases['users']['invalidEmail']
 	),
 	'password' => array(
-		'label' => 'Password',
+		'label' => $data->phrases['users']['password1'],
 		'tag' => 'input',
 		'value' => '',
 		'required' => true,
@@ -101,7 +101,7 @@ $this->fields=array(
 		)
 	),
 	'password2' => array(
-		'label' => 'Retype Password',
+		'label' => $data->phrases['users']['retypePassword1'],
 		'compareTo' => 'password',
 		'tag' => 'input',
 		'value' => '',
@@ -111,10 +111,10 @@ $this->fields=array(
 			'size' => 64,
 			'maxlength' => 128
 		),
-		'compareFailMessage' => 'The passwords you entered do not match!'
+		'compareFailMessage' => $data->phrases['users']['passwordsDoNotMatch']
 	),
     'timeZone' => array(
-        'label' => 'Time Zone',
+        'label' => $data->phrases['users']['timeZone'],
         'required' => true,
         'tag' => 'select',
         'value' => (empty($data->output['userForm']['timeZone']) ? $data->settings['defaultTimeZone'] : $data->output['userForm']['timeZone']),
@@ -123,7 +123,7 @@ $this->fields=array(
 );
 $this->extraMarkup.='
 	<p>
-		By clicking on the "Join Now" button above you are stating that you accept our <a href="'.$data->linkRoot.'Registration_Agreement">registration agreement</a>.
+		'.$data->phrases['users']['registrationText'].'<a href="'.$data->linkRoot.'Registration_Agreement">'.$data->phrases['users']['registrationAgreement'].'</a>.
 	</p>
 ';
 ?>
