@@ -86,17 +86,6 @@ function admin_languages_addQueries(){
 			WHERE
 				id = :id
 		',
-		'createLanguageTable' => '
-			CREATE TABLE IF NOT EXISTS !prefix!languages_phrases_!lang! (
-			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-			  `phrase` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT "",
-			  `text` text CHARACTER SET utf8,
-			  `module` varchar(64) DEFAULT NULL,
-			  `isAdmin` TINYINT(1) NOT NULL DEFAULT `0`
-			  PRIMARY KEY (`id`),
-			  UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)
-			) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-		',
 		'deletePhrasesByModuleAndLanguage' => '
 			DELETE FROM 
 				!prefix!languages_phrases_!lang!
