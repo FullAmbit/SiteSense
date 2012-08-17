@@ -106,6 +106,6 @@ $this->fields=array(
 				<b>',$data->phrases['users']['retypePassword1'],'</b>',$data->phrases['users']['retypePassword2'],'
 			</p>
 		',
-		'compareFailMessage' => $data->phrases['users']['passwordMismatch']
+		'compareFailMessage' => $data->phrases['users']['passwordsDoNotMatch']
 	)
 );

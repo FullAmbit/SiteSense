@@ -24,14 +24,14 @@
 */
 function users_startup($data,$db) {
     $data->permissions['users']=array(
-        'access'               => 'Users Access',
-        'accessOthers'         => 'Manage Other Users',
-        'activate'             => 'Activate Users',
-        'add'                  => 'Add Users',
-        'ban'                  => 'Ban Users',
-        'edit'                 => 'Edit Users',
-        'delete'               => 'Delete Users',
-        'groups'               => 'Manage User Groups'
+        'access'               => $data->phrases['core']['usersAccess'],
+        'accessOthers'         => $data->phrases['core']['manageUsers'],
+        'activate'             => $data->phrases['core']['activateUsers'],
+        'add'                  => $data->phrases['core']['addUsers'],
+        'ban'                  => $data->phrases['core']['banUsers'],
+        'edit'                 => $data->phrases['core']['editUsers'],
+        'delete'               => $data->phrases['core']['deleteUsers'],
+        'groups'               => $data->phrases['core']['manageGroups']
     );
 }
 ?>

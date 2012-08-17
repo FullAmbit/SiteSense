@@ -171,7 +171,7 @@ function sendActivationEMail($data,$db,$userId,$hash,$sendToEmail) {
 </body></html>';
         $data->output['messages'][]='
 	  	<p>
-	  		'.$data->phrases['users']['activationLink1'].$sendToEmail.$data->phrases['users']['activationLink1'].'
+	  		'.$data->phrases['users']['activationLink1'].$sendToEmail.$data->phrases['users']['activationLink2'].'
 	  	</p>
 	  ';
         if (mail(
