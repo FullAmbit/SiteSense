@@ -55,13 +55,7 @@ function languages_users_en_us(){
 		'passwordsDoNotMatch'           => 'The passwords you entered do not match!',
 		'timeZone'                      => 'Time Zone',
 		'registrationText'              => 'By clicking on the "Join Now" button above you are stating that you accept our ',
-		'registrationAgreement'         => 'registration agreement',
-		'userManagement'                => 'User Management',
-		'add'                           => 'Add New User',
-		'browse'                        => 'Browse Users',
-		'search'                        => 'Search Users',
-		'activate'                      => 'Activate Users',
-		'permissions'                   => 'Permissions'
+		'registrationAgreement'         => 'registration agreement'
 	);
 }
 ?>
