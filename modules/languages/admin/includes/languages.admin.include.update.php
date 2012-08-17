@@ -36,14 +36,7 @@ function languages_admin_update_build($data,$db){
 			':shortName' => $_POST['updateLanguage']
 		));
 		if(($data->output['languageItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
-			// Language Not Installed...Create Table For Phrases
-			$statement = $db->prepare("createLanguageTable","admin_languages",array("!lang!"=>$_POST['updateLanguage']));
-			$result = $statement->execute();
-			if($result == FALSE){
-				$data->output['responseMessage'] = $data->phrases['languages']['createPhraseTableError'];
-				return;
-			}
-
+			
 			$statement = $db->prepare('addLanguage','admin_languages');
 			$statement->execute(array(
 				':shortName' => $_POST['updateLanguage'],
@@ -68,8 +61,8 @@ function languages_admin_update_build($data,$db){
 		
 		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Loop Through All Installed Modules And Create A Table For Each One, And Install Phrases
-			$temp=array('sidebars' => $data->output['moduleShortName']['sidebars']);
-			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['modules']);
+			$temp=array('languages' => 'languages','sidebars' => $data->output['moduleShortName']['sidebars']);
+			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['modules'],$data->output['moduleShortName']['languages']);
 			$data->output['moduleShortName']=$temp+$data->output['moduleShortName'];
 						
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
@@ -82,7 +75,6 @@ function languages_admin_update_build($data,$db){
 						$installFunc($db, FALSE, FALSE, $_POST['updateLanguage']);
 					}
 				}
-				
 				// Load The Phrases ( Front End )
 				if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php')) {
 					common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$_POST['updateLanguage'].'.php');

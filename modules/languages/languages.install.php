@@ -8,20 +8,24 @@ function languages_settings(){
 }
 
 function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
+
+	$structures = array(
+		'languages' => array(
+			'shortName'  =>	'VARCHAR(5) NOT NULL',
+			'name'		   =>	SQR_name,
+			'isDefault'	 =>	SQR_boolean
+		),
+		'languages_phrases' => array(
+	        'phrase'     => 'VARCHAR(255) NOT NULL',
+	        'text'       => 'TEXT NOT NULL',
+	        'module'     => SQR_moduleName,
+	        'isAdmin'    => SQR_boolean
+		)
+	);
+	
+	$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
+
 	if($firstInstall){
-		$structures = array(
-			'languages' => array(
-				'shortName'  =>	'VARCHAR(5) NOT NULL',
-				'name'		   =>	SQR_name,
-				'isDefault'	 =>	SQR_boolean
-			),
-			'languages_phrases' => array(
-        'phrase'     => 'VARCHAR(255) NOT NULL',
-        'text'       => 'TEXT NOT NULL',
-        'module'     => SQR_moduleName,
-        'isAdmin'    => SQR_boolean
-			)
-		);
 		
 		$db->createTable('languages',$structures['languages'],false);
 		$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
