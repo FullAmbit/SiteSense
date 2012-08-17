@@ -24,12 +24,12 @@
 */
 $this->action=$data->linkRoot.'admin/settings';
 $this->formPrefix='settings_';
-$this->caption='Global Settings';
-$this->submitTitle='Save Changes';
+$this->caption=$data->phrases['settings']['caption'];
+$this->submitTitle=$data->phrases['settings']['submitButton'];
 $this->fromForm='settings';
 $this->fields=array(
 	'siteTitle' => array(
-		'label' => 'Site Title',
+		'label' => $data->phrases['settings']['labelSiteTitle'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => $data->settings['siteTitle'],
@@ -39,44 +39,48 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Site Title</b> - Used to construct the TITLE tag and in most skins the content of the top level heading (H1).
+				<b>'.$data->phrases['settings']['labelSiteTitle'].'</b><br />
+				'.$data->phrases['settings']['descriptionSiteTitle'].'
 			</p>
 		'
 	),
 	'theme' => array(
-		'label' => 'Default Theme',
+		'label' => $data->phrases['settings']['labelTheme'],
 		'tag' => 'select',
 		'value' => $data->settings['theme'],
 		'description' => '
 			<p>
-				<b>Default Theme</b> - Determines which of your installed themes users will default to.
+				<b>'.$data->phrases['settings']['labelTheme'].'</b><br />
+				'.$data->phrases['settings']['descriptionTheme'].'
 			</p>
 		'
 	),
 	'defaultTimeZone' => array(
-		'label' => 'Default Time Zone',
+		'label' => $data->phrases['settings']['labelDefaultTimeZone'],
 		'tag' => 'select',
 		'value' => $data->settings['defaultTimeZone'],
 		'options' => $data->output['timeZones'],
 		'description' => '
 			<p>
-				<b>Default Time Zone</b> - Sets the default time zone for all newly registered users.</i>.
+				<b>'.$data->phrases['settings']['labelDefaultTimeZone'].'</b><br />
+				'.$data->phrases['settings']['descriptionDefaultTimeZone'].'
 			</p>
 		'
 	),
 	'homepage' => array(
-		'label' => 'Homepage',
+		'label' => $data->phrases['settings']['labelHomepage'],
 		'tag' => 'select',
 		'value' => $data->settings['homepage'],
 		'options' => array(),
 		'description' => '
 			<p>
-				<b>Homepage</b> - What will users see first when they visit your site?
+				<b>'.$data->phrases['settings']['labelHomepage'].'</b><br />
+				'.$data->phrases['settings']['descriptionHomepage'].'
 			</p>
 		'
 	),
 	'hideContentGuests' => array(
-		'label' => 'Hide Content From Guests',
+		'label' => $data->phrases['settings']['labelHideContentGuests'],
 		'tag' => 'select',
 		'value' => $data->settings['hideContentGuests'],
 		'options' => array(
@@ -84,12 +88,12 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Hide Content From Guests</b> - You can set the CMS to show either the login page or the registration page instead of the normal content to guests
-			</p>
+				<b>'.$data->phrases['settings']['labelHideContentGuests'].'</b><br />
+				'.$data->phrases['settings']['descriptionHideContentGuests'].'
 		'
 	),
 	'useBBCode' => array(
-		'label' => 'Use BB Code',
+		'label' => $data->phrases['settings']['labelUseBBCode'],
 		'tag' => 'input',
 		'checked' => ($data->settings['useBBCode'] == '1') ? 'checked' : '',
 		'params' => array(
@@ -97,17 +101,17 @@ $this->fields=array(
 		)
 	),
 	'jsEditor' => array(
-		'label' => 'WYSIWYG Editor',
+		'label' => $data->phrases['settings']['labelJSEditor'],
 		'tag' => 'select',
 		'options' => array()
 	),
 	'defaultBlog' => array(
-		'label' => 'Default Blog',
+		'label' => $data->phrases['settings']['labelDefaultBlog'],
 		'tag' => 'select',
 		'options' => array()
 	),
 	'showPerPage' => array(
-		'label' => 'Blog Items Per Page',
+		'label' => $data->phrases['settings']['labelShowPerPage'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => $data->settings['showPerPage'],
@@ -117,12 +121,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Blog Items Per Page</b> - Determines how many blog posts are shown on a list page. This includes the number of news items to be shown on the home page.
+				<b>'.$data->phrases['settings']['labelShowPerPage'].'</b><br />
+				'.$data->phrases['settings']['descriptionShowPerPage'].'
 			</p>
 		'
 	),
 	'rawFooterContent' => array(
-		'label' => 'Footer Content',
+		'label' => $data->phrases['settings']['labelRawFooterContent'],
 		'tag' => 'textarea',
 		'value' => $data->settings['rawFooterContent'],
 		'useEditor' => true,
@@ -132,13 +137,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Footer Content</b> - This is what is displayed inside the <code>div#footer</code> on every page. Typically you would put the site disclaimer there.
+				<b>'.$data->phrases['settings']['labelRawFooterContent'].'</b><br />
+				'.$data->phrases['settings']['descriptionRawFooterContent'].'
 			</p>
 		',
 		'addEditor' => $data->jsEditor->addEditor('settings_rawFooterContent')
 	),
 	'characterEncoding' => array(
-		'label' => 'Character Encoding',
+		'label' => $data->phrases['settings']['labelCharacterEncoding'],
 		'tag' => 'select',
 		'value' => $data->settings['characterEncoding'],
 		'options' => array(
@@ -146,13 +152,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Character Encoding</b> - Not only sets up the <code>Content-Encoding</code> meta-tag, but is also used by PHP\'s "header" function to set the mime-type in the http response header.
+				<b>'.$data->phrases['settings']['labelCharacterEncoding'].'</b><br />
+				'.$data->phrases['settings']['descriptionCharacterEncoding'].'
 			</p>
 		',
-		'group' => 'Advanced Settings'
+		'group' => $data->phrases['settings']['groupAdvanced']
 	),
 	'compressionEnabled' => array(
-		'label' => 'Compression Enabled',
+		'label' => $data->phrases['settings']['labelCompressionEnabled'],
 		'tag' => 'input',
 		'checked' => ($data->settings['compressionEnabled'] ? 'checked' : ''),
 		'params' => array(
@@ -160,12 +167,13 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Compression Enabled</b> - Turns on and off server gzip/mod_deflate compression if available.
+				<b>'.$data->phrases['settings']['labelCompressionEnabled'].'</b><br />
+				'.$data->phrases['settings']['descriptionCompressionEnabled'].'
 			</p>
 		'
 	),
 	'compressionLevel' => array(
-		'label' => 'Compression Level',
+		'label' => $data->phrases['settings']['labelCompressionLevel'],
 		'tag' => 'select',
 		'value' => $data->settings['compressionLevel'],
 		'options' => array(
@@ -173,13 +181,14 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Compression Level</b> - If compression is on and this is enabled, sets the amount of compression used. 1 for least compression and low CPU load, 9 for the most compression and high CPU use.
+				<b>'.$data->phrases['settings']['labelCompressionLevel'].'</b><br />
+				'.$data->phrases['settings']['descriptionCompressionLevel'].'
 			</p>
 		',
-		'group' => 'Advanced Settings'
+		'group' => $data->phrases['settings']['groupAdvanced']
 	),
 	'userSessionTimeOut' => array(
-		'label' => 'Default Session Timeout (seconds)',
+		'label' => $data->phrases['settings']['labelUserSessionTimeOut'],
 		'required' => true,
 		'tag' => 'input',
 		'value' => $data->settings['userSessionTimeOut'],
@@ -189,18 +198,19 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Default Session timeout</b> - This value is how long a user account is normally allowed to remain logged in without requesting any pages. Stated in seconds, so:
+				<b>'.$data->phrases['settings']['labelUserSessionTimeOut'].'</b><br />
+				'.$data->phrases['settings']['descriptionUserSessionTimeOut'].'
 			</p>
 			<ul>
-				<li>300 = 5 minutes</li>
-				<li>1800 = 30 minutes</li>
-				<li>3600 = 1 hour</li>
+				<li>300 = 5 '.$data->phrases['settings']['minutes'].'</li>
+				<li>1800 = 30 '.$data->phrases['settings']['minutes'].'</li>
+				<li>3600 = 1 '.$data->phrases['settings']['hour'].'</li>
 			</ul>
 		',
-		'group' => 'Advanced Settings'
+		'group' => $data->phrases['settings']['groupAdvanced']
 	),
 	'useModRewrite' => array(
-		'label' => 'Use modRewrite (.htaccess)',
+		'label' => $data->phrases['settings']['labelUseModRewrite'],
 		'tag' => 'input',
 		'checked' => ($data->settings['useModRewrite'] ? 'checked' : ''),
 		'params' => array(
@@ -208,61 +218,62 @@ $this->fields=array(
 		),
 		'description' => '
 			<p>
-				<b>Use modRewrite</b> - If enabled this will build all links to assume that the rewrite engine is in use and redirecting all calls to the system to index.php directly. If enabled your .htacces should include something like this:
+				<b>'.$data->phrases['settings']['labelUseModRewrite'].'</b><br />
+				'.$data->phrases['settings']['descriptionUseModRewrite'].'
 			</p>
-			<pre><code>RewriteEngine On
-RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)$ index.php</code></pre>
+			<pre><code>'.$data->phrases['settings']['modRewriteExample'].'</code></pre>
 			<p>
-				You will want to make sure any and all data types you do not want the CMS to handle have their file extensions listed above
+				'.$data->phrases['settings']['modRewriteNote'].'
 			</p>
 		',
-		'group' => 'Advanced Settings'
+		'group' => $data->phrases['settings']['groupAdvanced']
 	),
 	'defaultGroup' => array(
-		'label' => 'Default Registration Group',
+		'label' => $data->phrases['settings']['labelDefaultGroup'],
 		'tag' => 'select',
 		'value' => $data->settings['defaultGroup'],
 		'options' => $data->output['userGroups'],
 		'description' => '
 			<p>
-				<b>Default Registration Group</b> - Determines which of group to put registered users under.
+				<b>'.$data->phrases['settings']['labelDefaultGroup'].'</b><br />
+				'.$data->phrases['settings']['descriptionDefaultGroup'].'
 			</p>
 		',
-		'group' => 'Registration Settings'
+		'group' => $data->phrases['settings']['groupRegistration']
 	),
 	'verifyEmail' => array(
-		'label' => 'Verify EMail',
+		'label' => $data->phrases['settings']['labelVerifyEmail'],
 		'tag' => 'select',
 		'value' => $data->settings['verifyEmail'],
 		'options' => array(
 			array(
 				'value' => 0,
-				'text' => 'Do Not Require E-Mail Verification'
+				'text' => $data->phrases['settings']['optionDoNotRequireVerifyEmail']
 			),
 			array(
 				'value' => 1,
-				'text' => 'Require E-Mail Verification'
+				'text' => $data->phrases['settings']['optionRequireVerifyEmail']
 			)
 		),
-		'group' => 'Registration Settings'
+		'group' => $data->phrases['settings']['groupRegistration']
 	),
 	'requireActivation' => array(
-		'label' => 'Require Activation',
+		'label' => $data->phrases['settings']['labelRequireActivation'],
 		'tag' => 'select',
 		'value' => $data->settings['requireActivation'],
 		'options' => array(
 			array(
 				'value' => 0,
-				'text' => 'Do Not Require Activation'
+				'text' => $data->phrases['settings']['optionDoNotRequireActivation']
 			),
 			array(
 				'value' => 1,
-				'text' => 'Require Activation'
+				'text' => $data->phrases['settings']['optionRequireActivation']
 			)
 		)
 	),
 	'useCDN' => array(
-		'label' => 'Use CDN',
+		'label' => $data->phrases['settings']['labelUseCDN'],
 		'required' => false,
 		'tag' => 'input',
 		'checked' => ($data->settings['useCDN'] == '1') ? 'checked' : '',
@@ -270,17 +281,17 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		'params' => array(
 			'type' => 'checkbox'
 		),
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	),
 	'cdnPlugin' => array(
-		'label' => 'CDN Plugin',
+		'label' => $data->phrases['settings']['labelCDNPlugin'],
 		'required' => false,
 		'tag' => 'select',
 		'options' => array(),
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	),
 	'cdnBaseDir' => array(
-		'label' => 'CDN Base Directory',
+		'label' => $data->phrases['settings']['labelCDNBaseDir'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => $data->settings['cdnBaseDir'],
@@ -290,12 +301,13 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		),
 		'description' => '
 			<p>
-				<b>CDN Base Directory</b> - The base directory to upload to on your CDN server. Use trailing and base slashes.
+				<b>'.$data->phrases['settings']['labelCDNBaseDir'].'</b><br />
+				'.$data->phrases['settings']['descriptionCDNBaseDir'].'
 			</p>
 		',
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	),'cdnLarge' => array(
-		'label' => 'Large CDN URL',
+		'label' => $data->phrases['settings']['labelCDNLarge'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => $data->settings['cdnLarge'],
@@ -305,29 +317,14 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		),
 		'description' => '
 			<p>
-				<b>CDN Large</b> - The URL of your larger CDN server where files are pulled from the disk.
+				<b>'.$data->phrases['settings']['labelCDNLarge'].'</b><br />
+				'.$data->phrases['settings']['descriptionCDNLarge'].'
 			</p>
 		',
-		'group' => 'Content Delivery Network Settings'
-	),
-	'cdnLarge' => array(
-		'label' => 'Large CDN URL',
-		'required' => false,
-		'tag' => 'input',
-		'value' => $data->settings['cdnLarge'],
-		'params' => array(
-			'type' => 'text',
-			'size' => 256
-		),
-		'description' => '
-			<p>
-				<b>CDN Large</b> - The URL of your larger CDN server where files are pulled from the disk.
-			</p>
-		',
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	),
 	'cdnSmall' => array(
-		'label' => 'Small CDN URL',
+		'label' => $data->phrases['settings']['labelCDNSmall'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => $data->settings['cdnSmall'],
@@ -337,13 +334,14 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		),
 		'description' => '
 			<p>
-				<b>CDN Small</b> - The URL of your smaller CDN server where files are pulled from the RAM.
+				<b>'.$data->phrases['settings']['labelCDNSmall'].'</b><br />
+				'.$data->phrases['settings']['descriptionCDNSmall'].'
 			</p>
 		',
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	),
 	'cdnFlash' => array(
-		'label' => 'Flash CDN URL',
+		'label' => $data->phrases['settings']['labelCDNFlash'],
 		'required' => false,
 		'tag' => 'input',
 		'value' => $data->settings['cdnFlash'],
@@ -353,9 +351,10 @@ RewriteRule !\.(gif|jpg|png|css|js|swf|html|ico|zip|rar|pdf|xml|mp4|mpg|flv|mkv)
 		),
 		'description' => '
 			<p>
-				<b>CDN Flash</b> - The URL of your flash streaming CDN server where files are pulled from the RAM.
+				<b>'.$data->phrases['settings']['labelCDNFlash'].'</b><br />
+				'.$data->phrases['settings']['descriptionCDNFlash'].'
 			</p>
 		',
-		'group' => 'Content Delivery Network Settings'
+		'group' => $data->phrases['settings']['groupCDN']
 	)
 );
