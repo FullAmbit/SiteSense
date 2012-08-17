@@ -11,7 +11,7 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 	if($firstInstall){
 		$structures = array(
 			'languages' => array(
-				'shortName'  =>	SQR_shortName,
+				'shortName'  =>	'VARCHAR(5) NOT NULL',
 				'name'		   =>	SQR_name,
 				'isDefault'	 =>	SQR_boolean
 			),
