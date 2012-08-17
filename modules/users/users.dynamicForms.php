@@ -64,7 +64,7 @@ function users_saveusername($data,$db,$field,$fieldName,$fieldValue){
 // Save Password To Database
 function users_savepassword($data,$db,$field,$fieldName,$fieldValue){
 	$fieldValue=hash('sha256',$fieldValue);
-	$statement = $db->prepare('updateUserField','users','','password');
+	$statement = $db->prepare('updateUserField','users',array('!column1!' => 'password'));
 	$r=$statement->execute(array(
 		':name' => $data->user['name'],
 		':fieldValue' => $fieldValue
@@ -73,7 +73,6 @@ function users_savepassword($data,$db,$field,$fieldName,$fieldValue){
 
 // Add Seperate Field Data (Catch-All Function)
 function users_saveDynamicFormField($data,$db,$field,$fieldName,$fieldValue){	
-	var_dump($fieldName);
 	$userColumns = array(
 		'username',
 		'password',
@@ -85,7 +84,7 @@ function users_saveDynamicFormField($data,$db,$field,$fieldName,$fieldValue){
 	);
 	if(in_array($fieldName,$userColumns)){
 		// In Users Table
-		$statement = $db->prepare('updateUserField','users','',$fieldName);
+		$statement = $db->prepare('updateUserField','users',array('!column1!' => $fieldName));
 		$r=$statement->execute(array(
 			':name' => $data->user['name'],
 			':fieldValue' => $fieldValue

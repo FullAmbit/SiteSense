@@ -108,7 +108,6 @@ function dynamicForms_buildContent($data,$db) {
 				}
 			}
 		}
-		
 		switch($field['type']){
 			case 'textbox':
 				$f['tag'] = 'input';
@@ -154,6 +153,10 @@ function dynamicForms_buildContent($data,$db) {
 				$f['params'] = array('type' => 'password');
 				$f['required'] = ($field['required'] == '0') ? false : true;
 				break;
+		}
+		if($field['compareTo'] > 0){
+			$f['compareTo'] = $field['compareTo'];
+			$f['compareFailMessage'] = 'The values do not match.';
 		}
 		$rawForm[$f['name']] = $f;
 	}
