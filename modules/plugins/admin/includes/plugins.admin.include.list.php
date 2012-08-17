@@ -101,7 +101,7 @@ function admin_pluginsBuild($data,$db) {
 	}
 }
 function admin_pluginsShow($data) {
-	theme_pluginsListTableHead('Plugins');
+	theme_pluginsListTableHead($data);
 	if(empty($data->output['plugins'])) {
 		theme_pluginsListNoneInstalled('No plugins found');
 	} else {

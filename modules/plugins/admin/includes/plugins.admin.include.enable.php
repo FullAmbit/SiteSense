@@ -61,7 +61,7 @@ function admin_pluginsBuild($data,$db){
 }
 function admin_pluginsShow($data) {
 	if(empty($data->output['rejectError'])) 
-		theme_pluginEnabledSuccess();
+		theme_pluginEnabledSuccess($data);
 	else theme_rejectError($data);
 }
 ?>

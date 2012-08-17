@@ -42,10 +42,10 @@ function theme_pluginsModifySuccess($linkRoot) {
 	echo $data->phrases['plugins']['changesWereSaved'],' ',$data->phrases['plugins']['please'],' <a href="',$linkRoot,'admin/plugins/list">',$data->phrases['plugins']['clickHere'],'</a> ',$data->phrases['plugins']['clickHere'];
 }
 
-function theme_pluginsListTableHead($title) {
+function theme_pluginsListTableHead($data) {
 	echo '
 	<table class="modulesList">
-		<caption>',$title,'</caption>
+		<caption>Plugins</caption>
 		<thead>
 			<tr>
 				<th class="title">',$data->phrases['core']['name'],'</td>
@@ -83,7 +83,7 @@ function theme_pluginsListInstalledTableRow($plugin,$data,$count) {
 				</td>
 			</tr>';
 }
-function theme_pluginEnabledSuccess() {
+function theme_pluginEnabledSuccess($data) {
 	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginEnabled'],'</p>';
 }
 function theme_disabledOfferUninstall($data) {
@@ -97,10 +97,10 @@ function theme_disabledOfferUninstall($data) {
 		</a>
 	</div>';
 }
-function theme_uninstalled() {
+function theme_uninstalled($data) {
 	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginSuccessfullyUninstalled'],'</p>';
 }
-function theme_disabled() {
+function theme_disabled($data) {
 	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginSuccessfullyDisabled'],'</p>';
 }
 ?>
