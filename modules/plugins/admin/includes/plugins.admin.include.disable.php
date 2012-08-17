@@ -25,12 +25,12 @@
 function admin_pluginsBuild($data,$db){
     if(!checkPermission('disable','plugins',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(!$data->action[3]) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No plugin name was entered to be enabled';
+		$data->output['rejectError']=$data->phrases['plugins']['insuficientPrameters'];
+		$data->output['rejectText']=$data->phrases['plugins']['noPluginNameEntered'];
 	} else {
 		if(!$data->action[4]) {
 			// Disable the plugin
@@ -43,8 +43,8 @@ function admin_pluginsBuild($data,$db){
 			// Run the plugin uninstall procedure
 			$targetFunction=$data->action[3].'_uninstall';
 			if(!function_exists($targetFunction)) {
-				$data->output['rejectError']='Improper installation file';
-				$data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
+				$data->output['rejectError']=$data->phrases['plugins']['improperInstallFile'];
+				$data->output['rejectText']=$data->phrases['plugins']['uninstallFunctionNotFound'];
 			} else $targetFunction($data,$db);
 		}
 	}

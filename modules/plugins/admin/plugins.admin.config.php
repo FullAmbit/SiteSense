@@ -26,9 +26,9 @@ function plugins_admin_config($data,$db)
 {
 	if(checkPermission('access','plugins',$data)) {
 		$data->admin['menu'][] = array(
-			'category' => 'Site Management',
+			'category' => $data->phrases['core']['siteManagement']'Site Management',
 			'command' => 'plugins/list',
-			'name' => 'Plugins',
+			'name' => $data->phrases['core']['plugins'],
 			'sortOrder' => 8
 		);
 	}

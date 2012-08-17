@@ -26,11 +26,11 @@ common_include('libraries/forms.php');
 function admin_pluginsBuild($data,$db) {
     if(!checkPermission('edit','plugins',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(!$data->action[3]) {
-		$data->output['pluginError'] = 'You did not specify a plugin.';
+		$data->output['pluginError'] = $data->phrases['plugins']['noPluginNameEntered'];
 		return;
 	}
 	// Check If It Exists
@@ -41,12 +41,12 @@ function admin_pluginsBuild($data,$db) {
 	$statement->execute(array(':plugin' => $data->output['pluginItem']['id']));
 	$appliedModules=$statement->fetchAll(PDO::FETCH_COLUMN, 0);
 	if(!$data->output['pluginItem']){
-		$data->output['pluginError'] = 'The plugin you specified could not be found.';
+		$data->output['pluginError'] = $data->phrases['plugins']['pluginNotFound'];
 		return;
 	}
 	// Is This A Default Plugin That Is Loaded By The CMS? (e.g. an editor or a CDN?)
 	if($data->output['pluginItem']['isCDN'] == '1' || $data->output['pluginItem']['isEditor'] == '1') {
-		$data->output['pluginError'] = 'This plugin is auto-loaded by SiteSense for core functionality.';
+		$data->output['pluginError'] = $data->phrases['plugins']['coreSiteSensePluginError'];
 		return;
 	}
 	// Load The Form

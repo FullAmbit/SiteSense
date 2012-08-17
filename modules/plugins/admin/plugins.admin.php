@@ -29,7 +29,7 @@ function plugins_admin_buildContent($data,$db)
 	**/
     if(!checkPermission('access','plugins',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
 	

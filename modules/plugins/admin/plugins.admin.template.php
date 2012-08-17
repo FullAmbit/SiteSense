@@ -27,11 +27,11 @@ function theme_pluginsInstallError($err) {
 }
 
 function theme_pluginsInstallOutput($msgs) {
-	echo '<h2>Installer Output</h2>',$msgs;
+	echo '<h2>',$data->phrases['plugins']['installerOutput'],'</h2>',$msgs;
 }
 
 function theme_pluginsInstallSuccess($linkRoot) {
-	echo '<hr /><br /><h1>Install Success!</h1><br /><a href="',$linkRoot,'admin/plugins/list/">Return To Plugins</a>';
+	echo '<hr /><br /><h2>',$data->phrases['plugins']['installSuccess'],'</h2><br /><a href="',$linkRoot,'admin/plugins/list/">',$data->phrases['plugins']['returnToPlugins'],'</a>';
 }
 
 function theme_pluginsModifyError($err) {
@@ -39,7 +39,7 @@ function theme_pluginsModifyError($err) {
 }
 
 function theme_pluginsModifySuccess($linkRoot) {
-	echo 'The changed were saved. Please <a href="',$linkRoot,'admin/plugins/list">click here</a> to return to the plugins.';
+	echo $data->phrases['plugins']['changesWereSaved'],' ',$data->phrases['plugins']['please'],' <a href="',$linkRoot,'admin/plugins/list">',$data->phrases['plugins']['clickHere'],'</a> ',$data->phrases['plugins']['clickHere'];
 }
 
 function theme_pluginsListTableHead($title) {
@@ -48,8 +48,8 @@ function theme_pluginsListTableHead($title) {
 		<caption>',$title,'</caption>
 		<thead>
 			<tr>
-				<th class="title">Name</td>
-				<th class="buttonList">Controls</td>
+				<th class="title">',$data->phrases['core']['name'],'</td>
+				<th class="buttonList">',$data->phrases['core']['controls'],'</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -84,27 +84,23 @@ function theme_pluginsListInstalledTableRow($plugin,$data,$count) {
 			</tr>';
 }
 function theme_pluginEnabledSuccess() {
-	echo '<h2>Success!</h2><p>Plugin successfully enabled!</p>';
+	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginEnabled'],'</p>';
 }
 function theme_disabledOfferUninstall($data) {
-	echo '<h2>Success!</h2><p>You have successfully disabled the plugin. 
-	The data stored by this plugin are still in the database, but the 
-	plugin is disabled from user access. If you would like to remove all 
-	of the data stored by this plugin from the database then click 
-	uninstall. But beware, this data will be gone forever.</p>
+	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginEnabledSuccessMessage'],'</p>
 	<div class="buttonList">
 		<a href="',$data->linkRoot,'admin/plugins/disable/',$data->action[3],'/uninstall">
-			Uninstall Module
+			',$data->phrases['plugins']['uninstallPlugin'],'
 		</a>
 		<a href="',$data->linkRoot,'admin/plugins">
-			Return to the List of Plugins
+			',$data->phrases['plugins']['returnToTheListOfPlugins'],'
 		</a>
 	</div>';
 }
 function theme_uninstalled() {
-	echo '<h2>Success!</h2><p>Plugin successfully uninstalled!</p>';
+	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginSuccessfullyUninstalled'],'</p>';
 }
 function theme_disabled() {
-	echo '<h2>Success!</h2><p>Plugin successfully disabled!</p>';
+	echo '<h2>',$data->phrases['plugins']['success'],'</h2><p>',$data->phrases['plugins']['pluginSuccessfullyDisabled'],'</p>';
 }
 ?>

@@ -22,9 +22,9 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-$this->submitTitle = 'Save';
+$this->submitTitle = $data->phrases['plugins']['save'];
 
-$this->caption = 'Modifying Plugin: ' . $data->output['pluginItem']['name'];
+$this->caption = $data->phrases['plugins']['modifyingPlugin'].': ' . $data->output['pluginItem']['name'];
 
 $this->fields = array(
 	

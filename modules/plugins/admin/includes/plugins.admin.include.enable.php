@@ -25,12 +25,12 @@
 function admin_pluginsBuild($data,$db){
     if(!checkPermission('enable','plugins',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage'] = '<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(!$data->action[3]) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No module name was entered to be enabled';
+		$data->output['rejectError']=$data->phrases['plugins']['insuficientPrameters'];
+		$data->output['rejectText']=$data->phrases['plugins']['noPluginNameEnteredToEnable'];
 	} else {
 		// Include the install file for this plugin
 		if(file_exists('plugins/'.$data->action[3].'/install.php'))
