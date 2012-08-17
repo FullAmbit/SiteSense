@@ -3,6 +3,9 @@
 
 function languages_sidebars_admin_en_us(){
 	return array(
+		'core'                            => array(
+			'sidebars' => 'Sidebars'
+		),
 		'redirectedInThreeSeconds'        => 'You should be auto redirected to the page list in three seconds.',
 		'clickToWait'                     => 'Click Here if you do not wish to wait.',
 		'deleteSidebarSure'               => 'Are you sure you want to delete sidebar #',

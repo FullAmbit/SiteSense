@@ -3,6 +3,9 @@
 
 function languages_blogs_admin_en_us(){
 	return array(
+		'core'                                  => array(
+			'blogs' => 'Blogs'
+		),
 		'returnToBlogs'                         => 'Return To Blogs',
 		'returnToPosts'                         => 'Return To Posts',
 		'returnToCategories'                    => 'Return To Categories',

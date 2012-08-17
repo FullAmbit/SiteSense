@@ -27,9 +27,9 @@
 function pages_admin_config($data,$db) {
 	if (checkPermission('access','pages',$data)) {
 		$data->admin['menu'][]=array(
-			'category'	=> 'Site Management',
-			'command' 	=> 'pages/list',
-			'name'			=> 'Pages',
+			'category'  => $data->phrases['core']['siteManagement'],
+			'command'   => 'pages/list',
+			'name'      => $data->phrases['core']['pages'],
 			'sortOrder' => 3
 		);
 	}

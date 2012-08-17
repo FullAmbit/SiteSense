@@ -3,6 +3,9 @@
 
 function languages_hostnames_admin_en_us(){
 	return array(
+		'core'                               => array(
+			'hostnames' => 'Host Names'
+		),
 		'warning'                            => 'WARNING',
 		'manageHostnamesHeading'             => 'Manage Hostnames',
 		'hostname'                           => 'Hostname',

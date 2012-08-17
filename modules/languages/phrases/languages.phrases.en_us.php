@@ -20,7 +20,6 @@ function languages_core_en_us(){
 		'time'                       => 'Time',
 		'messageRedirect'            => 'You should be auto redirected in three seconds.',
 		'linkSkipWait'               => 'Click here if you do not wish to wait',
-		'sidebars'                   => 'Sidebars',
 		'status'                     => 'Status',
 		'enable'                     => 'Enable',
 		'disable'                    => 'Disable',

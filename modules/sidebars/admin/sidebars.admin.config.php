@@ -25,9 +25,9 @@
 function sidebars_admin_config($data,$db) {
 	if (checkPermission('access','sidebars',$data)) {
 		$data->admin['menu'][]=array(
-			'category'	=> 'Site Management',
+			'category'	=> $data->phrases['core']['siteManagement'],
 			'command' 	=> 'sidebars/list',
-			'name'		=> "Sidebars",
+			'name'		=> $data->phrases['core']['sidebars'],
 			'sortOrder' => 6
 		);
 	}

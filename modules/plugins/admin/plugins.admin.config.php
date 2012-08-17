@@ -22,11 +22,10 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function plugins_admin_config($data,$db)
-{
+function plugins_admin_config($data,$db){
 	if(checkPermission('access','plugins',$data)) {
 		$data->admin['menu'][] = array(
-			'category' => $data->phrases['core']['siteManagement']'Site Management',
+			'category' => $data->phrases['core']['siteManagement'],
 			'command' => 'plugins/list',
 			'name' => $data->phrases['core']['plugins'],
 			'sortOrder' => 8

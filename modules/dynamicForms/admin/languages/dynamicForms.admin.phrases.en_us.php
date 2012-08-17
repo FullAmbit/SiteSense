@@ -3,6 +3,9 @@
 
 function languages_dynamicForms_admin_en_us(){
 	return array(
+		'core'                                => array(
+			'forms' => 'Forms'
+		),
 		'returnToForms'                       => 'Return To Forms',
 		'returnToFields'                      => 'Return To Fields',
 		'deleteFormRejectHeading'             => 'Form Deletion Error',

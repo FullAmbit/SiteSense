@@ -25,9 +25,9 @@
 function urls_admin_config($data,$db) {
   if (checkPermission('access','urls',$data)) {
     $data->admin['menu'][]=array(
-      'category'  => 'Site Management',
+      'category'  => $data->phrases['core']['siteManagement'],
       'command'   => 'urls/list',
-      'name'      => 'URL Routing',
+      'name'      => $data->phrases['core']['urls'],
       'sortOrder' => 9
     );
   }

@@ -25,9 +25,9 @@
 function mainMenu_admin_config($data) {
 	if(checkPermission('access','mainMenu',$data)) {
 		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
+			'category'  => $data->phrases['core']['siteManagement'],
 			'command'   => 'main-menu/list',
-			'name'      => 'Main Menu',
+			'name'      => $data->phrases['core']['mainMenu'],
 			'sortOrder' => 2
 		);
 	}

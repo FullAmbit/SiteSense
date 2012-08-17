@@ -3,6 +3,9 @@
 
 function languages_pages_admin_en_us(){
 	return array(
+		'core'                           => array(
+			'pages' => 'Pages'
+		),
 		'pageDeleteSuccessHeading'       => 'Page Deleted',
 		'pageDeleteSuccessMessage'       => 'The page has been deleted. It has affected this many pages: ',
 		'returnToPages'                  => 'Return To Pages',

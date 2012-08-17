@@ -3,6 +3,9 @@
 
 function languages_languages_admin_en_us(){
 	return array(
+		'core'                       => array(
+			'languages' => 'Languages'
+		),
 		'manageLanguagesHeading'     => 'Installed Languages',
 		'phrase'                     => 'Phrase',
 		'phrases'                    => 'Phrases',

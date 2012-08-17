@@ -3,9 +3,9 @@
 function languages_admin_config($data){
 	if(checkPermission('access','languages',$data)){
 		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
+			'category'  => $data->phrases['core']['siteManagement'],
 			'command'   => 'languages/list',
-			'name'      => 'Languages',
+			'name'      => $data->phrases['core']['languages'],
 			'sortOrder' => 13
 		);
 	}

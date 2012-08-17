@@ -26,9 +26,9 @@
 function blogs_admin_config($data,$db) {
 	if(checkPermission('access','blogs',$data)) {
 		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
+			'category'  => $data->phrases['core']['siteManagement'],
 			'command'   => 'blogs/list',
-			'name'      => 'Blogs',
+			'name'      => $data->phrases['core']['blogs'],
 			'sortOrder' => 4
 		);
 	}

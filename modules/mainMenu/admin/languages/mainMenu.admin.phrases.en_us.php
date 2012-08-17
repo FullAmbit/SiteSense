@@ -3,6 +3,9 @@
 
 function languages_mainMenu_admin_en_us(){
 	return array(
+		'core' => array(
+			'mainMenu' => 'Main Menu'
+		),
 		'returnToMenuItems'            => 'Return To Menu Items',
 		'deleteItemSuccessHeading'     => 'This menu item has been deleted.',
 		'deleteItemCancelledHeading'   => 'Deletion Cancelled',

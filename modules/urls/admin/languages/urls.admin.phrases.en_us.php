@@ -1,6 +1,9 @@
 <?php
 function languages_urls_admin_en_us(){
 	return array(
+		'core'                      => array(
+			'urls' => 'URL Routing',
+		),
 		'addRemap'                  => 'Add URL Route',
 		'manageURLsHeading'         => 'URL Routes',
 		'pattern'                   => 'Pattern',
