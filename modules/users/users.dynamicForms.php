@@ -29,22 +29,23 @@ function users_validateDynamicFormField($data,$db,$field,$fieldValue){
 				
 	$camelCaseName = common_camelBack($field['name']);
 	switch($camelCaseName){
-		case 'name':
-			$username = $fieldValue;
-			// Check If UserName Exists...
-			if($data->getUserIdByName($username)) {
-				$formError = true;
-            	$fieldRef['error']=true;
-            	$fieldRef['errorList'][]=$data->phrases['users']['nameAlreadyExists'];
-            }
-		break;
-		case 'password':
-		break;
 	}
 }
 
+function users_validateusername($data,$db,$field,$fieldValue){
+	$fieldRef =& $data->output['customForm']->fields[$field['id']];
+	$formError =& $data->output['customForm']->error;
+	
+	// Check If UserName Exists...
+	if($data->getUserIdByName($fieldValue)) {
+		$formError = true;
+    	$fieldRef['error']=true;
+    	$fieldRef['errorList'][]=$data->phrases['users']['nameAlreadyExists'];
+    }
+}
+
 // Save The UserName To The Database
-function users_savename($data,$db,$fieldName,$fieldValue){
+function users_saveusername($data,$db,$field,$fieldName,$fieldValue){
 	// Initial Save...Create User Row
 	$statement = $db->prepare('createUserRow','users');
 	$r = $statement->execute(array(
@@ -61,7 +62,7 @@ function users_savename($data,$db,$fieldName,$fieldValue){
 }
 
 // Save Password To Database
-function users_savepassword($data,$db,$fieldName,$fieldValue){
+function users_savepassword($data,$db,$field,$fieldName,$fieldValue){
 	$fieldValue=hash('sha256',$fieldValue);
 	$statement = $db->prepare('updateUserField','users','','password');
 	$r=$statement->execute(array(
@@ -71,9 +72,10 @@ function users_savepassword($data,$db,$fieldName,$fieldValue){
 }
 
 // Add Seperate Field Data (Catch-All Function)
-function users_saveDynamicFormField($data,$db,$fieldName,$fieldValue){
+function users_saveDynamicFormField($data,$db,$field,$fieldName,$fieldValue){	
+	var_dump($fieldName);
 	$userColumns = array(
-		'name',
+		'username',
 		'password',
 		'firstName',
 		'lastName',

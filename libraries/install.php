@@ -104,31 +104,28 @@ if (
     
     // Install modules
     $coreModules = array(
+    	'languages',
     	'settings',
         'sidebars',
+        'modules',
         'dynamicForms',
         'urls',
         'default',
         'blogs',
         'pages',
-        'login',
-        'logout',
-        'plugins',
-        'register',
-        'users',
         'mainMenu',
-        'settings',
-        'modules',
         'dashboard',
-        'languages',
-        'hostnames'
+        'hostnames',
+        'plugins',
+        'users',
     );
 
-    $uninstalledModuleFiles = glob('modules/*/*.install.php');
-    // Sidebar Fix (Bring to Top)
-    $key=array_search('modules/sidebars/sidebars.install.php',$uninstalledModuleFiles);
-    unset($uninstalledModuleFiles[$key]);
-    array_unshift($uninstalledModuleFiles,'modules/sidebars/sidebars.install.php');
+    $uninstalledModuleFiles = array_flip(glob('modules/*/*.install.php'));
+    $temp = array_flip($uninstalledModuleFiles);
+    unset($uninstalledModuleFiles['modules/sidebars/sidebars.install.php'],$uninstalledModuleFiles['modules/languages/languages.install.php'],$uninstalledModuleFiles['modules/settings/settings.install.php']);
+    $uninstalledModuleFiles = array('modules/languages/languages.install.php'=>rand(),'modules/sidebars/sidebars.install.php'=>rand(),'modules/settings/settings.install.php'=>rand()) + $uninstalledModuleFiles;
+    $uninstalledModuleFiles = array_flip($uninstalledModuleFiles);
+    
     $moduleSettings=array();
     foreach($uninstalledModuleFiles as $moduleInstallFile) {
         // Include the install file for this module
@@ -155,6 +152,65 @@ if (
                 $targetFunction=$moduleName.'_settings';
                 if(function_exists($targetFunction)) {
                     $moduleSettings[$moduleName]=$targetFunction();
+                    
+                    $statement = $data->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
+                    // Load The Phrases (Admin End)
+					if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php')) {
+						common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php');
+						$func = 'languages_'.$moduleName.'_en_us';
+						if (function_exists($func)) {
+							$phrases = $func();
+							if(isset($phrases['core']) && is_array($phrases['core']) && !empty($phrases['core'])){
+								foreach($phrases['core'] as $phrase=>$text){
+									$result = $statement->execute(array(
+										':phrase' => $phrase,
+										':text' => $text,
+										':module' => '',
+										':isAdmin' => 0
+									));
+								}
+								unset($phrases['core']);
+							}
+							// Save The Modular Phrases, Set isADMIN To True
+							foreach($phrases as $phrase => $text){
+								$result = $statement->execute(array(
+									':phrase' => $phrase,
+									':text' => $text,
+									':module' => $moduleSettings[$moduleName]['shortName'],
+									':isAdmin' => 0
+								));
+							}
+						}
+					}
+                    
+                    // Load The Phrases (Admin End)
+					if (file_exists('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php')) {
+						common_include('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php');
+						$func = 'languages_'.$moduleName.'_admin_en_us';
+						if (function_exists($func)) {
+							$phrases = $func();
+							if(isset($phrases['core']) && is_array($phrases['core']) && !empty($phrases['core'])){
+								foreach($phrases['core'] as $phrase=>$text){
+									$result = $statement->execute(array(
+										':phrase' => $phrase,
+										':text' => $text,
+										':module' => '',
+										':isAdmin' => 1
+									));
+								}
+								unset($phrases['core']);
+							}
+							// Save The Modular Phrases, Set isADMIN To True
+							foreach($phrases as $phrase => $text){
+								$result = $statement->execute(array(
+									':phrase' => $phrase,
+									':text' => $text,
+									':module' => $moduleSettings[$moduleName]['shortName'],
+									':isAdmin' => 1
+								));
+							}
+						}
+					}
                 } else {
                     $data->output['rejectError']='Improper installation file';
                     $data->output['rejectText']='The module install function could not be found within the module installation file.';
@@ -192,9 +248,9 @@ if (
         $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
         $insert->execute(
             array(
-                ':name' => $fileModule,
+                ':name'      => $fileModule,
                 ':shortName' => $shortName,
-                ':enabled' => $enabled
+                ':enabled'   => $enabled
             )
         );
     }
@@ -224,16 +280,16 @@ if (
                 // Add this plugin to the database
                 $statement=$data->prepare('addPlugin','installer');
                 $statement->execute(array(
-                    ':pluginName'		 => $dir,
-                    ':isCDN'				 => isset($settings['isCDN']) ? $settings['isCDN'] : '0',
-                    ':isEditor'			 => isset($settings['isEditor']) ? $settings['isEditor'] : '0'
+	                ':pluginName' => $dir,
+	                ':isCDN'      => isset($settings['isCDN']) ? $settings['isCDN'] : '0',
+	                ':isEditor'   => isset($settings['isEditor']) ? $settings['isEditor'] : '0'
                 ));
             }
         }
     }
     // Set up default permission groups
     $defaultPermissionGroups=array(
-		'Writer' => array(
+		'Writer'    => array(
 			'core_access',
 			'dashboard_access',
 
@@ -261,11 +317,11 @@ if (
 			'core_access',
 			'dashboard_access'
 		),
-		'Blogger' => array(
+		'Blogger'   => array(
 			'core_access',
 			'dashboard_access'
 		),
-		'User' => array()
+		'User'      => array()
 	);
     foreach($defaultPermissionGroups as $groupName => $permissions) {
         foreach($permissions as $permissionName) {

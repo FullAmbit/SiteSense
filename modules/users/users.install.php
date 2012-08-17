@@ -100,6 +100,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 		$db->createTable('banned', $structures['banned'], false);
 		$db->createTable('sessions', $structures['sessions'], false);
 		$db->createTable('users', $structures['users'], false);
+		$db->createTable('users_dynamic_fields',$structures['users_dynamic_fields'],false);
 		$db->createTable('user_groups', $structures['user_groups'], false);
 		$db->createTable('user_group_permissions', $structures['user_group_permissions'], false);
 		$db->createTable('user_permissions', $structures['user_permissions'], false);
@@ -141,6 +142,124 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 			}
 		}
 		// ---
+		
+		// Create Dynamic-Registration Form
+		$statement = $db->prepare('newForm','admin_dynamicForms',array('!lang!'=>'_en_us'));
+		$statement->execute(array(
+			':enabled' => 1,
+			':shortName' => 'register',
+			':name' => 'Register',
+			':title' => 'User Registration',
+			':rawContentBefore' => '',
+			':parsedContentBefore' => '',
+			':rawContentAfter' => '',
+			':parsedContentAfter' => '',
+			':rawSuccessMessage' => 'Thank you for signing up!',
+			':parsedSuccessMessage' => 'Thank you for signing up!',
+			':requireLogin' => 0,
+			':topLevel' => 1,
+			':eMail' => '',
+			':submitTitle' => 'Register Now',
+			':api' => NULL
+		));
+		// Create Fields
+		$fields = array(
+			'username' => array(
+				':form' => 1,
+				':name' => 'Username',
+				':type' => 'textbox',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 1,
+				':isEmail' => 0,
+				':compareTo' => 0
+			),
+			'password' => array(
+				':form' => 1,
+				':name' => 'Password',
+				':type' => 'password',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 2,
+				':isEmail' => 0,
+				':compareTo' => 0
+			),
+			'firstName' => array(
+				':form' => 1,
+				':name' => 'First Name',
+				':type' => 'textbox',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 3,
+				':isEmail' => 0,
+				':compareTo' => 0
+			),
+			'lastName' => array(
+				':form' => 1,
+				':name' => 'Last Name',
+				':type' => 'textbox',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 4,
+				':isEmail' => 0,
+				':compareTo' => 0
+			),
+			'contactEMail' => array(
+				':form' => 1,
+				':name' => 'Contact EMail',
+				':type' => 'textbox',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 5,
+				':isEmail' => 0,
+				':compareTo' => 0
+			),
+			'timeZone' => array(
+				':form' => 1,
+				':name' => 'Time Zone',
+				':type' => 'timezone',
+				':description' => '',
+				':enabled' => 1,
+				':required' => 1,
+				':moduleHook' => 'users',
+				':apiFieldToMapTo' => NULL,
+				':sortOrder' => 6,
+				':isEmail' => 0,
+				':compareTo' => 0
+			)
+		);
+		$statement = $db->prepare('newField','admin_dynamicForms',array('!lang!'=>'_en_us'));
+		foreach($fields as $fieldShortName => $fieldVars){
+			$statement->execute($fieldVars);
+		}
+		
+		// Insert URL Remap For Registration
+		common_include('libraries/admin.common.php');
+		$statement = $db->prepare('insertUrlRemap','admin_urls');
+		$statement->execute(array(
+			':match' => '^register(/.*)?$',
+			':replace' => 'dynamic-forms/register/\1',
+			':hostname' => '',
+			':isRedirect' => 0,
+			':regex' => 0,
+			':sortOrder' => $db->countRows('urls')+1
+		));
+		
 		// Generate an admin account if this is a fresh installation
 		if ($db->countRows('users')==0) {
 			try {

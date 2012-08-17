@@ -519,5 +519,26 @@ function common_timeDiff($start,$end) {
     elseif($hrs) return $hrs;
     elseif($mins) return $mins;
 		else return $secs;
+}
+
+function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){	
+	$statement = $db->prepare('getPhrasesByModule', 'common');
+	// Core Phrases
+	$statement->execute(array(
+		':module' => '',
+		':isAdmin' => $isAdmin
+	));
+	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$data->phrases['core'][$row['phrase']] = $row['text'];
 	}
+	// Module-Specific Phrases
+	$statement->execute(array(
+		':module' => $moduleShortName,
+		':isAdmin' => $isAdmin
+	));
+	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$data->phrases[$moduleShortName][$row['phrase']] = $row['text'];
+	}
+
+}
 ?>

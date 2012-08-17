@@ -170,6 +170,10 @@ function dynamicForms_buildContent($data,$db) {
 				// Is This Field Hooked And Is The Module Enabled?
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
+					// Load Phrases For The Module..
+					if(!isset($data->phrases[$field['moduleHook']])){
+						common_loadPhrases($data,$db,$field['moduleHook']);
+					}
 					// Check To See What Function We Can Run
 					$fieldCamelCase = common_camelBack($field['name']);
 					$fieldFunction = $moduleName.'_validate'.$fieldCamelCase;
@@ -203,9 +207,9 @@ function dynamicForms_buildContent($data,$db) {
 					$fieldFunction = $moduleName.'_save'.$fieldCamelCase;
 					$generalFunction = $moduleName.'_saveDynamicFormField';
 					if(function_exists($fieldFunction)){
-						$fieldFunction($data,$db,$fieldCamelCase,$fieldValue);
+						$fieldFunction($data,$db,$field,$fieldCamelCase,$fieldValue);
 					} else {
-						$generalFunction($data,$db,$fieldCamelCase,$fieldValue);
+						$generalFunction($data,$db,$field,$fieldCamelCase,$fieldValue);
 					}					
 				} else {
 					$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $fieldValue));
