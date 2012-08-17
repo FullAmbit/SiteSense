@@ -25,9 +25,9 @@
 function settings_admin_config($data) {
 	if(checkPermission('access','settings',$data)) {
 		$data->admin['menu'][]=array(
-			'category'  => 'Site Management',
+			'category'  => $data->phrases['core']['siteManagement'],
 			'command'   => 'settings',
-			'name'      => 'Settings',
+			'name'      => $data->phrases['core']['settings'],
 			'sortOrder' => 1
 		);
 	}

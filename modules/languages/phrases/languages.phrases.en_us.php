@@ -2,10 +2,10 @@
 
 function languages_core_en_us(){
 
-	$userPhrases = array(
+	$userPhrases                   = array(
 	);
 
-	$adminPhrases = array(
+	$adminPhrases                  = array(
 		'adminHeading'               => 'Control Panel',
 		'actionEdit'                 => 'Edit',
 		'actionDelete'               => 'Delete',
@@ -15,6 +15,7 @@ function languages_core_en_us(){
 		'no'                         => 'No',
 		'yes'                        => 'Yes',
 		'name'                       => 'Name',
+		'shortName'                  => 'Short Name',
 		'title'                      => 'Title',
 		'controls'                   => 'Controls',
 		'time'                       => 'Time',
@@ -39,10 +40,10 @@ function languages_core_en_us(){
 	);
 	
 	return array(
-		'name'          => 'English (US)',
-		'shortName'     => 'en_us',
-		'user_phrases'  => $userPhrases,
-		'admin_phrases' => $adminPhrases
+		'name'                       => 'English (US)',
+		'shortName'                  => 'en_us',
+		'user_phrases'               => $userPhrases,
+		'admin_phrases'              => $adminPhrases
 	);
 }
 ?>

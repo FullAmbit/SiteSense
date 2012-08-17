@@ -74,6 +74,7 @@ function admin_languages_addQueries(){
 				!prefix!languages_phrases_!lang!
 			WHERE
 				module = :module
+				AND isAdmin = :isAdmin
 		',
 		'updatePhraseByLanguage' => '
 			UPDATE 

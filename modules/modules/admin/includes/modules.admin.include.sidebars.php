@@ -25,7 +25,7 @@
 function admin_modulesBuild($data,$db){
 	if($data->action[3] === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>No ID Given</h2>';
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$moduleId = $data->action[3] = intval($data->action[3]);
@@ -34,13 +34,13 @@ function admin_modulesBuild($data,$db){
 	$module = $statement->fetch();
 	if($module === false){
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Module With ID ' . $data->action[3] . ' Doesn\'t Exist</h2>';
+			$data->output['abortMessage']='<h2>'.$data->phrases['core']['invalidID'].'</h2>';
 		return;
 	}
 	$data->output['module'] = $module;
 	
 	// Do Sidebar Settings For This Page Exist? (Match Row Count with total sidebar count)
-	$maxSidebarCount = $db->countRows('sidebars');
+	$maxSidebarCount = $db->countRows('sidebars_'.$data->language);
 	$statement = $db->prepare('countSidebarsByModule','admin_modules');
 	$statement->execute(array(':moduleId' => $moduleId));
 	list($rowCount) = $statement->fetch();

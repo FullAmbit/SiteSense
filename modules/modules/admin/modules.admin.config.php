@@ -25,9 +25,9 @@
 function modules_admin_config($data,$db) {
 	if(checkPermission('access','modules',$data)) {
 		$data->admin['menu'][]=array(
-			'category'	=> 'Site Management',
+			'category'	=> $data->phrases['core']['siteManagement'],
 			'command' 	=> 'modules/list',
-			'name'			=> 'Modules',
+			'name'			=> $data->phrases['core']['modules'],
 			'sortOrder' => 7
 		);
 	}

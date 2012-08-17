@@ -28,12 +28,12 @@ function theme_modulesSidebarsTableHead($data) {
 	echo '</pre>';*/
 	echo '
 		<table class="sidebarList">
-			<caption>Manage Sidebars on the "',ucfirst($data->output['module']['name']),'" Module</caption>
+			<caption>',$data->phrases['modules']['manageSidebarsHeading'],'&nbsp;"',ucfirst($data->output['module']['name']),'"</caption>
 			<thead>
 				<tr>
-					<th class="name">Name</th>
-					<th>Enabled</th>
-					<th>Controls</th>
+					<th class="name">',$data->phrases['core']['name'],'</th>
+					<th>',$data->phrases['core']['enabled'],'</th>
+					<th>',$data->phrases['core']['controls'],'</th>
 				</tr>
 			</thead><tbody>';
 }
@@ -41,10 +41,10 @@ function theme_modulesSidebarsTableRow($data,$sidebar,$action,$count) {
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 				<td class="name">', $sidebar['name'], '</td>
-				<td>', ($sidebar['enabled'] ? 'Yes' : 'No'), '</td>
+				<td>', ($sidebar['enabled'] ? $data->phrases['core']['yes'] : $data->phrases['core']['no']), '</td>
 				<td class="buttonList">
 					<a href="', $data->linkRoot, 'admin/modules/sidebars/', $data->output['module']['id'], '/', $action, '/', $sidebar['id'], '">
-						', ucfirst($action), '
+						', $data->phrases['core'][$action], '
 					</a>
 					<a href="',$data->linkRoot,'admin/modules/sidebars/',$data->output['module']['id'],'/moveUp/',$sidebar['id'],'" title="Move Up">&uArr;</a>
 					<a href="',$data->linkRoot,'admin/modules/sidebars/',$data->output['module']['id'],'/moveDown/',$sidebar['id'],'" title="Move Down">&dArr;</a>
@@ -56,20 +56,20 @@ function theme_modulesSidebarsTableFoot() {
 			</tbody>
 		</table>';
 }
-function theme_modulesListTableHead() {
+function theme_modulesListTableHead($data) {
 	echo '
 		<table class="modulesList">
-			<caption>Manage Modules</caption>
+			<caption>',$data->phrases['modules']['manageModulesHeading'],'</caption>
 			<tr>
-				<th>Name</th>
-				<th>URL</th>
-				<th>Enabled</th>
-				<th>Controls</th>
+				<th>',$data->phrases['core']['name'],'</th>
+				<th>',$data->phrases['core']['shortName'],'</th>
+				<th>',$data->phrases['core']['enabled'],'</th>
+				<th>',$data->phrases['core']['controls'],'</th>
 			</tr>
 			';
 }
 function theme_modulesListNoModules() {
-	echo '<tr><td colspan="4">No modules exist</tr></td>';
+	echo '<tr><td colspan="4">',$data->phrases['modules']['noModulesExist'],'</tr></td>';
 }
 function theme_modulesListTableRow($data,$module,$count) {
 	echo '
@@ -80,10 +80,10 @@ function theme_modulesListTableRow($data,$module,$count) {
 				<td class="buttonList">';
 				
 	if($module['enabled'])
-		echo '<a href="', $data->linkRoot, 'admin/modules/disable/',$module['shortName'],'">Disable</a>';
+		echo '<a href="', $data->linkRoot, 'admin/modules/disable/',$module['shortName'],'">',$data->phrases['core']['disable'],'</a>';
 	else
-		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">Enable</a>';
-	echo '<a href="',$data->linkRoot,'admin/modules/languages/',$module['id'],'">Install Language</a>';
+		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">',$data->phrases['core']['enable'],'</a>';
+	echo '<a href="',$data->linkRoot,'admin/modules/languages/',$module['id'],'">',$data->phrases['modules']['installLanguage'],'</a>';
 		switch($module['shortName']) {
 			case 'forms':
 				$sidebarsLink = 'admin/dynamic-forms/list/';
@@ -96,7 +96,7 @@ function theme_modulesListTableRow($data,$module,$count) {
 				break;
 		}
 		echo'	
-					<a href="',$data->linkRoot,$sidebarsLink,'">Select Sidebars</a>
+					<a href="',$data->linkRoot,$sidebarsLink,'">',$data->phrases['modules']['selectSidebars'],'</a>
 				</td>
 			</tr>';
 }
@@ -105,36 +105,31 @@ function theme_modulesListTableFoot() {
 		</table>
 	';
 }
-function theme_modulesInstallSuccess($data=null) {
-	echo '<h2>Success!</h2><p>Module successfully installed!</p>';
-	echo 
-	'<div class="buttonList">
+function theme_modulesInstallSuccess($data) {
+	echo '<h2>',$data->phrases['modules']['moduleInstallSuccessHeading'],'</h2><p>',$data->phrases['modules']['moduleInstallSuccessMessage'],'</p>
+	<div class="buttonList">
 		<a href="',$data->linkRoot,'admin/modules">
-			Return to the List of Modules
+			',$data->phrases['modules']['returnToModuleList'],'
 		</a>
 	</div>';
 }
 function theme_disabledOfferUninstall($data) {
-	echo '<h2>Success!</h2><p>You have successfully disabled the module. 
-	The data stored by this module are still in the database, but the 
-	module is disabled from user access. If you would like to remove all 
-	of the data stored by this module from the database then click 
-	uninstall. But beware, this data will be gone forever.</p>
+	echo '<h2>',$data->phrases['modules']['moduleDisableSuccessHeading'],'</h2><p>',$data->phrases['modules']['moduleDisableOfferUninstall'],'</p>
 	<div class="buttonList">
 		<a href="',$data->linkRoot,'admin/modules/disable/',$data->action[3],'/uninstall">
-			Uninstall Module
+			',$data->phrases['modules']['uninstallModule'],'
 		</a>
 		<a href="',$data->linkRoot,'admin/modules">
-			Return to the List of Modules
+			',$data->phrases['modules']['returnToModuleList'],'
 		</a>
 	</div>';
 }
 function theme_disabled($data) {
-	echo '<h2>Success!</h2><p>Module successfully disabled!</p>';
+	echo '<h2>',$data->phrases['modules']['moduleDisableSuccessHeading'],'</h2>';
 	echo 
 	'<div class="buttonList">
 		<a href="',$data->linkRoot,'admin/modules">
-			Return to the List of Modules
+			',$data->phrases['modules']['returnToModuleList'],'
 		</a>
 	</div>';
 }
@@ -144,8 +139,8 @@ function theme_modulesLanguages($data){
 	echo
 	'
 	<form name="updateLanguage" action="" method="post">
-		<caption>Update Languages For <b>',ucwords($data->output['moduleItem']['name']),'</b></caption><br />
-		Language:
+		<caption>',$data->phrases['modules']['updateLanguageHeading'],'&nbsp;<b>',ucwords($data->output['moduleItem']['name']),'</b></caption><br />
+		',$data->phrases['modules']['language'],'
 		<select name="updateLanguage">';
 	foreach($data->languageList as $languageItem){
 		echo
@@ -153,17 +148,17 @@ function theme_modulesLanguages($data){
 	}
 	echo '
 		</select>
-		Phrase Action:
+		',$data->phrases['modules']['phraseAction'],'
 		<select name="action">
-			<option value="0">Clear Phrases And Start Fresh</option>
-			<option value="1">Only Install Phrases That Don\'t Currently Exist</option>
-			<option value="2">Update Existing Phrases And Install New Ones</option>
+			<option value="0">',$data->phrases['modules']['updateActionClear'],'</option>
+			<option value="1" selected="selected">',$data->phrases['modules']['updateActionNew'],'</option>
+			<option value="2">',$data->phrases['modules']['updateActionAll'],'</option>
 		</select>
-		<input type="submit" name="install" value="Install" />
+		<input type="submit" name="install" value="',$data->phrases['modules']['updateLanguageSubmitButton'],'" />
 	</form>';
 }
 
 function theme_modulesLanguageSuccess($data){
-	echo 'The language has been updated for ',ucwords($data->output['moduleItem']['name']),'.';
+	echo $data->phrases['modules']['updateLanguageSuccessMessage'],'&nbsp;',ucwords($data->output['moduleItem']['name']);
 }
 ?>

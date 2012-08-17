@@ -25,12 +25,12 @@
 function admin_modulesBuild($data,$db){
     if(!checkPermission('disable','modules',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     if(!$data->action[3]) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No module name was entered to be enabled';
+		$data->output['rejectError']=$data->phrases['modules']['insufficientParameter'];
+		$data->output['rejectText']=$data->phrases['modules']['insufficientParameterModuleName'];
 	} else {
 		if(!$data->action[4]) {
 			// Disable the module
@@ -42,15 +42,15 @@ function admin_modulesBuild($data,$db){
 			// Include the install file for this module
 			$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
 			if(!file_exists($targetInclude)) {
-				$data->output['rejectError']='Module installation file does not exist';
-				$data->output['rejectText']='The module installation file could not be found.';
+			$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+			$data->output['rejectText']=$data->phrases['modules']['errorInstallFileNotFound'];
 			} else {
 				common_include($targetInclude);
 				// Run the module uninstall procedure
 				$targetFunction=$data->action[3].'_uninstall';
 				if(!function_exists($targetFunction)) {
-					$data->output['rejectError']='Improper installation file';
-					$data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
+					$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+					$data->output['rejectText']=$data->phrases['modules']['errorUninstallFunctionNotFound'];
 				} else {
 					foreach($data->languageList as $languageItem) {
 						$targetFunction($db,$languageItem['shortName']);

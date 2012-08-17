@@ -25,7 +25,7 @@
 function admin_modulesBuild($data,$db) {
     if(!checkPermission('list','modules',$data)) {
         $data->output['abort'] = true;
-        $data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
         return;
     }
     $statement=$db->query('getAllModules','admin_modules');
@@ -82,7 +82,7 @@ function admin_modulesBuild($data,$db) {
 	}
 }
 function admin_modulesShow($data){
-	theme_modulesListTableHead();
+	theme_modulesListTableHead($data);
 	if (empty($data->output['modules'])) {
 		theme_modulesListNoModules();
 	} else {

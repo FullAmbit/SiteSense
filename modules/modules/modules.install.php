@@ -28,7 +28,7 @@ function modules_settings() {
 		'shortName' => 'modules'
 	);
 }
-function modules_install($db,$drop=false) {
+function modules_install($db,$drop=false,$firstInstall=false,$lang="en_us") {
 	$structures = array(
         'modules' => array(
             'id'          => SQR_IDKey,
@@ -45,12 +45,14 @@ function modules_install($db,$drop=false) {
             'UNIQUE KEY `module` (`module`,`sidebar`)'
         )
 	);
-	if($drop)
-        modules_uninstall($db);
-
-    $db->createTable('modules',$structures['modules'],false);
-    $db->createTable('module_sidebars',$structures['module_sidebars'],false);
-
+	
+	if($firstInstall){
+		if($drop)
+	        modules_uninstall($db);
+	
+	    $db->createTable('modules',$structures['modules'],false);
+	    $db->createTable('module_sidebars',$structures['module_sidebars'],false);
+	}
 }
 function modules_uninstall($db) {
 	$db->dropTable('modules');

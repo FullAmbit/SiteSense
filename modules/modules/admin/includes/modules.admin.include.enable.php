@@ -28,12 +28,12 @@ common_include('modules/languages/admin/languages.admin.common.php');
 function admin_modulesBuild($data,$db){
 	if(!checkPermission('enable','modules',$data)) {
 		$data->output['abort'] = true;
-		$data->output['abortMessage'] = '<h2>Insufficient User Permissions</h2>You do not have the permissions to access this area.';
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 		return;
 	}
 	if(!$data->action[3]) {
-		$data->output['rejectError']='insufficient parameters';
-		$data->output['rejectText']='No module name was entered to be enabled';
+		$data->output['rejectError']=$data->phrases['modules']['insufficientParameter'];
+		$data->output['rejectText']=$data->phrases['modules']['insufficientParameterModuleName'];
 	} else {
 		$statement=$db->prepare('getModuleByShortName','admin_modules');
 		$statement->execute(
@@ -43,22 +43,22 @@ function admin_modulesBuild($data,$db){
 		);
 		$result=$statement->fetch();
 		if(empty($result)) {
-			$data->output['rejectError']='Error';
-			$data->output['rejectText']='Module Not Found';
+			$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+			$data->output['rejectText']=$data->phrases['modules']['errorModuleNotFound'];
 		}
 		$name=$result['name'];
 		// Include the install file for this module
 		$targetInclude='modules/'.$name.'/'.$name.'.install.php';
 		if(!file_exists($targetInclude)) {
-			$data->output['rejectError']='Module installation file does not exist';
-			$data->output['rejectText']='The module installation could not be found.';
+			$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+			$data->output['rejectText']=$data->phrases['modules']['errorInstallFileNotFound'];
 		} else {
 			common_include($targetInclude);
 			// Get the module's settings
 			$targetFunction=$name.'_settings';
 			if(!function_exists($targetFunction)) {
-				$data->output['rejectError']='Improper installation file';
-				$data->output['rejectText']='The module settings function could not be found within the module installation file.';
+				$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+				$data->output['rejectText']=$data->phrases['modules']['errorSettingsFunctionNotFound'];
 			} else {
 				$moduleSettings=$targetFunction($db);
 				// Update this module in the database
@@ -74,20 +74,21 @@ function admin_modulesBuild($data,$db){
 				$db->loadCommonQueryDefines(true);
 				$targetFunction=$name.'_install';
 				if(!function_exists($targetFunction)) {
-					$data->output['rejectError']='Improper installation file';
-					$data->output['rejectText']='The module install function could not be found within the module installation file.';
+					$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+					$data->output['rejectText']=$data->phrases['modules']['errorInstallFunctionNotFound'];
 				} else {
 					// Install Tables For Each Language
 					foreach($data->languageList as $languageItem) {
 						$targetFunction($db,false,TRUE,$languageItem['shortName']);
 					}
 				}
-				// Install Language Phrases For Module
 				$languageFileList = glob("modules/".$name."/languages/".$name.".phrases.*.php");
+				$adminLanguageFileList = glob("modules/".$name."/admin/languages/".$name.".admin.phrases.*.php");
+				
+				// Install Language Phrases For Module (USER END)
 				foreach($languageFileList as $languageFile){
 					$matches = array();
 					if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$languageFile,$matches) === 0) continue;
-					
 					$languageShortName = $matches[4].'_'.$matches[5];
 					
 					common_include($languageFile); // Modular Language File
@@ -96,45 +97,177 @@ function admin_modulesBuild($data,$db){
 					$statement=$db->prepare('getLanguage','admin_languages');
 
 					if(!isset($data->languageList[$languageShortName])) continue;
-					
-					/*
-					 * Should Not Be Needed...All Modules Should Have Tables Corresponding To Core Languages
-					
-					// Create Table For These Languages
-					$targetFunction($db,false,$languageShortName);
-					**/
-					
+					$data->output['languageExistsError']=FALSE;
+
 					// Get Phrases For This Module
 					$func = 'languages_'.$name.'_'.$languageShortName;
 					if(!function_exists($func)) continue;
 					
-					$modulePhrases = $func();
+					$phrases = $func();
 					// Check To See If We Have Any Of These Phrases In The Database Already For This Module
 					// Because If We Do, We'll Need User Input To Decide What Action To Take.
 					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 					$statement->execute(array(
-						':module' => $result['shortName']
+						':module' => $result['shortName'],
+						':isAdmin' => 0
 					));
-					$existingPhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-					$data->output['languageExistsError']=FALSE;
-					foreach($modulePhrases as $phrase => $text){
-						if(isset($existingPhraseList[$phrase])){
-							$data->output['rejectError']='Language Installation Error';
-							$data->output['rejectText'] = 'Existing phrases were found for the language '.$languageItem['name'].'. Please <a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">click here</a> to select an action.';
+					$existingModulePhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+					
+					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
+					$statement->execute(array(
+						':module' => '',
+						':isAdmin' => 0
+					));
+					$existingCorePhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+					
+					// Check Core Phrases
+					if(isset($phrases['core']) && is_array($phrases['core'])){
+						foreach($phrases['core'] as $phrase => $text){
+							if(isset($existingCorePhraseList[$phrase])){
+								$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+								$data->output['rejectText'] = $data->phrases['modules']['errorExistingPhrasesFound'].'&nbsp;<a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">'.$data->phrases['modules']['linkSelectLanguageAction'].'</a>';
+								return;
+							}
+						}
+						$corePhrases = $phrases['core'];
+						unset($phrases['core']);
+					}
+					
+					// Check Modular Phrases
+					foreach($phrases as $phrase => $text){
+						if(isset($existingModulePhraseList[$phrase])){
+							$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+							$data->output['rejectText'] = $data->phrases['modules']['errorExistingPhrasesFound'].'&nbsp;<a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">'.$data->phrases['modules']['linkSelectLanguageAction'].'</a>';
 							return;
 						}
 					}
+						
 					if($data->output['languageExistsError']==FALSE){
-						// Put In The New Phrases
+						
+						// Put In The New Core Phrases
 						$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageItem['shortName']));
-						foreach($modulePhrases as $phrase => $text){
+						if(isset($corePhrases)){
+							foreach($corePhrases as $phrase => $text){
+								$result = $statement->execute(array(
+									':phrase' => $phrase,
+									':text' => $text,
+									':module' => '',
+									':isAdmin' => 0
+								));
+								if(!$result){
+									$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+									$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+									return;
+								}
+							}
+						}
+						
+						// Put In Modular Phrases
+						foreach($phrases as $phrase => $text){
 							$result = $statement->execute(array(
 								':phrase' => $phrase,
 								':text' => $text,
-								':module' => $result['shortName']
+								':module' => $result['shortName'],
+									':isAdmin' => 0
 							));
-							$data->output['rejectError']='Language Installation Error';
-							$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+							if(!$result){
+								$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+								$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+								return;
+							}
+						}
+					}
+				}
+				
+				// Install Language Phrases For Module (ADMIN END)
+				foreach($adminLanguageFileList as $languageFile){	
+					$matches = array();
+					if(preg_match("/(.*?)\/(.*?)\/(.*?).phrases.([a-z]{2})_([a-z]{2}).php/",$languageFile,$matches) === 0) continue;
+					$languageShortName = $matches[4].'_'.$matches[5];
+					
+					common_include($languageFile); // Modular Language File
+					
+					// Check If Language Is Installed In Database...
+					$statement=$db->prepare('getLanguage','admin_languages');
+
+					if(!isset($data->languageList[$languageShortName]));
+					$data->output['languageExistsError']=FALSE;
+
+					// Get Phrases For This Module
+					$func = 'languages_'.$name.'_admin_'.$languageShortName;
+					if(!function_exists($func)) continue;
+					
+					$phrases = $func();
+					// Check To See If We Have Any Of These Phrases In The Database Already For This Module
+					// Because If We Do, We'll Need User Input To Decide What Action To Take.
+					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
+					$statement->execute(array(
+						':module' => $result['shortName'],
+						':isAdmin' => 1
+					));
+					$existingModulePhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+					
+					$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
+					$statement->execute(array(
+						':module' => '',
+						':isAdmin' => 1
+					));
+					$existingCorePhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+					// Check Core Phrases
+					if(isset($phrases['core']) && is_array($phrases['core'])){
+						foreach($phrases['core'] as $phrase => $text){
+							if(isset($existingCorePhraseList[$phrase])){
+								$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+								$data->output['rejectText'] = $data->phrases['modules']['errorExistingPhrasesFound'].'&nbsp;<a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">'.$data->phrases['modules']['linkSelectLanguageAction'].'</a>';
+								return;
+							}
+						}
+						$corePhrases = $phrases['core'];
+						unset($phrases['core']);
+					}
+					
+					// Check Modular Phrases
+					foreach($phrases as $phrase => $text){
+						if(isset($existingModulePhraseList[$phrase])){
+							$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+							$data->output['rejectText'] = $data->phrases['modules']['errorExistingPhrasesFound'].'&nbsp;<a href="'.$data->linkRoot.'admin/modules/languages/'.$result['id'].'">'.$data->phrases['modules']['linkSelectLanguageAction'].'</a>';
+							return;
+						}
+					}
+						
+					if($data->output['languageExistsError']==FALSE){
+											
+						// Put In The New Core Phrases
+						$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageItem['shortName']));
+						if(isset($corePhrases)){
+							foreach($corePhrases as $phrase => $text){
+								$result = $statement->execute(array(
+									':phrase' => $phrase,
+									':text' => $text,
+									':module' => '',
+									':isAdmin' => 1
+								));
+								if(!$result){
+									$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+									$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+									return;
+								}
+							}
+						}
+						
+						// Put In Modular Phrases
+						foreach($phrases as $phrase => $text){
+							$result = $statement->execute(array(
+								':phrase' => $phrase,
+								':text' => $text,
+								':module' => $result['shortName'],
+									':isAdmin' => 1
+							));
+							if(!$result){
+								$data->output['rejectError']=$data->phrases['modules']['errorHeading'];
+								$data->output['rejectText'] = 'There was an error adding the phrases for the language '.$languageItem['name'].'.';
+								return;
+							}
 						}
 					}
 				}

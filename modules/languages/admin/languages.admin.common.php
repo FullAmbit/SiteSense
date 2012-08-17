@@ -35,7 +35,8 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			// Install Non-Existing Phrases, Ignore Pre-Existing Ones
 			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 			$statement->execute(array(
-				':module' => $moduleShortName
+				':module' => $moduleShortName,
+				':isAdmin' => $isAdmin
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 
@@ -61,7 +62,8 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			// Update Existing Ones, Install New Ones
 			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 			$statement->execute(array(
-				':module' => $moduleShortName
+				':module' => $moduleShortName,
+				':isAdmin' => 1
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 
