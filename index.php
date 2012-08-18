@@ -276,7 +276,7 @@ final class sitesense {
 		// Check For URL Replacement Or A Redirect
 		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
-		if ($row=$statement->fetch()) {
+		if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
 			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
 			// Redirect
 			if($row['isRedirect']){
@@ -641,20 +641,20 @@ final class sitesense {
 		$this->menuList['left']=$statement->fetchAll();
 		$statement=$this->db->query('getEnabledMainMenuOrderRight');
 		$this->menuList['right']=$statement->fetchAll();
-
+		
+		// Here we'll load core phrases - we do this on every single page load
+		$statement = $this->db->prepare('getPhrasesFromCore', 'common');
+		// Core Phrases
+		$statement->execute();
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$this->phrases['core'][$row['phrase']] = $row['text'];
+		}
+		
 		if($this->currentPage !== 'admin'){
 			// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
 			$moduleShortName = $this->currentPage;
-			$statement = $this->db->prepare('getPhrasesByModule', 'common');
-			// Core Phrases
-			$statement->execute(array(
-					':module' => '',
-					':isAdmin' => 0
-				));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-				$this->phrases['core'][$row['phrase']] = $row['text'];
-			}
 			// Module-Specific Phrases
+			$statement = $this->db->prepare('getPhrasesByModule', 'common');
 			$statement->execute(array(
 					':module' => $moduleShortName,
 					':isAdmin' => 0
@@ -725,8 +725,7 @@ final class sitesense {
 				':moduleID' => $this->module['id']
 			));
 		$plugins=$statement->fetchAll();
-		//var_dump($this->module['id']);
-		//var_dump($plugins);
+
 		foreach ($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];

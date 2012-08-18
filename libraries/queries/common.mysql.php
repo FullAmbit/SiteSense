@@ -460,6 +460,15 @@ function common_addQueries() {
 				AND
 				isAdmin = :isAdmin
 		',
+		'getPhrasesFromCore' => '
+			SELECT
+				phrase,text
+			FROM 
+				!prefix!languages_phrases!lang!
+			WHERE
+				module = \'\'
+		',
+		
 		'getLanguageByShortName' => '
 			SELECT
 				name
