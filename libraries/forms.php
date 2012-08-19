@@ -259,9 +259,6 @@ class formHandler {
                                         $formField['error'] = true;
                                         $validData = false;
                                         $formField['errorList'][] = 'Please provide an image with a dimension ratio of '.$info['mandateRatio'].'.';
-                                        //var_dump("RATIO");
-                                        //var_dump($ratio);
-                                        //var_dump($info['mandateRatio']);
                                         continue;
                                     }
                                 }
@@ -380,7 +377,6 @@ class formHandler {
                                 }
                                 // Save The Image
                                 if(isset($info['path'])){
-                                    //var_dump($info);
                                     $file = $value['name'];
                                     $dir = $info['path'];
                                     if(substr($dir, -1) != '/'){
@@ -622,7 +618,7 @@ class formHandler {
 		if($buffer)	{
 			ob_start();
 		}
-		if(function_exists('theme_buildForm')){
+		if(function_exists('theme_buildForm')&&FALSE){
 			theme_buildForm($this);
 		}else{
 			echo '

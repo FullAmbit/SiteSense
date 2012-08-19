@@ -284,7 +284,7 @@ final class sitesense {
 				header ('Location: '.$this->linkHome.$queryString);
 				die();
 			}
-		} else{
+		} else {
 			// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
 			$statement = $this->db->prepare("findReverseReplacementNoRedirect");
 			$statement->execute(array(
@@ -304,8 +304,8 @@ final class sitesense {
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
 				$url = $queryString.$params;
 
-				header ('HTTP/1.1 301 Moved Permanently');
-				header ('Location: '.$this->linkHome.$url);
+				header('HTTP/1.1 301 Moved Permanently');
+				header('Location: '.$this->linkHome.$url);
 				die();
 			}
 		}

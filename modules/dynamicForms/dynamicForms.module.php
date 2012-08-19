@@ -160,7 +160,37 @@ function dynamicForms_buildContent($data,$db) {
 		}
 		$rawForm[$f['name']] = $f;
 	}
-	$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false);
+	
+	// Check For URL Replacement Or A Redirect -- from index.php -- modified
+	$queryString = implode('/',array_filter($data->action));
+	$statement = $db->prepare('findReplacement');
+	$statement->execute(array(':url' => $queryString, ':hostname' => $data->hostname));
+	if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
+		$url = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
+	} else {
+		// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
+		$statement = $db->prepare("findReverseReplacementNoRedirect");
+		$statement->execute(array(
+			':url' => rtrim($queryString,"/"),
+			':hostname' => $data->hostname
+		));
+		if($row=$statement->fetch(PDO::FETCH_ASSOC)){				
+			// We Found One.
+			$replacement = $row['match'];
+			$replacement = str_replace('^','',$replacement);
+			$replacement = str_replace('(/.*)?$','',$replacement);
+			$replacement = $replacement.'\1';		
+			$queryString = preg_replace('~'.$row['reverseMatch'].'~',$replacement,$queryString);
+			$pos = strpos($_SERVER['REQUEST_URI'],'?');				
+			$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
+			$url = $queryString;
+		}
+	}
+	if (isset($url)) {
+		$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false,$url);
+	} else {
+		$data->output['customForm'] = new customFormHandler($rawForm, $form['shortName'], '', $data, false);
+	}
 	$data->output['customForm']->submitTitle = $data->output['form']['submitTitle'];
 	if(isset($_POST['fromForm']) && ($_POST['fromForm'] == $data->output['customForm']->fromForm)){
 		$data->output['customForm']->populateFromPostData();
