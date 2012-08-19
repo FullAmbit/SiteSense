@@ -189,7 +189,7 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
 		$table=$table.'_'.$data->language;
 	}
 	// Get Current Sort Order by ID
-    if(isset($parentName)) {
+    if(isset($parentName)&&$parentName!==NULL) {
         $statement=$db->prepare('getSortOrderByID','admin',array(
         	'!table!' => $table,
         	'!column1!' => $sortOrderName,
@@ -216,7 +216,7 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
     $error=false;
 	if($direction=='up' || $direction=='moveUp') {
 		// Find the next smallest sort order within the parent
-        if(isset($parentName)) {
+        if(isset($parentName)&&$parentName!==NULL) {
             $statement=$db->prepare('getNextSmallestSortOrder','admin',array(
             	'!table!' => $table,
             	'!column1!' => $sortOrderName,
@@ -243,7 +243,7 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
 		$swapSortOrder=$result['sortOrder'];
 	} elseif($direction=='down' || $direction=='moveDown') {
 		// Find the next largest sort order within the parent
-        if(isset($parentName)) {
+        if(isset($parentName)&&$parentName!==NULL) {
             $statement=$db->prepare('getNextHighestSortOrder','admin',array(
             	'!table!' => $table,
             	'!column1!' => $sortOrderName,
@@ -271,7 +271,7 @@ function admin_sortOrder_move($data,$db,$table,$direction='down',$id,$sortOrderN
 	}
 	if(!$error) {
 		// Updating sortOrder effects two items as it is a swap
-        if(isset($parentName)) {
+        if(isset($parentName)&&$parentName!==NULL) {
             $statement=$db->prepare('updateSortOrderByParent','admin',array(
             	'!table!' => $table,
             	'!column1!' => $sortOrderName,

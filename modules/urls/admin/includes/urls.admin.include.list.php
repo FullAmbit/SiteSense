@@ -29,7 +29,7 @@ function admin_urlsBuild($data,$db) {
         return;
     }
     if($data->action[3]=='moveUp' || $data->action[3]=='moveDown') {
-        admin_sortOrder_move($data,$db,'urls',$data->action[3],$data->action[4]);
+        admin_sortOrder_move($data,$db,'urls',$data->action[3],$data->action[4],'sortOrder',NULL,FALSE);
     }
     $data->output['messageListLimit']=ADMIN_SHOWPERPAGE;
 	$messages = $db->query('getAllUrlRemaps','admin_urls');
