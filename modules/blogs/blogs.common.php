@@ -23,21 +23,40 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function blogs_common_buildContent($data,$db) {
-    $statement=$db->prepare('countBlogPosts','blogs');
-    $statement->bindValue(':blogId',$data->output['blogInfo']['id']);
+	if ($data->action[2]==='categories'&&isset($data->output['categoryItem']['id'])) {	
+		$statement=$db->prepare('countBlogPostsByCategoryId','blogs');
+		$statement->bindValue(':categoryId',$data->output['categoryItem']['id']);
+		$data->output['blogInfo']['startPage']=$data->action[4];
+	} elseif ($data->action[2]==='tags') {
+		$statement=$db->prepare('countBlogPostsByTag','blogs');
+		$statement->bindValue(':tags','%'.$data->action[3] .'%');
+		$data->output['blogInfo']['startPage']=$data->action[4];
+	} else {
+		$statement=$db->prepare('countBlogPosts','blogs');
+		$statement->bindValue(':blogId',$data->output['blogInfo']['id']);
+		$data->output['blogInfo']['startPage']=$data->action[2];
+	}
     $statement->execute();
     if($result=$statement->fetch()) {
         $data->output['blogInfo']['numberOfPosts']=$result['count'];
     } else {
         $data->output['blogInfo']['numberOfPosts']=0;
     }
-    $statement=$db->prepare('getBlogPostsDelimited','blogs');
-    $statement->bindValue(':blogId',$data->output['blogInfo']['id']);
-    /* LIMIT must be done using ::bindValue with typecasting!!! */
-    $start=(intval($data->output['blogInfo']['startPage']) <= 1) ? 0 : $data->output['blogInfo']['startPage']-1;
-    $start = ($start > 0) ? ($start * $data->output['blogInfo']['numberPerPage']) : $start;
-    $statement->bindValue(':start',(int)$start,PDO::PARAM_INT);
-    $statement->bindValue(':count',(int)$data->output['blogInfo']['numberPerPage'],PDO::PARAM_INT);
+	if ($data->action[2]==='categories') {	
+		$statement=$db->prepare('getBlogPostsByCategory','blogs');
+		$statement->bindValue(':categoryId',$data->output['categoryItem']['id']);
+	} elseif ($data->action[2]==='tags') {
+		$statement=$db->prepare('getBlogPostsByTag', 'blogs');
+		$statement->bindValue(':tags','%'.$data->action[3] .'%');
+	} else {
+		$statement=$db->prepare('getBlogPostsDelimited','blogs');
+	}
+	$statement->bindValue(':blogId',$data->output['blogInfo']['id']);
+	$start=(intval($data->output['blogInfo']['startPage']) <= 1) ? 0 : $data->output['blogInfo']['startPage']-1;
+	$start = ($start > 0) ? ($start * $data->output['blogInfo']['numberPerPage']) : $start;
+	/* LIMIT must be done using ::bindValue with typecasting!!! */
+	$statement->bindValue(':start',(int)$start,PDO::PARAM_INT);
+	$statement->bindValue(':count',(int)$data->output['blogInfo']['numberPerPage'],PDO::PARAM_INT);
     $statement->execute();
     $data->output['newsList']=$statement->fetchAll();
 }
@@ -76,12 +95,20 @@ function blogs_common_pageContent($data,$firstPagination=false,$secondPagination
 	if($summarize) {
         theme_contentBoxHeader($data->output['pageTitle']);
 	}
+	// discover the base url for pagination based on type of news list
+	$paginationBase = $data->localRoot;
+	if ($data->action[2]==='categories') {	
+		$paginationBase .= '/categories/' . $data->action[3];
+	} elseif ($data->action[2]==='tags') {
+		$paginationBase .= '/tags/' . $data->action[3]; // might not always be correct for tags TODO
+	}
+	$paginationBase .= '/';
 	if($firstPagination) {
 		theme_pagination(
 			$data->output['blogInfo']['numberOfPosts'],
 			$data->output['blogInfo']['startPage'],
 			$data->output['blogInfo']['numberPerPage'],
-			$data->localRoot.'/'
+			$paginationBase
 		);
 	}
 	$count=count($data->output['newsList']);
@@ -89,7 +116,7 @@ function blogs_common_pageContent($data,$firstPagination=false,$secondPagination
 		// What's The Author's Name? Scan The User's Array. Better Than Running A Crapton of Queries.
 		foreach($data->output['usersList'] as $userItem) {
 			if($userItem['id']==$newsItem['user']) {
-				$newsItem['authorName']=$userItem['firstName']." ".$userItem['lastName'];
+				$newsItem['authorName']=$userItem['firstName'].' '.$userItem['lastName'];
 				break;
 			}
 		}
@@ -104,7 +131,7 @@ function blogs_common_pageContent($data,$firstPagination=false,$secondPagination
 			$data->output['blogInfo']['numberOfPosts'],
 			$data->output['blogInfo']['startPage'],
 			$data->output['blogInfo']['numberPerPage'],
-			$data->localRoot.'/'
+			$paginationBase
 		);
 	}
 	if($summarize) {

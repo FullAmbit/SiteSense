@@ -59,6 +59,18 @@ function blogs_addQueries() {
 			WHERE blogId = :blogId
 			AND live = TRUE
 		',
+		'countBlogPostsByCategoryId' => '
+			SELECT count(id) AS count
+			FROM !prefix!blog_posts!lang!
+			WHERE categoryId = :categoryId
+			AND live = TRUE
+		',
+		'countBlogPostsByTag' => '
+			SELECT count(id) AS count
+			FROM !prefix!blog_posts!lang!
+			WHERE tags LIKE :tags
+			AND live = TRUE
+		',
 		'getBlogPostsDelimited' => '
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
@@ -76,7 +88,8 @@ function blogs_addQueries() {
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts!lang! WHERE blogId = :blogId AND tags LIKE :tags ORDER BY id DESC
+			FROM !prefix!blog_posts!lang! WHERE blogId = :blogId AND tags LIKE :tags AND live = TRUE ORDER BY postTime DESC
+			LIMIT :start, :count
 		',
 		'getCategoryIdByShortName' => '
 			SELECT * FROM !prefix!blog_categories!lang! WHERE shortName = :shortName LIMIT 1
@@ -85,7 +98,8 @@ function blogs_addQueries() {
 			SELECT *,
 			UNIX_TIMESTAMP(CONCAT(modifiedTime,"+00:00")) AS modifiedTime,
 			UNIX_TIMESTAMP(CONCAT(postTime,"+00:00")) AS postTime
-			FROM !prefix!blog_posts!lang! WHERE categoryId = :categoryId AND blogId = :blogId ORDER BY id DESC
+			FROM !prefix!blog_posts!lang! WHERE categoryId = :categoryId AND blogId = :blogId AND live = TRUE ORDER BY postTime DESC
+			LIMIT :start, :count
 		',
 		'getBlogPostsByParentBlog' => '
 			SELECT *,

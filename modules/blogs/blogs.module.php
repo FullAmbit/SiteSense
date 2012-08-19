@@ -28,7 +28,7 @@ function blogs_getUniqueSettings($data) {
 	$data->output['pageTitle']='Blog';
 }
 function blogs_buildContent($data, $db) {
-	require_once 'modules/blogs/blogs.common.php';
+	common_include('modules/blogs/blogs.common.php');
 	$data->output['summarize']=false;
 	$data->output['notFound']=false;
 	// Now Get Users
@@ -124,58 +124,23 @@ function blogs_buildContent($data, $db) {
 		}
 	} else {
 		// If No Page Set, Then Start At 0
-		if ($data->action[2]===false) $data->action[2]=0;
-		// Show Posts In A Specific Blog (Action[2] would be the page number
-		if (is_numeric($data->action[2])) {
-			$data->output['blogInfo']['startPage']=$data->action[2];
+		if (($data->action[2]==='tags'||$data->action[2]==='categories')&&$data->action[4]===false) {
+			$data->action[4]=0;
+		} elseif ($data->action[2]===false) {
+			$data->action[2]=0;
+		}
+		// grab posts for a blog/tags/categories and build the listing
+		if (is_numeric($data->action[2])||$data->action[2]==='tags'||$data->action[2]==='categories') {
+			if ($data->action[2]==='categories') {
+				// Get The ID Of The Category Based Off The ShortName
+				$statement=$db->prepare('getCategoryIdByShortName', 'blogs');
+				$statement->execute(array(
+						':shortName' => $data->action[3]
+				));
+				$data->output['categoryItem']=$statement->fetch();
+			}
 			$data->output['summarize']=true;
 			blogs_common_buildContent($data, $db);
-			foreach ($data->output['newsList'] as &$item) {
-				$statement=$db->prepare('countCommentsByPost', 'blogs');
-				$statement->execute(array('post' => $item['id']));
-				$item['commentCount']=$statement->fetchColumn();
-			}
-		}
-		else if ($data->action[2]=='tags') {
-				// Get  A List Of Posts With A Specific Tag
-				$statement=$db->prepare('getBlogPostsByTag', 'blogs');
-				$statement->execute(array(
-						':blogId' => $data->action[1],
-						':tags' => '%'.$data->action[3] .'%'
-					));
-				$data->output['newsList']=$statement->fetchAll();
-				// If No Posts, Return An Error
-				if (empty($data->output['newsList'])) {
-					$data->output['notFound']=true;
-					return;
-				}
-				$data->output['summarize']=true;
-				foreach ($data->output['newsList'] as &$item) {
-					$statement=$db->prepare('countCommentsByPost', 'blogs');
-					$statement->execute(array('post' => $item['id']));
-					$item['commentCount']=$statement->fetchColumn();
-				}
-			} elseif ($data->action[2]=='categories') {
-			// Get The ID Of The Category Based Off The ShortName
-			$statement=$db->prepare('getCategoryIdByShortName', 'blogs');
-			$statement->execute(array(
-					':shortName' => $data->action[3]
-				));
-			$data->output['categoryItem']=$statement->fetch();
-			// Get  A List Of Posts With A Specific Category
-			$statement=$db->prepare('getBlogPostsByCategory', 'blogs');
-			$statement->execute(array(
-					':blogId' => $data->output['blogInfo']['id'],
-					':categoryId' => $data->output['categoryItem']['id']
-				));
-			$data->output['newsList']=$statement->fetchAll(PDO::FETCH_ASSOC);
-			$data->output['blogInfo']['numberOfPosts'] = count($data->output['newsList']);
-			// If No Posts, Return An Error
-			if (empty($data->output['newsList'])) {
-				$data->output['notFound']=true;
-				return;
-			}
-			$data->output['summarize']=true;
 			foreach ($data->output['newsList'] as &$item) {
 				$statement=$db->prepare('countCommentsByPost', 'blogs');
 				$statement->execute(array('post' => $item['id']));
@@ -242,7 +207,7 @@ function blogs_content($data) {
 		theme_blogRSSFeed($data);
 		die;
 	} else {
-		if($data->output['blogInfo']['numberOfPosts'] > $data->output['blogInfo']['numberPerPage']){
+		if(isset($data->output['blogInfo']['numberOfPosts']) && $data->output['blogInfo']['numberOfPosts'] > $data->output['blogInfo']['numberPerPage']){
 			$pagination = true;
 		}else{
 			$pagination = false;
