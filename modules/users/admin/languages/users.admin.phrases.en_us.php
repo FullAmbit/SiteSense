@@ -3,19 +3,19 @@
 function languages_users_admin_en_us(){
 	return array(
 		'core' => array(
-            'userManagement'                 => 'User Management',
-			'add'                            => 'Add',
-			'search'                         => 'Search',
-			'browse'                         => 'Browse',
-			'permissions'                    => 'Permissions',
-            'permission_users_usersAccess'   => 'Users Access',
-            'permission_users_manageUsers'   => 'Manage Other Users',
-            'permission_users_activateUsers' => 'Activate Users',
-            'permission_users_addUsers'      => 'Add Users',
-            'permission_users_banUsers'      => 'Ban Users',
-            'permission_users_editUsers'     => 'Edit Users',
-            'permission_users_deleteUsers'   => 'Delete Users',
-            'permission_users_manageGroups'  => 'Manage User Groups'
+            'userManagement'                => 'User Management',
+			'add'                           => 'Add',
+			'search'                        => 'Search',
+			'browse'                        => 'Browse',
+			'permissions'                   => 'Permissions',
+            'permission_users_access'       => 'Users Access',
+            'permission_users_accessOthers' => 'Manage Other Users',
+            'permission_users_activate'     => 'Activate Users',
+            'permission_users_add'          => 'Add Users',
+            'permission_users_ban'          => 'Ban Users',
+            'permission_users_edit'         => 'Edit Users',
+            'permission_users_delete'       => 'Delete Users',
+            'permission_users_groups'       => 'Manage User Groups'
 		),
 		'id'                                    => 'User ID',
 		'username'                              => 'Username',

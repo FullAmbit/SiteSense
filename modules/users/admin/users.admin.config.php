@@ -24,14 +24,14 @@
 */
 function users_admin_config($data,$db) {
 	$data->permissions['users']=array(
-        'access'               => $data->phrases['core']['permission_users_usersAccess'],
-        'accessOthers'         => $data->phrases['core']['permission_users_manageUsers'],
-        'activate'             => $data->phrases['core']['permission_users_activateUsers'],
-        'add'                  => $data->phrases['core']['permission_users_addUsers'],
-        'ban'                  => $data->phrases['core']['permission_users_banUsers'],
-        'edit'                 => $data->phrases['core']['permission_users_editUsers'],
-        'delete'               => $data->phrases['core']['permission_users_deleteUsers'],
-        'groups'               => $data->phrases['core']['permission_users_manageGroups']
+        'access'               => $data->phrases['core']['permission_users_access'],
+        'accessOthers'         => $data->phrases['core']['permission_users_accessOthers'],
+        'activate'             => $data->phrases['core']['permission_users_activate'],
+        'add'                  => $data->phrases['core']['permission_users_add'],
+        'ban'                  => $data->phrases['core']['permission_users_ban'],
+        'edit'                 => $data->phrases['core']['permission_users_edit'],
+        'delete'               => $data->phrases['core']['permission_users_delete'],
+        'groups'               => $data->phrases['core']['permission_users_groups']
     );
 	if (checkPermission('access','users',$data)) {
 		if (checkPermission('add','users',$data)) {
