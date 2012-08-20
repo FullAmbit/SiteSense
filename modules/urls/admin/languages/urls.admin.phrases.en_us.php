@@ -1,8 +1,13 @@
 <?php
 function languages_urls_admin_en_us(){
 	return array(
-		'core'                      => array(
-			'urls' => 'URL Routing',
+		'core' => array(
+			'urls'                    => 'URL Routing',
+			'permission_urls_access'  => 'Access URL Routing',
+			'permission_urls_add'     => 'Add URL Routes',
+			'permissions_urls_edit'   => 'Edit URL Routes',
+			'permissions_urls_delete' => 'Delete URL Routes',
+			'permissions_urls_list'   => 'List URL Routes'
 		),
 		'addRemap'                  => 'Add URL Route',
 		'manageURLsHeading'         => 'URL Routes',

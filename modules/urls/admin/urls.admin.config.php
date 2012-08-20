@@ -24,11 +24,11 @@
 */
 function urls_admin_config($data,$db) {
 	$data->permissions['urls']=array(
-		'access'               => 'Access Dynamic URLs',
-		'add'                  => 'Add Dynamic URLs',
-		'delete'               => 'Delete Dynamic URLs',
-		'edit'                 => 'Edit Dynamic URLs',
-		'list'                 => 'List Dynamic URLs'
+		'access'               => $data->phrases['core']['permission_urls_access'],
+		'add'                  => $data->phrases['core']['permission_urls_add'],
+		'delete'               => $data->phrases['core']['permission_urls_delete'],
+		'edit'                 => $data->phrases['core']['permission_urls_edit'],
+		'list'                 => $data->phrases['core']['permission_urls_list'],
 	);
 
 	if (checkPermission('access','urls',$data)) {
