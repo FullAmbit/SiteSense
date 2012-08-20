@@ -4,6 +4,11 @@ common_include('modules/languages/admin/languages.admin.common.php');
 common_include('libraries/queries/defines.mysql.php');
 
 function languages_admin_update_build($data,$db){
+	if(!checkPermission('update','languages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
+			return;
+	}
 	// Build List Of Languages Available To You (Must Have Core Phrase File In modules/langauges/phrases/)
 	$installerFiles = glob("modules/languages/phrases/languages.phrases.*.php",GLOB_BRACE);
 	$languageList = array();

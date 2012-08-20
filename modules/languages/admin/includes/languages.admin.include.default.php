@@ -1,6 +1,11 @@
 <?php
 
 function languages_admin_default_build($data,$db){
+	if(!checkPermission('default','languages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
+			return;
+	}
 	// Get Language Item
 	$statement=$db->prepare('getLanguage','admin_languages');
 	$statement->execute(array(

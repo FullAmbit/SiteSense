@@ -3,8 +3,12 @@
 
 function languages_hostnames_admin_en_us(){
 	return array(
-		'core'                               => array(
-			'hostnames' => 'Host Names'
+		'core' => array(
+			'hostnames'                   => 'Host Names',
+			'permission_hostnames_access' => 'Access Hostnames',
+			'permission_hostnames_add'    => 'Add A Hostname',
+			'permission_hostnames_edit'   => 'Edit Hostnames',
+			'permission_hostnames_delete' => 'Delete Hostnames'
 		),
 		'warning'                            => 'WARNING',
 		'manageHostnamesHeading'             => 'Manage Hostnames',

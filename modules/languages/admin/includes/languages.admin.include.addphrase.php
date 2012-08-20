@@ -1,6 +1,11 @@
 <?php
 common_include('libraries/forms.php');
 function languages_admin_addphrase_build($data,$db){
+	if(!checkPermission('addPhrase','languages',$data)) {
+		$data->output['abort'] = true;
+		$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
+			return;
+	}
 	// Get Language Item
 	$statement=$db->prepare('getLanguage','admin_languages');
 	$statement->execute(array(

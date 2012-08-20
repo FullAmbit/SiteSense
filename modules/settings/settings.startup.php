@@ -23,8 +23,5 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function settings_startup($data,$db) {
-	$data->permissions['settings']=array(
-        'access'               => 'Access Settings'
-    );
 }
 ?>

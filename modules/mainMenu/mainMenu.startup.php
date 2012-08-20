@@ -23,14 +23,5 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function mainMenu_startup($data,$db) {
-	$data->permissions['mainMenu']=array(
-        'access'               => 'Access Main Menu Items',
-        'add'                  => 'Add Main Menu Items',
-        'delete'               => 'Delete Main Menu Items',
-        'disable'              => 'Disable Main Menu Items',
-        'edit'                 => 'Edit Main Menu Items',
-        'enable'               => 'Enable Main Menu Items',
-        'list'                 => 'List Main Menu Items'
-    );
 }
 ?>

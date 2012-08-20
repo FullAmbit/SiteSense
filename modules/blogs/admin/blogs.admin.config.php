@@ -24,6 +24,33 @@
 */
 
 function blogs_admin_config($data,$db) {
+	$data->permissions['blogs']=array(
+        'access'            => $data->phrases['core']['permission_blogs_access'],
+        'accessOthers'      => $data->phrases['core']['permission_blogs_accessOthers'],
+
+        'blogAdd'           => $data->phrases['core']['permission_blogs_blogAdd'],
+        'blogEdit'          => $data->phrases['core']['permission_blogs_blogEdit'],
+        'blogDelete'        => $data->phrases['core']['permission_blogs_blogDelete'],
+        'blogList'          => $data->phrases['core']['permission_blogs_blogList'],
+
+        'categoryAdd'       => $data->phrases['core']['permission_blogs_categoryAdd'],
+        'categoryEdit'      => $data->phrases['core']['permission_blogs_categoryEdit'],
+        'categoryDelete'    => $data->phrases['core']['permission_blogs_categoryDelete'],
+        'categoryView'      => $data->phrases['core']['permission_blogs_categoryView'],
+
+        'commentAdd'        => $data->phrases['core']['permission_blogs_commentAdd'],
+        'commentEdit'       => $data->phrases['core']['permission_blogs_commentEdit'],
+        'commentDelete'     => $data->phrases['core']['permission_blogs_commentDelete'],
+        'commentApprove'    => $data->phrases['core']['permission_blogs_commentApprove'],
+        'commentDisapprove' => $data->phrases['core']['permission_blogs_commentDisapprove'],
+        'commentList'       => $data->phrases['core']['permission_blogs_commentList'],
+
+        'postAdd'           => $data->phrases['core']['permission_blogs_postAdd'],
+        'postEdit'          => $data->phrases['core']['permission_blogs_postEdit'],
+        'postDelete'        => $data->phrases['core']['permission_blogs_postDelete'],
+        'postList'          => $data->phrases['core']['permission_blogs_postList']
+    );
+    
 	if(checkPermission('access','blogs',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => $data->phrases['core']['siteManagement'],

@@ -5,9 +5,9 @@ function languages_urls_admin_en_us(){
 			'urls'                    => 'URL Routing',
 			'permission_urls_access'  => 'Access URL Routing',
 			'permission_urls_add'     => 'Add URL Routes',
-			'permissions_urls_edit'   => 'Edit URL Routes',
-			'permissions_urls_delete' => 'Delete URL Routes',
-			'permissions_urls_list'   => 'List URL Routes'
+			'permission_urls_edit'   => 'Edit URL Routes',
+			'permission_urls_delete' => 'Delete URL Routes',
+			'permission_urls_list'   => 'List URL Routes'
 		),
 		'addRemap'                  => 'Add URL Route',
 		'manageURLsHeading'         => 'URL Routes',

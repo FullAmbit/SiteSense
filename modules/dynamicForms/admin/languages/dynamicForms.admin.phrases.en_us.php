@@ -3,8 +3,13 @@
 
 function languages_dynamicForms_admin_en_us(){
 	return array(
-		'core'                                => array(
-			'forms' => 'Forms'
+		'core' => array(
+			'forms'                            => 'Forms',
+			'permission_dynamicForms_access'   => 'Access Forms',
+			'permission_dynamicForms_add'      => 'Add Forms',
+			'permission_dynamicForms_delete'   => 'Delete Forms',
+			'permission_dynamicForms_edit'     => 'Edit Forms',
+			'permission_dynamicForms_viewData' => 'View Submitted Data'
 		),
 		'returnToForms'                       => 'Return To Forms',
 		'returnToFields'                      => 'Return To Fields',

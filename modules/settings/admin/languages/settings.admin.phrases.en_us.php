@@ -2,14 +2,15 @@
 	function languages_settings_admin_en_us(){
 		return array(
 			'core'                          => array(
-				'settings'                     => 'Settings'
+				'settings'                   => 'Settings',
+				'permission_settings_access' => 'Access Settings'
 			),
 			'labelSiteTitle'                => 'Site Title',
 			'descriptionSiteTitle'          => 'Used to construct the TITLE tag and in most skins the content of the top level heading (H1).',
 			'labelTheme'                    => 'Default Theme',
 			'descriptionTheme'              => 'Determines which of your installed themes users will default to.',
 			'labelDefaultTimeZone'          => 'Default Time Zone',
-			'descriptionDefaultTimeZone'           => 'Sets the default time zone for all newly registered users.',
+			'descriptionDefaultTimeZone'    => 'Sets the default time zone for all newly registered users.',
 			'labelHomepage'                 => 'Homepage',
 			'descriptionHomepage'           => 'What will users see first when they visit your site?',
 			'labelHideContentGuests'        => 'Hide Content From Guests',

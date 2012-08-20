@@ -3,6 +3,11 @@
 common_include('libraries/forms.php');
 
 function hostnames_admin_edit_build($data,$db){
+	if(!checkPermission('edit','hostnames',$data)) {
+		$data->output['abort'] = true;
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
+			return;
+	}
 	// Check If HostName Exists
 	$statement = $db->prepare('getHostname','admin_hostnames');
 	$statement->execute(array(

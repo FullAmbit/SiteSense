@@ -3,8 +3,28 @@
 
 function languages_blogs_admin_en_us(){
 	return array(
-		'core'                                  => array(
-			'blogs' => 'Blogs'
+		'core' => array(
+			'blogs'                              => 'Blogs',
+			'permission_blogs_access'            => 'Access Blogs',
+			'permission_blogs_accessOthers'      => 'Access Other User\'s Blogs',
+			'permission_blogs_blogAdd'           => 'Add Blogs',
+			'permission_blogs_blogEdit'          => 'Edit Blogs',
+			'permission_blogs_blogDelete'        => 'Delete Blogs',
+			'permission_blogs_blogList'          => 'List Blogs',
+			'permission_blogs_categoryAdd'       => 'Add Blog Category',
+			'permission_blogs_categoryEdit'      => 'Edit Blog Category',
+			'permission_blogs_categoryDelete'    => 'Delete Blog Category',
+			'permission_blogs_categoryView'      => 'View Blog Categories',
+			'permission_blogs_commentAdd'        => 'Add Comment',
+			'permission_blogs_commentEdit'       => 'Edit Comment',
+			'permission_blogs_commentDelete'     => 'Delete Comments',
+			'permission_blogs_commentApprove'    => 'Approve Comments',
+			'permission_blogs_commentDisapprove' => 'Disapprove Comments',
+			'permission_blogs_commentList'       => 'Comment List',
+			'permission_blogs_postAdd'           => 'Add Posts',
+			'permission_blogs_postEdit'          => 'Edit Posts',
+			'permission_blogs_postDelete'        => 'Delete Posts',
+			'permission_blogs_postList'          => 'List Posts'
 		),
 		'returnToBlogs'                         => 'Return To Blogs',
 		'returnToPosts'                         => 'Return To Posts',

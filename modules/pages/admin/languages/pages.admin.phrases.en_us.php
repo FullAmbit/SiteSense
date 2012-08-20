@@ -3,8 +3,14 @@
 
 function languages_pages_admin_en_us(){
 	return array(
-		'core'                           => array(
-			'pages' => 'Pages'
+		'core' => array(
+			'pages'                         => 'Pages',
+			'permission_pages_access'       => 'Access Pages',
+			'permission_pages_add'          => 'Add Pages',
+			'permission_pages_edit'         => 'Edit Pages',
+			'permission_pages_editSpecific' => 'Edit Specific Pages',
+			'permission_pages_delete'       => 'Delete Pages',
+			'permission_pages_publish'      => 'Publish Pages'
 		),
 		'pageDeleteSuccessHeading'       => 'Page Deleted',
 		'pageDeleteSuccessMessage'       => 'The page has been deleted. It has affected this many pages: ',

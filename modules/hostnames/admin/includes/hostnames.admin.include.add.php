@@ -3,6 +3,11 @@
 common_include('libraries/forms.php');
 
 function hostnames_admin_add_build($data,$db){
+	if(!checkPermission('add','hostnames',$data)) {
+		$data->output['abort'] = true;
+        $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
+			return;
+	}
 	$data->output['hostnameForm'] = new formHandler('hostnameItem',$data,true);
 	$data->output['hostnameForm']->caption = $data->phrases['hostnames']['captionAddHostname'];
 	$list=glob('themes/*');

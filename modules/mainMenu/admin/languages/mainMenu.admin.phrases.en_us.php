@@ -4,7 +4,14 @@
 function languages_mainMenu_admin_en_us(){
 	return array(
 		'core' => array(
-			'mainMenu' => 'Main Menu'
+			'mainMenu'                    => 'Main Menu',
+			'permission_mainMenu_access'  => 'Access Main Menu Items',
+			'permission_mainMenu_add'     => 'Add Main Menu Items',
+			'permission_mainMenu_delete'  => 'Delete Main Menu Items',
+			'permission_mainMenu_disable' => 'Disable Main Menu Items',
+			'permission_mainMenu_edit'    => 'Edit Main Menu Items',
+			'permission_mainMenu_enable'  => 'Enable Main Menu Items',
+			'permission_mainMenu_list'    => 'List Main Menu Items'
 		),
 		'returnToMenuItems'            => 'Return To Menu Items',
 		'deleteItemSuccessHeading'     => 'This menu item has been deleted.',

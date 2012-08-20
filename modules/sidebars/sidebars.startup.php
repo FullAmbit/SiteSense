@@ -23,12 +23,5 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function sidbars_startup($data,$db) {
-	$data->permissions['sidebars']=array(
-        'access'               => 'Access Sidebars',
-        'add'                  => 'Add Sidebars',
-        'delete'               => 'Delete Sidebars',
-        'edit'                 => 'Edit Sidebars',
-        'list'                 => 'List Sidebars'
-    );
 }
 ?>

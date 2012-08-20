@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function messages_admin_config($data) {
+	$data->permissions['messages']=array(
+        'access'      => 'Messages access',
+        'delete'      => 'Delete messages',
+        'list'        => 'List messages',
+        'view'        => 'View messages'
+    );
+    
 	if (checkPermission('access','messages',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => 'User Management',

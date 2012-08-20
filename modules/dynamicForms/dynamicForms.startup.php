@@ -23,12 +23,5 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function dynamicForms_startup($data,$db) {
-	$data->permissions['dynamicForms']=array(
-        'access'               => 'Access Dynamic Forms',
-        'add'                  => 'Add Dynamic Forms',
-        'delete'               => 'Delete Dynamic Forms',
-        'edit'                 => 'Edit Dynamic Forms',
-        'viewData'             => 'View Submit Data'
-    );
 }
 ?>

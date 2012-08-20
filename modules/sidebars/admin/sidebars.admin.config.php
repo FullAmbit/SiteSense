@@ -23,6 +23,14 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function sidebars_admin_config($data,$db) {
+	$data->permissions['sidebars']=array(
+        'access'               => $data->phrases['core']['permission_sidebars_access'],
+        'add'                  => $data->phrases['core']['permission_sidebars_add'],
+        'delete'               => $data->phrases['core']['permission_sidebars__delete'],
+        'edit'                 => $data->phrases['core']['permission_sidebars_edit'],
+        'list'                 => $data->phrases['core']['permission_sidebars_list']
+    );
+	
 	if (checkPermission('access','sidebars',$data)) {
 		$data->admin['menu'][]=array(
 			'category'	=> $data->phrases['core']['siteManagement'],

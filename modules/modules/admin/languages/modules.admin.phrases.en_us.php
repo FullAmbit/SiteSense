@@ -2,9 +2,14 @@
 
 function languages_modules_admin_en_us(){
 	return array(
-		'core'                                => array(
-			'modules'                            => 'Modules',
-			'enabled'                            => 'Enabled'
+		'core' => array(
+			'modules'                    => 'Modules',
+			'enabled'                    => 'Enabled',
+			'permission_modules_access'  => 'Access Modules',
+			'permission_modules_disable' => 'Disable Module',
+			'permission_modules_edit'    => 'Edit Module',
+			'permission_modules_enable'  => 'Enable Module',
+			'permission_modules_list'    => 'List Module'
 		),
 		'manageSidebarsHeading'               => 'Manage Sidebars For',
 		'manageModulesHeading'                => 'Manage Modules',

@@ -3,8 +3,13 @@
 
 function languages_sidebars_admin_en_us(){
 	return array(
-		'core'                            => array(
-			'sidebars' => 'Sidebars'
+		'core' => array(
+			'sidebars'                   => 'Sidebars',
+			'permission_sidebars_access' => 'Access Sidebars',
+			'permission_sidebars_add'    => 'Add Sidebars',
+			'permission_sidebars_edit'   => 'Edit Sidebars',
+			'permission_sidebars_delete' => 'Delete Sidebars',
+			'permission_sidebars_list'   => 'List Sidebars'
 		),
 		'redirectedInThreeSeconds'        => 'You should be auto redirected to the page list in three seconds.',
 		'clickToWait'                     => 'Click Here if you do not wish to wait.',

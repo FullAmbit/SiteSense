@@ -25,6 +25,19 @@
 
 //configures admin's left menu bar configurations - category, order, name, etc.
 function pages_admin_config($data,$db) {
+	
+	$data->permissions['pages']=array(
+        'access'               => $data->phrases['core']['permission_pages_access'],
+        'add'                  => $data->phrases['core']['permission_pages_add'],
+        'edit'                 => $data->phrases['core']['permission_pages_edit'],
+        'editSpecific'         => $data->phrases['core']['permission_pages_editSpecific'], //not being used for now while this comment exists. Requires checkPermissions module update
+        //this is the statement that should replace the current ones. This accounts for editSpecific
+        //if(!checkPermission('access','pages',$data) && (!checkPermission('editSpecific','pages',$data) == ***PAGE ID***))
+        //more complicated logic for editSpecific override, may require function modification for checkPermission
+        'delete'               => $data->phrases['core']['permission_pages_delete'],
+        'publish'              => $data->phrases['core']['permission_pages_publish']
+    );
+	
 	if (checkPermission('access','pages',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => $data->phrases['core']['siteManagement'],

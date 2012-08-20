@@ -23,6 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function settings_admin_config($data) {
+	$data->permissions['settings']=array(
+        'access'               => $data->phrases['core']['permission_settings_access']
+    );
 	if(checkPermission('access','settings',$data)) {
 		$data->admin['menu'][]=array(
 			'category'  => $data->phrases['core']['siteManagement'],
