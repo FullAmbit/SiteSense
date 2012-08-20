@@ -51,7 +51,8 @@ function languages_admin_editphrase_build($data,$db){
 				':id' => $data->output['phraseItem']['id'],
 				':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 				':text' => $data->output['phraseForm']->sendArray[':text'],
-				':module' => $data->output['phraseForm']->sendArray[':module']
+				':module' => $data->output['phraseForm']->sendArray[':module'],
+				':isAdmin' => 0
 			));
 			if($result){
 				$data->output['themeOverride'] = 'EditPhraseSuccess';
