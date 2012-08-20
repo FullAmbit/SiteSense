@@ -24,14 +24,14 @@
 */
 function users_admin_config($data,$db) {
 	$data->permissions['users']=array(
-        'access'               => $data->phrases['core']['usersAccess'],
-        'accessOthers'         => $data->phrases['core']['manageUsers'],
-        'activate'             => $data->phrases['core']['activateUsers'],
-        'add'                  => $data->phrases['core']['addUsers'],
-        'ban'                  => $data->phrases['core']['banUsers'],
-        'edit'                 => $data->phrases['core']['editUsers'],
-        'delete'               => $data->phrases['core']['deleteUsers'],
-        'groups'               => $data->phrases['core']['manageGroups']
+        'access'               => $data->phrases['core']['permission_users_usersAccess'],
+        'accessOthers'         => $data->phrases['core']['permission_users_manageUsers'],
+        'activate'             => $data->phrases['core']['permission_users_activateUsers'],
+        'add'                  => $data->phrases['core']['permission_users_addUsers'],
+        'ban'                  => $data->phrases['core']['permission_users_banUsers'],
+        'edit'                 => $data->phrases['core']['permission_users_editUsers'],
+        'delete'               => $data->phrases['core']['permission_users_deleteUsers'],
+        'groups'               => $data->phrases['core']['permission_users_manageGroups']
     );
 	if (checkPermission('access','users',$data)) {
 		if (checkPermission('add','users',$data)) {
