@@ -26,7 +26,7 @@ function sidebars_admin_config($data,$db) {
 	$data->permissions['sidebars']=array(
         'access'               => $data->phrases['core']['permission_sidebars_access'],
         'add'                  => $data->phrases['core']['permission_sidebars_add'],
-        'delete'               => $data->phrases['core']['permission_sidebars__delete'],
+        'delete'               => $data->phrases['core']['permission_sidebars_delete'],
         'edit'                 => $data->phrases['core']['permission_sidebars_edit'],
         'list'                 => $data->phrases['core']['permission_sidebars_list']
     );

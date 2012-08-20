@@ -46,9 +46,17 @@ function admin_buildContent($data,$db) {
 				common_redirect($data->linkRoot.'admin');
 			}
 		}
+		$statement = $db->prepare('getPhrasesByModule', 'common');
+		// Core Phraes
+		$statement->execute(array(
+				':module' => '',
+				':isAdmin' => 1
+			));
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$data->phrases['core'][$row['phrase']] = $row['text'];
+		}
 		
 		// Module-Specific Phrases
-		$statement = $db->prepare('getPhrasesByModule', 'common');
 		$statement->execute(array(
 				':module' => $data->action[1],
 				':isAdmin' => 1

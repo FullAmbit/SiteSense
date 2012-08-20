@@ -24,13 +24,13 @@
 */
 function mainMenu_admin_config($data) {
 	$data->permissions['mainMenu']=array(
-        'access'               => $data->phrases['permission_mainMenu_access'],
-        'add'                  => $data->phrases['permission_mainMenu_add'],
-        'delete'               => $data->phrases['permission_mainMenu_delete'],
-        'disable'              => $data->phrases['permission_mainMenu_disable'],
-        'edit'                 => $data->phrases['permission_mainMenu_edit'],
-        'enable'               => $data->phrases['permission_mainMenu_enable'],
-        'list'                 => $data->phrases['permission_mainMenu_list']
+        'access'               => $data->phrases['core']['permission_mainMenu_access'],
+        'add'                  => $data->phrases['core']['permission_mainMenu_add'],
+        'delete'               => $data->phrases['core']['permission_mainMenu_delete'],
+        'disable'              => $data->phrases['core']['permission_mainMenu_disable'],
+        'edit'                 => $data->phrases['core']['permission_mainMenu_edit'],
+        'enable'               => $data->phrases['core']['permission_mainMenu_enable'],
+        'list'                 => $data->phrases['core']['permission_mainMenu_list']
     );
     
 	if(checkPermission('access','mainMenu',$data)) {
