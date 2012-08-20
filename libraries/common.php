@@ -270,37 +270,6 @@ function loadPermissions($data) {
     );
 }
 
-/**function permissionQuery(&$db,&$user,$queryName,$queryData) {
-	$statement=$db->prepare($queryName);
-	$statement->execute($queryData);
-	while ($result=$statement->fetch(PDO::FETCH_ASSOC)
-		$user['permissions'][$result['name']]|=$result['value'];
-	}
-}
-
-function getUserPermissions(&$db,&$user) {
-	if (isset($user['permissions'])) return false; // already set
-	
-	$user['permissions']=array();
-	
-	$db->query('purgeExpiredGroups');
-	
-	$groupsStatement=$db->prepare('getGroupsByUserID');
-	$groupsStatement->execute(array(
-		':userID' => $user['id']
-	));
-	while ($group=$groupsStatement->fetch(PDO::FETCH_ASSOC)) {
-		permissionQuery($db,$user,'getPermissionsByGroupName',array(
-			':name' => $group['name']
-		);
-	}
-	
-	permissionQuery($db,$user,'getUserPermissionsByUserID',array(
-		':userID' => $user['id']
-	);
-}**/
-
-
 function getUserPermissions($db,&$user){
 	if(isset($user['permissions'])) return false;
 	

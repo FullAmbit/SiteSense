@@ -23,13 +23,21 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function urls_admin_config($data,$db) {
-  if (checkPermission('access','urls',$data)) {
-    $data->admin['menu'][]=array(
-      'category'  => $data->phrases['core']['siteManagement'],
-      'command'   => 'urls/list',
-      'name'      => $data->phrases['core']['urls'],
-      'sortOrder' => 9
-    );
-  }
+	$data->permissions['urls']=array(
+		'access'               => 'Access Dynamic URLs',
+		'add'                  => 'Add Dynamic URLs',
+		'delete'               => 'Delete Dynamic URLs',
+		'edit'                 => 'Edit Dynamic URLs',
+		'list'                 => 'List Dynamic URLs'
+	);
+
+	if (checkPermission('access','urls',$data)) {
+		$data->admin['menu'][]=array(
+			'category'  => $data->phrases['core']['siteManagement'],
+			'command'   => 'urls/list',
+			'name'      => $data->phrases['core']['urls'],
+			'sortOrder' => 9
+		);
+	}
 }
 ?>

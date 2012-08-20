@@ -23,15 +23,5 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function users_startup($data,$db) {
-    $data->permissions['users']=array(
-        'access'               => $data->phrases['core']['usersAccess'],
-        'accessOthers'         => $data->phrases['core']['manageUsers'],
-        'activate'             => $data->phrases['core']['activateUsers'],
-        'add'                  => $data->phrases['core']['addUsers'],
-        'ban'                  => $data->phrases['core']['banUsers'],
-        'edit'                 => $data->phrases['core']['editUsers'],
-        'delete'               => $data->phrases['core']['deleteUsers'],
-        'groups'               => $data->phrases['core']['manageGroups']
-    );
 }
 ?>
