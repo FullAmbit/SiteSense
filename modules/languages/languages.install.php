@@ -19,7 +19,8 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 	        'phrase'     => 'VARCHAR(255) NOT NULL',
 	        'text'       => 'TEXT NOT NULL',
 	        'module'     => SQR_moduleName,
-	        'isAdmin'    => SQR_boolean
+	        'isAdmin'    => SQR_boolean,
+	        'UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)'
 		)
 	);
 	
