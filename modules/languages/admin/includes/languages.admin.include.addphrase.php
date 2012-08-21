@@ -36,6 +36,7 @@ function languages_admin_addphrase_build($data,$db){
 			}
 			// Save To Database
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
+			$data->output['phraseForm']->sendArray[':isAdmin'] = 0;
 			$result = $statement->execute($data->output['phraseForm']->sendArray);
 			if($result){
 				$data->output['themeOverride'] = 'AddPhraseSuccess';

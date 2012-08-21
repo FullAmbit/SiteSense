@@ -16,7 +16,6 @@ function admin_modulesBuild($data, $db) {
 	}
 	// Get Modular Language Files And Make Sure They Are Installed in DB First
 	$moduleName = $data->output['moduleItem']['name'];
-
 	foreach ($data->languageList as $languageItem) {
 		$data->output['languageList'][$languageItem['shortName']] = $languageItem['name'];
 		$userEndFile='modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$languageItem['shortName'].'.php';
@@ -26,7 +25,6 @@ function admin_modulesBuild($data, $db) {
 		if (file_exists($userEndFile)) {
 			common_include($userEndFile);
 		}
-		
 		if (file_exists($adminEndFile)) {
 			common_include($adminEndFile);
 		}
@@ -54,7 +52,7 @@ function admin_modulesBuild($data, $db) {
 		if($_POST['action']==0){
 			// Empty Table And Prep For Phrase Entry
 			$statement=$db->prepare("deletePhrasesByModuleAndLanguage","admin_languages",array("!lang!"=>$_POST['updateLanguage']));
-			$statment->execute(array(
+			$statement->execute(array(
 				':module' => $moduleName 
 			));
 		}
@@ -100,9 +98,8 @@ function admin_modulesBuild($data, $db) {
 				$data->output['responseMessage'] .= $data->phrases['modules']['installLanguageSuccessAdminEnd'];
 			}
 		}
-	}
-	
-	if(!$error) $data->output['themeOverride']='LanguageSuccess';
+		if(!$error) $data->output['themeOverride']='LanguageSuccess';
+	}	
 }
 
 function admin_modulesShow($data) {

@@ -39,7 +39,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				':isAdmin' => $isAdmin
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
+			//var_dump($existingModuleList);
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageShortName));
 			foreach($modulePhrases as $phrase => $text){
@@ -51,8 +51,9 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':module' => $moduleShortName,
 					':isAdmin' => $isAdmin
 				));
-				
 				if($result == FALSE){
+					die(var_dump($statement->errorInfo()));
+					var_dump($statement->errorInfo());
 					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
 					return FALSE;
 				}
