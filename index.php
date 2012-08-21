@@ -636,16 +636,15 @@ final class sitesense {
 				'content' => $this->language
 			)
 		);
-
-		// Get Left and Right Main Menu Order
-		$statement=$this->db->query('getEnabledMainMenuOrderLeft');
-		$this->menuList['left']=$statement->fetchAll();
-		$statement=$this->db->query('getEnabledMainMenuOrderRight');
-		$this->menuList['right']=$statement->fetchAll();
-		
 		
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
 		if($this->currentPage !== 'admin'){
+			// Get Left and Right Main Menu Order
+			$statement=$this->db->query('getEnabledMainMenuOrderLeft');
+			$this->menuList['left']=$statement->fetchAll();
+			$statement=$this->db->query('getEnabledMainMenuOrderRight');
+			$this->menuList['right']=$statement->fetchAll();
+	
 			// Here we'll load core phrases
 			$statement = $this->db->prepare('getPhrasesByModule', 'common');
 			// Core Phrases
@@ -733,21 +732,12 @@ final class sitesense {
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
 		}
-
-		// Is this an AJAX request?
-		if ($this->currentPage=='ajax') {
-			ajax_buildContent($this, $this->db);
-		} else {
-			// Nope, this is a normal page request
-
-			$buildContent=$this->module['name'].'_buildContent';
-			if ($this->currentPage=='admin') {
-				$buildContent='admin_buildContent';
-			}
-			if (function_exists($buildContent)) {
-				$buildContent($this, $this->db);
-			}
-		}
+		
+		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') $this->currentPage = 'ajax';
+	  	
+	  	// Set Up Modular Build Functions
+		$buildContent= ($this->currentPage == 'admin') ? 'admin_buildContent' : $this->module['name'].'_buildContent';
+		if (function_exists($buildContent)) $buildContent($this, $this->db);
 
 		// Parse Sidebars Before Display
 		if (isset($sidebars)) {
@@ -757,8 +747,8 @@ final class sitesense {
 				$this->sidebarList[$sidebar['side']][]=$sidebar;
 			}
 		}
-
 		$this->db=null;
+		
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
 			gzip_start();
@@ -784,9 +774,12 @@ final class sitesense {
 			}
 		}
 
-		if ($this->currentPage=='ajax') {
-			ajax_content($this);
-			$this->loadModuleTemplate('sidebars');
+		// Is this an AJAX request?
+		if($this->currentPage == 'ajax'){
+			$content=$this->module['name'].'_content';
+			$content($this);
+
+			if (!function_exists('theme_leftSidebar')) $this->loadModuleTemplate('sidebars');
 			theme_leftSidebar($this);
 			theme_rightSidebar($this);
 		}else {
