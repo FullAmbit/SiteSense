@@ -618,7 +618,7 @@ class formHandler {
 		if($buffer)	{
 			ob_start();
 		}
-		if(function_exists('theme_buildForm')&&FALSE){
+		if(function_exists('theme_buildForm')){
 			theme_buildForm($this);
 		}else{
 			echo '
@@ -718,7 +718,7 @@ class formHandler {
 							break;
 						case 'select':
 							echo '>';
-							if($formField['type']=='timezone'){
+							if(isset($formField['type']) && $formField['type']=='timezone'){
 							    $currentTime=time();
 							    $times=array();
 							    $start=$currentTime-date('G',$currentTime)*3600;
@@ -875,7 +875,7 @@ class formHandler {
 				$this->error ? ', <b>X</b> indicates a field with errors' : ''
 				);
       }
-      if(strlen($this->extraMarkup)==0) {
+      if(strlen($this->extraMarkup)!==0) {
         echo '
           <div class="extraMarkup">
             ',$this->extraMarkup.'
