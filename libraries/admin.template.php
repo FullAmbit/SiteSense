@@ -60,10 +60,9 @@ echo '
 	if (isset($data->user['id'])) {
 		echo '
 	<div id="loggedBar" class="buttonList">';
-		if($data->action[1]=='dashboard'){
 			echo '
 			<form name="frmLanguageSelector" action="" method="get" style="float:left;">
-				<select name="language" onchange="this.form.submit()">';
+				<select name="language" onchange="this.form.submit()" ',(($data->action[1] !== 'dashboard') ? 'disabled="disabled"' : ''),'>';
 				foreach($data->languageList as $languageItem){
 					if($languageItem['shortName']==$data->language){
 					echo '<option value="',$languageItem['shortName'],'" selected="selected">',$languageItem['name'],'</option>';
@@ -74,7 +73,6 @@ echo '
 				echo '
 				</select>
 			</form>';
-		}
 		echo '
 		<a href="',$data->linkRoot,'logout">Logout</a>
 		You are currently logged in as <b>',$data->user['name'],'</b>
