@@ -34,18 +34,32 @@ function admin_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-	if (checkPermission('access','core',$data)) {
+	if (checkPermission('access','core',$data)) {		
 		if(empty($data->action[1])) {
-			$module['name']='dashboard';
-			$data->action[1]='dashboard';
+			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
+			$moduleQuery->execute(array(':shortName' => 'dashboard'));
+			$module=$moduleQuery->fetch(PDO::FETCH_ASSOC);
 		} else {
 			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
 			$moduleQuery->execute(array(':shortName' => $data->action[1]));
-			$module=$moduleQuery->fetch();
+			$module=$moduleQuery->fetch(PDO::FETCH_ASSOC);
 			if($module==FALSE){
 				common_redirect($data->linkRoot.'admin');
 			}
 		}
+		// Get the plugins for this module
+		$statement= $db->prepare('getEnabledPluginsByModule','common');
+		$statement->execute(array(
+				':moduleID' => $module['id']
+			));
+		$plugins=$statement->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($plugins as $plugin) {
+			common_include('plugins/'.$plugin['name'].'/plugin.php');
+			$objectName='plugin_'.$plugin['name'];
+			$data->plugins[$plugin['name']]=new $objectName;
+		}
+				
+		// Get Phrases
 		$statement = $db->prepare('getPhrasesByModule', 'common');
 		// Core Phraes
 		$statement->execute(array(

@@ -403,6 +403,7 @@ function common_addQueries() {
             JOIN !prefix!plugins_modules
             ON !prefix!plugins.id = !prefix!plugins_modules.plugin
             AND !prefix!plugins_modules.module = :moduleID
+            WHERE !prefix!plugins.enabled = 1
         ',
         'getEnabledPlugins' => '
           SELECT *
