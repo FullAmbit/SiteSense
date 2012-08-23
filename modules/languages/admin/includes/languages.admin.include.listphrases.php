@@ -9,14 +9,14 @@ function languages_admin_listphrases_build($data,$db){
 	// Get Language Item
 	$statement=$db->prepare('getLanguage','admin_languages');
 	$statement->execute(array(
-		':shortName' => $data->action[3]
+		':shortName' => $data->language
 	));
 	if(($data->output['languageItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
 		$data->output['themeOverride'] = 'NotFound';
 		return;
 	}
 	// Get Phrases
-	$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages',array('!lang!'=>$data->action[3]));
+	$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages',array('!lang!'=>$data->language));
 	$statement->execute();
 	$data->output['phraseList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
 }

@@ -18,6 +18,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageShortName));
+			if(!is_array($modulePhrases)) break;
 			foreach($modulePhrases as $phrase => $text){
 				$result = $statement->execute(array(
 					':phrase' => $phrase,
@@ -25,13 +26,14 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':module' => $moduleShortName,
 					':isAdmin' => $isAdmin
 				));
-				if($result == FALSE){
+				/**if($result == FALSE){
 					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.(($moduleName == '') ? 'core' : $moduleName);
 					return FALSE;
-				}
+				}**/
 			}
 		break;
 		case 1:
+			if(empty($modulePhrases)) break;
 			// Install Non-Existing Phrases, Ignore Pre-Existing Ones
 			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 			$statement->execute(array(
@@ -39,7 +41,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				':isAdmin' => $isAdmin
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-			//var_dump($existingModuleList);
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageShortName));
 			foreach($modulePhrases as $phrase => $text){
@@ -52,7 +53,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':isAdmin' => $isAdmin
 				));
 				if($result == FALSE){
-					die(var_dump($statement->errorInfo()));
 					var_dump($statement->errorInfo());
 					$data->output['responseMessage'] = 'There was an error while inserting the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
 					return FALSE;
@@ -64,7 +64,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>$languageShortName));
 			$statement->execute(array(
 				':module' => $moduleShortName,
-				':isAdmin' => 1
+				':isAdmin' => $isAdmin
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
 
@@ -101,6 +101,75 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 		default:
 			$data->output['responseMessage'] = 'The action you specified was invalid.';
 			return FALSE;
+		break;
+		case 3:
+			$returnList = array();
+			// Only Update Existing Phrases (Phrases Must Exist In English Language) Return List Of Phrases That Do Not Exist
+			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>"en_us"));
+			$statement->execute(array(
+				':module' => $moduleShortName,
+				':isAdmin' => $isAdmin
+			));
+			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+			
+			$statement = $db->prepare('updatePhraseTextByLanguage','admin_languages',array('!lang!' => $languageShortName));
+			foreach($modulePhrases as $phrase => $text){
+				// If No English Source Found...Skip
+				if(!isset($existingModuleList[$phrase])){
+					$returnList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					continue;
+				}
+				$result = $statement->execute(array(
+					':phrase' => $phrase,
+					':text' => $text,
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
+				));
+				if($result == false) var_dump($statement->errorInfo());
+			}
+			
+			return $returnList;
+		break;
+		case 4:
+			$errorList=$newList=array();
+			// Add All Phrases Supplied That Have An English CounterPart
+			// Also Add Any Missing Phrases That Are Found In English But Not Here
+			$statement = $db->prepare('getPhrasesByModule','admin_languages',array("!lang!"=>"en_us"));
+			$statement->execute(array(
+				':module' => $moduleShortName,
+				':isAdmin' => $isAdmin
+			));
+			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+			
+			$statement = $db->prepare('updatePhraseTextByLanguage','admin_languages',array('!lang!' => $languageShortName));
+			foreach($modulePhrases as $phrase => $text){
+				// If No English Source Found...Skip
+				if(!isset($existingModuleList[$phrase])){
+					$errorList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					unset($existingModuleList[$phrase]);
+					continue;
+				}
+				$result = $statement->execute(array(
+					':phrase' => $phrase,
+					':text' => $text,
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
+				));
+				if($result == false) var_dump($statement->errorInfo());
+			}
+			// All The Remaining Existing Module Phrases Need To Be Added Into This Language Now
+			$insert = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>$languageShortName));
+			foreach($existingModuleList as $phrase => $text){
+				$text = $text[0]['text'];
+				$newList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+				$insert->execute(array(
+					':phrase' => $phrase,
+					':text' => $text,
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
+				));
+			}
+			return array($errorList,$newList);
 		break;
 	}
 }

@@ -24,8 +24,6 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 		)
 	);
 	
-	$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
-
 	if($firstInstall){
 		
 		$db->createTable('languages',$structures['languages'],false);
@@ -61,6 +59,8 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 				':isAdmin' => 1
 			));
 		}
+	}else{
+		$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
 	}
 }
 

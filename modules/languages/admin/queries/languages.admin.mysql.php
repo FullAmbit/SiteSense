@@ -87,6 +87,18 @@ function admin_languages_addQueries(){
 			WHERE
 				id = :id
 		',
+		'updatePhraseTextByLanguage' => '
+			UPDATE
+				!prefix!languages_phrases_!lang!
+			SET
+				text = :text
+			WHERE
+				phrase = :phrase
+				AND
+				module = :module
+				AND
+				isAdmin = :isAdmin
+		',
 		'deletePhrasesByModuleAndLanguage' => '
 			DELETE FROM 
 				!prefix!languages_phrases_!lang!
