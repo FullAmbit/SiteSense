@@ -35,7 +35,7 @@ function languages_admin_installphrases_build($data,$db){
 		
 		// Now Loop Through All Other Languages and only install phrases that DO NOT EXIST. This will keep phrases consistent between language tables.
 		$originalAction = $_POST['action'];
-		$_POST['action'] = 3;
+		$_POST['action'] = 1;
 		foreach($data->languageList as $languageItem){
 			if($languageItem['shortName'] == 'en_us') continue;
 			
@@ -49,9 +49,11 @@ function languages_admin_installphrases_build($data,$db){
 			$temp=array('languages' => 'languages','sidebars' => 'sidebars','modules' => 'modules');
 			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['languages'],$data->output['moduleShortName']['modules']);
 			$data->output['moduleShortName']=$temp+$data->output['moduleShortName'];
-			
+						
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
+				$coreUserPhrases=$userPhrases=$coreAdminPhrases=$adminPhrases=array();
 				$_POST['action'] = $originalAction;
+				
 				// For Each Module Now..Handle The English Phrases (User End AND Admin End)
 				$userEndTarget = 'modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php';
 				if(file_exists($userEndTarget)){
@@ -63,11 +65,12 @@ function languages_admin_installphrases_build($data,$db){
 						if(isset($userPhrases['core']) && is_array($userPhrases['core'])){
 							$coreUserPhrases = $userPhrases['core'];
 							unset($userPhrases['core']);
-							language_admin_savePhrases($data,$db,"en_us",'',$coreUserPhrases);
 						}
-						language_admin_savePhrases($data,$db,"en_us",$moduleName,$userPhrases);
 					}
 				}
+				
+				language_admin_savePhrases($data,$db,"en_us",'',$coreUserPhrases);
+				language_admin_savePhrases($data,$db,"en_us",$moduleName,$userPhrases);
 				
 				//--Admin Phrases
 				$adminEndTarget = 'modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php';
@@ -79,12 +82,13 @@ function languages_admin_installphrases_build($data,$db){
 						if(is_array($adminPhrases['core'])){
 							$coreAdminPhrases = $adminPhrases['core'];
 							unset($adminPhrases['core']);
-							language_admin_savePhrases($data,$db,"en_us",'',$coreAdminPhrases,TRUE);
 						}
-						
 						language_admin_savePhrases($data,$db,"en_us",$moduleName,$adminPhrases,TRUE);
 					}
 				}
+				
+				language_admin_savePhrases($data,$db,"en_us",'',$coreAdminPhrases,TRUE);
+				language_admin_savePhrases($data,$db,"en_us",$moduleName,$adminPhrases,TRUE);
 				
 				//---Now Loop Through All OTHER Languages and Install New Phrases
 				$_POST['action'] = 1;

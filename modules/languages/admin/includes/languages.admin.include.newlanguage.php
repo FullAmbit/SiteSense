@@ -57,7 +57,6 @@ function languages_admin_newlanguage_build($data,$db){
 		foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
 			$_POST['action'] = 4;
 			
-			
 			// Get Installer File And Install The Module (For This Language)
 			$installFile = 'modules/'.$moduleName.'/'.$moduleName.'.install.php';
 			if (file_exists($installFile)) {

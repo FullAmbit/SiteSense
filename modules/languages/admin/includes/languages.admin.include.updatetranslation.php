@@ -21,26 +21,35 @@ function languages_admin_updatetranslation_build($data,$db){
 	}
 	
 	if(isset($_POST['install'])){
-		$_POST['action'] = 3; // Update ONLY.
+		$_POST['action'] = 5; // Update ONLY Ones That Are Still Defaulted To English and Install Missing Phrases.
 		common_include($coreFileTarget);
 		$corePhraseFunc = 'languages_core_'.$languageItem['shortName'];
 		$coreLanguage = $corePhraseFunc();
-	
+			
 		// Save Admin & User-End Core Phrases
-		$data->output['userErrors']=$data->output['adminErrors']=array();
+		$data->output['userErrors']=$data->output['adminErrors']=$data->output['userNew']=$data->output['adminNew']=array();
 		
-		$data->output['userErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreLanguage['user_phrases']);
-		$data->output['adminErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreLanguage['admin_phrases'],TRUE);
-
+		list($userErrors,$userNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreLanguage['user_phrases']);
+		$data->output['userErrors'] += $userErrors;
+		$data->output['userNew'] += $userNew;
+				
+		
+		list($adminErrors,$adminNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreLanguage['admin_phrases'],TRUE);
+		$data->output['adminErrors'] += $adminErrors;
+		$data->output['adminNew'] += $adminNew;	
+				
 		// Now Are We Handling Modules??
 		if(isset($_POST['updateModules']) && $_POST['updateModules']=='1') {
 			// Move Langauges, Sidebars, and Modules To Head Of Array As They Have Priority
 			$temp=array('languages' => 'languages','sidebars' => 'sidebars','modules' => 'modules');
 			unset($data->output['moduleShortName']['sidebars'],$data->output['moduleShortName']['languages'],$data->output['moduleShortName']['modules']);
 			$data->output['moduleShortName']=$temp+$data->output['moduleShortName'];
-			
+						
 			foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
 				// For Each Module Now..Handle The English Phrases (User End AND Admin End)
+				$coreAdminPhrases=$coreUserPhrases=$userPhrases=$adminPhrases=array();
+				
+				//---User Phrases
 				$userEndTarget = 'modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.'.$languageItem['shortName'].'.php';
 				if(file_exists($userEndTarget)){
 					common_include($userEndTarget);
@@ -51,11 +60,17 @@ function languages_admin_updatetranslation_build($data,$db){
 						if(isset($userPhrases['core']) && is_array($userPhrases['core'])){
 							$coreUserPhrases = $userPhrases['core'];
 							unset($userPhrases['core']);
-							$data->output['userErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreUserPhrases);
 						}
-						$data->output['userErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],$moduleName,$userPhrases);
 					}
 				}
+				// Update Core User Phrases
+				list($userErrors,$userNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreUserPhrases);
+				$data->output['userErrors'] += $userErrors;
+				$data->output['userNew'] += $userNew;
+				// Update Module-Specific User Phrases
+				list($userErrors,$userNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],$moduleName,$userPhrases);
+				$data->output['userErrors'] += $userErrors;
+				$data->output['userNew'] += $userNew;
 				
 				//--Admin Phrases
 				$adminEndTarget = 'modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.'.$languageItem['shortName'].'.php';
@@ -67,14 +82,18 @@ function languages_admin_updatetranslation_build($data,$db){
 						if(is_array($adminPhrases['core'])){
 							$coreAdminPhrases = $adminPhrases['core'];
 							unset($adminPhrases['core']);
-							$data->output['adminErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreAdminPhrases,TRUE);
 						}
-						
-						$data->output['adminErrors'] += language_admin_savePhrases($data,$db,$languageItem['shortName'],$moduleName,$adminPhrases,TRUE);
 					}
 				}
+				// Update Core Admin Phrases
+				list($adminErrors,$adminNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],'',$coreAdminPhrases,TRUE);
+				$data->output['adminErrors'] += $adminErrors;
+				$data->output['adminNew'] += $adminNew;	
+				// Update Module-Specific Admin Phrases
+				list($adminErrors,$adminNew) = language_admin_savePhrases($data,$db,$languageItem['shortName'],$moduleName,$adminPhrases,TRUE);
+				$data->output['adminErrors'] += $adminErrors;
+				$data->output['adminNew'] += $adminNew;	
 			}
-			
 			$data->output['themeOverride'] = 'UpdateTranslationSuccess';
 		}
 	}

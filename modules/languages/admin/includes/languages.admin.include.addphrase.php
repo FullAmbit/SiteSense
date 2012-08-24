@@ -32,7 +32,7 @@ function languages_admin_addphrase_build($data,$db){
 			foreach($data->languageList as $languageItem){
 				$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageItem['shortName']));
 				$result = $statement->execute(array(
-					':isAdmin' => 0,
+					':isAdmin' => $data->output['phraseForm']->sendArray[':phrase'],
 					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 					':text' => (isset($data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']]{1})) ? $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']] : $data->output['phraseForm']->sendArray[':text_en_us'],
 					':module' => $data->output['phraseForm']->sendArray[':module']

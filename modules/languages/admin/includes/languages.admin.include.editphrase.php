@@ -6,38 +6,41 @@ function languages_admin_editphrase_build($data,$db){
 		$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
 			return;
 	}
-	// Get Language Item
-	$statement=$db->prepare('getLanguage','admin_languages');
-	$statement->execute(array(
-		':shortName' => $data->action[3]
-	));
-	if(($data->output['languageItem'] = $statement->fetch(PDO::FETCH_ASSOC))==FALSE){
-		$data->output['themeOverride'] = 'NotFound';
-		return;
-	}
-	// Get Phrase Item
-	$statement=$db->prepare('getPhraseByLanguageAndId','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
-	$statement->execute(array(
-		':id' => $data->action[4]
-	));
-	if(($data->output['phraseItem']=$statement->fetch(PDO::FETCH_ASSOC))==FALSE){
-		$data->output['themeOverride']='PhraseNotFound';
-		return;
-	}
 	
+	// Get The English Phrase
+	$statement=$db->prepare('getPhraseByLanguageAndId','admin_languages',array('!lang!'=>"en_us"));
+	$statement->execute(array(
+			':id' => $data->action[3]
+	));
+	$data->output['phraseItem']["en_us"]=$enPhraseItem=$statement->fetch(PDO::FETCH_ASSOC);	
+	// Get This Phrase For All Other Languages
+	foreach($data->languageList as $languageItem){
+		if($languageItem['shortName']=='en_us') continue;
+		// Get Phrase Item
+		$statement=$db->prepare('getPhraseByUniqueParams','admin_languages',array('!lang!'=>$languageItem['shortName']));
+		$statement->execute(array(
+			':module' => $enPhraseItem['module'],
+			':phrase' => $enPhraseItem['phrase'],
+			':isAdmin' => $enPhraseItem['isAdmin']
+		));
+		
+		$data->output['phraseItem'][$languageItem['shortName']] = $statement->fetch(PDO::FETCH_ASSOC);
+	}
+		
 	$data->output['phraseForm'] = new formHandler('phraseItem',$data,true);
 	if(isset($_POST['fromForm']) && $_POST['fromForm'] == $data->output['phraseForm']->fromForm){
 		if($data->output['phraseForm']->validateFromPost()){
 			// Populate Post Data
 			$data->output['phraseForm']->populateFromPostData();
 			// Check To See If Phrase Exists Already But Only If Different Than Before
-			if($data->output['phraseForm']->sendArray[':phrase'] !== $data->output['phraseItem']['phrase']){
-				$statement = $db->prepare('getPhraseByLanguageAndModule','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
-				$statement->execute(array(
-					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
-					':module' => $data->output['phraseForm']->sendArray[':module']
+			if($data->output['phraseForm']->sendArray[':phrase'] !== $enPhraseItem['phrase']){
+				$found = common_checkUniqueValueAcrossLanguages($data,$db,'languages_phrases','id',array(
+					'phrase' => $data->output['phraseForm']->sendArray[':phrase'],
+					'module' => $data->output['phraseForm']->sendArray[':module'],
+					'isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin']
 				));
-				if($statement->fetch() !== FALSE){
+
+				if($found){
 					// Throw Form Error, Phrase Taken.
 					$data->output['phraseForm']->error = true;
 					$data->output['phraseForm']->fields['phrase']['error'] = true;
@@ -45,15 +48,18 @@ function languages_admin_editphrase_build($data,$db){
 					return;
 				}
 			}
-			// Save To Database
-			$statement = $db->prepare('updatePhraseByLanguage','admin_languages',array('!lang!'=>$data->output['languageItem']['shortName']));
-			$result = $statement->execute(array(
-				':id' => $data->output['phraseItem']['id'],
-				':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
-				':text' => $data->output['phraseForm']->sendArray[':text'],
-				':module' => $data->output['phraseForm']->sendArray[':module'],
-				':isAdmin' => 0
-			));
+			// Save To Database (For Each Language)
+			foreach($data->languageList as $languageItem){
+				$statement = $db->prepare('updatePhraseByLanguage','admin_languages',array('!lang!'=>$languageItem['shortName']));
+				$result = $statement->execute(array(
+					':id' => $data->output['phraseItem'][$languageItem['shortName']]['id'],
+					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
+					':text' => $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']],
+					':module' => $data->output['phraseForm']->sendArray[':module'],
+					':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin']
+				));
+			}
+			
 			if($result){
 				$data->output['themeOverride'] = 'EditPhraseSuccess';
 			}else{

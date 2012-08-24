@@ -16,6 +16,7 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 			'isDefault'	 =>	SQR_boolean
 		),
 		'languages_phrases' => array(
+			'id'         => SQR_IDKey,
 	        'phrase'     => 'VARCHAR(255) NOT NULL',
 	        'text'       => 'TEXT NOT NULL',
 	        'module'     => SQR_moduleName,

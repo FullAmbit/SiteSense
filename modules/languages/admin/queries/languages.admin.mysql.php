@@ -136,5 +136,32 @@ function admin_languages_addQueries(){
 		'truncatePhrases' => '
 			TRUNCATE !prefix!languages_phrases_!lang!
 		',
+		'insertOrUpdatePhrase' => '
+			INSERT INTO 
+				!prefix!languages_phrases_!lang!
+				(phrase,text,module,isAdmin)
+			VALUES
+				(:phrase,:text,:module,:isAdmin)
+			ON DUPLICATE KEY
+				UPDATE
+					phrase = :phrase,
+					text = :text,
+					module = :module,
+					isAdmin = :isAdmin
+		',
+		'getPhraseByUniqueParams' => '
+			SELECT
+				*
+			FROM
+				!prefix!languages_phrases_!lang!
+			WHERE
+				phrase = :phrase
+				AND
+				module = :module
+				AND
+				isAdmin = :isAdmin
+			LIMIT
+				1
+		',
 	);
 }

@@ -53,7 +53,7 @@ function theme_languagesListPhrases($data){
 				<td>',$phraseItem['phrase'],'</td>
 				<td>',$phraseItem['text'],'</td>
 				<td>',($phraseItem['module'] == '') ? 'Global' : $phraseItem['module'],'</td>
-				<td><a href="',$data->linkRoot,'admin/languages/editPhrase/',$data->output['languageItem']['shortName'],'/',$phraseItem['id'],'">',$data->phrases['core']['actionModify'],'</a>
+				<td><a href="',$data->linkRoot,'admin/languages/editPhrase/',$phraseItem['id'],'">',$data->phrases['core']['actionModify'],'</a>
 				</td>
 			</tr>';
 	}
@@ -78,7 +78,7 @@ function theme_languagesAddPhrase($data){
 
 function theme_languagesEditPhrase($data){
 	if(isset($data->output['responseMessage'])) echo '<h2>',$data->output['responseMessage'],'</h2>';
-	$data->output['phraseForm']->caption = $data->phrases['languages']['captionEditPhrase'].' '.$data->output['phraseItem']['phrase'].' - '.$data->phrases['languages']['language'].': '.$data->output['languageItem']['name'];
+	$data->output['phraseForm']->caption = $data->phrases['languages']['captionEditPhrase'].' '.$data->output['phraseItem']['en_us']['phrase'];
 	$data->output['phraseForm']->build();
 }
 
