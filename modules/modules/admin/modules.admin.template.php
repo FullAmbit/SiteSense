@@ -83,7 +83,10 @@ function theme_modulesListTableRow($data,$module,$count) {
 		echo '<a href="', $data->linkRoot, 'admin/modules/disable/',$module['shortName'],'">',$data->phrases['core']['disable'],'</a>';
 	else
 		echo '<a href="', $data->linkRoot, 'admin/modules/enable/',$module['shortName'],'">',$data->phrases['core']['enable'],'</a>';
-	echo '<a href="',$data->linkRoot,'admin/modules/languages/',$module['id'],'">',$data->phrases['modules']['installLanguage'],'</a>';
+	echo '
+	<a href="',$data->linkRoot,'admin/modules/installPhrases/',$module['id'],'">Install Phrases</a>
+	<a href="',$data->linkRoot,'admin/modules/updateTranslations/',$module['id'],'">Update Translations</a>
+	';
 		switch($module['shortName']) {
 			case 'forms':
 				$sidebarsLink = 'admin/dynamic-forms/list/';
@@ -160,5 +163,63 @@ function theme_modulesLanguages($data){
 
 function theme_modulesLanguageSuccess($data){
 	echo $data->phrases['modules']['updateLanguageSuccessMessage'],'&nbsp;',ucwords($data->output['moduleItem']['name']);
+}
+
+function theme_modulesInstallPhrases($data){
+	echo
+	'
+	<form name="updateLanguage" action="" method="post">
+		<caption>Install English Phrases For The Module ',$data->output['moduleItem']['name'],'</caption><br />
+		',$data->phrases['modules']['phraseAction'],'
+		<select name="action">
+			<option value="0">',$data->phrases['modules']['updateActionClear'],'</option>
+			<option value="1" selected="selected">',$data->phrases['modules']['updateActionNew'],'</option>
+			<option value="2">',$data->phrases['modules']['updateActionAll'],'</option>
+		</select><br />
+		<input type="submit" name="install" value="Install" />
+	</form>';
+}
+
+function theme_modulesUpdateTranslationSuccess($data){
+	$list = array('userErrors','adminErrors');
+	$error = FALSE;
+	foreach($list as $index => $varName){
+		if(isset($data->output[$varName]) && !empty($data->output[$varName])){
+			$error = TRUE;
+			break;
+		}
+	}
+	if($error == FALSE){
+		echo '<h2>The translation went smoothly and all phrases were updated.</h2>';
+	}else{
+		echo '<h2>Existing phrases were updated, however some phrases were found without an English counterpart. Please add the following phrases to English first.</h2>
+		<br />';
+		
+		if(isset($data->output['userErrors']) && !empty($data->output['userErrors'])){
+			echo '<h1>User Phrases</h1>';
+			foreach($data->output['userErrors'] as $module => $phraseList){
+				echo '
+					<u><b>Module: '.$module.'</b></u>
+					<ul>';
+				foreach($phraseList as $index => $phrase){
+					echo '<li style="margin-left:20px;">'.$phrase.'</li>';
+				}
+				echo '</ul>';
+			}
+		}
+		
+		if(isset($data->output['adminErrors']) && !empty($data->output['adminErrors'])){
+			echo '<h1>Admin Phrases</h1>';
+			foreach($data->output['adminErrors'] as $module => $phraseList){
+				echo '
+					<u><b>Module: '.$module.'</b></u>
+					<ul>';
+				foreach($phraseList as $index => $phrase){
+					echo '<li style="margin-left:20px;">'.$phrase.'</li>';
+				}
+				echo '</ul>';
+			}
+		}
+	}
 }
 ?>
