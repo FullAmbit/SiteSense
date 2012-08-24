@@ -550,6 +550,10 @@
     <li><b>Modify</b><br>
       Manage the sidebars for the selected form
     </li>
+    <li><b>Update Translations</b><br>
+      Updates translations for the modules in all languages except for English.
+    <li><b>Install Phrases</b><br>
+      Adds new phrases from the English language pack
   </ul>
 
 <hr />
@@ -605,7 +609,7 @@
 <hr />
 
 <h3 id="languages">11. Languages</h3>
-<p>Languages allow support for your international users. Phrases allow you to output static content in any language you have installed. They can be specific to a module or global throughout the site. Modules that have language support enabled will also have separate tables to contain language-specific input.</p>
+<p>Languages allow support for your international users. Phrases allow you to output static content in any language you have installed. They can be specific to a module or global throughout the site. Each phrase must exist for each language. To enforce this, all phrases that do not first exist in English, cannot be modified or added. Thus, English is your base language. Modules that have language support enabled will also have separate tables to contain language-specific input.</p>
 	<h4>Properties</h4>
 	<ul>
 		<li><b>Default</b><br>
@@ -617,18 +621,17 @@
 		<li><b>Make Default</b><br>
 		 Sets the language as the default for viewers on your site.
 		</li>
-		<li><b>Update From Filesystem</b><br>
-		 Updates the phrases for a language and can reinstall languages for all modules.
+		<li><b>Install Phrases</b><br>
+		 This option is only available to the English language. Depending on the action you take, it will either add/update new/existing phrases for the English language. The script will also check to see if each phrases exists throughout the rest of your languages. If it is not found, it will add the phrase and default it to the English value.
 		</li>
+		<li><b>Update Translations</b><br>
+		This option runs for a specific installed language, except for English. It will go through the phrases available to the language file-system, and add/update them accordingly. However, it will only work on phrases that have an English counterpart. In addition, phrases will only be UPDATED if they are set to their English default value. This prevents the script from removing any changes you might've manually made.
 	</ul>
-	<h4 id="languages-entity-update">11.1 Update From FileSystem</h4>
+	<h4 id="languages-entity-update">11.1 Update Translations</h4>
 	<h5>Properties</h5>
 	<ul>
 		<li><b>Update Modules</b><br>
-		 Setting this will also reinstall the module for the language you specify (provided it has language support) and any additional phrase packs.
-		</li>
-		<li><b>Action</b><br>
-		 Choose how to handle the installation of phrases. You can clear all existing phrases, only update existing ones, or update existing ones and install new phrases.	
+		 Setting this will also process phrases specific to your modules.
 		</li>
 	</ul>
 	
@@ -637,10 +640,10 @@
 	<h5>Controls</h5>
 		<ul>
 			<li><b>Add A Phrase</b><br>
-			 Add a new phrase for your language. It is suggested you add the same phrase for each language, to keep the website consistent.
+			 Add a new phrase. It will automatically be added to each language, however you need to provide at least an English value for the phrase. The phrase must be unique to the module and whether it belongs on the administrator panel, or the user end.
 			</li>
 			<li><b>Modify</b><br>
-			 Edit an existing phrase.
+			 Edit an existing phrase. Again, you will need to provide at least an English value for the phrase.
 			</li>
 		</ul>
 	<h5>Properties</h5>
@@ -653,6 +656,8 @@
 		</li>
 		<li><b>Module</b><br>
 		 The module to which the phrase belongs. Phrases can also be global and will be loaded on every page of the website.
+		<li><b>Admin Phrase</b><br>
+		 Phrases can belong on either the administrator panel or the user end. This is also a unique parameter for the phrase.
 	</ul>
 	
 <hr />
