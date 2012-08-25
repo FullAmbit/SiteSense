@@ -34,7 +34,7 @@ function admin_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-	if (checkPermission('access','core',$data)) {		
+	if (checkPermission('access','core',$data)) {
 		if(empty($data->action[1])) {
 			$data->action[1] = 'dashboard';
 		}
@@ -55,7 +55,7 @@ function admin_buildContent($data,$db) {
 			$objectName='plugin_'.$plugin['name'];
 			$data->plugins[$plugin['name']]=new $objectName;
 		}
-				
+
 		// Get Phrases
 		$statement = $db->prepare('getPhrasesByModule', 'common');
 		// Core Phraes
@@ -66,7 +66,7 @@ function admin_buildContent($data,$db) {
 			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$data->phrases['core'][$row['phrase']] = $row['text'];
 		}
-		
+
 		// Module-Specific Phrases
 		$statement->execute(array(
 				':module' => $data->action[1],
@@ -104,7 +104,18 @@ function admin_buildContent($data,$db) {
         if (function_exists($buildContent)) {
             $buildContent($data,$db);
 		}
-	}
+	} else {
+        // Get Phrases
+        $statement = $db->prepare('getPhrasesByModule', 'common');
+        // Core Phraes
+        $statement->execute(array(
+            ':module' => '',
+            ':isAdmin' => 0
+        ));
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $data->phrases['core'][$row['phrase']] = $row['text'];
+        }
+    }
 }
 
 function admin_content($data) {
