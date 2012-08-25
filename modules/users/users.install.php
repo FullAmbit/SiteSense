@@ -227,7 +227,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':moduleHook' => 'users',
 				':apiFieldToMapTo' => NULL,
 				':sortOrder' => 5,
-				':isEmail' => 0,
+				':isEmail' => 1,
 				':compareTo' => 0
 			),
 			'timeZone' => array(
