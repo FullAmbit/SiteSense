@@ -3,6 +3,7 @@
 function languages_core_en_us(){
 
 	$userPhrases                   = array(
+        'adminHeading'               => 'Control Panel',
 	);
 
 	$adminPhrases                  = array(
