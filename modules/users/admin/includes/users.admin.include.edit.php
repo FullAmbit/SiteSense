@@ -47,13 +47,6 @@ function populateTimeZones($data) {
         }
     }
 }
-function getPermissions($data,$db) {
-    $targetFunction='loadPermissions';
-    // Get core permissions
-    if (function_exists($targetFunction)) {
-        $targetFunction($data);
-    }
-}
 function checkUserName($name,$db) {
 	$statement=$db->prepare('checkUserName','admin_users');
 	$statement->execute(array(
@@ -108,8 +101,10 @@ function admin_usersBuild($data,$db) {
     ));
     $data->output['userGroupList']=$statement->fetchAll();
 
-    // Load core permissions
-    getPermissions($data,$db);
+    // Add core control panel access permission
+    $data->permissions['core']=array(
+        'access'        => 'Control panel access'
+    );
     
     // Get User Permissions
     $statement=$db->prepare('getUserPermissionsByUserID');

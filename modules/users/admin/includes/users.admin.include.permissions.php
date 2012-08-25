@@ -24,14 +24,6 @@
 */
 common_include('libraries/forms.php');
 
-function getPermissions($data,$db) {
-    $targetFunction='loadPermissions';
-    // Get core permissions
-    if (function_exists($targetFunction)) {
-        $targetFunction($data);
-    }
-}
-
 function admin_usersBuild($data,$db) {
 	//permission check for users permissions
 	if(!checkPermission('groups','users',$data)) {
@@ -44,7 +36,10 @@ function admin_usersBuild($data,$db) {
         $data->output['groupList']=$statement->fetchAll();
     } elseif($data->action[3]=='group') {
         if($data->action[4]=='add') { //Add a new Group
-            getPermissions($data,$db);
+            // Add core control panel access permission
+            $data->permissions['core']=array(
+                'access'        => 'Control panel access'
+            );
             $data->output['permissionGroup']=new formHandler('permissionGroup',$data,true);
             
             // Add Group Form Submitted
@@ -104,7 +99,10 @@ function admin_usersBuild($data,$db) {
                 $data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
                 return;
             }
-            getPermissions($data,$db);
+            // Add core control panel access permission
+            $data->permissions['core']=array(
+                'access'        => 'Control panel access'
+            );
             // Check To See If The Group Exists
             $statement=$db->query('getAllGroups','admin_users');
             $groupList=$statement->fetchAll(PDO::FETCH_ASSOC);

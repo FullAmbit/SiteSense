@@ -3,7 +3,12 @@
 function languages_plugins_admin_en_us(){
 	return array(
 		'core' => array(
-			'plugins'                        => 'Plugins'
+            'plugins'                        => 'Plugins',
+            'permission_plugins_access'      => 'Plugins access',
+            'permission_plugins_edit'        => 'Edit plugins',
+            'permission_plugins_disable'     => 'Disable plugins',
+            'permission_plugins_enable'      => 'Enable plugins',
+            'permission_plugins_list'        => 'List plugins'
 		),
 		'installerOutput'                  => 'Installer Output',
 		'installSuccess'                   => 'Install Success!',

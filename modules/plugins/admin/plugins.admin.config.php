@@ -23,6 +23,13 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function plugins_admin_config($data,$db){
+    $data->permissions['plugins']=array(
+        'access'               => $data->phrases['core']['permission_plugins_access'],
+        'edit'                 => $data->phrases['core']['permission_plugins_edit'],
+        'disable'              => $data->phrases['core']['permission_plugins_disable'],
+        'enable'               => $data->phrases['core']['permission_plugins_enable'],
+        'list'                 => $data->phrases['core']['permission_plugins_list']
+    );
 	if(checkPermission('access','plugins',$data)) {
 		$data->admin['menu'][] = array(
 			'category' => $data->phrases['core']['siteManagement'],

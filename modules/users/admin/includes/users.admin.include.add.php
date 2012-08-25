@@ -50,13 +50,7 @@ function populateTimeZones($data) {
 	}
 }
 // End Credit
-function getPermissions($data, $db) {
-	$targetFunction='loadPermissions';
-	// Get core permissions
-	if (function_exists($targetFunction)) {
-		$targetFunction($data);
-	}
-}
+
 function checkUserName($name, $db) {
 	$statement=$db->prepare('checkUserName', 'admin_users');
 	$statement->execute(array(
@@ -78,8 +72,10 @@ function admin_usersBuild($data, $db) {
 	$data->output['groupList']=$statement->fetchAll();
 	sort($data->output['groupList']);
 
-	// Load core permissions
-	getPermissions($data, $db);
+	// Add core control panel access permission
+    $data->permissions['core']=array(
+        'access'        => 'Control panel access'
+    );
 	// Poulate Time Zone List
 	populateTimeZones($data);
 	$data->output['userForm'] = $form = new formHandler('addEdit', $data, true);
