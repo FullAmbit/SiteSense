@@ -34,6 +34,7 @@ function modules_install($db,$drop=false,$firstInstall=false,$lang="en_us") {
             'id'          => SQR_IDKey,
             'name'        => SQR_name,
             'shortName'   => SQR_shortName,
+			'version'     => 'varchar(128) NOT NULL DEFAULT \'0.0\'',
             'enabled'     => SQR_boolean
         ),
         'module_sidebars' => array(

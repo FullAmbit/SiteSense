@@ -63,6 +63,7 @@ function theme_modulesListTableHead($data) {
 			<tr>
 				<th>',$data->phrases['core']['name'],'</th>
 				<th>',$data->phrases['core']['shortName'],'</th>
+				<th>',$data->phrases['core']['version'],'</th>
 				<th>',$data->phrases['core']['enabled'],'</th>
 				<th>',$data->phrases['core']['controls'],'</th>
 			</tr>
@@ -72,10 +73,14 @@ function theme_modulesListNoModules() {
 	echo '<tr><td colspan="4">',$data->phrases['modules']['noModulesExist'],'</tr></td>';
 }
 function theme_modulesListTableRow($data,$module,$count) {
+	if ($module['version']=='0.0') {
+		$module['version']='not specified';
+	}
 	echo '
 			<tr class="',($count%2==0 ? 'odd' : 'even'),'">
 				<td>', $module['name'], '</td>
 				<td>', $module['shortName'], '</td>
+				<td>', $module['version'], '</td>
 				<td>', (($module['enabled'] == 1) ? 'yes' : 'no'), '</td> 
 				<td class="buttonList">';
 				

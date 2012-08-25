@@ -5,6 +5,7 @@ function languages_modules_admin_en_us(){
 		'core' => array(
 			'modules'                    => 'Modules',
 			'enabled'                    => 'Enabled',
+			'version'                    => 'Version',
 			'permission_modules_access'  => 'Access Modules',
 			'permission_modules_disable' => 'Disable Module',
 			'permission_modules_edit'    => 'Edit Module',

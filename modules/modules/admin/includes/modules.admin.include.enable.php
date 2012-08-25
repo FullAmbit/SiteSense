@@ -62,11 +62,15 @@ function admin_modulesBuild($data,$db){
 			} else {
 				$moduleSettings=$targetFunction($db);
 				// Update this module in the database
+				if (!isset($moduleSettings['version'])) {
+					$moduleSettings['version'] = '0.0';
+				}
 				$statement=$db->prepare('updateModule','admin_modules');
 				$statement->execute(
 					array(
 						':name' => $moduleSettings['name'],
 						':shortName' => $moduleSettings['shortName'],
+						':version' => $moduleSettings['version'],
 						':enabled' => 1
 					)
 				);

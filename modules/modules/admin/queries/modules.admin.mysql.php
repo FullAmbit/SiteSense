@@ -92,7 +92,8 @@ function admin_modules_addQueries() {
 			UPDATE !prefix!modules
 				SET
 					name = :name,
-					enabled = :enabled
+					enabled = :enabled,
+					version = :version
 				WHERE
 					shortName = :shortName
 		',
