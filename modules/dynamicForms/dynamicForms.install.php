@@ -51,7 +51,7 @@ function dynamicForms_install($db, $drop=false, $firstInstall=false, $lang='en_u
 		'form_fields' => array(
 			'id'                   => SQR_IDKey,
 			'form'                 => SQR_ID,
-			'shortName'            => SQR_shortName,.' DEFAULT \'\'',
+			'shortName'            => SQR_shortName . ' DEFAULT \'\'',
 			'name'                 => 'VARCHAR(31) NOT NULL',
 			'type'                 => 'VARCHAR(15) NOT NULL',
 			'description'          => 'VARCHAR(255) NOT NULL',
