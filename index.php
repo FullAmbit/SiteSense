@@ -325,12 +325,12 @@ final class sitesense {
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
 		// If a logged in user who is not banned is trying to logout...
-		if (($this->currentPage=='users') && ($this->action[1] == 'logout') && (!empty($_COOKIE[$userCookieName]))) {
+		if (($this->action[0]=='users') && ($this->action[1] == 'logout') && (!empty($_COOKIE[$userCookieName]))) {
 			setcookie($userCookieName, '', 0, $this->linkHome);
 			$statement=$this->db->prepare('logoutSession');
 			$statement->execute(array(
-					':sessionID' => $_COOKIE[$userCookieName]
-				));
+				':sessionID' => $_COOKIE[$userCookieName]
+		    ));
 		} else if (!empty($_COOKIE[$userCookieName])) { // User doing anything else besides trying to logout
 				// Check to see if the user's session is expired
 				$userCookieValue=$_COOKIE[$userCookieName];
@@ -339,18 +339,17 @@ final class sitesense {
 				// Pull session record if still present after purge
 				$statement=$this->db->prepare('getSessionById');
 				$statement->execute(array(
-						':sessionId' => $userCookieValue
-					));
+					':sessionId' => $userCookieValue
+				));
 				if ($session=$statement->fetch(PDO::FETCH_ASSOC)) { // User's session has not expired
 					// Session IP and userAgent match user's IP and userAgent
 					if (($session['ipAddress']==$_SERVER['REMOTE_ADDR']) && ($session['userAgent']==$_SERVER['HTTP_USER_AGENT'])) {
 						// Pull user info
 						$statement=$this->db->prepare('pullUserInfoById');
 						$statement->execute(array(
-								':userId' => $session['userId']
-							));
+							':userId' => $session['userId']
+						));
 						if ($user=$statement->fetch()) {
-
 							$this->user=$user;
 							// Set User TimeZone
 							if (!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {

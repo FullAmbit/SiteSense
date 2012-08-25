@@ -311,7 +311,6 @@ function users_buildContent($data,$db) {
 	}
 }
 function users_content($data){
-	$data->loadModuleTemplate('users');
 	switch($data->action[1]){
 		case 'edit':
 			if(isset($data->output['savedOkMessage'])) {
@@ -330,7 +329,6 @@ function users_content($data){
             theme_contentBoxFooter();
         break;
         case 'logout':
-            common_redirect_local($data, '');
         break;
         case 'register':
         	if ($data->output['showForm']) {

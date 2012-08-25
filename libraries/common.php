@@ -439,21 +439,19 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	return FALSE;
 }
 
-function printFieldValue($fieldValue) {
-	return isset($fieldValue) ? $fieldValue : '';
-}
-
-function hyphenToCamel($str,$ucfirst=false) {
-    $parts=explode('-',$str);
-    $parts=$parts ? array_map('ucfirst',$parts):array($str);
-    $parts[0]=$ucfirst ? ucfirst($parts[0]):lcfirst($parts[0]);
-    return implode('',$parts);
+function hyphenToCamel($str,$capitalizeFirstCharacter=false) {
+    $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+    if (!$capitalizeFirstCharacter) {
+        $str[0] = strtolower($str[0]);
+    }
+    return $str;
 }
 
 function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
 	$time = ($time == NULL) ? time() : $time;
 	return gmdate($format,$time);
 }
+
 function common_timeDiff($start,$end) {
 		$diff=$end-$start;
 		$hrs=0;
