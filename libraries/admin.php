@@ -23,9 +23,9 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 define('ADMIN_SHOWPERPAGE',16);
-require_once('libraries/admin.common.php');
+common_include('libraries/admin.common.php');
+
 function admin_buildContent($data,$db) {
-	$db->loadModuleQueries('admin',true);
 	//Preload default values into $data->output:
 	$defaults = array(
 		'pagesError' => false,
@@ -93,10 +93,8 @@ function admin_buildContent($data,$db) {
 			common_include($fileName);
 			$strFind=array('.config.php','.admin');
 			$targetName=substr(strrchr(str_replace($strFind,'',$fileName),'/'),1);
-			$targetName=hyphenToCamel($targetName);
 			if(!isset($data->output['moduleShortName'][$targetName])) continue;
 			$targetFunction=$targetName.'_admin_config';
-			
 			if (function_exists($targetFunction)) {
 				$targetFunction($data,$db);
 			}

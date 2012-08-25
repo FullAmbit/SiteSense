@@ -439,14 +439,6 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	return FALSE;
 }
 
-function hyphenToCamel($str,$capitalizeFirstCharacter=false) {
-    $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $str)));
-    if (!$capitalizeFirstCharacter) {
-        $str[0] = strtolower($str[0]);
-    }
-    return $str;
-}
-
 function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
 	$time = ($time == NULL) ? time() : $time;
 	return gmdate($format,$time);
