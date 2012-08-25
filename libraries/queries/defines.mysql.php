@@ -16,7 +16,7 @@
 	define('SQR_side',         'VARCHAR(5) NOT NULL');
 	define('SQR_sortOrder',    'INT UNSIGNED NOT NULL');
 	define('SQR_time',         'DATETIME NOT NULL');
-	// Only one TIMESTAMP column per table supported by MySQL
+	// Only one default TIMESTAMP column per table supported by MySQL
 	define('SQR_lastModified', 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
 	// Only use SQR_added if the table doesn't require a SQR_lastModified
 	define('SQR_added',        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP');

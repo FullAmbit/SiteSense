@@ -24,17 +24,25 @@
 */
 
 function dashboard_admin_buildContent($data,$db) {
+	//$url = 'http://localhost/sitesense.org/version/'; // base url for version 
+	$url = 'https://sitesense.org/dev/version/'; // base url for version 
 	// modules versions contact
-	$data->output['result']['module_updates']=array();
 	$statement = $db->prepare('getEnabledModules','admin_modules'); // modules don't register versions until they're enabled, so this function is borderline useless if you get every module
 	$statement->execute();
 	$modules = $statement->fetchAll();
-	$module_query = array();
+	$moduleQuery = array();
 	foreach ($modules as $module) {
-		$module_query[$module['shortName']] = $module['version'];
+		$moduleQuery[$module['shortName']] = $module['version'];
 	}
-	$module_query = http_build_query(array('modules'=>$module_query));
-	
+	$moduleQuery = http_build_query(array('modules'=>$moduleQuery));
+	$moduleQuery = rawurldecode($moduleQuery);
+	$moduleUrl = $url . 'modules?' . $moduleQuery;
+	$ch = curl_init($moduleUrl);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$data->output['moduleUpdates'] = curl_exec($ch);
+	$data->output['moduleUpdates'] = json_decode($data->output['moduleUpdates'],TRUE);
+
 	// sitesense version contact
     $info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');
@@ -73,7 +81,6 @@ function dashboard_admin_buildContent($data,$db) {
 	</table>';
 	$data->output['pageTitle']='About This CMS -';
 	//-----Call Home-----//
-	$url = 'https://www.sitesense.org/dev/version/';
 	$field = array(
 		'version' => $data->settings['version'],
 		'host' => $data->domainName . $data->linkRoot,
@@ -128,5 +135,15 @@ function dashboard_admin_content($data) {
 	}
 	
 	theme_welcomeMessage($data,$notification);
+	
+	if (count($data->output['moduleUpdates'])>0) {
+		theme_dashboardUpdateList($data);
+		foreach ($data->output['moduleUpdates'] as $moduleUpdate) {
+			theme_dashboardUpdateListRow($data,$moduleUpdate);
+		}
+		theme_dashboardUpdateListFoot();
+	}
+	
+	theme_dashboardFoot();
 }
 ?>

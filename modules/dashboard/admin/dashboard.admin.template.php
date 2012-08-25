@@ -30,7 +30,35 @@ function theme_welcomeMessage($data,$notification) {
 			<p>
 				',$data->phrases['dashboard']['welcomeMessage'],'
 			</p>
-		<!-- .aboutBox --></div>
+		</div>
 		';
+}
+function theme_dashboardUpdateList($data) {
+	echo '<table class="modulesList" style="width:70%;">
+			<caption>',$data->phrases['dashboard']['updatesAvailable'],'</caption>
+			<thead>
+				<tr>
+					<th class="name">',$data->phrases['dashboard']['module'],'</th>
+					<th>',$data->phrases['dashboard']['oldVersion'],'</th>
+					<th>',$data->phrases['dashboard']['newVersion'],'</th>
+					<th>',$data->phrases['dashboard']['updateNow'],'</th>
+				</tr>
+			</thead><tbody>
+	';
+}
+function theme_dashboardUpdateListRow($data,$moduleUpdate) {
+	echo '<tr>
+			<td class="name">',$moduleUpdate['name'],' (',$moduleUpdate['shortName'],')</td>
+			<td>',$moduleUpdate['oldVersion'],'</td>
+			<td>',$moduleUpdate['newVersion'],'</td>
+			<td class="buttonList"><a href="',$data->linkRoot,'admin/modules/update/',$moduleUpdate['shortName'],'">',$data->phrases['dashboard']['updateNow'],'</a></td>
+		</tr>';
+}
+function theme_dashboardUpdateListFoot() {
+	echo '</tbody>
+		</table>
+	';
+}
+function theme_dashboardFoot() {
 }
 ?>
