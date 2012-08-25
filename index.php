@@ -773,29 +773,19 @@ final class sitesense {
 			}
 		}
 
-		// Is this an AJAX request?
-		if($this->currentPage == 'ajax'){
-			$content=$this->module['name'].'_content';
-			$content($this);
+        theme_header($this);
+        $content=$this->module['name'].'_content';
+        if ($this->currentPage=='admin') {
+            $content='admin_content';
+        }
+        $content($this);
 
-			if (!function_exists('theme_leftSidebar')) $this->loadModuleTemplate('sidebars');
-			theme_leftSidebar($this);
-			theme_rightSidebar($this);
-		}else {
-			theme_header($this);
-			$content=$this->module['name'].'_content';
-			if ($this->currentPage=='admin') {
-				$content='admin_content';
-			}
-			$content($this);
-
-			if (!function_exists('theme_leftSidebar')) {
-				$this->loadModuleTemplate('sidebars');
-			}
-			theme_leftSidebar($this);
-			theme_rightSidebar($this);
-			theme_footer($this);
-		}
+        if (!function_exists('theme_leftSidebar')) {
+            $this->loadModuleTemplate('sidebars');
+        }
+        theme_leftSidebar($this);
+        theme_rightSidebar($this);
+        theme_footer($this);
 	} /* __construct */
 
 	//Anonymous Function Fix - adds support below 5.3
