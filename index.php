@@ -788,11 +788,6 @@ final class sitesense {
         theme_footer($this);
 	} /* __construct */
 
-	//Anonymous Function Fix - adds support below 5.3
-	public function arrayInterrater($item) {
-		return $item['display'];
-	}
-
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
 		$defaultThemeInclude='themes/default/'.$module.'.template.php';
