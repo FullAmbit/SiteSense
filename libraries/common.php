@@ -440,7 +440,7 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 }
 
 function hyphenToCamel($str,$capitalizeFirstCharacter=false) {
-    $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+    $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $str)));
     if (!$capitalizeFirstCharacter) {
         $str[0] = strtolower($str[0]);
     }
