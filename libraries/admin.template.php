@@ -24,6 +24,9 @@
 */
 function theme_header($data) {
 	$data->admin['linkRoot']=$data->linkHome.'admin/';
+	if (empty($data->phrases['core']['adminHeading'])) {
+		$data->phrases['core']['adminHeading'] = 'Admin';
+	}
 	echo'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html
@@ -74,7 +77,7 @@ echo '
 				</select>
 			</form>';
 		echo '
-		<a href="',$data->linkRoot,'logout">Logout</a>
+		<a href="',$data->linkRoot,'users/logout">Logout</a>
 		You are currently logged in as <b>',$data->user['name'],'</b>
 	</div>';
 	}

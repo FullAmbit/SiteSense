@@ -36,16 +36,13 @@ function admin_buildContent($data,$db) {
 	$data->output = array_merge($defaults, $data->output);
 	if (checkPermission('access','core',$data)) {		
 		if(empty($data->action[1])) {
-			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
-			$moduleQuery->execute(array(':shortName' => 'dashboard'));
-			$module=$moduleQuery->fetch(PDO::FETCH_ASSOC);
-		} else {
-			$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
-			$moduleQuery->execute(array(':shortName' => $data->action[1]));
-			$module=$moduleQuery->fetch(PDO::FETCH_ASSOC);
-			if($module==FALSE){
-				common_redirect($data->linkRoot.'admin');
-			}
+			$data->action[1] = 'dashboard';
+		}
+		$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
+		$moduleQuery->execute(array(':shortName' => $data->action[1]));
+		$module=$moduleQuery->fetch(PDO::FETCH_ASSOC);
+		if($module==FALSE){
+			common_redirect($data->linkRoot.'admin');
 		}
 		// Get the plugins for this module
 		$statement= $db->prepare('getEnabledPluginsByModule','common');

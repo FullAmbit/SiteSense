@@ -24,6 +24,18 @@
 */
 
 function dashboard_admin_buildContent($data,$db) {
+	// modules versions contact
+	$data->output['result']['module_updates']=array();
+	$statement = $db->prepare('getEnabledModules','admin_modules'); // modules don't register versions until they're enabled, so this function is borderline useless if you get every module
+	$statement->execute();
+	$modules = $statement->fetchAll();
+	$module_query = array();
+	foreach ($modules as $module) {
+		$module_query[$module['shortName']] = $module['version'];
+	}
+	$module_query = http_build_query(array('modules'=>$module_query));
+	
+	// sitesense version contact
     $info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');
 	$info['Server Signature']=$_SERVER['SERVER_SIGNATURE'];
@@ -38,7 +50,7 @@ function dashboard_admin_buildContent($data,$db) {
 	$info['Host OS']=PHP_OS;
 	$data->output['secondSidebar']='
 	<table class="sysInfo">
-		<caption>System kuhuhkuhkhku</caption>
+		<caption>System Info</caption>
 		';
 	foreach ($info as $title => $value) {
 		if (is_array($value)) {
@@ -109,10 +121,6 @@ function dashboard_admin_content($data) {
 		// Newer Version Available
 		case '2':
 			$notification = 'Notice: There is a newer version available!';
-		break;
-		// You Got The Latest
-		case '3':
-			$notification = '';
 		break;
 		default:
 			$notification = '';
