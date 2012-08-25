@@ -164,7 +164,7 @@ function admin_dynamicFormsBuild($data, $db) {
 					<h2>'.$data->phrases['dynamic-forms']['saveFormSuccessHeading'].'</h2>
 					<div class="panel buttonList">
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/add">
-							'.$data->phrases['dynamic-forms']['addForm'].'
+							'.$data->phrases['dynamic-forms']['newForm'].'
 						</a>
 						<a href="'.$data->linkRoot.'admin/'.$data->output['moduleShortName']['dynamicForms'].'/list/">
 							'.$data->phrases['dynamic-forms']['returnToForms'].'

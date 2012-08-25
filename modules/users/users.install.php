@@ -160,7 +160,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 			':topLevel' => 1,
 			':eMail' => '',
 			':submitTitle' => 'Register Now',
-			':api' => NULL
+			':api' => 0
 		));
 		$formId = $db->lastInsertId();
 		// Create Fields
