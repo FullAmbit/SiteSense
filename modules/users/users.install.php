@@ -162,10 +162,11 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 			':submitTitle' => 'Register Now',
 			':api' => NULL
 		));
+		$formId = $db->lastInsertId();
 		// Create Fields
 		$fields = array(
 			'username' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'Username',
 				':type' => 'textbox',
 				':description' => '',
@@ -178,7 +179,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':compareTo' => 0
 			),
 			'password' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'Password',
 				':type' => 'password',
 				':description' => '',
@@ -191,7 +192,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':compareTo' => 0
 			),
 			'firstName' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'First Name',
 				':type' => 'textbox',
 				':description' => '',
@@ -204,7 +205,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':compareTo' => 0
 			),
 			'lastName' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'Last Name',
 				':type' => 'textbox',
 				':description' => '',
@@ -217,7 +218,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':compareTo' => 0
 			),
 			'contactEMail' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'Contact EMail',
 				':type' => 'textbox',
 				':description' => '',
@@ -230,7 +231,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 				':compareTo' => 0
 			),
 			'timeZone' => array(
-				':form' => 1,
+				':form' => $formId,
 				':name' => 'Time Zone',
 				':type' => 'timezone',
 				':description' => '',
