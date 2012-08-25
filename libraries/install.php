@@ -255,38 +255,6 @@ if (
         );
     }
 
-    // Install plugins
-    if($drop) {
-        $data->dropTable('plugins');
-        $data->dropTable('plugins_modules');
-    }
-    $data->createTable('plugins',$structures['plugins'],false);
-    $data->createTable('plugins_modules',$structures['plugins_modules'],false);
-    // Get Plugins That Have Yet To Be Installed
-    $dirs=scandir('plugins');
-    foreach($dirs as $dir) {
-        if(strpos($dir,'.')) continue;
-        // Include the install file for this plugin
-        if(file_exists('plugins/'.$dir.'/install.php'))
-            common_include('plugins/'.$dir.'/install.php');
-        // Get the plugin's settings
-        $targetFunction=$dir.'_settings';
-        if(function_exists($targetFunction)) {
-            $settings=$targetFunction();
-            // Run the plugin installation procedure
-            $targetFunction=$dir.'_install';
-            if(function_exists($targetFunction)) {
-                $targetFunction($data,$data);
-                // Add this plugin to the database
-                $statement=$data->prepare('addPlugin','installer');
-                $statement->execute(array(
-	                ':pluginName' => $dir,
-	                ':isCDN'      => isset($settings['isCDN']) ? $settings['isCDN'] : '0',
-	                ':isEditor'   => isset($settings['isEditor']) ? $settings['isEditor'] : '0'
-                ));
-            }
-        }
-    }
     // Set up default permission groups
     $defaultPermissionGroups=array(
 		'Writer'    => array(

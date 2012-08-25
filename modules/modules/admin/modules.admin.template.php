@@ -23,9 +23,6 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function theme_modulesSidebarsTableHead($data) {
-	/*echo '<pre>';
-	var_dump($data);
-	echo '</pre>';*/
 	echo '
 		<table class="sidebarList">
 			<caption>',$data->phrases['modules']['manageSidebarsHeading'],'&nbsp;"',ucfirst($data->output['module']['name']),'"</caption>

@@ -34,6 +34,9 @@ function admin_plugins_addQueries() {
 		'newPlugin' => '
 			INSERT INTO !prefix!plugins (name,enabled,isCDN,isEditor) VALUES (:name,:enabled,:isCDN,:isEditor)
 		',
+		'addPlugin' => '
+			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
+		',
 		'getPluginById' => '
 			SELECT * FROM !prefix!plugins WHERE id = :pluginId LIMIT 1
 		',

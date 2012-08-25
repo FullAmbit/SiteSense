@@ -115,9 +115,6 @@ function installer_addQueries() {
 		'newModule' => '
 			INSERT INTO !prefix!modules (name,shortName,enabled) VALUES (:name,:shortName,:enabled)
 		',
-		'addPlugin' => '
-			INSERT INTO !prefix!plugins (name,isCDN,isEditor) VALUES (:pluginName,:isCDN,:isEditor)
-		',
 	);
 }
 function installer_tableStructures() {
@@ -127,18 +124,7 @@ function installer_tableStructures() {
 			'name'      => SQR_shortName,
 			'category'  => 'VARCHAR(31)',
 			'value'     => 'MEDIUMTEXT'
-		),
-        'plugins' => array(
-            'id'        => SQR_IDKey,
-            'name'      => SQR_shortName,
-            'enabled'   => SQR_boolean.' DEFAULT \'1\'',
-            'isCDN'     => SQR_boolean.' DEFAULT \'0\'',
-            'isEditor'  => SQR_boolean.' DEFAULT \'0\''
-        ),
-        'plugins_modules' => array(
-            'plugin'    => SQR_ID,
-            'module'    => SQR_ID
-        )
+		)
 	);
 }
 ?>
