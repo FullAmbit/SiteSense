@@ -28,7 +28,8 @@ function modules_startup($data,$db) {
         'disable'            => 'Disable Modules',
         'edit'               => 'Edit Modules',
         'enable'             => 'Enable Modules',
-        'list'               => 'List Modules'
+        'list'               => 'List Modules',
+		'upgrade'            => 'Upgrade Modules'
     );
 }
 ?>

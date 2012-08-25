@@ -51,7 +51,7 @@ function theme_dashboardUpdateListRow($data,$moduleUpdate) {
 			<td class="name">',$moduleUpdate['name'],' (',$moduleUpdate['shortName'],')</td>
 			<td>',$moduleUpdate['oldVersion'],'</td>
 			<td>',$moduleUpdate['newVersion'],'</td>
-			<td class="buttonList"><a href="',$data->linkRoot,'admin/modules/update/',$moduleUpdate['shortName'],'">',$data->phrases['dashboard']['updateNow'],'</a></td>
+			<td class="buttonList"><a href="',$data->linkRoot,'admin/modules/upgrade/',$moduleUpdate['shortName'],'">',$data->phrases['dashboard']['updateNow'],'</a></td>
 		</tr>';
 }
 function theme_dashboardUpdateListFoot() {

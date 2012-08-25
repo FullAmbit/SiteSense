@@ -98,7 +98,8 @@ function dynamicForms_buildContent($data,$db) {
 			// Now Are We Editing This Field?
 			if(isset($data->output['rowId'])){
 				// Check To See What Function We Can Run
-				$fieldFunction = $moduleName.'_load'.$field['name'].'Value';
+				$shortName = common_generateShortName($field['name'],TRUE);
+				$fieldFunction = $moduleName.'_load'.$shortName.'Value';
 				$generalFunction = $moduleName.'_loadDynamicFormFieldValue';
 				if(function_exists($fieldFunction)){
 					$f['value'] = $fieldFunction($data,$db,$field);
@@ -206,7 +207,8 @@ function dynamicForms_buildContent($data,$db) {
 					if(!isset($data->phrases[$field['moduleHook']])){
 						common_loadPhrases($data,$db,$field['moduleHook']);
 					}
-					$fieldFunction = $moduleName.'_validate'.$field['name'];
+					$shortName = common_generateShortName($field['name'],TRUE);
+					$fieldFunction = $moduleName.'_validate'.$shortName;
 					$generalFunction = $moduleName.'_validateDynamicFormField';
 					if(function_exists($fieldFunction)){
 						$fieldFunction($data,$db,$field,$fieldValue);
@@ -233,12 +235,13 @@ function dynamicForms_buildContent($data,$db) {
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
 					// Check To See What Function We Can Run
+					$shortName = common_generateShortName($field['name'],TRUE);
 					$fieldFunction = $moduleName.'_save'.$field['name'];
 					$generalFunction = $moduleName.'_saveDynamicFormField';
 					if(function_exists($fieldFunction)){
-						$fieldFunction($data,$db,$field,$fieldCamelCase,$fieldValue);
+						$fieldFunction($data,$db,$field,$shortName,$fieldValue);
 					} else {
-						$generalFunction($data,$db,$field,$fieldCamelCase,$fieldValue);
+						$generalFunction($data,$db,$field,$shortName,$fieldValue);
 					}					
 				} else {
 					$statement->execute(array('row' => $rowId, 'field' => $fieldId, 'value' => $fieldValue));

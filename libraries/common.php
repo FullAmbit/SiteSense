@@ -184,12 +184,14 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 	return $textToParse;
 }
 
-function common_generateShortName($string)
+function common_generateShortName($string,$functionSafe=FALSE)
 {
-	$string = preg_replace("/[^a-z0-9\-\s]/",'',str_replace(' ','-',strtolower($string)));
-	$string = str_replace("--","-",$string);
-	$string = str_replace("--","-",$string);
-	
+	$string = preg_replace('/[^a-z0-9\-\s]/','',str_replace(' ','-',strtolower($string)));
+	$string = str_replace('--','-',$string);
+	$string = str_replace('--','-',$string);
+	if ($functionSafe) { // functions can't have dashes in their names
+		$string = str_replace('-','_',$string);
+	}
 	return $string;
 }
 
