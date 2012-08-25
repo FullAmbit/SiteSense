@@ -133,8 +133,6 @@ function users_afterForm($data,$db){
 	$r = $statement->execute(array(
 		':userID' => $userItem['id'],
 		':registeredIP' => $_SERVER['REMOTE_ADDR'],
-		':registeredDate' => common_formatDatabaseTime(),
-		':lastAccess' => common_formatDatabaseTime()
 	));
 }
 

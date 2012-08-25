@@ -439,11 +439,6 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	return FALSE;
 }
 
-function common_formatDatabaseTime($time=NULL,$format="Y-m-d H:i:s") {
-	$time = ($time == NULL) ? time() : $time;
-	return gmdate($format,$time);
-}
-
 function common_timeDiff($start,$end) {
 		$diff=$end-$start;
 		$hrs=0;

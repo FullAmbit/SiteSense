@@ -82,9 +82,9 @@ function users_addQueries() {
         // Register
         'insertUser' => '
 			INSERT INTO !prefix!users
-			(name, password, firstName, lastName, registeredDate, registeredIP, lastAccess, contactEMail, publicEMail, emailVerified, timeZone)
+			(name, password, firstName, lastName, registeredIP, lastAccess, contactEMail, publicEMail, emailVerified, timeZone)
 			VALUES
-			(:name,:password,:firstName,:lastName,:registeredDate,:registeredIP,:lastAccess,:contactEMail,:publicEMail,:emailVerified,:timeZone)
+			(:name,:password,:firstName,:lastName,:registeredIP,CURRENT_TIMESTAMP,:contactEMail,:publicEMail,:emailVerified,:timeZone)
 		',
         'getRegistrationEMail' => '
 			SELECT parsedContent FROM !prefix!pages
@@ -155,8 +155,7 @@ function users_addQueries() {
 				!prefix!users
 			SET 
 				registeredIP = :registeredIP,
-				registeredDate = :registeredDate,
-				lastAccess = :lastAccess
+				lastAccess = CURRENT_TIMESTAMP
 			WHERE
 				id = :userID
 		',

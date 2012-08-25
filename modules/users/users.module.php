@@ -197,7 +197,6 @@ function users_buildContent($data,$db) {
                     } else {
                         unset($data->output['registerForm']->sendArray[':password2']);
                         unset($data->output['registerForm']->sendArray[':verifyEMail']);
-                        $data->output['registerForm']->sendArray[':registeredDate']=$data->output['registerForm']->sendArray[':lastAccess']=common_formatDatabaseTime();
                         $data->output['registerForm']->sendArray[':registeredIP']=$_SERVER['REMOTE_ADDR'];
                         $data->output['registerForm']->sendArray[':publicEMail']='';
                         $data->output['registerForm']->sendArray[':emailVerified']=($data->settings['verifyEmail'] == 1) ? 0 : 1;
