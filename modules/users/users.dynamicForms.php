@@ -26,10 +26,6 @@
 function users_validateDynamicFormField($data,$db,$field,$fieldValue){	
 	$fieldRef =& $data->output['customForm']->fields[$field['id']];
 	$formError =& $data->output['customForm']->error;
-				
-	$camelCaseName = common_camelBack($field['name']);
-	switch($camelCaseName){
-	}
 }
 
 function users_validateusername($data,$db,$field,$fieldValue){

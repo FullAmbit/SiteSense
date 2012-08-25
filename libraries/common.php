@@ -84,13 +84,6 @@ function common_redirect($where) {
 	header('location: ' . $where);
 	exit;
 }
-function common_camelBack($inString) {
-	return lcfirst(str_replace(
-		array(
-			' ',"\n","\t","\r",'&nbsp;','_'
-		),'',ucwords($inString)
-	));
-}
 function common_randomPassword($min=8,$max=12) {
 	$result='';
 	if ($max<$min) $max=$min;
@@ -189,16 +182,6 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 		ob_end_clean();
 	}
 	return $textToParse;
-}
-
-function common_parseTime($UTCTime,$offset,$includeZone = TRUE,$format = "M d Y G:i:s"){
-	$unixTime = (intval($UTCTime) > 100000) ? $UTCTime : strtotime($UTCTime);
-	$newTime = $unixTime + $offset;
-	if($includeZone){
-		$zone = $offset/3600;
-		$format .= (($zone) < 0) ? ' \G\M\T'.$zone : ' \G\M\T+'.$zone;
-	}
-	return date($format,$newTime);
 }
 
 function common_generateShortName($string)

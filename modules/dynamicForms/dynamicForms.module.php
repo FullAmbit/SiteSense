@@ -98,8 +98,7 @@ function dynamicForms_buildContent($data,$db) {
 			// Now Are We Editing This Field?
 			if(isset($data->output['rowId'])){
 				// Check To See What Function We Can Run
-				$fieldCamelCase = common_camelBack($field['name']);
-				$fieldFunction = $moduleName.'_load'.$fieldCamelCase.'Value';
+				$fieldFunction = $moduleName.'_load'.$field['name'].'Value';
 				$generalFunction = $moduleName.'_loadDynamicFormFieldValue';
 				if(function_exists($fieldFunction)){
 					$f['value'] = $fieldFunction($data,$db,$field);
@@ -207,9 +206,7 @@ function dynamicForms_buildContent($data,$db) {
 					if(!isset($data->phrases[$field['moduleHook']])){
 						common_loadPhrases($data,$db,$field['moduleHook']);
 					}
-					// Check To See What Function We Can Run
-					$fieldCamelCase = common_camelBack($field['name']);
-					$fieldFunction = $moduleName.'_validate'.$fieldCamelCase;
+					$fieldFunction = $moduleName.'_validate'.$field['name'];
 					$generalFunction = $moduleName.'_validateDynamicFormField';
 					if(function_exists($fieldFunction)){
 						$fieldFunction($data,$db,$field,$fieldValue);
@@ -236,8 +233,7 @@ function dynamicForms_buildContent($data,$db) {
 				if($field['moduleHook'] !== NULL && isset($moduleList[$field['moduleHook']])){
 					$moduleName = $moduleList[$field['moduleHook']];
 					// Check To See What Function We Can Run
-					$fieldCamelCase = common_camelBack($field['name']);
-					$fieldFunction = $moduleName.'_save'.$fieldCamelCase;
+					$fieldFunction = $moduleName.'_save'.$field['name'];
 					$generalFunction = $moduleName.'_saveDynamicFormField';
 					if(function_exists($fieldFunction)){
 						$fieldFunction($data,$db,$field,$fieldCamelCase,$fieldValue);
