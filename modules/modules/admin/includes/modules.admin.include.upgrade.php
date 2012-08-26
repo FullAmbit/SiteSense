@@ -29,8 +29,8 @@ function admin_modulesBuild($data,$db){
 		return;
 	}
 	$data->output['upgrade'] = array();
-	//$url = 'http://localhost/sitesense.org/version/'; // base url for version 
-	$url = 'https://sitesense.org/dev/version/'; // base url for version 
+	$url = 'http://localhost/sitesense.org/version/'; // base url for version 
+	//$url = 'https://sitesense.org/dev/version/'; // base url for version 
 	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName'=>$data->action[3]));
 	$module = $statement->fetch(PDO::FETCH_ASSOC);
@@ -46,22 +46,34 @@ function admin_modulesBuild($data,$db){
 	} elseif (empty($data->action[4])) {
 		$data->output['upgrade'][] = '<h2>Choose a Version for ' . $update['name'] . '</h2>';
 		$data->output['upgrade'][] = 'Hey there! Let\'s get you upgraded. Which version of ' . $update['name'] . ' would you like to upgrade to?';
-		//var_dump($update);
+		$data->output['upgrade'][] = '<ul>';
+		foreach ($update['newerVersions'] as $version=>$newerVersion) {
+			if ($newerVersion['release']) { $color = '#000000'; } else { $color = '#ABABAB'; }
+			$data->output['upgrade'][] = '<li><a href="' . $data->linkRoot . 'admin/modules/upgrade/' . $update['shortName'] . '/' . $version . '/1" style="color:' . $color . ';">Upgrade to <strong>' . $version . '</strong></a>';
+			if ($version===$update['newVersion']) {
+				$data->output['upgrade'][] = ' <em>(latest stable release - recommended)</em>';
+			}
+			$data->output['upgrade'][] = '</li>';
+		}
+		$data->output['upgrade'][] = '</ul>';
 	} else {
 		$data->output['upgrade'][] = '<h2>Upgrade Information for ' . $update['name'] . '</h2>';
-		$data->output['upgrade'][] = 'Upgrading from version ' . $update['oldVersion'] . ' to version ' . $update['newVersion'] . ', released ' . $update['lastUpdated'] . '.';
-		if (!is_numeric($data->action[4])) {
-			$data->action[4] = 1;
+		$data->output['upgrade'][] = 'Upgrading from version ' . $update['oldVersion'] . ' to version ' . $data->action[4] . ', released ' . $update['lastUpdated'] . '.';
+		if (!is_numeric($data->action[5])) {
+			$data->action[5] = 1;
 		}
+		$latestVersion = $update['newerVersions'][$data->action[4]];
 		$data->output['upgrade'][] = '<h2>Upgrading: Step ' . $data->action[4] . '</h2><ol>';
 		switch ($data->action[5]) {
 			case 1:
 				$data->output['upgrade'][] = '<li>Welcome to the upgrade process for your module. We\'ll have you up and running in no time.</li>';
-				$data->output['upgrade'][] = '<li>The first thing you\'ll need to do is download a .zip containing the latest version of this module. The download link is below:';
-				$data->output['upgrade'][] = '<ul><li style="margin-left:10px;">Version ' . $update['newVersion'] . ': <a href="' . $update['zipBall'] . '">' . $update['zipBall'] . '</a></li></ul></li>';
-				$data->output['upgrade'][] = '<li>Now that you have done that, unzip the .zip file you just downloaded on your local machine.</li>';
+				$data->output['upgrade'][] = '<li>The first thing you\'ll need to do is download either a .zip or a .tar.gz containing the latest version of this module. The download links for both are below:';
+				$data->output['upgrade'][] = '<ul><li style="margin-left:10px;">Version ' . $update['newVersion'] . ': <a href="' . $latestVersion['zipLink'] . '">' . $latestVersion['zipLink'] . '</a> (.zip)</li></ul></li>';
+				$data->output['upgrade'][] = '<ul><li style="margin-left:10px;">Version ' . $update['newVersion'] . ': <a href="' . $latestVersion['tarLink'] . '">' . $latestVersion['tarLink'] . '</a> (.tar.gz)</li></ul></li>';
+				$data->output['upgrade'][] = '<li>Now that you have done that, unzip the .zip or untar the .tar.gz file you just downloaded on your local machine.</li>';
 				$data->output['upgrade'][] = '<li>Enter the folder which has a name beginning with "' . $update['githubUser'] . '-' . $update['githubRepo'] . '".</li>';
 				$data->output['upgrade'][] = '<li>You should see a folder named "' . $update['shortName'] . '".</li>';
+				$data->output['upgrade'][] = '<li>Disable this module. You can do that <a href="' . $data->linkRoot . 'admin/modules/disable/' . $update['shortName'] . '" target="_blank">here</a>. Do not uninstall it.</li>';
 				$data->output['upgrade'][] = '<li>Upload the folder named "' . $update['shortName'] . '" to the "modules" directory of your SiteSense install using FTP. Make sure to overwrite any files which already exist.</li>';
 				$data->output['upgrade'][] = '<li>Once you have completed the above steps correctly, completely, and with no errors, please click the button below to proceed.</li>';
 				$data->output['upgrade'][] = '<li class="buttonList"><a href="' . $data->linkRoot . 'admin/modules/upgrade/' . $module['shortName'] . '/2">Proceed to step 2</a></li>';
