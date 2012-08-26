@@ -29,8 +29,8 @@ function admin_modulesBuild($data,$db){
 		return;
 	}
 	$data->output['upgrade'] = array();
-	//$url = 'http://localhost/sitesense.org/version/'; // base url for version 
-	$url = 'https://sitesense.org/dev/version/'; // base url for version 
+	$url = 'http://localhost/sitesense.org/version/'; // base url for version 
+	//$url = 'https://sitesense.org/dev/version/'; // base url for version 
 	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName'=>$data->action[3]));
 	$module = $statement->fetch(PDO::FETCH_ASSOC);
@@ -40,17 +40,21 @@ function admin_modulesBuild($data,$db){
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	$update = curl_exec($ch);
 	$update = json_decode($update,TRUE);
-	if (count($update)!==1) {
+	$update = $update[$module['shortName']];
+	if (count($update['newerVersions'])<1) {
 		$data->output['upgrade'][] = 'No upgrades available for ' . $module['name'];
+	} elseif (empty($data->action[4])) {
+		$data->output['upgrade'][] = '<h2>Choose a Version for ' . $update['name'] . '</h2>';
+		$data->output['upgrade'][] = 'Hey there! Let\'s get you upgraded. Which version of ' . $update['name'] . ' would you like to upgrade to?';
+		//var_dump($update);
 	} else {
-		$update = $update[$module['shortName']];
 		$data->output['upgrade'][] = '<h2>Upgrade Information for ' . $update['name'] . '</h2>';
 		$data->output['upgrade'][] = 'Upgrading from version ' . $update['oldVersion'] . ' to version ' . $update['newVersion'] . ', released ' . $update['lastUpdated'] . '.';
 		if (!is_numeric($data->action[4])) {
 			$data->action[4] = 1;
 		}
 		$data->output['upgrade'][] = '<h2>Upgrading: Step ' . $data->action[4] . '</h2><ol>';
-		switch ($data->action[4]) {
+		switch ($data->action[5]) {
 			case 1:
 				$data->output['upgrade'][] = '<li>Welcome to the upgrade process for your module. We\'ll have you up and running in no time.</li>';
 				$data->output['upgrade'][] = '<li>The first thing you\'ll need to do is download a .zip containing the latest version of this module. The download link is below:';

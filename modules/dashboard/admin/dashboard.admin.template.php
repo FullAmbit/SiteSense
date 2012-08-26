@@ -41,17 +41,18 @@ function theme_dashboardUpdateList($data) {
 					<th class="name">',$data->phrases['dashboard']['module'],'</th>
 					<th>',$data->phrases['dashboard']['oldVersion'],'</th>
 					<th>',$data->phrases['dashboard']['newVersion'],'</th>
-					<th>',$data->phrases['dashboard']['updateNow'],'</th>
+					<th>&nbsp;</th>
 				</tr>
 			</thead><tbody>
 	';
 }
 function theme_dashboardUpdateListRow($data,$moduleUpdate) {
 	echo '<tr>
-			<td class="name">',$moduleUpdate['name'],' (',$moduleUpdate['shortName'],')</td>
+			<td class="name">',$moduleUpdate['name'],' (<a href="',$moduleUpdate['moreInfo'],'">',$moduleUpdate['shortName'],'</a>)</td>
 			<td>',$moduleUpdate['oldVersion'],'</td>
 			<td>',$moduleUpdate['newVersion'],'</td>
-			<td class="buttonList"><a href="',$data->linkRoot,'admin/modules/upgrade/',$moduleUpdate['shortName'],'">',$data->phrases['dashboard']['updateNow'],'</a></td>
+			<td class="buttonList"><a href="',$data->linkRoot,'admin/modules/upgrade/',$moduleUpdate['shortName'],'">',$data->phrases['dashboard']['updateNow'],'</a>
+				<a href="',$moduleUpdate['moreInfo'],'">',$data->phrases['dashboard']['moreInfo'],'</a></td>
 		</tr>';
 }
 function theme_dashboardUpdateListFoot() {

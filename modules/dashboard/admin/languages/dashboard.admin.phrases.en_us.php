@@ -7,11 +7,12 @@ function languages_dashboard_admin_en_us(){
 		),
 		'welcomeMessageHeading' => 'Welcome to the Control Panel for your CMS installation',
 		'welcomeMessage'        => 'Please choose from the options on the left to manage your settings.',
-		'updatesAvailable'      => 'Security and stability updates are available!',
+		'updatesAvailable'      => 'Security and stability updates are available for your modules!',
 		'oldVersion'            => 'Installed Version',
 		'newVersion'            => 'Latest Version',
 		'module'                => 'Module',
 		'updateNow'             => 'Update Now',
+		'moreInfo'              => 'More Info',
 	);
 }
 ?>
