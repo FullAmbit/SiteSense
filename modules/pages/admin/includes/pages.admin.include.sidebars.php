@@ -77,7 +77,7 @@ function admin_pagesBuild($data,$db)
 			break;
 		case 'moveDown':
 		case 'moveUp':
-            admin_sortOrder_move($data,$db,'pages_sidebars',$data->action[4],$data->action[5],'sortOrder','page',TRUE);
+			admin_sortOrder_move($data,$db,'pages_sidebars',$data->action[4],$data->action[5]);
 		    break;
 	}
 	
