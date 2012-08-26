@@ -29,8 +29,8 @@ function admin_modulesBuild($data,$db){
 		return;
 	}
 	$data->output['upgrade'] = array();
-	$url = 'http://localhost/sitesense.org/version/'; // base url for version 
-	//$url = 'https://sitesense.org/dev/version/'; // base url for version 
+	//$url = 'http://localhost/sitesense.org/version/'; // base url for version 
+	$url = 'https://sitesense.org/dev/version/'; // base url for version 
 	$statement = $db->prepare('getModuleByShortName','admin_modules');
 	$statement->execute(array(':shortName'=>$data->action[3]));
 	$module = $statement->fetch(PDO::FETCH_ASSOC);
