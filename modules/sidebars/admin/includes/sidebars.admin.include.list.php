@@ -50,9 +50,9 @@ function admin_sidebarsBuild($data, $db) {
 			}
 		}
 	}
-	$qHandle=$db->prepare('getAllOrdered', 'admin_sidebars');
-	$qHandle->execute();
-	$data->output['sidebars']=$qHandle->fetchAll();
+	$statement=$db->prepare('getAllOrdered', 'admin_sidebars');
+	$statement->execute();
+	$data->output['sidebars']=$statement->fetchAll();
 }
 function admin_sidebarsShow($data) {
 	$aRoot=$data->linkRoot.'admin/sidebars/';

@@ -71,11 +71,13 @@ function pages_buildContent($data,$db) {
 	$statement->execute(array(':pageId' => $current['id']));
 	$sidebars = $statement->fetchAll();
 	$data->sidebarList = array();
-	if(isset($sidebars)) {
-		foreach($sidebars as $sidebar) {
-			common_parseDynamicValues($data,$sidebar['titleUrl'],$db);
-			common_parseDynamicValues($data,$sidebar['parsedContent'],$db);
-			$data->sidebarList[$sidebar['side']][]=$sidebar;
+	$data->usedSidebars = array();
+	foreach ($sidebars as $sidebar) {
+		if (!in_array($sidebar['id'],$usedSidebars)) {
+			common_parseDynamicValues($this, $sidebar['titleUrl'], $db);
+			common_parseDynamicValues($this, $sidebar['parsedContent'], $db);
+			$data->usedSidebars[] = $sidebar['id'];
+			$data->sidebarList[strtolower($sidebar['side'])][]=$sidebar;
 		}
 	}
 }

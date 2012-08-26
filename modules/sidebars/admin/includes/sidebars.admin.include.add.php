@@ -116,10 +116,10 @@ function admin_sidebarsBuild($data, $db) {
 					'.$data->phrases['sidebars']['valuesSaved2'].$shortName.'
 				</p>
 				<div class="panel buttonList">
-					<a href="'.$aRoot.'edit/new">
-						'.$data->phrases['sidebars']['addPage'].'
+					<a href="'.$data->linkRoot.'admin/sidebars/add">
+						'.$data->phrases['sidebars']['addNewSidebar'].'
 					</a>
-					<a href="'.$aRoot.'list/">
+					<a href="'.$data->linkRoot.'list/">
 						'.$data->phrases['sidebars']['returnToPageList'].'
 					</a>
 				</div>';

@@ -2,26 +2,20 @@
 
 function theme_leftSideBar($data) {
 	echo '
-
 		<!-- #content, #contentWrapper --></div></div>';
 	// Check If We Have Any Sidebars	
 	if(empty($data->sidebarList['left']))
 	{
 		return;
 	}
-
 	echo '
 		<div id="leftSidebar">';
-
-	if (count($data->sidebarList['left'])>0) {
-		
+	
 		foreach($data->sidebarList['left'] as $sideBar) {
 			theme_sideBarBoxHeader($sideBar['title']);
 			echo $sideBar['parsedContent'];			
 			theme_sideBarBoxFooter();
 		}
-	}
-
 	echo '
 		<!-- .leftSideBar --></div>';
 
@@ -34,18 +28,13 @@ function theme_rightSideBar($data) {
 	{
 		return;
 	}
-
 	echo '
 		<div id="rightSidebar">';
-
-	if (count($data->sidebarList)>0) {
-		foreach($data->sidebarList['right'] as $sideBar) {
-			theme_sideBarBoxHeader($sideBar['title']);
-			echo $sideBar['parsedContent'];			
-			theme_sideBarBoxFooter();
-		}
+	foreach($data->sidebarList['right'] as $sideBar) {
+		theme_sideBarBoxHeader($sideBar['title']);
+		echo $sideBar['parsedContent'];			
+		theme_sideBarBoxFooter();
 	}
-
 	echo '
 		<!-- .rightSideBar --></div>';
 

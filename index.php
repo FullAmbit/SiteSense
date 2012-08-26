@@ -611,13 +611,13 @@ final class sitesense {
 			}
 			// If we didn't set the currentPage above, the page was not found.
 			if ($this->currentPage != 'pageNotFound') {
-				$sidebarQuery = $this->db->prepare('getEnabledSidebarsByModule', 'admin_modules');
-				$sidebarQuery->execute(
+				$statement = $this->db->prepare('getEnabledSidebarsByModule', 'admin_modules');
+				$statement->execute(
 					array(
 						':module' => $this->module['id']
 					)
 				);
-				$sidebars = $sidebarQuery->fetchAll();
+				$sidebars = $statement->fetchAll();
 			}
 		}
 
@@ -740,10 +740,14 @@ final class sitesense {
 
 		// Parse Sidebars Before Display
 		if (isset($sidebars)) {
+			$this->usedSidebars = array();
 			foreach ($sidebars as $sidebar) {
-				common_parseDynamicValues($this, $sidebar['titleUrl'], $this->db);
-				common_parseDynamicValues($this, $sidebar['parsedContent'], $this->db);
-				$this->sidebarList[$sidebar['side']][]=$sidebar;
+				if (!in_array($sidebar['id'],$this->usedSidebars)) {
+					common_parseDynamicValues($this, $sidebar['titleUrl'], $this->db);
+					common_parseDynamicValues($this, $sidebar['parsedContent'], $this->db);
+					$this->usedSidebars[] = $sidebar['id'];
+					$this->sidebarList[strtolower($sidebar['side'])][]=$sidebar;
+				}
 			}
 		}
 		$this->db=null;
