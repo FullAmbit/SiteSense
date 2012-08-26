@@ -64,7 +64,14 @@ function dbSettingsSecurity() {
           ($compare==$fixedInclude) && 
           (!defined('dbInfoDefined')) 
      ) { 
-          define('dbInfoDefined',true); 
-     } else killHacker('Attempt to call dbSettings directly'); 
+          define('dbInfoDefined',true);
+     } else {
+          killHacker('Attempt to call dbSettings directly');
+          /*
+               It should NOT drop through to die, unless someone calls this
+               file directly.
+          */
+          die('Attempt to call dbSettings directly');
+     }
 }
 ?>
