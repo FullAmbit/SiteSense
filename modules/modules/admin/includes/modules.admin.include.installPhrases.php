@@ -44,8 +44,8 @@ function admin_modulesBuild($data,$db){
 			}
 		}
 		
-		language_admin_savePhrases($data,$db,"en_us",'',$coreUserPhrases);
-		language_admin_savePhrases($data,$db,"en_us",$moduleName,$userPhrases);
+		language_admin_savePhrases($data,$db,'en_us','',$coreUserPhrases);
+		language_admin_savePhrases($data,$db,'en_us',$moduleName,$userPhrases);
 		
 		//--Admin Phrases
 		$adminEndTarget = 'modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php';

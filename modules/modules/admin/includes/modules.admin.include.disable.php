@@ -38,7 +38,7 @@ function admin_modulesBuild($data,$db){
 			$statement->execute(array(
 				':shortName' => $data->action[3]
 			));
-		} else if($data->action[4]=='uninstall') {
+		} elseif($data->action[4]=='uninstall') {
 			// Include the install file for this module
 			$targetInclude='modules/'.$data->action[3].'/'.$data->action[3].'.install.php';
 			if(!file_exists($targetInclude)) {
