@@ -21,6 +21,7 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 	        'text'       => 'TEXT NOT NULL',
 	        'module'     => SQR_moduleName,
 	        'isAdmin'    => SQR_boolean,
+			'override'   => SQR_boolean . ' DEFAULT 0',
 	        'UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)'
 		)
 	);
