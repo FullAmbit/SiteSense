@@ -44,9 +44,9 @@ function admin_modulesBuild($data,$db){
 	if (count($update['newerVersions'])<1) {
 		$data->output['upgrade'][] = 'No upgrades available for ' . $module['name'];
 	} elseif (empty($data->action[4])) {
-		$data->output['upgrade'][] = '<h2>Choose a Version for ' . $update['name'] . '</h2>';
-		$data->output['upgrade'][] = 'Hey there! Let\'s get you upgraded. Which version of ' . $update['name'] . ' would you like to upgrade to?';
-		$data->output['upgrade'][] = '<ul>';
+		$data->output['upgrade'][] = '<h2>Choose a Version for ' . $update['name'] . '</h2>
+			Hey there! Let\'s get you upgraded. Which version of ' . $update['name'] . ' would you like to upgrade to?
+			<ul>';
 		foreach ($update['newerVersions'] as $version=>$newerVersion) {
 			if ($newerVersion['release']) { $color = '#000000'; } else { $color = '#ABABAB'; }
 			$data->output['upgrade'][] = '<li><a href="' . $data->linkRoot . 'admin/modules/upgrade/' . $update['shortName'] . '/' . $version . '/1" style="color:' . $color . ';">Upgrade to <strong>' . $version . '</strong></a>';
@@ -57,8 +57,8 @@ function admin_modulesBuild($data,$db){
 		}
 		$data->output['upgrade'][] = '</ul>';
 	} else {
-		$data->output['upgrade'][] = '<h2>Upgrade Information for ' . $update['name'] . '</h2>';
-		$data->output['upgrade'][] = 'Upgrading from version ' . $update['oldVersion'] . ' to version ' . $data->action[4] . ', released ' . $update['lastUpdated'] . '.';
+		$data->output['upgrade'][] = '<h2>Upgrade Information for ' . $update['name'] . '</h2>
+			Upgrading from version ' . $update['oldVersion'] . ' to version ' . $data->action[4] . ', released ' . $update['lastUpdated'] . '.';
 		if (!is_numeric($data->action[5])) {
 			$data->action[5] = 1;
 		}

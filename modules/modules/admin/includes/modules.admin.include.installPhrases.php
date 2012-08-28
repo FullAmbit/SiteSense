@@ -23,7 +23,7 @@ function admin_modulesBuild($data,$db){
 	
 		if($_POST['action']==0){
 			// Empty Table And Prep For Phrase Entry
-			$statement=$db->query("truncatePhrases","admin_languages",array("!lang!"=>"en_us"));
+			$statement=$db->query("truncatePhrases","admin_languages",array('!lang!'=>'en_us'));
 		}
 		
 		$coreUserPhrases=$userPhrases=$coreAdminPhrases=$adminPhrases=array();
