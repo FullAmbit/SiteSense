@@ -275,6 +275,7 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 					));
 				echo '
 					<p>Administrator account automatically generated!</p>';
+				return $newPassword;
 			} catch(PDOException $e) {
 				$db->installErrors++;
 				echo '
@@ -282,7 +283,6 @@ function users_install($db, $drop=false, $firstInstall = FALSE, $lang = "en_us")
 					<pre>', $e->getMessage(), '</pre><br />';
 			}
 		} else echo '<p class="exists">"users database" already contains records</p>';
-		return $newPassword;
 	}
 }
 function users_uninstall($db) {
