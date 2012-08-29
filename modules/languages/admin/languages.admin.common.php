@@ -1,6 +1,6 @@
 <?php
 function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases,$isAdmin = FALSE){
-	$moduleShortName = (isset($data->output['moduleShortName'][$moduleName])) ? $data->output['moduleShortName'][$moduleName] : '';
+	$moduleShortName = strval($data->output['moduleShortName'][$moduleName]);
 	$errorList=$newList=$returnList=array();
 	switch($_POST['action']){
 		case 0:
@@ -15,7 +15,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':isAdmin' => $isAdmin
 				));
 			}
-		break;
+			break;
 		case 1:
 			if(empty($modulePhrases)) break;
 			// Put In The New Phrases
@@ -40,7 +40,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					return FALSE;
 				}
 			}
-		break;
+			break;
 		case 2:
 			// Update Existing Ones, Install New Ones
 			$existingModuleList = languages_admin_getPhrasesByModule($db,$isAdmin,$moduleShortName,$languageShortName);
@@ -72,7 +72,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					return FALSE;
 				}
 			}
-		break;
+			break;
 		case 3:
 			// Only Update Existing Phrases (Phrases Must Exist In English Language) Return List Of Phrases That Do Not Exist
 			$existingModuleList = languages_admin_getPhrasesByModule($db,$isAdmin,$moduleShortName);
@@ -91,9 +91,9 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				));
 				if($result == false) var_dump($statement->errorInfo());
 			}
-		
+
 			return $returnList;
-		break;
+			break;
 		case 4:
 			// Add All Phrases Supplied That Have An English CounterPart
 			// Also Add Any Missing Phrases That Are Found In English But Not Here
@@ -127,20 +127,19 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				));
 			}
 			return array($errorList,$newList);
-		break;
+			break;
 		case 5:
 			// Only Install New Phrases (But Make Sure They Have An English CounterPart)
 			// Update Any Existing Phrases Equivalen To Their English CounterPart
-		
+
 			// Start By Getting A List Of All English Phrases For This "Module"
 			$englishPhraseList = languages_admin_getPhrasesByModule($db,$isAdmin,$moduleShortName);
 			
 			// Now Get A List Of Existing Phrases For The Current Language Within This Module
 			$existingPhraseList = languages_admin_getPhrasesByModule($db,$isAdmin,$moduleShortName,$languageShortName);
-			
+
 			$update = $db->prepare('updatePhraseTextByLanguage','admin_languages',array('!lang!'=>$languageShortName));
 			$insert = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
-			
 			// Loop Through Our Phrases From The Language File Pack
 			foreach($modulePhrases as $phrase => $text){
 				// Check To See If It Has A English Counter-Part, Skip If It Doesn't.
@@ -166,14 +165,12 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					$newList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
 				}
 			}
-			
 			return(array($errorList,$newList));
-			
-		break;
+			break;
 		default:
 			$data->output['responseMessage'] = 'The action you specified was invalid.';
 			return FALSE;
-		break;
+			break;
 	}
 }
 function languages_admin_getPhrasesByModule($db,$isAdmin,$module,$lang='en_us') {
