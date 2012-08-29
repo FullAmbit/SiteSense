@@ -165,18 +165,16 @@ function admin_languages_addQueries(){
 		'insertOrUpdatePhrase' => '
 			INSERT INTO 
 				!prefix!languages_phrases_!lang!
-				(phrase,text,module,isAdmin)
+				(phrase,text,module,isAdmin,override)
 			VALUES
-				(:phrase,:text,:module,:isAdmin)
+				(:phrase,:text,:module,:isAdmin,0)
 			ON DUPLICATE KEY
 				UPDATE
 					phrase = :phrase,
 					text = :text,
 					module = :module,
 					isAdmin = :isAdmin
-				WHERE	
-					(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=0 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
-		', 
+		',
 		'getPhraseByUniqueParams' => '
 			SELECT
 				*
