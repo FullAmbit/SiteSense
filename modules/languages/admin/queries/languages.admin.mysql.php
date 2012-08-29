@@ -54,6 +54,14 @@ function admin_languages_addQueries(){
 			VALUES
 				(:phrase,:text,:module,:isAdmin)
 		',
+		'addPhraseByLanguageViaForm' => '
+			INSERT INTO 
+				!prefix!languages_phrases_!lang!
+				(phrase,text,module,isAdmin,override)
+			VALUES
+				(:phrase,:text,:module,:isAdmin,:override)
+		',
+		
 		'getPhraseByLanguageAndModule' => '
 			SELECT
 				id,phrase,text

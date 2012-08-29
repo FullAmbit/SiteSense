@@ -29,20 +29,9 @@ $this->fields = array(
 		),
 		'required' => true
 	),
-	'override' => array(
-		'label' => $data->phrases['languages']['override'],
-		'tag' => 'input',
-		'value' => 1,
-		'params' => array(
-			'type' => 'checkbox'
-		)
-	),
 );
 if(isset($data->output['phraseItem']['en_us']) && $data->output['phraseItem']['en_us']['isAdmin'] == '1'){
 	$this->fields['isAdmin']['params']['checked'] = 'checked';
-}
-if(isset($data->output['phraseItem']['en_us']) && $data->output['phraseItem']['en_us']['override'] == '1'){
-	$this->fields['override']['params']['checked'] = 'checked';
 }
 foreach($data->output['moduleShortName'] as $moduleName => $moduleShortName){
 	$this->fields['module']['options'][] = array(
