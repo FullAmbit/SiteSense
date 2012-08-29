@@ -80,7 +80,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			foreach($modulePhrases as $phrase => $text){
 				// If No English Source Found...Skip
 				if(!isset($existingModuleList[$phrase])){				
-					$returnList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					$returnList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;
 					continue;
 				}
 				$result = $statement->execute(array(
@@ -102,7 +102,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			foreach($modulePhrases as $phrase => $text){
 				// If No English Source Found...Skip
 				if(!isset($englishPhraseList[$phrase])){
-					$errorList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					$errorList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;
 					continue;
 				}
 				$result = $statement->execute(array(
@@ -118,7 +118,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			$insert = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
 			foreach($englishPhraseList as $phrase => $text){
 				$text = $text[0]['text'];
-				$newList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+				$newList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;
 				$insert->execute(array(
 					':phrase' => $phrase,
 					':text' => $text,
@@ -144,7 +144,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			foreach($modulePhrases as $phrase => $text){
 				// Check To See If It Has A English Counter-Part, Skip If It Doesn't.
 				if(!isset($englishPhraseList[$phrase])){
-					$errorList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					$errorList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;
 					continue;
 				}
 				$queryParams = array(
@@ -154,15 +154,13 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':isAdmin' => $isAdmin
 				);
 				// Check To See If It Exists Already, If So Check If Equivalent To English Phrase
-				if(isset($existingPhraseList[$phrase])){
-					if($existingPhraseList[$phrase][0]['text'] == $englishPhraseList[$phrase][0]['text']){
+				if(isset($existingPhraseList[$phrase])&&$existingPhraseList[$phrase][0]['text']==$englishPhraseList[$phrase][0]['text']){
 						// Update To New Value From Language-File System
 						$update->execute($queryParams);
-					}
 				}else{
 					// Does Not Exist..Add New Phrase
 					$insert->execute($queryParams);
-					$newList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
+					$newList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;
 				}
 			}
 			return(array($errorList,$newList));
