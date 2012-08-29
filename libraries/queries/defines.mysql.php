@@ -20,5 +20,4 @@
 	define('SQR_lastModified', 'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
 	// Only use SQR_added if the table doesn't require a SQR_lastModified
 	define('SQR_added',        'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP');
-
 ?>

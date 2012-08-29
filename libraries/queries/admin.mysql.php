@@ -70,56 +70,56 @@ function admin_addQueries() {
 			ORDER BY !column1! DESC
 			LIMIT 1
 		',
-        'getSortOrderByID' => '
+	    'getSortOrderByID' => '
 			SELECT !column1! as sortOrder, !column2! as parent
 			FROM !prefix!!table!
 			WHERE id = :id
 			LIMIT 1
 		',
-        'getSortOrderByIDNoParent' => '
+	    'getSortOrderByIDNoParent' => '
 			SELECT !column1! as sortOrder
 			FROM !prefix!!table!
 			WHERE id = :id
 			LIMIT 1
 		',
-        'getNextSmallestSortOrder' => '
+	    'getNextSmallestSortOrder' => '
 			SELECT * FROM !prefix!!table!
 			WHERE !column2! = :parent
 			AND   !column1! < :sortOrder
 			ORDER BY sortOrder DESC
 			LIMIT 1
 		',
-        'getNextSmallestSortOrderNoParent' => '
+	    'getNextSmallestSortOrderNoParent' => '
 			SELECT * FROM !prefix!!table!
 			WHERE !column1! < :sortOrder
 			ORDER BY sortOrder DESC
 			LIMIT 1
 		',
-        'getNextHighestSortOrder' => '
+	    'getNextHighestSortOrder' => '
 			SELECT * FROM !prefix!!table!
 			WHERE !column2! = :parent
 			AND   !column1! > :sortOrder
 			ORDER BY !column1! ASC
 			LIMIT 1
 		',
-        'getNextHighestSortOrderNoParent' => '
+	    'getNextHighestSortOrderNoParent' => '
 			SELECT * FROM !prefix!!table!
 			WHERE !column1! > :sortOrder
 			ORDER BY !column1! ASC
 			LIMIT 1
 		',
-        'updateSortOrderByParent' => '
+	    'updateSortOrderByParent' => '
 			UPDATE !prefix!!table!
 			SET   !column1! = :sortOrder_new
 			WHERE !column1! = :sortOrder
 			AND   !column2! = :parent
 		',
-        'updateSortOrderNoParent' => '
+	    'updateSortOrderNoParent' => '
 			UPDATE !prefix!!table!
 			SET   !column1! = :sortOrder_new
 			WHERE !column1! = :sortOrder
 		',
-        'updateSortOrderByID' => '
+	    'updateSortOrderByID' => '
 			UPDATE !prefix!!table!
 			SET   !column1! = :sortOrder
 			WHERE id        = :id

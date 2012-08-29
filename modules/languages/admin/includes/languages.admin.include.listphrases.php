@@ -1,5 +1,4 @@
 <?php
-
 function languages_admin_listphrases_build($data,$db){
 	if(!checkPermission('listPhrases','languages',$data)) {
 		$data->output['abort'] = true;
@@ -28,7 +27,6 @@ function languages_admin_listphrases_build($data,$db){
 	$statement->execute();
 	$data->output['phraseList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
 }
-
 function languages_admin_listphrases_content($data){
 	if(isset($data->output['themeOverride'])){
 		$func = 'theme_languages'.$data->output['themeOverride'];

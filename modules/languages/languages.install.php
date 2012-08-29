@@ -1,14 +1,11 @@
 <?php
-
 function languages_settings(){
 	return array(
 		'name' => 'languages',
 		'shortName' => 'languages'
 	);
 }
-
 function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
-
 	$structures = array(
 		'languages' => array(
 			'shortName'  =>	'VARCHAR(5) NOT NULL',
@@ -65,7 +62,6 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 		$db->createTable('languages_phrases',$structures['languages_phrases'],$lang);
 	}
 }
-
 function languages_uninstall($db){
 	
 }

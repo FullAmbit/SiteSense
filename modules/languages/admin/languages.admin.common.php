@@ -1,5 +1,4 @@
 <?php
-
 function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases,$isAdmin = FALSE){
 	$moduleShortName = (isset($data->output['moduleShortName'][$moduleName])) ? $data->output['moduleShortName'][$moduleName] : '';
 	switch($_POST['action']){
@@ -34,7 +33,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 		break;
 		case 1:
 			if(empty($modulePhrases)) break;
-
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
 			$check = $db->prepare('getPhraseByUniqueParams','admin_languages',array('!lang!'=>$languageShortName));
@@ -47,7 +45,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					':isAdmin' => $isAdmin
 				));
 				if($check->fetch()!==FALSE) continue;
-
 				$result = $statement->execute(array(
 					':phrase' => $phrase,
 					':text' => $text,
@@ -69,7 +66,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				':isAdmin' => $isAdmin
 			));
 			$existingModuleList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
 			// Put In The New Phrases
 			$insert = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
 			$update = $db->prepare('updatePhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
@@ -98,7 +94,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					return FALSE;
 				}
 			}
-
 		break;
 		default:
 			$data->output['responseMessage'] = 'The action you specified was invalid.';
@@ -143,7 +138,6 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				':isAdmin' => $isAdmin
 			));
 			$englishPhraseList = $statement->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
-
 			$statement = $db->prepare('insertOrUpdatePhrase','admin_languages',array('!lang!' => $languageShortName));
 			foreach($modulePhrases as $phrase => $text){
 				// If No English Source Found...Skip
@@ -235,5 +229,4 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 		break;
 	}
 }
-
 ?>
