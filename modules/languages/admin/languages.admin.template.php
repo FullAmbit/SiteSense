@@ -10,7 +10,6 @@ function theme_languagesList($data){
 	theme_navPanel($data);
 	echo 
 	'
-
 	<table class="pagesList">
 		<caption>',$data->phrases['languages']['manageLanguagesHeading'],'</caption>
 		<thead>
@@ -33,7 +32,6 @@ function theme_languagesList($data){
 	'	</tbody>
 	</table>';
 }
-
 function theme_languagesListPhrases($data){
 	echo '
 	<div class="navPanel buttonList">
@@ -66,35 +64,28 @@ function theme_languagesListPhrases($data){
 	'	</tbody>
 	</table>';
 }
-
 function theme_languagesNotFound($data){
 	echo '<h2>',$data->phrases['languages']['languageNotFound'],'</h2>';
 }
-
 function theme_languagesPhraseNotFound($data){
 	echo '<h2>',$data->phrases['language']['phraseNotFound'],' - ',$data->phrases['languages']['language'],': ',$data->output['languageItem']['name'],'</h2>';
 }
-
 function theme_languagesAddPhrase($data){
 	if(isset($data->output['responseMessage'])) echo '<h2>',$data->output['responseMessage'],'</h2>';
 	$data->output['phraseForm']->caption = $data->phrases['languages']['captionAddPhrase'];
 	$data->output['phraseForm']->build();
 }
-
 function theme_languagesEditPhrase($data){
 	if(isset($data->output['responseMessage'])) echo '<h2>',$data->output['responseMessage'],'</h2>';
 	$data->output['phraseForm']->caption = $data->phrases['languages']['captionEditPhrase'].' '.$data->output['phraseItem']['en_us']['phrase'];
 	$data->output['phraseForm']->build();
 }
-
 function theme_languagesAddPhraseSuccess($data){
 	echo $data->phrases['languages']['addPhraseSuccess'],' - ',$data->output['phraseForm']->sendArray[':phrase'];
 }
-
 function theme_languagesEditPhraseSuccess($data){
 	echo '<h2>',$data->phrases['languages']['editPhraseSuccess'],'</h2>';
 }
-
 function theme_languagesInstallPhrases($data){
 	echo
 	'
@@ -110,15 +101,12 @@ function theme_languagesInstallPhrases($data){
 		<input type="submit" name="install" value="',$data->phrases['languages']['install'],'" />
 	</form>';
 }
-
 function theme_languagesEnglishNotFound($data){
 	echo '<h2>The core English phrases file was not found.</h2>';
 }
-
 function theme_languagesInstallPhrasesEnglishError($data){
 	echo '<h2>There was an error while saving phrases for the English language</h2>';
 }
-
 function theme_languagesUpdateSuccess($data){
 	echo '<h2>',$data->phrases['languages']['updateLanguageSuccess'],' - ',$data->output['languageList'][$_POST['updateLanguage']]['name'],'</h2>';
 }
@@ -132,7 +120,6 @@ function theme_languagesUpdateTranslation($data){
 		<input type="submit" name="install" value="Update Phrases" />
 	</form>';
 }
-
 function theme_languagesUpdateTranslationSuccess($data){
 	$list = array('userErrors','adminErrors');
 	$error = FALSE;
@@ -175,7 +162,6 @@ function theme_languagesUpdateTranslationSuccess($data){
 		}
 	}
 }
-
 function theme_languagesNewLanguage($data){
 	if(empty($data->output['languageList'])){
 		echo '<h2>There are are no new languages for you to install.</h2>';
@@ -188,7 +174,6 @@ function theme_languagesNewLanguage($data){
 	}
 	echo '</select><input type="submit" name="install" value="Add Language" /></form>';
 }
-
 function theme_languagesNewLanguageSuccess($data){
 	$list = array('userErrors','adminErrors');
 	$existingError = FALSE;

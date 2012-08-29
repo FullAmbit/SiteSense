@@ -1,5 +1,4 @@
 <?php
-
 function admin_languages_addQueries(){
 	return array(
 		'getAllLanguages' => '
@@ -96,6 +95,8 @@ function admin_languages_addQueries(){
 				isAdmin = :isAdmin
 			WHERE
 				id = :id
+				AND NOT EXISTS
+				(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=1 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
 		',
 		'updatePhraseByLanguageOverride' => '
 			UPDATE 
@@ -159,9 +160,9 @@ function admin_languages_addQueries(){
 			WHERE 
 				shortName = :shortName
 		',
-		'truncatePhrases' => '
-			TRUNCATE !prefix!languages_phrases_!lang!
-		',
+		'truncatePhrases' => ' 
+			DELETE FROM !prefix!languages_phrases_!lang! WHERE override=0
+		', // can't use TRUNCATE cuz it'll kill our overrides
 		'insertOrUpdatePhrase' => '
 			INSERT INTO 
 				!prefix!languages_phrases_!lang!
@@ -175,8 +176,8 @@ function admin_languages_addQueries(){
 					module = :module,
 					isAdmin = :isAdmin
 				WHERE	
-					(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=1 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
-		', // insertOrUpdatePhrase is probably where it needs to be to not update overrides
+					(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=0 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
+		', 
 		'getPhraseByUniqueParams' => '
 			SELECT
 				*

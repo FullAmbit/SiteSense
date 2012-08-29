@@ -1,7 +1,5 @@
 <?php
-
 $this->submitTitle = $data->phrases['languages']['submitPhraseItemForm'];
-
 $this->fields = array(
 	'module' => array(
 		'label' => $data->phrases['languages']['module'],
@@ -63,5 +61,4 @@ foreach($data->languageList as $languageItem){
 		'required' => ($languageItem['shortName'] == 'en_us' ) ? true : false,
 	);
 }
-
 ?>

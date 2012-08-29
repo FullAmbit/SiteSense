@@ -38,7 +38,6 @@ function languages_admin_editphrase_build($data,$db){
 					'module' => $data->output['phraseForm']->sendArray[':module'],
 					'isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
 				));
-
 				if($found){
 					// Throw Form Error, Phrase Taken.
 					$data->output['phraseForm']->error = true;
@@ -67,7 +66,6 @@ function languages_admin_editphrase_build($data,$db){
 		}
 	}
 }
-
 function languages_admin_editphrase_content($data){
 	if(isset($data->output['themeOverride'])){
 		$func = 'theme_languages'.$data->output['themeOverride'];

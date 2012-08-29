@@ -1,6 +1,4 @@
-
 <?php
-
 function languages_languages_admin_en_us(){
 	return array(
 		'core' => array(
@@ -56,8 +54,7 @@ function languages_languages_admin_en_us(){
 		'modifyPhrases'              => 'Modify Phrases',
 		'modifyOverrides'            => 'Modify Overrides',
 		'global'                     => 'Global',
-		'adminPhrase'                => 'Admin Phrase',
-		
+		'adminPhrase'                => 'Admin Phrase',	
 	);
 }
 ?>
