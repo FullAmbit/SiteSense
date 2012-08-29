@@ -14,12 +14,12 @@ function languages_install($db,$drop = FALSE,$firstInstall=FALSE,$lang='en_us'){
 		),
 		'languages_phrases' => array(
 			'id'         => SQR_IDKey,
-	        'phrase'     => 'VARCHAR(255) NOT NULL',
-	        'text'       => 'TEXT NOT NULL',
-	        'module'     => SQR_moduleName,
-	        'isAdmin'    => SQR_boolean,
+		    'phrase'     => 'VARCHAR(255) NOT NULL',
+		    'text'       => 'TEXT NOT NULL',
+		    'module'     => SQR_moduleName,
+		    'isAdmin'    => SQR_boolean,
 			'override'   => SQR_boolean . ' DEFAULT 0',
-	        'UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)'
+		    'UNIQUE KEY `phrase` (`phrase`,`module`,`isAdmin`)'
 		)
 	);
 	

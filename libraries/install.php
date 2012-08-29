@@ -53,108 +53,108 @@ echo '
 <h1>SiteSense Installer/Upgrader</h1>
 ';
 if (
-    !isset($_POST['spw']) ||
-    ($_POST['spw']!==$setupPassword)
+	!isset($_POST['spw']) ||
+	($_POST['spw']!==$setupPassword)
 ) {
-    echo (
-    (isset($_POST['spw']) && ($_POST['spw']!=$setupPassword)) ? '
+	echo (
+	(isset($_POST['spw']) && ($_POST['spw']!=$setupPassword)) ? '
 <p class="error">Incorrect Setup Password</p>' :
-        ''
-    ),'
+	    ''
+	),'
 <form action="" method="post">
   <fieldset>
-    <label for="spw">Please Enter Your Setup Password to Continue<br /></label>
-    <input type="password" id="spw" name="spw" width="24" /><br /><br />
-    <label for="cbDrop">
-      <input type="checkBox" class="checkBox" id="cbDrop" name="cbDrop" value="drop" />
-      Drop all tables first?<br />
-    </label>
-    <p class="warning">*** WARNING *** Dropping all tables will erase ALL entries in the CMS!</p>
+	<label for="spw">Please Enter Your Setup Password to Continue<br /></label>
+	<input type="password" id="spw" name="spw" width="24" /><br /><br />
+	<label for="cbDrop">
+	  <input type="checkBox" class="checkBox" id="cbDrop" name="cbDrop" value="drop" />
+	  Drop all tables first?<br />
+	</label>
+	<p class="warning">*** WARNING *** Dropping all tables will erase ALL entries in the CMS!</p>
   </fieldset>
 </form>';
 } else {
 	$lang = 'en_us';
-    $drop = false;
-    if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
-        $drop = true;
-    $data->installErrors=0;
-    $data->loadModuleQueries('installer',true);
-    $data->loadCommonQueryDefines(true);
-    $structures=installer_tableStructures();
-    echo '<p>Connect to Database Successful</p>';
+	$drop = false;
+	if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
+	    $drop = true;
+	$data->installErrors=0;
+	$data->loadModuleQueries('installer',true);
+	$data->loadCommonQueryDefines(true);
+	$structures=installer_tableStructures();
+	echo '<p>Connect to Database Successful</p>';
 
-    if($drop) {
-        $data->dropTable('settings',$lang);
-        $data->dropTable('banned');
-        $data->dropTable('sessions');
-        $data->dropTable('sidebars',$lang);
-        $data->dropTable('main_menu',$lang);
-        $data->dropTable('activations');
-        $data->dropTable('urls');
-        $data->dropTable('modules');
-        $data->dropTable('module_sidebars');
-        $data->dropTable('languages');
-        $data->dropTable('languages_phrases',$lang);
-        $data->dropTable('hostnames');
-        // Dynamic User Permissions
-        $data->dropTable('user_groups');
-        $data->dropTable('user_group_permissions');
-        $data->dropTable('user_permissions');
-    }
-    
-    // Install modules
-    $coreModules = array(
-    	'languages',
-    	'settings',
-        'sidebars',
-        'modules',
-        'dynamicForms',
-        'urls',
-        'default',
-        'blogs',
-        'pages',
-        'mainMenu',
-        'dashboard',
-        'hostnames',
-        'plugins',
-        'users',
-    );
+	if($drop) {
+	    $data->dropTable('settings',$lang);
+	    $data->dropTable('banned');
+	    $data->dropTable('sessions');
+	    $data->dropTable('sidebars',$lang);
+	    $data->dropTable('main_menu',$lang);
+	    $data->dropTable('activations');
+	    $data->dropTable('urls');
+	    $data->dropTable('modules');
+	    $data->dropTable('module_sidebars');
+	    $data->dropTable('languages');
+	    $data->dropTable('languages_phrases',$lang);
+	    $data->dropTable('hostnames');
+	    // Dynamic User Permissions
+	    $data->dropTable('user_groups');
+	    $data->dropTable('user_group_permissions');
+	    $data->dropTable('user_permissions');
+	}
+	
+	// Install modules
+	$coreModules = array(
+		'languages',
+		'settings',
+	    'sidebars',
+	    'modules',
+	    'dynamicForms',
+	    'urls',
+	    'default',
+	    'blogs',
+	    'pages',
+	    'mainMenu',
+	    'dashboard',
+	    'hostnames',
+	    'plugins',
+	    'users',
+	);
 
-    $uninstalledModuleFiles = array_flip(glob('modules/*/*.install.php'));
-    $temp = array_flip($uninstalledModuleFiles);
-    unset($uninstalledModuleFiles['modules/sidebars/sidebars.install.php'],$uninstalledModuleFiles['modules/languages/languages.install.php'],$uninstalledModuleFiles['modules/settings/settings.install.php']);
-    $uninstalledModuleFiles = array('modules/languages/languages.install.php'=>rand(),'modules/sidebars/sidebars.install.php'=>rand(),'modules/settings/settings.install.php'=>rand()) + $uninstalledModuleFiles;
-    $uninstalledModuleFiles = array_flip($uninstalledModuleFiles);
-    
-    $moduleSettings=array();
-    foreach($uninstalledModuleFiles as $moduleInstallFile) {
-        // Include the install file for this module
-        if(!file_exists($moduleInstallFile)) {
-            $data->output['rejectError']='Module installation file does not exist';
-            $data->output['rejectText']='The module installation could not be found.';
-        } else {
-            common_include($moduleInstallFile);
-            // Extract the name of the module from the filename
-            $dirEnd=strrpos($moduleInstallFile,'/')+1;
-            $nameEnd=strpos($moduleInstallFile,'.');
-            $moduleName=substr($moduleInstallFile,$dirEnd,$nameEnd-$dirEnd);
-            if(in_array($moduleName,$coreModules)) {
-                // Run the module installation procedure
-                $targetFunction=$moduleName.'_install';
-                if(!function_exists($targetFunction)) {
-                    $data->output['rejectError']='Improper installation file';
-                    $data->output['rejectText']='The module install function could not be found within the module installation file.';
-                } elseif($moduleName=='users') {
-                    $newPassword=$targetFunction($data,$drop,TRUE);
-                } else {
-                    $targetFunction($data,$drop,TRUE);
-                }
-                $targetFunction=$moduleName.'_settings';
-                if(function_exists($targetFunction)) {
-                    $moduleSettings[$moduleName]=$targetFunction();
-                    
-                    $statement = $data->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
-                    // Load The Phrases (Admin End)
+	$uninstalledModuleFiles = array_flip(glob('modules/*/*.install.php'));
+	$temp = array_flip($uninstalledModuleFiles);
+	unset($uninstalledModuleFiles['modules/sidebars/sidebars.install.php'],$uninstalledModuleFiles['modules/languages/languages.install.php'],$uninstalledModuleFiles['modules/settings/settings.install.php']);
+	$uninstalledModuleFiles = array('modules/languages/languages.install.php'=>rand(),'modules/sidebars/sidebars.install.php'=>rand(),'modules/settings/settings.install.php'=>rand()) + $uninstalledModuleFiles;
+	$uninstalledModuleFiles = array_flip($uninstalledModuleFiles);
+	
+	$moduleSettings=array();
+	foreach($uninstalledModuleFiles as $moduleInstallFile) {
+	    // Include the install file for this module
+	    if(!file_exists($moduleInstallFile)) {
+	        $data->output['rejectError']='Module installation file does not exist';
+	        $data->output['rejectText']='The module installation could not be found.';
+	    } else {
+	        common_include($moduleInstallFile);
+	        // Extract the name of the module from the filename
+	        $dirEnd=strrpos($moduleInstallFile,'/')+1;
+	        $nameEnd=strpos($moduleInstallFile,'.');
+	        $moduleName=substr($moduleInstallFile,$dirEnd,$nameEnd-$dirEnd);
+	        if(in_array($moduleName,$coreModules)) {
+	            // Run the module installation procedure
+	            $targetFunction=$moduleName.'_install';
+	            if(!function_exists($targetFunction)) {
+	                $data->output['rejectError']='Improper installation file';
+	                $data->output['rejectText']='The module install function could not be found within the module installation file.';
+	            } elseif($moduleName=='users') {
+	                $newPassword=$targetFunction($data,$drop,TRUE);
+	            } else {
+	                $targetFunction($data,$drop,TRUE);
+	            }
+	            $targetFunction=$moduleName.'_settings';
+	            if(function_exists($targetFunction)) {
+	                $moduleSettings[$moduleName]=$targetFunction();
+	                
+	                $statement = $data->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
+	                // Load The Phrases (Admin End)
 					if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php')) {
 						common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php');
 						$func = 'languages_'.$moduleName.'_en_us';
@@ -182,8 +182,8 @@ if (
 							}
 						}
 					}
-                    
-                    // Load The Phrases (Admin End)
+	                
+	                // Load The Phrases (Admin End)
 					if (file_exists('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php')) {
 						common_include('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php');
 						$func = 'languages_'.$moduleName.'_admin_en_us';
@@ -211,52 +211,52 @@ if (
 							}
 						}
 					}
-                } else {
-                    $data->output['rejectError']='Improper installation file';
-                    $data->output['rejectText']='The module install function could not be found within the module installation file.';
-                }
-            } else if ($drop) {
-                // Run the module uninstall procedure
-                $targetFunction=$moduleName.'_uninstall';
-                if(!function_exists($targetFunction)) {
-                    $data->output['rejectError']='Improper installation file';
-                    $data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
-                } else $targetFunction($data);
-            }
-        }
-    }
+	            } else {
+	                $data->output['rejectError']='Improper installation file';
+	                $data->output['rejectText']='The module install function could not be found within the module installation file.';
+	            }
+	        } else if ($drop) {
+	            // Run the module uninstall procedure
+	            $targetFunction=$moduleName.'_uninstall';
+	            if(!function_exists($targetFunction)) {
+	                $data->output['rejectError']='Improper installation file';
+	                $data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
+	            } else $targetFunction($data);
+	        }
+	    }
+	}
 
-    $moduleFiles=glob('modules/*/*.module.php');
-    // Build an array of the names of the modules in the filesystem
-    $fileModules=array_map(
-        function($path) {
-            $dirEnd=strrpos($path,'/')+1;
-            $nameEnd=strpos($path,'.');
-            return substr($path,$dirEnd,$nameEnd-$dirEnd);
-        },
-        $moduleFiles
-    );
-    // Insert new modules into the database
-    $insert=$data->prepare('newModule');
-    foreach($fileModules as $fileModule) {
-        $shortName=$fileModule;
-        if(array_key_exists($fileModule,$moduleSettings)) {
-            if(array_key_exists('shortName',$moduleSettings[$fileModule])) {
-                $shortName=$moduleSettings[$fileModule]['shortName'];
-            }
-        }
-        $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
-        $insert->execute(
-            array(
-                ':name'      => $fileModule,
-                ':shortName' => $shortName,
-                ':enabled'   => $enabled
-            )
-        );
-    }
+	$moduleFiles=glob('modules/*/*.module.php');
+	// Build an array of the names of the modules in the filesystem
+	$fileModules=array_map(
+	    function($path) {
+	        $dirEnd=strrpos($path,'/')+1;
+	        $nameEnd=strpos($path,'.');
+	        return substr($path,$dirEnd,$nameEnd-$dirEnd);
+	    },
+	    $moduleFiles
+	);
+	// Insert new modules into the database
+	$insert=$data->prepare('newModule');
+	foreach($fileModules as $fileModule) {
+	    $shortName=$fileModule;
+	    if(array_key_exists($fileModule,$moduleSettings)) {
+	        if(array_key_exists('shortName',$moduleSettings[$fileModule])) {
+	            $shortName=$moduleSettings[$fileModule]['shortName'];
+	        }
+	    }
+	    $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
+	    $insert->execute(
+	        array(
+	            ':name'      => $fileModule,
+	            ':shortName' => $shortName,
+	            ':enabled'   => $enabled
+	        )
+	    );
+	}
 
-    // Set up default permission groups
-    $defaultPermissionGroups=array(
+	// Set up default permission groups
+	$defaultPermissionGroups=array(
 		'Writer'    => array(
 			'core_access',
 			'dashboard_access',
@@ -291,46 +291,46 @@ if (
 		),
 		'User'      => array()
 	);
-    foreach($defaultPermissionGroups as $groupName => $permissions) {
-        foreach($permissions as $permissionName) {
-            $statement=$data->prepare('addPermissionByGroupName');
-            $statement->execute(
-                array(
-                    ':groupName' => $groupName,
-                    ':permissionName' => $permissionName,
-                    ':value' => '0'
-                )
-            );
-        }
-    }
-    if ($data->installErrors==0) {
-        echo '
-      <h2 id="done">Complete</h2>
-      <p class="success">
-        Installation/Verification Completed Successfully
-      </p><p>
-        It is recommended to log into the Admin panel and go to the "mainMenu" function to populate the menu functions. Until you do so, there will be no menu. Any sidebars you have installed will also not show until you enable them in the Admin sidebar control.
-      </p>';
-        if (isset($newPassword)) {
-            echo '
-      <p>
-        A new administrator login was created. You must use the following information to log into the system:
-      </p>
-      <dl>
-        <dt>Username:</dt><dd>admin</dd>
-        <dt>Password:</dt><dd>',$newPassword,'</dd>
-      </dl>
-      <p>
-        Changing the password is recommended. <a href="admin/users/edit/1/" class="error">Click here</a> to login to the admin panel.
-      </p>';
-        }
-    } else {
-        echo '
-      <h2 id="done">Errors Present</h2>
-      <p>
-        We were unable to build the databases properly. Please review the above errros before attempting to use this installation.
-      </p>';
-    }
+	foreach($defaultPermissionGroups as $groupName => $permissions) {
+	    foreach($permissions as $permissionName) {
+	        $statement=$data->prepare('addPermissionByGroupName');
+	        $statement->execute(
+	            array(
+	                ':groupName' => $groupName,
+	                ':permissionName' => $permissionName,
+	                ':value' => '0'
+	            )
+	        );
+	    }
+	}
+	if ($data->installErrors==0) {
+	    echo '
+	  <h2 id="done">Complete</h2>
+	  <p class="success">
+	    Installation/Verification Completed Successfully
+	  </p><p>
+	    It is recommended to log into the Admin panel and go to the "mainMenu" function to populate the menu functions. Until you do so, there will be no menu. Any sidebars you have installed will also not show until you enable them in the Admin sidebar control.
+	  </p>';
+	    if (isset($newPassword)) {
+	        echo '
+	  <p>
+	    A new administrator login was created. You must use the following information to log into the system:
+	  </p>
+	  <dl>
+	    <dt>Username:</dt><dd>admin</dd>
+	    <dt>Password:</dt><dd>',$newPassword,'</dd>
+	  </dl>
+	  <p>
+	    Changing the password is recommended. <a href="admin/users/edit/1/" class="error">Click here</a> to login to the admin panel.
+	  </p>';
+	    }
+	} else {
+	    echo '
+	  <h2 id="done">Errors Present</h2>
+	  <p>
+	    We were unable to build the databases properly. Please review the above errros before attempting to use this installation.
+	  </p>';
+	}
 }
 echo '
 </body></html>';
