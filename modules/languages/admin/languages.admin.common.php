@@ -1,6 +1,6 @@
 <?php
 function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$modulePhrases,$isAdmin = FALSE){
-	$moduleShortName = strval($data->output['moduleShortName'][$moduleName]);
+	$moduleShortName = (isset($moduleName)) ? $moduleName : '';
 	$errorList=$newList=$returnList=array();
 	switch($_POST['action']){
 		case 0:
@@ -21,7 +21,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
 			$check = $db->prepare('getPhraseByUniqueParams','admin_languages',array('!lang!'=>$languageShortName));
-			foreach($modulePhrases as $phrase => $text){
+			foreach($modulePhrases as $phrase => $text) {
 				// Check If Phrase Exists Already For This Module By IsAdmin
 				$check->execute(array(
 					':phrase' => $phrase,
@@ -57,7 +57,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 						':id' => $existingModuleList[$phrase][0]['id'],
 						':isAdmin' => $isAdmin
 					));
-				}else{
+				} else {
 					// insert New One
 					$result = $insert->execute(array(
 						':phrase' => $phrase,
@@ -67,7 +67,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					));
 				}
 			
-				if($result == FALSE){
+				if($result === FALSE){
 					$data->output['responseMessage'] = 'There was an error while saving the phrases. It aborted at: '.$phrase.' for the module '.$moduleName;
 					return FALSE;
 				}
@@ -157,7 +157,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 				if(isset($existingPhraseList[$phrase])&&$existingPhraseList[$phrase][0]['text']==$englishPhraseList[$phrase][0]['text']){
 						// Update To New Value From Language-File System
 						$update->execute($queryParams);
-				}else{
+				} else {
 					// Does Not Exist..Add New Phrase
 					$insert->execute($queryParams);
 					$newList[(($moduleShortName=='') ? 'core' : $moduleShortName)][] = $phrase;

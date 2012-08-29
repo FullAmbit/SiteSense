@@ -95,8 +95,7 @@ function admin_languages_addQueries(){
 				isAdmin = :isAdmin
 			WHERE
 				id = :id
-				AND NOT EXISTS
-				(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=1 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
+				AND override != 1
 		',
 		'updatePhraseByLanguageOverride' => '
 			UPDATE 

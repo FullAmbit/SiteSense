@@ -87,8 +87,7 @@ function theme_languagesEditPhraseSuccess($data){
 	echo '<h2>',$data->phrases['languages']['editPhraseSuccess'],'</h2>';
 }
 function theme_languagesInstallPhrases($data){
-	echo
-	'
+	echo '
 	<form name="updateLanguage" action="" method="post">
 		<caption>',$data->phrases['languages']['captionUpdate'],'</caption><br />
 		',$data->phrases['languages']['phraseAction'],'
