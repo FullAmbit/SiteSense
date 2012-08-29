@@ -1,12 +1,16 @@
 <?php
-
+function theme_navPanel($data) {
+	echo '	<div class="navPanel buttonList">
+		<a href="',$data->linkRoot,'admin/languages/newlanguage/">',$data->phrases['languages']['install'],'</a>
+		<a href="',$data->linkRoot,'admin/languages/listphrases/">',$data->phrases['languages']['modifyPhrases'],'</a>
+		<a href="',$data->linkRoot,'admin/languages/listphrases/overrides">',$data->phrases['languages']['modifyOverrides'],'</a>
+	</div>';
+}
 function theme_languagesList($data){
+	theme_navPanel($data);
 	echo 
 	'
-	<div class="navPanel buttonList">
-		<a href="',$data->linkRoot,'admin/languages/newlanguage/">Install Language</a>
-		<a href="',$data->linkRoot,'admin/languages/listphrases/">Phrases</a>
-	</div>
+
 	<table class="pagesList">
 		<caption>',$data->phrases['languages']['manageLanguagesHeading'],'</caption>
 		<thead>
@@ -31,18 +35,18 @@ function theme_languagesList($data){
 }
 
 function theme_languagesListPhrases($data){
-	echo 
-	'
+	echo '
 	<div class="navPanel buttonList">
 		<a href="',$data->linkRoot,'admin/languages/addPhrase/',$data->output['languageItem']['shortName'],'">',$data->phrases['languages']['addAPhrase'],'</a>
 	</div>
 	<table class="pagesList">
-		<caption>',$data->output['languageItem']['name'],' ',$data->phrases['languages']['phrases'],'</caption>
+		<caption>',$data->output['languageItem']['name'],' ',$data->phrases['languages']['phrases'],' - ',($data->action[3]=='overrides') ? $data->phrases['languages']['modifyOverrides'] : $data->phrases['languages']['modifyPhrases'],'</caption>
 		<thead>
 			<tr>
 				<th>',$data->phrases['languages']['phrase'],'</th>
 				<th>',$data->phrases['languages']['text'],'</th>
 				<th>',$data->phrases['languages']['module'],'</th>
+				<th>',$data->phrases['languages']['level'],'</th>
 				<th>',$data->phrases['core']['controls'],'</th>
 			</tr>
 		</thead>
@@ -52,7 +56,8 @@ function theme_languagesListPhrases($data){
 		'	<tr>
 				<td>',$phraseItem['phrase'],'</td>
 				<td>',$phraseItem['text'],'</td>
-				<td>',($phraseItem['module'] == '') ? 'Global' : $phraseItem['module'],'</td>
+				<td>',($phraseItem['module'] == '') ? $data->phrases['languages']['global'] : $phraseItem['module'],'</td>
+				<td>',$data->phrases['languages']['isAdmin_' . $phraseItem['isAdmin']],'</td>
 				<td><a href="',$data->linkRoot,'admin/languages/editPhrase/',$phraseItem['id'],'">',$data->phrases['core']['actionModify'],'</a>
 				</td>
 			</tr>';

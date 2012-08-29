@@ -18,6 +18,16 @@ function admin_languages_addQueries(){
 			ORDER BY
 				module, phrase ASC
 		',
+		'getAllOverriddenPhrasesByLanguage' => '
+			SELECT
+				*
+			FROM 
+				!prefix!languages_phrases_!lang!
+			WHERE
+				override = 1
+			ORDER BY
+				module, phrase ASC
+		',
 		'getLanguage' => '
 			SELECT 
 				* 
@@ -84,6 +94,18 @@ function admin_languages_addQueries(){
 				text = :text,
 				module = :module,
 				isAdmin = :isAdmin
+			WHERE
+				id = :id
+		',
+		'updatePhraseByLanguageOverride' => '
+			UPDATE 
+				!prefix!languages_phrases_!lang!
+			SET 
+				phrase = :phrase,
+				text = :text,
+				module = :module,
+				isAdmin = :isAdmin,
+				override = :override
 			WHERE
 				id = :id
 		',

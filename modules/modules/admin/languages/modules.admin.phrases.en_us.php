@@ -42,6 +42,7 @@ function languages_modules_admin_en_us(){
 		'linkSelectLanguageAction'            => 'Please click here to select an action.',
 		'languageNotFound'                    => 'The language you specified could not be found.',
 		'languageTablesCreated'               => 'The language tables for this module were created.',
+		'languageNotFound'                    => 'The language you specified could not be found.',
 		'installLanguageErrorMissingUserEnd'  => 'The user-end phrase installation file for this module is either corrupt or missing the function.',
 		'installLanguageErrorSaveUserEnd'     => 'There was an error in saving the user-end phrases to the database.',
 		'installLanguageSuccessUserEnd'       => 'The user side phrases were saved to the database.',

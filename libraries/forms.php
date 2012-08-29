@@ -448,11 +448,11 @@ class formHandler {
                                 }
                             }
                         }
-                    }else if(isset($formField['required']) && $formField['required']){
+                    } elseif(isset($formField['required']) && $formField['required']){
                         $validData = false;
                         $formField['error'] = true;
                     }
-                }else{
+                } else {
                     $formKey=str_replace('[]','',$formKey);
                     if(array_key_exists($this->formPrefix.$formKey, $_POST)){
                         $value = $_POST[$this->formPrefix.$formKey];
@@ -473,10 +473,12 @@ class formHandler {
                             break;
                         }
                     }
-                    if ($formField[$valueField]!=$value) {
-                        $formField['updated']=$valueField;
-                        $formField[$valueField]=$value;
-                    }
+					if (isset($formField[$valueField])) {
+						if ($formField[$valueField]!=$value) {
+							$formField['updated']=$valueField;
+							$formField[$valueField]=$value;
+						}
+					}
                     if (isset($formField['required']) && $formField['required'] && empty($value)) {
                         $formField['error']=true;
                         $validData=false;
@@ -543,9 +545,7 @@ class formHandler {
                         }
                     }
                     // Check What It CANNOT Equal
-                    if(isset($formField['cannotEqual']))
-                    {
-
+                    if(isset($formField['cannotEqual'])) {
                         $errorMessage = isset($formField['cannotEqualFailMessage']) ? $formField['cannotEqualFailMessage'] : 'Please provide a different value';
                         if(is_array($formField['cannotEqual']))
                         {

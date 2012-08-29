@@ -45,7 +45,19 @@ function languages_languages_admin_en_us(){
 		'setDefaultSuccess'          => 'The new default language has been set successfully.',
 		'missingCoreInstallerFile'   => 'The language you selected does not have a core installer file.',
 		'createPhraseTableError'     => 'There was an error in creating the phrases table for the langauge.',
-		'addLanguageDBError'         => 'There was an error in adding the language to the database.'
+		'addLanguageDBError'         => 'There was an error in adding the language to the database.',
+		'isAdmin_1'                  => 'Admin',
+		'isAdmin_0'                  => 'User',
+		'level'                      => 'Level',
+		'installedPhrases'           => 'Installed Phrases',
+		'phraseOverrides'            => 'Phrase Overrides',
+		'override'                   => 'Override',
+		'overridden'                 => 'Overridden',
+		'modifyPhrases'              => 'Modify Phrases',
+		'modifyOverrides'            => 'Modify Overrides',
+		'global'                     => 'Global',
+		'adminPhrase'                => 'Admin Phrase',
+		
 	);
 }
 ?>

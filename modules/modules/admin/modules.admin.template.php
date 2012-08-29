@@ -224,4 +224,7 @@ function theme_modulesUpdateTranslationSuccess($data){
 		}
 	}
 }
+function theme_modulesNotFound($data){
+	echo '<h2>',$data->phrases['modules']['languageNotFound'],'</h2>';
+}
 ?>

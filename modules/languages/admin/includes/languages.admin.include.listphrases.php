@@ -15,8 +15,16 @@ function languages_admin_listphrases_build($data,$db){
 		$data->output['themeOverride'] = 'NotFound';
 		return;
 	}
-	// Get Phrases
-	$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages',array('!lang!'=>$data->language));
+	switch ($data->action[3]) {
+		case 'overrides':
+			// get phrases which are overrides
+			$statement = $db->prepare('getAllOverriddenPhrasesByLanguage','admin_languages',array('!lang!'=>$data->language));
+			break;
+		default:
+			// Get Phrases
+			$statement = $db->prepare('getAllPhrasesByLanguage','admin_languages',array('!lang!'=>$data->language));
+			break;
+	}
 	$statement->execute();
 	$data->output['phraseList'] = $statement->fetchAll(PDO::FETCH_ASSOC);
 }

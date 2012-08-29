@@ -4,9 +4,8 @@ function languages_admin_editphrase_build($data,$db){
 	if(!checkPermission('editPhrase','languages',$data)) {
 		$data->output['abort'] = true;
 		$data->output['abortMessage']='<h2>'.$data->phrases['core']['accessDeniedHeading'].'</h2>'.$data->phrases['core']['accessDeniedMessage'];
-			return;
+		return;
 	}
-	
 	// Get The English Phrase
 	$statement=$db->prepare('getPhraseByLanguageAndId','admin_languages',array('!lang!'=>"en_us"));
 	$statement->execute(array(
@@ -37,7 +36,7 @@ function languages_admin_editphrase_build($data,$db){
 				$found = common_checkUniqueValueAcrossLanguages($data,$db,'languages_phrases','id',array(
 					'phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 					'module' => $data->output['phraseForm']->sendArray[':module'],
-					'isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin']
+					'isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
 				));
 
 				if($found){
@@ -50,16 +49,16 @@ function languages_admin_editphrase_build($data,$db){
 			}
 			// Save To Database (For Each Language)
 			foreach($data->languageList as $languageItem){
-				$statement = $db->prepare('updatePhraseByLanguage','admin_languages',array('!lang!'=>$languageItem['shortName']));
+				$statement = $db->prepare('updatePhraseByLanguageOverride','admin_languages',array('!lang!'=>$languageItem['shortName']));
 				$result = $statement->execute(array(
 					':id' => $data->output['phraseItem'][$languageItem['shortName']]['id'],
 					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 					':text' => $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']],
 					':module' => $data->output['phraseForm']->sendArray[':module'],
-					':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin']
+					':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
+					':override' => $data->output['phraseForm']->sendArray[':override']
 				));
 			}
-			
 			if($result){
 				$data->output['themeOverride'] = 'EditPhraseSuccess';
 			}else{
