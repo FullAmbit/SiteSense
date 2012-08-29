@@ -108,6 +108,7 @@ function admin_languages_addQueries(){
 				override = :override
 			WHERE
 				id = :id
+			LIMIT 1
 		',
 		'updatePhraseTextByLanguage' => '
 			UPDATE
@@ -120,6 +121,9 @@ function admin_languages_addQueries(){
 				module = :module
 				AND
 				isAdmin = :isAdmin
+				AND NOT EXISTS
+				(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=1 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
+			LIMIT 1
 		',
 		'deletePhrasesByModuleAndLanguage' => '
 			DELETE FROM 
@@ -170,7 +174,9 @@ function admin_languages_addQueries(){
 					text = :text,
 					module = :module,
 					isAdmin = :isAdmin
-		',
+				WHERE	
+					(SELECT * FROM !prefix!languages_phrases_!lang! WHERE override=1 AND phrase = :phrase AND module = :module AND isAdmin = :isAdmin)
+		', // insertOrUpdatePhrase is probably where it needs to be to not update overrides
 		'getPhraseByUniqueParams' => '
 			SELECT
 				*

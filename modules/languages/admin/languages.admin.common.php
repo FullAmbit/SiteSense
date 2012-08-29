@@ -37,7 +37,7 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 
 			// Put In The New Phrases
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>$languageShortName));
-			$check = $db->prepare("getPhraseByUniqueParams",'admin_languages',array('!lang!'=>$languageShortName));
+			$check = $db->prepare('getPhraseByUniqueParams','admin_languages',array('!lang!'=>$languageShortName));
 			foreach($modulePhrases as $phrase => $text){
 			
 				// Check If Phrase Exists Already For This Module By IsAdmin
