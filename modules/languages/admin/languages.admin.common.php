@@ -154,26 +154,21 @@ function language_admin_savePhrases($data,$db,$languageShortName,$moduleName,$mo
 					$errorList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
 					continue;
 				}
-				
+				$queryParams = array(
+					':phrase' => $phrase,
+					':text' => $text,
+					':module' => $moduleShortName,
+					':isAdmin' => $isAdmin
+				);
 				// Check To See If It Exists Already, If So Check If Equivalent To English Phrase
 				if(isset($existingPhraseList[$phrase])){
 					if($existingPhraseList[$phrase][0]['text'] == $englishPhraseList[$phrase][0]['text']){
 						// Update To New Value From Language-File System
-						$update->execute(array(
-							':phrase' => $phrase,
-							':text' => $text,
-							':module' => $moduleShortName,
-							':isAdmin' => $isAdmin
-						));
+						$update->execute($queryParams);
 					}
 				}else{
 					// Does Not Exist..Add New Phrase
-					$insert->execute(array(
-						':phrase' => $phrase,
-						':text' => $text,
-						':module' => $moduleShortName,
-						':isAdmin' => $isAdmin
-					));
+					$insert->execute($queryParams);
 					$newList[(($moduleShortName=='') ? "core" : $moduleShortName)][] = $phrase;
 				}
 			}
