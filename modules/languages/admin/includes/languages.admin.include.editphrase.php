@@ -55,7 +55,7 @@ function languages_admin_editphrase_build($data,$db){
 					':text' => $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']],
 					':module' => $data->output['phraseForm']->sendArray[':module'],
 					':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
-					':override' => $data->output['phraseForm']->sendArray[':override']
+					':override' => 1
 				));
 			}
 			if($result){

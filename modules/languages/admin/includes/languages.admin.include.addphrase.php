@@ -30,18 +30,28 @@ function languages_admin_addphrase_build($data,$db){
 			$error = FALSE;
 			// Add This Phrase For All The Languages
 			foreach($data->languageList as $languageItem){
-				$statement = $db->prepare('addPhraseByLanguageViaForm','admin_languages',array('!lang!'=>$languageItem['shortName']));
-				$result = $statement->execute(array(
-					':isAdmin' => $data->output['phraseForm']->sendArray[':phrase'],
+				$dupe = $db->prepare('getUniquePhrase','admin_languages',array('!lang!'=>$languageItem['shortName'])); // does this phrase exist as a default?
+				$dupe = $dupe->execute(
+					':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
 					':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
 					':text' => (isset($data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']]{1})) ? $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']] : $data->output['phraseForm']->sendArray[':text_en_us'],
 					':module' => $data->output['phraseForm']->sendArray[':module'],
-					':override' => 1,
-				));
-				if($result == FALSE){
-					$error = TRUE;
-					$data->output['phraseForm']->fields['text_'.$languageItem['shortName']]['error'] = true;
-					$data->output['phraseForm']->fields['text_'.$languageItem['shortName']]['errorList'][] = "There was an error in saving this translation.";
+					':override' => 0
+				);
+				if (!$dupe->fetchColumn()) {
+					$statement = $db->prepare('addPhraseByLanguageViaForm','admin_languages',array('!lang!'=>$languageItem['shortName']));
+					$result = $statement->execute(array(
+						':isAdmin' => $data->output['phraseForm']->sendArray[':isAdmin'],
+						':phrase' => $data->output['phraseForm']->sendArray[':phrase'],
+						':text' => (isset($data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']]{1})) ? $data->output['phraseForm']->sendArray[':text_'.$languageItem['shortName']] : $data->output['phraseForm']->sendArray[':text_en_us'],
+						':module' => $data->output['phraseForm']->sendArray[':module'],
+						':override' => 1,
+					));
+					if($result == FALSE){
+						$error = TRUE;
+						$data->output['phraseForm']->fields['text_'.$languageItem['shortName']]['error'] = true;
+						$data->output['phraseForm']->fields['text_'.$languageItem['shortName']]['errorList'][] = 'There was an error in saving this translation.';
+					}
 				}
 			}
 			$statement = $db->prepare('addPhraseByLanguage','admin_languages',array('!lang!'=>'en_us'));

@@ -93,6 +93,16 @@ function admin_languages_addQueries(){
 				module = :module
 				AND isAdmin = :isAdmin
 		',
+		'getUniquePhrase' => '
+			SELECT *
+			FROM !prefix!languages_phrases_!lang
+			WHERE	phrase = :phrase AND
+					text = :text AND
+					module = :module AND
+					isAdmin = :isAdmin AND
+					override = :override
+			LIMIT 1
+		',
 		'updatePhraseByLanguage' => '
 			UPDATE 
 				!prefix!languages_phrases_!lang!
