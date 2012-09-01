@@ -24,8 +24,8 @@
 */
 
 function dashboard_admin_buildContent($data,$db){
-	$url='http://localhost/sitesense.org/version/'; // base url for version 
-	//$url='https://sitesense.org/dev/version/'; // base url for version 
+	//$url='http://localhost/sitesense.org/version/'; // base url for version 
+	$url='https://sitesense.org/dev/version/'; // base url for version 
 	// modules versions contact
 	$statement=$db->prepare('getEnabledModules','admin_modules'); // modules don't register versions until they're enabled,so this function is borderline useless if you get every module
 	$statement->execute();
