@@ -42,7 +42,6 @@ function dashboard_admin_buildContent($data,$db) {
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	$data->output['moduleUpdates'] = curl_exec($ch);
 	$data->output['moduleUpdates'] = json_decode($data->output['moduleUpdates'],TRUE);
-
 	// sitesense version contact
     $info['SiteSense Version'] = $data->settings['version'];
 	$info['Server time']=strftime('%B %d, %Y, %I:%M:%S %p');

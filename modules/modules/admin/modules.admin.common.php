@@ -1,5 +1,16 @@
 <?php
+function modules_admin_common_runUpgrader($data,$db,$to,$from,$shortName,$file) {
+	common_include('modules/' . $update['shortName'] . '/updaters/' . $file);
+	$functionName = $shortName . '_admin_updater_';
+	$functionName .= preg_replace('/\D/', '', $from);
+	
+	$functionName .= preg_replace('/\D/', '', $to);
+	if (function_exists()) {} // TODO
+
+
+}
 function modules_admin_common_getUpgradePath($to,$from,$shortName,$updaters) { // if ANYBODY knows how to calculate upgrade paths faster, stronger or better, send some code our way!
+	$nu = array();
 	foreach ($updaters as $i=>$updater) {
 		$updater = basename($updater);
 		if (fnmatch($shortName . '.updater.*to*.php',$updater)) {
