@@ -675,14 +675,14 @@
        Setting this will also process phrases specific to your modules.
       </li>
     </ul>
-    <h4 id="languages-entity-phrases">11.2 Phrases</h4>
+    <h4 id="languages-entity-phrases">11.2 Modify Phrases</h4>
     <h5>Controls</h5>
       <ul>
         <li><b>Add A Phrase</b><br>
          Add a new phrase. It will automatically be added to each language, however you need to provide at least an English value for the phrase. The phrase must be unique to the module and whether it belongs on the administrator panel, or the user end.
         </li>
         <li><b>Modify</b><br>
-         Edit an existing phrase. Again, you will need to provide at least an English value for the phrase. When you modify a phrase, your edit be marked in the database as an override. This means that future updates to that module will not affect the that particular phrase, so your edits will stay in place until you decide to change them.
+         Edit an existing phrase. Again, you will need to provide at least an English value for the phrase. When you modify a phrase, your edit be marked as an override. This means that future updates to that module will not affect that particular phrase, so your edits will stay in place until you decide to change them yourself. You can quickly view modified phrases by clicking "Modify Overrides" at the top of the languages page in the admin control panel.
         </li>
       </ul>
     <h5>Properties</h5>
@@ -695,10 +695,14 @@
       </li>
       <li><b>Module</b><br>
        The module to which the phrase belongs. Phrases can also be global and will be loaded on every page of the website.
-      <li><b>Admin Phrase</b><br>
+	  </li>
+      <li><b>Level</b><br>
        Phrases can belong on either the administrator panel or the user end. This is also a unique parameter for the phrase.
+	  </li>
     </ul>
-    
+    <h4 id="languages-entity-phrases">11.3 Modify Overrides</h4>
+		Controls and properties on the Modify Overrides are the same as those on the Modify Phrases page, documented above.<br>
+		Modify Overrides allows you to quickly view and edit phrases which you have modified in the past.
   <hr />
 
   <h3 id="hostnames">12. Hostnames</h3>
