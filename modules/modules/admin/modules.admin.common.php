@@ -1,5 +1,5 @@
 <?php
-function blogs_admin_common_getUpgradePath($to,$from,$shortName,$updaters) { // if ANYBODY knows how to calculate upgrade paths faster, stronger or better, send some code our way!
+function modules_admin_common_getUpgradePath($to,$from,$shortName,$updaters) { // if ANYBODY knows how to calculate upgrade paths faster, stronger or better, send some code our way!
 	foreach ($updaters as $i=>$updater) {
 		$updater = basename($updater);
 		if (fnmatch($shortName . '.updater.*to*.php',$updater)) {
