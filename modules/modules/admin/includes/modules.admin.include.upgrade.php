@@ -70,7 +70,7 @@ function admin_modulesBuild($data,$db){
 			case 1:
 				$data->output['upgrade'][]='<li>Welcome to the upgrade process for your module. We\'ll have you up and running in no time.</li>
 					<li>Disable this module. You can do that <a href="'.$data->linkRoot.'admin/modules/disable/'.$update['shortName'].'" target="_blank">here</a>. Do not uninstall it or you will lose all your data from that particular module.</li>
-					<li>Now,delete the folder named "'.$update['shortName'].'" from the "modules" directory in your SiteSense installation folder.</li>
+					<li>Now, delete the folder named "'.$update['shortName'].'" from the "modules" directory in your SiteSense installation folder.</li>
 					<li>The next thing you\'ll need to do is download either a .zip or a .tar.gz containing the latest version of this module. The download links for both are below:
 					<ul><li style="margin-left:10px;">Version '.$latestVersion['version'].': <a href="'.$latestVersion['zipLink'].'">'.$latestVersion['zipLink'].'</a>(.zip)</li></ul></li>
 					<ul><li style="margin-left:10px;">Version '.$latestVersion['version'].': <a href="'.$latestVersion['tarLink'].'">'.$latestVersion['tarLink'].'</a>(.tar.gz)</li></ul></li>
@@ -78,55 +78,56 @@ function admin_modulesBuild($data,$db){
 					<li>Enter the folder which has a name beginning with "'.$update['githubUser'].'-'.$update['githubRepo'].'-".</li>
 					<li>You should see a folder named "'.$update['shortName'].'" inside.</li>
 					<li>Upload the folder named "'.$update['shortName'].'" to the "modules" directory of your SiteSense install using FTP.</li>
-					<li>Once you have completed the above steps correctly,completely,and with no errors,please click the button below to proceed.</li>
+					<li>Once you have completed the above steps correctly, completely, and with no errors, please click the button below to proceed.</li>
 					<li class="buttonList"><a href="'.$baseUpgradeLink.'2">Proceed to part 2</a></li>';
 				break;
 			case 2:
-				// let's check to see if the user can follow directions and output some information.
-				$data->output['upgrade'][]='<li>Checking to see if new version supplies valid information...</li>';
-				$data->output['upgrade'][]='<li>The version we want to install is of '.$update['shortName'].' version '.$latestVersion['version'].'.<br>';
+				$data->output['upgrade'][]='<li>'.$data->phrases['modules']['validUpdateCheck'].'</li>';
+				$data->output['upgrade'][]='<li>';
 				if(!file_exists('modules/'.$update['shortName'].'/'.$update['shortName'].'.install.php')){
-					$data->output['upgrade'][]='Error: There is no install.php for this module. Please reference the documentation.</li>';
+					$data->output['upgrade'][]=$data->phrases['modules']['errorPrefix'].$data->phrases['modules']['noInstallPhp'];
 					break;
 				}
 				common_include('modules/'.$update['shortName'].'/'.$update['shortName'].'.install.php');
 				if(!function_exists($update['shortName'].'_settings')){
-					$data->output['upgrade'][]='Error: There is no _settings function for this module. Please reference the documentation.</li>';
+					$data->output['upgrade'][]=$data->phrases['modules']['errorPrefix'].$data->phrases['modules']['settingsNotSet'];
 					break;
 				}
 				$modSettings=call_user_func($update['shortName'].'_settings');
 				if(!is_array($modSettings)||!isset($modSettings['name'])||!isset($modSettings['shortName'])){
-					$data->output['upgrade'][]='Error: _settings must return an array according to the documentation.</li>';
+					$data->output['upgrade'][]=$data->phrases['modules']['errorPrefix'].$data->phrases['modules']['settingsNotArray'];
 					break;
 				}
-				$data->output['upgrade'][]='Uploaded files are of '.$modSettings['shortName'].',version ';
-				if(isset($modSettings['version'])){
-					$data->output['upgrade'][]=$modSettings['version'];
-				}else{
-					$data->output['upgrade'][]='unknown';
-				}
+				$data->output['upgrade'][]=sprintf($data->phrases['modules']['uploadedVersions'],$modSettings['shortName'],$modSettings['version']);
 				$data->output['upgrade'][]='</li>
-					<li>Looking good. Now we\'re going to load the upgrader files,if there are any.';
+					<li>'.$data->phrases['modules']['loadingUpdaters'];
 				$updaters=glob('modules/'.$update['shortName'].'/updaters/'.$update['shortName'].'.updater.*to*.php');
 				$path=modules_admin_common_getUpgradePath($data->action[4],$update['oldVersion'],$update['shortName'],$updaters);
 				if(!$path){
 					$data->output['upgrade'][]='</li>
-						<li>No upgraders found! If this is intended behavior,you can enable the upgrade. You can do that <a href="'.$data->linkRoot.'admin/modules/disable/'.$update['shortName'].'" target="_blank">here</a>.</li>
-						<li>You should be done!</li>';
+						<li>'.$data->phrases['modules']['noUpdatersFound'].'</li>
+						<li>'.sprintf($data->phrases['modules']['upgradeSuccessful'],$module['name']).'</li>';
 					break;
 				}else{
 					foreach($path as $step){
-						$data->output['upgrade'][]='<br>Running '.$step['file'].' to go from '.$step['from'].' to '.$step['to'].'!';
+						$data->output['upgrade'][]='<br>'.sprintf($data->phrases['modules']['runningUpdater'],$step['file'],$step['from'],$step['to']);
 						$updaterOutput=modules_admin_common_runUpgrader($data,$db,$step['to'],$step['from'],$update['shortName'],$step['file']);
 						if ($updaterOutput){
-							$data->output['upgrade'][]='<br>That updater executed successfully.';
+							$data->output['upgrade'][]=$data->phrases['modules']['updaterSuccessful'];
+							$statement=$db->prepare('updateModule','admin_modules');
+							$statement->execute(array(
+								':name'=>$module['name'],
+								':enabled'=>$module['enabled'],
+								':version'=>$step['to'],
+								':shortName'=>$update['shortName'],
+							));
 						}else{
-							$data->output['upgrade'][]='<br>There was an error. The updater may not have a correctly named update function or some other error may have occured. Check the documentation and contact the module author for more information.</li>';
-							break;
+							$data->output['upgrade'][]='<br>'.$data->phrases['modules']['errorPrefix'].$data->phrases['modules']['updaterError'].'</li>';
+							break 2;
 						}
 					}
-				
 					$data->output['upgrade'][]='</li>';
+					$data->output['upgrade'][]='<li>'.sprintf($data->phrases['modules']['upgradeSuccessful'],$module['name']).'</li>';
 				}
 				break;
 		}

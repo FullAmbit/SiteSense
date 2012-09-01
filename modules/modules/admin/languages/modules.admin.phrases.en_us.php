@@ -34,6 +34,7 @@ function languages_modules_admin_en_us(){
 		'insufficientParameterModuleName'     => 'No module name was provided.',
 		'insufficientParameters'              => 'Insufficient Parameters',
 		'errorHeading'                        => 'Error',
+		'errorPrefix'                         => 'Error: ',
 		'errorModuleNotFound'                 => 'Module Not Found',
 		'errorInstallFileNotFound'            => 'The installer for the module could not be found.',
 		'errorSettingsFunctionNotFound'       => 'The module settings function could not be found within the module installation file.',
@@ -50,7 +51,17 @@ function languages_modules_admin_en_us(){
 		'installLanguageErrorSaveAdminEnd'    => 'There was an error in saving the administrator panel phrases to the database.',
 		'installLanguageSuccessAdminEnd'      => 'The administrator panel phrases were saved to the database.',
 		'errorUninstallFunctionNotFound'      => 'The module uninstall function could not be found within the module installation file.',
-		
+		'uploadedVersions'                    => 'Uploaded files are of %s, version %s.',
+		'loadingUpdaters'                     => 'Now we are going to load the updater files and functions.',
+		'validUpdateCheck'                    => 'Checking to see if uploaded version provides valid information...',
+		'settingsNotArray'                    => '_settings must return an array formatted according to the documentation.',
+		'settingsNotSet'                      => 'There is no _settings function in this module\'s install.php. Please refer to the documentation.',
+		'noInstallPhp'                        => 'There is no install.php for this module. Please refer to the documentation for more information.',
+		'noUpdatersFound'                     => 'There are no valid updater paths for this update.',
+		'upgradeSuccessful'                   => 'You are now running the updated version of %s! Don\'t forget to enable the module now that you have updated it.',
+		'runningUpdater'                      => 'Running %s to go from version %s to version %s...',
+		'updaterSuccessful'                   => 'Success!',
+		'updaterError'                        => 'The updater may not have a correctly named update function or some other error may have occured. Check the documentation and contact the module author for more information.',
 	);	
 }
 ?>
