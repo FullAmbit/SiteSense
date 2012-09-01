@@ -441,7 +441,7 @@ function common_sendMail($data,$db,$to,$subject,$content,$from=NULL,$headers='')
 	}
 	$headers.='From: ' . $from . "\r\n";
 	$headers.='Reply-to: ' . $from . "\r\n";
-	$headers.='X-Mailer: SiteSense on ' . $data->settings['cms']['siteTitle'] . "\r\n";
+	$headers.='X-Mailer: SiteSense on ' . $data->settings['siteTitle'] . "\r\n";
 	return mail(
 		$to,
 		$subject,
