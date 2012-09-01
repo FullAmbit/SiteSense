@@ -1,5 +1,4 @@
 <?php
-
 function languages_modules_admin_en_us(){
 	return array(
 		'core' => array(
@@ -20,7 +19,7 @@ function languages_modules_admin_en_us(){
 		'moduleInstallSuccessMessage'         => 'Module successfully installed!',
 		'moduleInstallSuccessHeading'         => 'Success!',
 		'returnToModuleList'                  => 'Return To Modules',
-		'moduleDisableOfferUninstall'         => 'You have successfully disabled the module. The data stored by this module are still in the database, but the module is disabled from user access. If you would like to remove all of the data stored by this module from the database then click uninstall. But beware, this data will be gone forever.',
+		'moduleDisableOfferUninstall'         => 'You have successfully disabled the module. The data stored by this module is still in the database, but the module is disabled from user access. If you would like to remove all of the data stored by this module from the database then click uninstall. But beware, this data will be gone forever.',
 		'moduleDisableSuccessHeading'         => 'Module Disabled!',
 		'uninstallModule'                     => 'Uninstall Module',
 		'updateLanguageHeading'               => 'Update Language For',
@@ -58,10 +57,24 @@ function languages_modules_admin_en_us(){
 		'settingsNotSet'                      => 'There is no _settings function in this module\'s install.php. Please refer to the documentation.',
 		'noInstallPhp'                        => 'There is no install.php for this module. Please refer to the documentation for more information.',
 		'noUpdatersFound'                     => 'There are no valid updater paths for this update.',
-		'upgradeSuccessful'                   => 'You are now running the updated version of %s! Don\'t forget to enable the module now that you have updated it.',
+		'upgradeSuccessful'                   => 'You are now running the updated version of %s! Don\'t forget to enable the module now that you have updated it. You may also want to reinstall phrases for the module.',
 		'runningUpdater'                      => 'Running %s to go from version %s to version %s...',
 		'updaterSuccessful'                   => 'Success!',
 		'updaterError'                        => 'The updater may not have a correctly named update function or some other error may have occured. Check the documentation and contact the module author for more information.',
+		'latestStable'                        => 'Latest stable release; recommended',
+		'noUpdatesAvailable'                  => 'No updates available for %s.',
+		'proceedStep'                         => 'Proceed to the next step',
+		'updatingModuleFromTo'                => 'Updating %s %s to %s',
+		'version'                             => 'Version',
+		'upgradeCurrentStep'                  => 'Updating: Step %s',
+		'upgradeToVersion'                    => 'Update to version %s'
+		'upgradeVersionSelect'                => 'Which version of %s would you like to update to?',
+		'upgradeStepDisable'                  => 'Disable this module. You can do that <a href="%s" target="_blank">here</a>. Do not uninstall it or you will lose all your data from that particular module.',
+		'upgradeStepDelete'                   => 'Now, delete the folder named "%s" from the "modules" directory in your SiteSense installation folder.',
+		'upgradeStepDownload'                 => 'The next thing you\'ll need to do is download either a .zip or a .tar.gz containing the new version of this module. The download links for both formats are below:',
+		'upgradeStepUnzip'                    => 'Now that you have done that, unzip the .zip or untar the .tar.gz file you just downloaded on your local machine.',
+		'upgradeStepEnterFolder'              => 'Enter the folder which has a name beginning with "%s-%s-".',
+		'upgradeStepUploadFolder'             => 'You should see a folder named "%s" inside. Upload that folder to the "modules" directory of your SiteSense install using FTP.',
 	);	
 }
 ?>
