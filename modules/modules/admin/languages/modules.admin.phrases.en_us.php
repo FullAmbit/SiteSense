@@ -67,7 +67,7 @@ function languages_modules_admin_en_us(){
 		'updatingModuleFromTo'                => 'Updating %s %s to %s',
 		'version'                             => 'Version',
 		'upgradeCurrentStep'                  => 'Updating: Step %s',
-		'upgradeToVersion'                    => 'Update to version %s'
+		'upgradeToVersion'                    => 'Update to version %s',
 		'upgradeVersionSelect'                => 'Which version of %s would you like to update to?',
 		'upgradeStepDisable'                  => 'Disable this module. You can do that <a href="%s" target="_blank">here</a>. Do not uninstall it or you will lose all your data from that particular module.',
 		'upgradeStepDelete'                   => 'Now, delete the folder named "%s" from the "modules" directory in your SiteSense installation folder.',
