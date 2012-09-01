@@ -424,4 +424,29 @@ function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){
 	}
 
 }
+function common_sendMail($data,$db,$to,$subject,$content,$from=NULL,$headers='') {
+	if ($from===NULL) {
+		$from='no-reply@'.$_SERVER['HTTP_HOST'];
+	}
+	if (is_array($to)) {
+		$to_new='';
+		foreach ($to as $name=>$recipient) {
+			if (!is_numeric($name)) {
+				$to_new.=trim($name).' <'.trim($recipient).'>,';
+			} else {
+				$to_new.=trim($recipient).',';
+			}
+		}
+		$to=trim($to_new,',');
+	}
+	$headers.='From: ' . $from . "\r\n";
+	$headers.='Reply-to: ' . $from . "\r\n";
+	$headers.='X-Mailer: SiteSense on ' . $data->settings['cms']['siteTitle'] . "\r\n";
+	return mail(
+		$to,
+		$subject,
+		wordwrap($content,70,"\n",TRUE),
+		$headers
+	);
+}
 ?>
