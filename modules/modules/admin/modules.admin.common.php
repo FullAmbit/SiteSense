@@ -9,7 +9,7 @@ function modules_admin_common_runUpgrader($data,$db,$to,$from,$shortName,$file) 
 
 
 }
-function modules_admin_common_getUpgradePath($to,$from,$shortName,$updaters) { // if ANYBODY knows how to calculate upgrade paths faster, stronger or better, send some code our way!
+function modules_admin_common_getUpgradePath($to,$from,$shortName,$updaters) {
 	$nu = array();
 	foreach ($updaters as $i=>$updater) {
 		$updater = basename($updater);
@@ -60,8 +60,8 @@ function modules_admin_common_getUpgradePath($to,$from,$shortName,$updaters) { /
 		}
 	}
 	if (count($paths)==0) {
-		return FALSE; // we didn't get any valid paths ;-;
-	} else { // give them a path to use to upgrade with! we're done, 70 revisions and hours of work later!
+		return FALSE;
+	} else {
 		return end($paths);
 	}
 }
