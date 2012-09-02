@@ -22,8 +22,11 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-define("INSTALLER", true);
+define('INSTALLER', true);
 $setupPassword = 'startitup';
+if (file_exists('INSTALL.LOCK')) {
+	die('Installer is locked.');
+}
 echo '
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -312,6 +315,12 @@ if (
 	    It is recommended to log into the Admin panel and go to the "mainMenu" function to populate the menu functions. Until you do so, there will be no menu. Any sidebars you have installed will also not show until you enable them in the Admin sidebar control.
 	  </p>';
 	    if (isset($newPassword)) {
+			$touch = touch('INSTALL.LOCK'); // attempt to lock the installer
+			if (!$touch) {
+				echo '<p>
+					The installation is complete, however, <strong>there is one last step you must do.</strong> Create an empty file named "INSTALL.LOCK" (without quotes) in the root of your SiteSense directory. Until you do this, anybody will be able to delete your data using this page.
+				</p>';
+			}
 	        echo '
 	  <p>
 	    A new administrator login was created. You must use the following information to log into the system:
