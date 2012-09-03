@@ -37,9 +37,9 @@ it's generally good to get a few things out of the way first.
 
 More
 --------
-[SiteSense.org](http://www.sitesense.org/)
-[User Manual](http://sitesense.org/docs/user-manual/index.html)
-[Developer Documentation](https://github.com/FullAmbit/SiteSense/wiki)
-[GitHub](https://github.com/FullAmbit/SiteSense)
-[License](https://raw.github.com/FullAmbit/SiteSense/development/LICENSE.txt)
-[#SiteSense on freenode](irc://irc.freenode.net/SiteSense)
+* [SiteSense.org](http://www.sitesense.org/)
+* [User Manual](http://sitesense.org/docs/user-manual/index.html)
+* [Developer Documentation](https://github.com/FullAmbit/SiteSense/wiki)
+* [GitHub](https://github.com/FullAmbit/SiteSense)
+* [License](https://raw.github.com/FullAmbit/SiteSense/development/LICENSE.txt)
+* [#SiteSense on freenode](irc://irc.freenode.net/SiteSense)
