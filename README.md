@@ -34,3 +34,12 @@ it's generally good to get a few things out of the way first.
  - Change the admin password to something you know.
  - Enable any modules you need, and disable any you don't in order to
   keep a low profile.
+
+More
+--------
+[SiteSense.org](http://www.sitesense.org/)
+[User Manual](http://sitesense.org/docs/user-manual/index.html)
+[Developer Documentation](https://github.com/FullAmbit/SiteSense/wiki)
+[GitHub](https://github.com/FullAmbit/SiteSense)
+[License](https://raw.github.com/FullAmbit/SiteSense/development/LICENSE.txt)
+[#SiteSense on freenode](irc://irc.freenode.net/SiteSense)
