@@ -113,7 +113,7 @@ function installer_addQueries() {
 			('default', 'default', 1)
 		",
 		'newModule' => '
-			INSERT INTO !prefix!modules (name,shortName,enabled) VALUES (:name,:shortName,:enabled)
+			INSERT INTO !prefix!modules (name,shortName,enabled,version) VALUES (:name,:shortName,:enabled,:version)
 		',
 	);
 }

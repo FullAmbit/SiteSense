@@ -253,7 +253,8 @@ if (
 	        array(
 	            ':name'      => $fileModule,
 	            ':shortName' => $shortName,
-	            ':enabled'   => $enabled
+	            ':enabled'   => $enabled,
+				':version'   => $moduleSettings[$fileModule]['version'],
 	        )
 	    );
 	}

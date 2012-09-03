@@ -343,9 +343,9 @@ function common_addQueries() {
 		',
         'newModule' => '
 			INSERT INTO !prefix!modules
-				(name, shortName, enabled)
+				(name, shortName, enabled, version)
 			VALUES
-				(:name, :shortName, :enabled)
+				(:name, :shortName, :enabled, :version)
 		',
         'editModule' => '
 			UPDATE !prefix!modules
