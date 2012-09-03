@@ -42,4 +42,4 @@ More
 * [Developer Documentation](https://github.com/FullAmbit/SiteSense/wiki)
 * [GitHub](https://github.com/FullAmbit/SiteSense)
 * [License](https://raw.github.com/FullAmbit/SiteSense/development/LICENSE.txt)
-* [#SiteSense on freenode](irc://irc.freenode.net/SiteSense)
+* #SiteSense on freenode
