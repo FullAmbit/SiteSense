@@ -2,10 +2,14 @@ SiteSense
 ========
 What is SiteSense?
 --------
-SiteSense is a CMS written in PHP with support for fantastic levels
-of customization via the unique modules, themes, and plugin
-architecture. It's extraordinarily light while at the same time still
-managing to be full-featured. It's the CMS to end all CMSes.
+SiteSense is a simple but powerful, flexible, secure and high-performance 
+web application platform. At the foundation of the platform is a content 
+management and blog publishing system. SiteSense is extraordinarily 
+lightweight while at the same time still managing to be full-featured.
+
+SiteSense is easily extendable making it capable of being the starting point 
+for any web application. The framework is constantly scrutinized for security 
+purposes and is written in PHP &amp; MySQL utilizing the latest best practices.
 
 Installation
 --------
