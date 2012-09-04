@@ -24,8 +24,7 @@
 */
 define('ADMIN_SHOWPERPAGE',16);
 common_include('libraries/admin.common.php');
-
-function admin_buildContent($data,$db) {
+function admin_buildContent($data,$db){
 	//Preload default values into $data->output:
 	$defaults = array(
 		'pagesError' => false,
@@ -34,8 +33,8 @@ function admin_buildContent($data,$db) {
 		'blogsStart' => false
 	);
 	$data->output = array_merge($defaults, $data->output);
-	if (checkPermission('access','core',$data)) {
-		if(empty($data->action[1])) {
+	if (checkPermission('access','core',$data)){
+		if(empty($data->action[1])){
 			$data->action[1] = 'dashboard';
 		}
 		$moduleQuery=$db->prepare('getModuleByShortName','admin_modules');
@@ -50,7 +49,7 @@ function admin_buildContent($data,$db) {
 				':moduleID' => $module['id']
 			));
 		$plugins=$statement->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($plugins as $plugin) {
+		foreach ($plugins as $plugin){
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];
 			$data->plugins[$plugin['name']]=new $objectName;
@@ -63,7 +62,7 @@ function admin_buildContent($data,$db) {
 				':module' => '',
 				':isAdmin' => 1
 			));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
 			$data->phrases['core'][$row['phrase']] = $row['text'];
 		}
 
@@ -72,62 +71,65 @@ function admin_buildContent($data,$db) {
 				':module' => $data->action[1],
 				':isAdmin' => 1
 			));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
 			$data->phrases[$data->action[1]][$row['phrase']] = $row['text'];
 		}
 				
 		$data->currentModule=$module['name'];
-        common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
+		common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
 		$currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.admin.template.php';
 		$defaultThemeInclude='themes/default/admin/'.$module['name'].'.admin.template.php';
 		$moduleThemeInclude='modules/'.$module['name'].'/admin/'.$module['name'].'.admin.template.php';
-		if(file_exists($moduleThemeInclude)) {
+		if(file_exists($moduleThemeInclude)){
 			common_include($moduleThemeInclude);
-		} elseif(file_exists($currentThemeInclude)) {
+		} elseif(file_exists($currentThemeInclude)){
 			common_include($currentThemeInclude);
-		} elseif(file_exists($defaultThemeInclude)) {
+		} elseif(file_exists($defaultThemeInclude)){
 			common_include($defaultThemeInclude);
 		}
 		$files=glob('modules/*/admin/*.admin.config.php');
-		foreach ($files as $fileName) {
+		foreach ($files as $fileName){
 			common_include($fileName);
 			$strFind=array('.config.php','.admin');
 			$targetName=substr(strrchr(str_replace($strFind,'',$fileName),'/'),1);
 			if(!isset($data->output['moduleShortName'][$targetName])) continue;
 			$targetFunction=$targetName.'_admin_config';
-			if (function_exists($targetFunction)) {
+			if (function_exists($targetFunction)){
 				$targetFunction($data,$db);
 			}
-    	}
+		}
 		usort($data->admin['menu'],'admin_menuCmp');
 		$buildContent=$data->currentModule.'_admin_buildContent';
-        if (function_exists($buildContent)) {
-            $buildContent($data,$db);
+		if (function_exists($buildContent)){
+			$buildContent($data,$db);
 		}
 	} else {
-        // Get Phrases
-        $statement = $db->prepare('getPhrasesByModule', 'common');
-        // Core Phraes
-        $statement->execute(array(
-            ':module' => '',
-            ':isAdmin' => 0
-        ));
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $data->phrases['core'][$row['phrase']] = $row['text'];
-        }
-    }
+		// Get Phrases
+		$statement = $db->prepare('getPhrasesByModule', 'common');
+		// Core Phraes
+		$statement->execute(array(
+			':module' => '',
+			':isAdmin' => 0
+		));
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
+			$data->phrases['core'][$row['phrase']] = $row['text'];
+		}
+	}
 }
 
-function admin_content($data) {
-    if (!checkPermission('access','core',$data)) {
-      theme_accessDenied(true);
-      theme_loginForm($data);
-    } else {
-        if (function_exists('admin_content')) {
-            $content=$data->currentModule.'_admin_content';
-            $content($data);
-        } else {
-          theme_fatalError('The requested admin.php module is not installed.');
-        }
-    }
+function admin_content($data){
+	if (!checkPermission('access','core',$data)){
+		theme_accessDenied(true);
+		theme_loginForm($data);
+	} else {
+		if (!empty($_SERVER['HTTP_REFERER'])&&
+			substr($_SERVER['HTTP_REFERER'],7+isset($_SERVER['HTTPS']),strlen($data->hostname.$data->linkHome))!==$data->hostname.$data->linkHome) {
+			theme_fatalError('Invalid referer detected.');
+		}elseif (function_exists('admin_content')){
+			$content=$data->currentModule.'_admin_content';
+			$content($data);
+		} else {
+			theme_fatalError('The requested admin.php module is not installed.');
+		}
+	}
 }
