@@ -67,7 +67,7 @@ function installer_addQueries() {
 		',
 		'makeRegistrationAgreement' => '
 			INSERT INTO !prefix!pages_!lang!
-			(shortName,name,title,parent,rawContent,parsedContent,live)
+			(shortName,name,title,parent,rawContent,parsedContent,live,sortOrder)
 			VALUES (
 				\'registration-agreement\',
 				\'Registration Agreement\',
@@ -75,12 +75,13 @@ function installer_addQueries() {
 				0,
 				\'<p>Your registration agreement text should go in this file. I suggest leaving it "live" so people can access it directly, though it will continue to work on the registration page without that.</p>\',
 				\'&lt;p&gt;Your registration agreement text should go in this file. I suggest leaving it &amp;quot;live&amp;quot; so people can access it directly, though it will continue to work on the registration page without that.&lt;/p&gt;\',
-				1
+				1,
+				2
 			)
 		',
 		'makeRegistrationEMail' => '
 			INSERT INTO !prefix!pages_!lang!
-			(shortName,name,title,parent,rawContent,parsedContent,live)
+			(shortName,name,title,parent,rawContent,parsedContent,live,sortOrder)
 			VALUES (
 				\'registration-email\',
 				\'Registration Email\',
@@ -103,9 +104,12 @@ function installer_addQueries() {
 &lt;p&gt;
 	$registerLink&lt;/p&gt;
 				\',
+				1,
 				1
 			)
 		',
+		'makeHomePage' => 'INSERT INTO !prefix!pages_!lang! (`shortName`, `name`, `title`, `rawContent`, `parsedContent`, `parent`, `sortOrder`, `live`) VALUES
+(\'home\', \'Home\', \'Home\', \'<p>\r\n	Welcome to your brand new SiteSense installation!</p>\r\n<p>\r\n	This is the default home page. You can edit this page to display whatever content you would like or change the home page to a different page altogether within your admin control panel.</p>\r\n<p>\r\n	<strong>Latest Blog Posts</strong><br />\r\n	This is an example of a block. Blocks can be used to include dynamic content inside static resources, like pages or blog posts.<br />\r\n	|block:blogs_latestPosts(5,News)|</p>\r\n\', \'&lt;p&gt;\n	Welcome to your brand new SiteSense installation!&lt;/p&gt;\n&lt;p&gt;\n	This is the default home page. You can edit this page to display whatever content you would like or change the home page to a different page altogether within your admin control panel.&lt;/p&gt;\n&lt;p&gt;\n	&lt;strong&gt;Latest Blog Posts&lt;/strong&gt;&lt;br /&gt;\n	This is an example of a block. Blocks can be used to include dynamic content inside static resources, like pages or blog posts.&lt;br /&gt;\n	|block:blogs_latestPosts(5,News)|&lt;/p&gt;\n\', 0, 3, 1);',
 		'makeModules' => "
 			INSERT INTO !prefix!modules
 			(name, shortName, enabled)
