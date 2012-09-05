@@ -113,7 +113,6 @@ if (
 	    'modules',
 	    'dynamicForms',
 	    'urls',
-	    'default',
 	    'blogs',
 	    'pages',
 	    'mainMenu',
