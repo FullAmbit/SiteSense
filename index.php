@@ -227,7 +227,7 @@ final class sitesense {
 	$action, $currentPage, $module, $request,
 	$httpHeaders,
 	$metaList, $menuList, $sidebarList = array(),
-	$menuSource,
+	$menuSource = array(),
 	$admin,
 	$compressionType,
 	$compressionStarted=false,
