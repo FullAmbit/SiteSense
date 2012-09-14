@@ -306,12 +306,6 @@ if (
 	        );
 	    }
 	}
-	$statement = $db->prepare('addSetting','installer',array('!lang!'=>'en_us'));
-	$statement->execute(array(
-		':name' => 'version',
-		':category' => 'cms',
-		':value' => $data->version
-	));
 	if ($db->installErrors==0) {
 	    echo '
 	  <h2 id="done">Complete</h2>
