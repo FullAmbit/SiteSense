@@ -305,8 +305,8 @@ final class sitesense {
 		$this->action=empty($queryString) ? array('default') : explode('/', $queryString);
 		// Install
 		if ($this->action[0]=='install') {
-			$data=$this->db;
-			$data->version=$this->version;
+			$db=$this->db;
+			$data=$this;
 			require_once 'libraries/install.php';
 			die; // technically install.php should die at end, but to be sure...
 		}

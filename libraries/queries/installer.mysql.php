@@ -35,6 +35,7 @@ function installer_addQueries() {
 			INSERT INTO !prefix!settings_!lang!
 			(name,category,value)
 			VALUES (:name, :category, :value)
+			ON DUPLICATE KEY UPDATE value = :value
 		',
 		'addUser' => '
 			INSERT INTO !prefix!users
@@ -127,7 +128,8 @@ function installer_tableStructures() {
 			'id'        => SQR_IDKey,
 			'name'      => SQR_shortName,
 			'category'  => 'VARCHAR(31)',
-			'value'     => 'MEDIUMTEXT'
+			'value'     => 'MEDIUMTEXT',
+			'UNIQUE(`name`,`category`)'
 		)
 	);
 }

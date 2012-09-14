@@ -80,29 +80,29 @@ if (
 	$drop = false;
 	if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
 	    $drop = true;
-	$data->installErrors=0;
-	$data->loadModuleQueries('installer',true);
-	$data->loadCommonQueryDefines(true);
+	$db->installErrors=0;
+	$db->loadModuleQueries('installer',true);
+	$db->loadCommonQueryDefines(true);
 	$structures=installer_tableStructures();
 	echo '<p>Connect to Database Successful</p>';
 
 	if($drop) {
-	    $data->dropTable('settings',$lang);
-	    $data->dropTable('banned');
-	    $data->dropTable('sessions');
-	    $data->dropTable('sidebars',$lang);
-	    $data->dropTable('main_menu',$lang);
-	    $data->dropTable('activations');
-	    $data->dropTable('urls');
-	    $data->dropTable('modules');
-	    $data->dropTable('module_sidebars');
-	    $data->dropTable('languages');
-	    $data->dropTable('languages_phrases',$lang);
-	    $data->dropTable('hostnames');
+	    $db->dropTable('settings',$lang);
+	    $db->dropTable('banned');
+	    $db->dropTable('sessions');
+	    $db->dropTable('sidebars',$lang);
+	    $db->dropTable('main_menu',$lang);
+	    $db->dropTable('activations');
+	    $db->dropTable('urls');
+	    $db->dropTable('modules');
+	    $db->dropTable('module_sidebars');
+	    $db->dropTable('languages');
+	    $db->dropTable('languages_phrases',$lang);
+	    $db->dropTable('hostnames');
 	    // Dynamic User Permissions
-	    $data->dropTable('user_groups');
-	    $data->dropTable('user_group_permissions');
-	    $data->dropTable('user_permissions');
+	    $db->dropTable('user_groups');
+	    $db->dropTable('user_group_permissions');
+	    $db->dropTable('user_permissions');
 	}
 	
 	// Install modules
@@ -132,8 +132,8 @@ if (
 	foreach($uninstalledModuleFiles as $moduleInstallFile) {
 	    // Include the install file for this module
 	    if(!file_exists($moduleInstallFile)) {
-	        $data->output['rejectError']='Module installation file does not exist';
-	        $data->output['rejectText']='The module installation could not be found.';
+	        $db->output['rejectError']='Module installation file does not exist';
+	        $db->output['rejectText']='The module installation could not be found.';
 	    } else {
 	        common_include($moduleInstallFile);
 	        // Extract the name of the module from the filename
@@ -144,18 +144,18 @@ if (
 	            // Run the module installation procedure
 	            $targetFunction=$moduleName.'_install';
 	            if(!function_exists($targetFunction)) {
-	                $data->output['rejectError']='Improper installation file';
-	                $data->output['rejectText']='The module install function could not be found within the module installation file.';
+	                $db->output['rejectError']='Improper installation file';
+	                $db->output['rejectText']='The module install function could not be found within the module installation file.';
 	            } elseif($moduleName=='users') {
-	                $newPassword=$targetFunction($data,$drop,TRUE);
+	                $newPassword=$targetFunction($db,$drop,TRUE);
 	            } else {
-	                $targetFunction($data,$drop,TRUE);
+	                $targetFunction($db,$drop,TRUE);
 	            }
 	            $targetFunction=$moduleName.'_settings';
 	            if(function_exists($targetFunction)) {
 	                $moduleSettings[$moduleName]=$targetFunction();
 	                
-	                $statement = $data->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
+	                $statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
 	                // Load The Phrases (Admin End)
 					if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php')) {
 						common_include('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php');
@@ -214,16 +214,16 @@ if (
 						}
 					}
 	            } else {
-	                $data->output['rejectError']='Improper installation file';
-	                $data->output['rejectText']='The module install function could not be found within the module installation file.';
+	                $db->output['rejectError']='Improper installation file';
+	                $db->output['rejectText']='The module install function could not be found within the module installation file.';
 	            }
 	        } else if ($drop) {
 	            // Run the module uninstall procedure
 	            $targetFunction=$moduleName.'_uninstall';
 	            if(!function_exists($targetFunction)) {
-	                $data->output['rejectError']='Improper installation file';
-	                $data->output['rejectText']='The module uninstall function could not be found within the module installation file.';
-	            } else $targetFunction($data);
+	                $db->output['rejectError']='Improper installation file';
+	                $db->output['rejectText']='The module uninstall function could not be found within the module installation file.';
+	            } else $targetFunction($db);
 	        }
 	    }
 	}
@@ -239,7 +239,7 @@ if (
 	    $moduleFiles
 	);
 	// Insert new modules into the database
-	$insert=$data->prepare('newModule');
+	$insert=$db->prepare('newModule');
 	foreach($fileModules as $fileModule) {
 	    $shortName=$fileModule;
 	    if(array_key_exists($fileModule,$moduleSettings)) {
@@ -296,7 +296,7 @@ if (
 	);
 	foreach($defaultPermissionGroups as $groupName => $permissions) {
 	    foreach($permissions as $permissionName) {
-	        $statement=$data->prepare('addPermissionByGroupName');
+	        $statement=$db->prepare('addPermissionByGroupName');
 	        $statement->execute(
 	            array(
 	                ':groupName' => $groupName,
@@ -306,13 +306,13 @@ if (
 	        );
 	    }
 	}
-	$statement = $data->prepare('addSetting','installer',array('!lang!'=>'en_us'));
+	$statement = $db->prepare('addSetting','installer',array('!lang!'=>'en_us'));
 	$statement->execute(array(
 		':name' => 'version',
 		':category' => 'cms',
 		':value' => $data->version
 	));
-	if ($data->installErrors==0) {
+	if ($db->installErrors==0) {
 	    echo '
 	  <h2 id="done">Complete</h2>
 	  <p class="success">
