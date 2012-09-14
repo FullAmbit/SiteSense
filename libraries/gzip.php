@@ -35,15 +35,15 @@ function gzip_end($data) {
   print("\x1F\x8B\x08\x00\x00\x00\x00\x00");
 	if($data->settings['removeAttribution'] == '0')
 	{
-		$count = preg_match('/<p id="attribution">Powered by <a href="http:\/\/www.sitesense.org">SiteSense<\/a>&trade; '.$data->settings['version'].', a <a href="http:\/\/www.fullambit.com">Full Ambit Media<\/a> product.<\/p>/',$contents,$matches);
+		$count = preg_match('/<p id="attribution">Powered by <a href="http:\/\/www.sitesense.org">SiteSense<\/a>&trade; '.$data->version.', a <a href="http:\/\/www.fullambit.com">Full Ambit Media<\/a> product.<\/p>/',$contents,$matches);
 		if($count < 1)
 		{
 			$fC = preg_match('/<!-- #footer -->/',$contents);
 			if($fC < 1)
 			{
-				$contents = preg_replace('/<\/body>/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->settings['version'].', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p></body>',$contents);
+				$contents = preg_replace('/<\/body>/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p></body>',$contents);
 			} else {
-				$contents = preg_replace('/<!-- #footer -->/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->settings['version'].', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p><!-- #footer -->',$contents);
+				$contents = preg_replace('/<!-- #footer -->/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p><!-- #footer -->',$contents);
 			}
 		}
 	}

@@ -134,7 +134,7 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 		'|largeStaticLinkRoot|' => $data->settings['cdnLarge'],
 		'|flashLinkRoot|' => $data->settings['cdnFlash'],
 		'|rssLink|' => (isset($data->output['rssLink'])) ? $data->output['rssLink'] : '',
-		'|attribution|' => '<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->settings['version'].', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p>'
+		'|attribution|' => '<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p>'
 	);
 	foreach ($codeReplacements as $key => $value) {
 		$textToParse=str_replace($key,$value,$textToParse);

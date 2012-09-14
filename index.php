@@ -221,24 +221,13 @@ final class dynamicPDO extends PDO {
 }
 final class sitesense {
 	public
-	$settings, $pageSettings,
-	$text, $user,
-	$siteRoot, $domainName, $linkHome, $linkRoot,
-	$action, $currentPage, $module, $request,
-	$httpHeaders,
-	$metaList, $menuList, $sidebarList = array(),
-	$menuSource = array(),
-	$admin,
-	$compressionType,
-	$compressionStarted=false,
-	$output=array(),
-	$loginResult=false,
-	$plugins = array(),
-	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(),
-	$banned = false,
-	$language, $languageList,
-	$phrases = array(),
-	$jsEditor;
+	$settings, $pageSettings, $text, $version = '0.1.3',
+	$user, $siteRoot, $domainName, $linkHome, $linkRoot, $action, $currentPage, 
+	$module, $request, $httpHeaders, $metaList, $menuList, $sidebarList = array(),
+	$menuSource = array(), $admin, $compressionType,
+	$compressionStarted=false, $output=array(), $loginResult=false, $plugins = array(),
+	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(), 
+	$banned = false, $language, $languageList, $phrases = array(), $jsEditor;
 
 	private $db;
 
