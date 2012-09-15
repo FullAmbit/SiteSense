@@ -719,25 +719,15 @@ class formHandler {
 						case 'select':
 							echo '>';
 							if(isset($formField['type']) && $formField['type']=='timezone'){
-							    $currentTime=time();
-							    $times=array();
-							    $start=$currentTime-date('G',$currentTime)*3600;
-							    for($i=0;$i<24*60;$i+=15) {
-							        $times[date('g:i A',$start+$i*60)]=array();
-							    }
-							    $timezones=DateTimeZone::listIdentifiers();
-							    foreach($timezones AS $timezone) {
-							        $dt=new DateTime('@'.$currentTime);
-							        $dt->setTimeZone(new DateTimeZone($timezone));
-							        $time=$dt->format('g:i A');
-							        $times[$time][]=$timezone;
-							    }
-							    $timeZones=array_filter($times);
-							    foreach($timeZones as $time => $timeZoneList) {
-							        foreach($timeZoneList as $timeZone) {
-							        	echo '<option value="',$timeZone,'">',$time.'-'.$timeZone.'</option>';
-							        }
-							    }
+							    $tz=DateTimeZone::listIdentifiers();
+								$outputTz=array();
+								foreach($tz as &$t){
+									$tzObject=new DateTimeZone($t);
+									$date=new DateTime(NULL,$tzObject);
+									$date=$date->format('G:i A');
+									$t='<option value="'.$t.'">'.$date.' - '.$t.'</option>';
+								}
+								echo implode($tz,"\n");
 							}else{
 								$optgroup = FALSE;
 								if(!empty($formField['options'])) {
