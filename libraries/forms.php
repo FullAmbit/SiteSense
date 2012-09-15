@@ -719,7 +719,7 @@ class formHandler {
 						case 'select':
 							echo '>';
 							if(isset($formField['type']) && $formField['type']=='timezone'){
-							    $tz=DateTimeZone::listIdentifiers();
+								$tz=DateTimeZone::listIdentifiers();
 								$outputTz=array();
 								foreach($tz as &$t){
 									$tzObject=new DateTimeZone($t);
