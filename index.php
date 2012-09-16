@@ -726,6 +726,8 @@ final class sitesense {
 		$buildContent= ($this->currentPage == 'admin') ? 'admin_buildContent' : $this->module['name'].'_buildContent';
 		if (function_exists($buildContent)) $buildContent($this, $this->db);
 		
+		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') $this->currentPage = 'ajax';
+		
 		// Parse Sidebars Before Display
 		if(count($this->sidebarList)>0){
 			$sidebars=$this->sidebarList;
