@@ -729,7 +729,7 @@ final class sitesense {
 		if (function_exists($buildContent)) $buildContent($this, $this->db);
 
 		// Parse Sidebars Before Display
-		if (isset($sidebars)) {
+		if (isset($sidebars)||count($this->sidebarList)>0) {
 			$this->usedSidebars = array();
 			foreach ($sidebars as $sidebar) {
 				if (!in_array($sidebar['id'],$this->usedSidebars)) {
