@@ -721,15 +721,17 @@ final class sitesense {
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
 		}
-		
-		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') $this->currentPage = 'ajax';
-	  	
+
 	  	// Set Up Modular Build Functions
 		$buildContent= ($this->currentPage == 'admin') ? 'admin_buildContent' : $this->module['name'].'_buildContent';
 		if (function_exists($buildContent)) $buildContent($this, $this->db);
-
+		
 		// Parse Sidebars Before Display
-		if (isset($sidebars)||count($this->sidebarList)>0) {
+		if(count($this->sidebarList)>0){
+			$sidebars=$this->sidebarList;
+			$this->sidebarList=array();
+		}
+		if (isset($sidebars)) {
 			$this->usedSidebars = array();
 			foreach ($sidebars as $sidebar) {
 				if (!in_array($sidebar['id'],$this->usedSidebars)) {
