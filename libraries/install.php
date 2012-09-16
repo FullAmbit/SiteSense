@@ -121,8 +121,13 @@ if (
 	    'plugins',
 	    'users',
 	);
-
-	$uninstalledModuleFiles = array_flip(glob('modules/*/*.install.php'));
+	$uninstalledModuleFiles=array();
+	$i=0;
+	foreach($coreModules as $coreModule){
+		$uninstalledModuleFiles['modules/'.$coreModule.'/'.$coreModule.'.install.php']=$i;
+		$i++;
+	}
+	unset($i);
 	$temp = array_flip($uninstalledModuleFiles);
 	unset($uninstalledModuleFiles['modules/sidebars/sidebars.install.php'],$uninstalledModuleFiles['modules/languages/languages.install.php'],$uninstalledModuleFiles['modules/settings/settings.install.php']);
 	$uninstalledModuleFiles = array('modules/languages/languages.install.php'=>rand(),'modules/sidebars/sidebars.install.php'=>rand(),'modules/settings/settings.install.php'=>rand()) + $uninstalledModuleFiles;
