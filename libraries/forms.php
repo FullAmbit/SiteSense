@@ -89,10 +89,10 @@ class formHandler {
             $moduleName=array_search($data->action[1],$data->output['moduleShortName']);
             $target='modules/'.$moduleName.'/admin/forms/'.$moduleName.'.admin.form.'.$dataName.'.php';
         } else {
-            $moduleName=array_search($data->action[0],$data->output['moduleShortName']);
-            $target='modules/'.$moduleName.'/forms/'.$moduleName.'.form.'.$dataName.'.php';
+            $target='modules/'.$data->action[0].'/forms/'.$data->action[0].'.form.'.$dataName.'.php';
         }
 		require_once($target);
+
 		//And some defaults for the form items.
 		$defaults = array(
 			'params' => array(),
