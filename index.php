@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
-require_once 'dbSettings.php';
+(@include_once 'dbSettings.php') or die('Unable to load dbSettings.php. Please read the README.md.');
 require_once 'libraries/common.php';
 
 final class dynamicPDO extends PDO {
@@ -34,7 +34,8 @@ final class dynamicPDO extends PDO {
 	private $queries;
 
 	public static function exceptionHandler($exception) {
-		die('Uncaught Exception:'.$exception->getMessage());
+		die('Unable to connect to the database. Please read the README.md and configure your
+			database settings correctly.');
 	}
 	public function __construct() {
 		/*
