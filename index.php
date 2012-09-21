@@ -397,55 +397,6 @@ final class sitesense {
 				}
 			}
 
-		// User Trying To Login?
-		if (isset($_POST['login']) && $_POST['login']==$_SERVER['REMOTE_ADDR']) {
-			$statement=$this->db->prepare('checkPassword');
-			$statement->execute(array(
-					':name' => $_POST['username'],
-					':passphrase' => hash('sha256', $_POST['password'])
-				));
-			if ($user=$statement->fetch(PDO::FETCH_ASSOC)) {
-				$this->user=$user;
-				// Set User TimeZone
-				if (!empty($this->user['timeZone']) && $this->user['timeZone']!==0) {
-					date_default_timezone_set($this->user['timeZone']);
-					ini_set('date.timezone', $this->user['timeZone']);
-				}
-				// Load permissions
-				getUserPermissions($this->db, $this->user);
-				// Purge existing sessions containing user ID
-				$statement=$this->db->prepare('purgeSessionByUserId');
-				$statement->execute(array(
-						'userId' => $user['id']
-					));
-				// Create new session
-				$userCookieValue = hash('sha256',
-					$user['id'].'|'.time().'|'.common_randomPassword(32, 64)
-				);
-				// Push expiration ahead
-				$statement=$this->db->query("userSessionTimeOut");
-				$this->settings['userSessionTimeOut'] = $statement->fetchColumn();
-				$expires=time()+$this->settings['userSessionTimeOut'];
-
-				if (isset($_POST['keepLogged']) && $_POST['keepLogged']=='on') {
-					$expires = time()+604800; // 1 week
-				}
-
-				// Update and sync cookie to server values
-				setcookie($userCookieName, $userCookieValue, $expires, $this->linkHome, '', '', true);
-				$expires=gmdate("Y-m-d H:i:s", $expires);
-				$statement=$this->db->prepare('updateUserSession');
-				$statement->execute(array(
-						':sessionId' => $userCookieValue,
-						':userId'    => $user['id'],
-						':expires'   => $expires,
-						':ipAddress' => $_SERVER['REMOTE_ADDR'],
-						':userAgent' => $_SERVER['HTTP_USER_AGENT']
-					));
-				$this->loginResult=true;
-			}
-		}
-
 		// What Language Will We Be Loading? (Set Language Cookies As Well)
 		if (isset($_GET['language'])) {
 			// Check If Language Exists

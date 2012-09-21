@@ -120,12 +120,9 @@ function admin_buildContent($data,$db){
 function admin_content($data){
 	if (!checkPermission('access','core',$data)){
 		theme_accessDenied(true);
-		theme_loginForm($data);
+		common_redirect_local($data,'users/login?from=admin');
 	} else {
-		if (!empty($_SERVER['HTTP_REFERER'])&&
-			substr($_SERVER['HTTP_REFERER'],7+isset($_SERVER['HTTPS']),strlen($data->hostname.$data->linkHome))!==$data->hostname.$data->linkHome) {
-			theme_fatalError('Invalid referer detected.');
-		}elseif (function_exists('admin_content')){
+		if (function_exists('admin_content')){
 			$content=$data->currentModule.'_admin_content';
 			$content($data);
 		} else {
