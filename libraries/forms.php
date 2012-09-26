@@ -217,7 +217,7 @@ class formHandler {
                                     {
                                         $formField['error'] = true;
                                         $validData = false;
-                                        $formField['errorList'][] = 'Please provide a '.$info['mandateType'].' image.';
+                                        $formField['errorList'][] = 'Please provide a '.implode(' or ',$info['mandateType']).' image.';
                                         continue;
                                     }
                                 }
