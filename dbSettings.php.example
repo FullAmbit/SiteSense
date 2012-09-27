@@ -26,10 +26,10 @@ function dbSettings() {
 	dbSettingsSecurity();
 	/* begin user edits */
 	return array(
-		'dsn' => 'mysql:host=localhost;port=3306;dbname=sitesense',
+		'dsn' => 'mysql:host=localhost;port=3306;charset=utf8;dbname=sitesense',
 		/*
 			example DSN value:
-			mysql:host=localhost;port=3306;dbname=sitesense
+			mysql:host=localhost;port=3306;charset=utf8;dbname=sitesense
 			See php.net's PDO Drivers section for more info on DSN's.
 			http://us3.php.net/manual/en/pdo.drivers.php
 		*/
