@@ -639,7 +639,7 @@ final class sitesense {
 
 			if (
 				($this->settings['hideContentGuests']!='no') &&
-				($this->user['userLevel']<USERLEVEL_USER)
+				empty($this->user['username'])
 			) {
 				if ($this->currentPage!='pages') {
 					$this->currentPage=$this->settings['hideContentGuests'];
