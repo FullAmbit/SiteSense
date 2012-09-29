@@ -859,11 +859,14 @@ class formHandler {
 					/>';
 				}
 			}
-			if(count($this->fields) > 1){
+	  if(count($this->fields)){
 				echo '
+					<div class="details">
 							<i>&raquo;</i> Indicates a required field',(
 				$this->error ? ', <b>X</b> indicates a field with errors' : ''
-				);
+				),'
+					</div>
+				';
       }
       if(strlen($this->extraMarkup)!==0) {
         echo '
