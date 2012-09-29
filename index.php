@@ -148,7 +148,6 @@ final class dynamicPDO extends PDO {
 		return $result->fetchColumn();
 	}
 	public function createTable($tableName, $structure, $lang=false, $verbose=false) {
-		$verbose = true;
 		if ($lang) $fullTableName=$tableName.'_'.$lang;
 		else $fullTableName=$tableName;
 		//structure is an array of field names and definitions
@@ -183,7 +182,6 @@ final class dynamicPDO extends PDO {
 	}
 	public function dropTable($tableName, $lang=false, $verbose=false) {
 		if ($lang) {
-			$verbose=true;
 			if (!isset($this->languageList)) {
 				//--Remove Core Table + Language--//
 				$tableName = $tableName.'_'.$lang;
