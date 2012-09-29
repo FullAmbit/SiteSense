@@ -490,9 +490,9 @@ final class sitesense {
 		if ($this->settings['compressionEnabled']) {
 			if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip')!==false) {
 				$this->compressionType='x-gzip';
-			} else if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')!==false) {
-					$this->compressionType='gzip';
-				}
+			} elseif(strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')!==false) {
+				$this->compressionType='gzip';
+			}
 		}
 
 		// Define server path
@@ -697,7 +697,7 @@ final class sitesense {
 				}
 			}
 		}
-		$this->db=null;
+		unset($this->db);
 		
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
