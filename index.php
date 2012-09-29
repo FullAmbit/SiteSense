@@ -61,7 +61,7 @@ final class dynamicPDO extends PDO {
 	public function loadCommonQueryDefines($dieOnError=false) {
 		$target='libraries/queries/defines.'.$this->sqlType.'.php';
 		if (file_exists($target)) {
-			require_once $target;
+			common_include($target);
 			return true;
 		} else if ($dieOnError) {
 				die('Fatal Error - Common Query Defines Library File not found!<br>'.$target);
@@ -306,7 +306,7 @@ final class sitesense {
 		if ($this->action[0]=='install') {
 			$db=$this->db;
 			$data=$this;
-			require_once 'libraries/install.php';
+			common_include('libraries/install.php');
 			die; // technically install.php should die at end, but to be sure...
 		}
 
@@ -395,6 +395,15 @@ final class sitesense {
 					}
 				}
 			}
+			
+		// Load hostname
+		$statement = $this->db->prepare('getHostname', 'hostnames');
+		$statement->execute(array(
+				':hostname' => $this->hostname
+		));
+		if ($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)) {
+			$this->language = $hostnameItem['defaultLanguage'];
+		}
 
 		// What Language Will We Be Loading? (Set Language Cookies As Well)
 		if (isset($_GET['language'])) {
@@ -440,15 +449,9 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-		// Do We Have Any Specific Settings For This HostName?
-		$statement = $this->db->prepare('getHostname', 'hostnames');
-		$statement->execute(array(
-				':hostname' => $this->hostname
-			));
 
 		if ($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->settings['theme'] = $hostnameItem['defaultTheme'];
-			$this->language = (isset($useDefaultLang) && $useDefaultLang) ? $hostnameItem['defaultLanguage'] : $this->language;
 			$this->settings['homepage'] = $hostnameItem['homepage'];
 		}
 		
