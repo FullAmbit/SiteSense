@@ -637,7 +637,7 @@ class formHandler {
 			}
 			echo '
 					<div class="fieldsetWrapper"><fieldset>',(
-			isset($this->caption) ? '
+			!empty($this->caption) ? '
 						<legend><span>'.$this->caption.'</span></legend>' :
 				''
 			);
