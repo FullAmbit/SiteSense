@@ -553,12 +553,12 @@
   <hr />
 
   <h3 id="sidebars">7. Sidebars</h3>
-  <p>Sidebars contain static or dynamic content that can be displayed on the edges of almost any page within SiteSense. Dynamic content is achieved through the use of blocks which are PHP files containing code within a module.</p>
+  <p>Sidebars contain static or dynamic content that can be displayed on the edges of almost any page within SiteSense. Dynamic content is achieved through the use of blocks which are PHP files containing code within a module. Dynamic forms and pages can have their own entity-specific sidebars, which are modified in the module-specific control panels. To get sidebars to display on the user-end, you must enable them for each module you want them to appear with through the Modules control panel in the admin zone.</p>
 
     <h4>Properties</h4>
     <ul>
       <li><b>Name</b><br />
-          Used only for reference. (Must be unique)
+        Used only for reference in the admin control panel. Must be unique.
       </li>
       <li><b>Title</b><br />
         The title is the text that will be displayed above the sidebar and is visible to visitors
@@ -567,7 +567,7 @@
         Optionally allows the title to be a hyperlink. Should be a full URL (If the first character is a vertical break (|) then the 'linkRoot' will be appended before it &mdash; in other words a local link in the CMS.)
       </li>
       <li><b>Side</b><br />
-        Determines the side a sidebar will display on
+        Determines the side of the theme a sidebar will display on
       </li>
       <li><b>Context Text</b><br />
         The content of the sidebar you are writing/editing can be created from within the WYSIWYG editor. Dynamic sidebars can be created through the integration of blocks or other dynamic values. A block can be called by using the following syntax:<pre>
@@ -577,7 +577,7 @@
       </li>
     </ul>
     <h4>Controls</h4>
-    <ul
+    <ul>
       <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br />
         Changes the ordering of sidebars
       </li>
@@ -585,7 +585,7 @@
         Removes the sidebar
       </li>
       <li><b>Switch Side</b><br>
-        Toggles the side the sidebar will display (left/right)
+        Toggles the side of the page which the sidebar will display on, if your module supports it.
       </li>
     </ul>
     
