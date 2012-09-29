@@ -116,9 +116,6 @@
     <li><b>Default Theme</b><br />
       Determines which of your installed themes users will default to
     </li>
-    <li><b>Language</b><br />
-      Sets the HTML <code>lang</code> and <code>xml:lang</code> attributes, the <code>Content-Language</code> meta-tag, and at some point the CMS language strings
-    </li>
     <li><b>Default Time Zone</b><br />
       Sets the default time zone for all newly registered users
     </li>
@@ -132,7 +129,7 @@
       Enables Bulletin Board Code to format blog posts and comments
     </li>
     <li><b>WYSIWYG Editor</b><br />
-      Replaces text areas within the control panel with a &quot;What you see is what you get&quot; Text Editor
+      Select the editor you'd like to use to edit dynamic HTML content. By default, ckeditor is used.
     </li>
     <li><b>Default Blog</b><br />
       Sets the default blog
@@ -150,7 +147,7 @@
     <li><b>Character Encoding</b><br />
       Sets the <code>Content-Encoding</code> meta-tag and is used by PHP's "header" function to set the mime-type in the http response header
     </li>
-    <li><b>Compression Enabled</b><br />
+    <li><b>Use compression?</b><br />
       Turns on and off server <code>gzip/mod_deflate</code> compression if available
     </li>
     <li><b>Compression Level</b><br />
@@ -175,21 +172,21 @@
 
   <h4 id="settings-registration">2.3 Registration Settings</h4>
   <ul>
-    <li><b>Default Registration Group</b><br />
-      Determines which user group newly registered users will be associated to
+    <li><b>Default User Group</b><br />
+      Determines which user group newly registered users will be associated to.
     </li>
-    <li><b>Verify Email</b><br />
-      New users will be required to click a link that was emailed to their address specified during registration in order to complete registration
+    <li><b>Verify EMail</b><br />
+      New users will be required to click a link that was emailed to their address specified during registration in order to complete registration.
     </li>
-    <li><b>Require Activation</b><br />
-      New users must be manually activated by an administrator
+    <li><b>Require User Activation?</b><br />
+      New users must be manually activated by an administrator.
     </li>
   </ul>
 
   <h4 id="settings-cdn">2.4 Content Delivery Network Settings</h4>
   <ul>
-    <li><b>Use CDN</b><br />
-      Enables the use of a CDN
+    <li><b>Use CDN?</b><br />
+      Enable or disable the use of a CDN (content delivery network).
     </li>
     <li><b>CDN Plugin</b><br />
       Sets the plugin used for accessing the CDN
@@ -204,7 +201,7 @@
       Sets the URL of your smaller CDN server where files are pulled from the RAM
     </li>
     <li><b>Flash CDN URL</b><br />
-      Sets the URL of your flash streaming CDN server where files are pulled from the RAM.
+      Sets the URL of your flash streaming CDN server where files are pulled from the disk.
     </li>
   </ul>
 
