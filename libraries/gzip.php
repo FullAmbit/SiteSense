@@ -28,22 +28,19 @@ function gzip_start() {
 	ob_implicit_flush(0);
 }
 function gzip_end($data) {
-  $contents=ob_get_contents();
-  ob_end_clean();
-  header('Content-Encoding: '.$data->compressionType);
-  //print("\x1F\x8B\x08\x00\x00\x00\x00\x00");
-	if($data->settings['removeAttribution'] == '0') {
-		$count = preg_match('/<p id="attribution">Powered by <a href="http:\/\/www.sitesense.org">SiteSense<\/a>&trade; '.$data->version.', a <a href="http:\/\/www.fullambit.com">Full Ambit Media<\/a> product.<\/p>/',$contents,$matches);
-		if($count < 1){
-			$fC = preg_match('/<!-- #footer -->/',$contents);
-			if($fC < 1){
-				$contents = preg_replace('/<\/body>/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p></body>',$contents);
+	$contents=ob_get_contents();
+	ob_end_clean();
+	header('Content-Encoding: '.$data->compressionType);
+	$attributionString='<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p>';
+	if(empty($data->settings['removeAttribution'])) {
+		if(strpos($contents,$attributionString)===FALSE){	
+			if(strpos('<!-- #footer -->',$contents)===FALSE){
+				$contents=str_replace('</body>',$attributionString.'</body>',$contents);
 			}else{
-				$contents = preg_replace('/<!-- #footer -->/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p><!-- #footer -->',$contents);
+				$contents=str_replace('<!-- #footer -->',$attributionString.'<!-- #footer -->',$contents);
 			}
 		}
 	}
 	$contents=gzencode($contents,$data->settings['compressionLevel']);	
 	print($contents);
 }
-?>
