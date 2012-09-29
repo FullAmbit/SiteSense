@@ -448,31 +448,31 @@
       <li><b>Submit Title</b><br />
         Sets the text displayed on the submit button
       </li>
-      <li><b>Email Data To</b><br />
+      <li><b>E-Mail</b><br />
         Specify an email address to send submitted form data to. Multiple addresses should be separated by commas with no spaces
       </li>
-      <li><b>API</b><br />
-        Plugins can be created to manage form submissions and linked to a dynamic form via an API
+      <li><b>API Hook</b><br />
+        If you'd like to send data from this form to an API (such as for a newsletter signup or survey service), select the plugin which you would like to use to contact the API here
       </li>
-      <li><b>Create Main Menu Link</b><br />
+      <li><b>Create Menu Link</b><br />
         When checked, it will generate a main menu item for the page.
       </li>
-      <li><b>Menu Link Text</b><br />
-        The menu link text is what will be used as the Text property for the automatically created main menu item (if enabled).
+      <li><b>Menu Title</b><br />
+        The menu link title is what will be used as the visible text for the automatically created main menu item (if enabled).
       </li>
-      <li><b>Content Before Form</b><br />
+      <li><b>Raw Content Before</b><br />
         The content to be displayed before the form can be entered from within the WYSIWYG editor.
       </li>
-      <li><b>Content After Form</b><br />
+      <li><b>Raw Content After</b><br />
         The content to be displayed after the form can be entered from within the WYSIWYG editor.
       </li>
       <li><b>Success Message</b><br />
         This is the message that users will see after successfully submitting the form.
       </li>
-      <li><b>Require Login</b><br />
+      <li><b>Require Login?</b><br />
         Determines if users must be logged in prior to submitting the form
       </li>
-      <li><b>Make Form a Top-Level Page</b><br />
+      <li><b>Top Level</b><br />
         Automatically generates a URL Route to allow access to the form by /{FormName} as an alternative to /dynamic-forms/{ FormName}
       </li>
       <li><b>Enabled</b><br />
@@ -505,13 +505,21 @@
           The name of the field will populate the label text and is visible to visitors
         </li>
         <li><b>Description</b><br />
-          Explanation of the data you are trying to collect. Depending on the theme, this can be displayed to visitors upon focus of the form field.
+          Explanation of the data you are trying to collect. If your theme supports it, this can be displayed to visitors upon focus of the form field.
         </li>
         <li><b>Type</b><br />
-          The type of HTML form element in which you are trying to create.
+          The type of form element in which you are trying to create.
+		  <ul>
+			<li><b>textbox</b> - A single-line text input field.</li>
+			<li><b>textarea</b> - Room for multiple lines of text input.</li>
+			<li><b>checkbox</b> - A simple checkbox - useful for yes/no inputs.</li>
+			<li><b>select</b> - A drop-down item, from which one option can be selected. You can add options to the select field after you save it.</li>
+			<li><b>timezone</b> - A &quot;select&quot; form element which is pre-populated with a list of all timezones.</li>
+			<li><b>password</b> - Input into this field type will be obsfucated and will not be saved to the database like other fields are.</li>
+		  </ul>
         </li>
         <li><b>API Field</b><br />
-          ?
+          If you have an API Hook enabled for this form, setting the API field will determine the name of the variables sent to the API. For example, if you have a standard newsletter plugin like the <a href="https://github.com/FullAmbit/SiteSense-CampaignMonitor-plugin">CampaignMonitor</a> or <a href="https://github.com/FullAmbit/SiteSense-MailChimp-plugin">MailChimp</a> plugins provided by SiteSense, the API Field for the e-mail address is "email" and the API Field for the name attribute is "name".
         </li>
         <li><b>Required</b><br />
           Determines if the field is required to be filled out prior to submission
@@ -519,14 +527,14 @@
         <li><b>Enabled</b><br />
           Determines if the field should be displayed
         </li>
-        <li><b>E-Mail Validation</b><br />
-          When checked, the value submitted will be validated as an email address. If the value is not in the proper format, it will display an error to the user. (Should only be enabled when Type=textbox)
+        <li><b>E-Mail Validation?</b><br />
+          When checked, the value submitted will be validated as an email address. If the value is not in the proper format, it will display an error to the user. This will only work with textboxes.
         </li>
         <li><b>Compare To</b><br />
           The value of the field will be compared to the value of the field selected here. If they do not match, an error will be displayed to the user. This is useful when trying to confirm an email or password submission.
         </li>
         <li><b>Module Hook</b><br />
-          If a module is selected, that module will be responsible for processing the submitted field data.
+          If a module is selected, that module will be responsible for processing the submitted field data and it will not be viewable through Dynamic Forms.
         </li>
       </ul>
       <h5>Controls</h5>
