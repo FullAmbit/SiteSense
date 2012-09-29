@@ -29,32 +29,21 @@ function gzip_start() {
 }
 function gzip_end($data) {
   $contents=ob_get_contents();
-  //$contents=common_parseDynamicValues($data,$contents);
   ob_end_clean();
   header('Content-Encoding: '.$data->compressionType);
   print("\x1F\x8B\x08\x00\x00\x00\x00\x00");
-	if($data->settings['removeAttribution'] == '0')
-	{
+	if($data->settings['removeAttribution'] == '0') {
 		$count = preg_match('/<p id="attribution">Powered by <a href="http:\/\/www.sitesense.org">SiteSense<\/a>&trade; '.$data->version.', a <a href="http:\/\/www.fullambit.com">Full Ambit Media<\/a> product.<\/p>/',$contents,$matches);
-		if($count < 1)
-		{
+		if($count < 1){
 			$fC = preg_match('/<!-- #footer -->/',$contents);
-			if($fC < 1)
-			{
+			if($fC < 1){
 				$contents = preg_replace('/<\/body>/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p></body>',$contents);
-			} else {
+			}else{
 				$contents = preg_replace('/<!-- #footer -->/','<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p><!-- #footer -->',$contents);
 			}
 		}
 	}
-	
-	$size=strlen($contents);
-	$crc=crc32($contents);
-	$contents=gzcompress($contents,$data->settings['compressionLevel']);
-	
-	/* strip off faulty 4 digit CRC when printing */
-	$contents = substr($contents,0,strlen($contents)-4);
-	
+	$contents=gzencode($contents,$data->settings['compressionLevel'],FORCE_DEFLATE);	
 	print($contents);
 }
 ?>
