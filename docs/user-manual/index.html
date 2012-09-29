@@ -631,7 +631,14 @@
   <hr />
 
   <h3 id="url-routing">10. URL Routing</h3>
-  <p>All page requests are routed through the URL module. Patterns will be matched from top to bottom, stopping at the first match. Once a match has been found, the pattern will be replaced with the specified replacement. Replacement URLs will be force-redirected to their matches as well, to prevent duplicate content for different URLs.</p>
+  <p>All page requests are routed through the URL module. Patterns will be matched from top to bottom, stopping at the first match. Once a match has been found, the pattern will be replaced with the specified replacement. Replacement URLs will be force-redirected to their matches as well, to prevent duplicate content for different URLs.<br/>
+  For example, let's say I have a URL route set up. The pattern is "new-url" and the replacement is "pages/new-page". It is a remap. Here is how various URLs will be routed:
+  <ul>
+	<li>http://mysite.com/new-url will display the content at "pages/new-page".</li>
+	<li>http://mysite.com/pages/new-page will redirect the user to http://mysite.com/new-url, which will be parsed as above.</li>
+	<li>http://mysite.com/new-url/child-page will display the content of "pages/new-page/child-page".</li>
+  </ul>
+  </p>
     <h4>Properties</h4>
       <ul>
         <li><b>Pattern</b><br>
@@ -641,25 +648,25 @@
           Sets what the matched pattern will be replaced with
         </li>
         <li><b>Hostname</b><br>
-          Sets a specific hostname (domain) for the URL remap. Hostnames can be added through the hostnames module. Setting it to global will match the pattern across any of your domains.
+          Sets a specific hostname (domain) for the URL route. Hostnames can be added through the hostnames module. Setting it to global will match the pattern across any of your domains.
         </li>
-        <li><b>Redirect</b><br>
-          Forces a Header 301 permanent redirect to the replacement URL.
-        </li>
-        <li><b>Use Regular Expressions</b><br>
+        <li><b>Use Regex?</b><br>
           When checked, the pattern and replacement will utilize regular expressions. (Advanced Users Only)
+        </li>
+        <li><b>Redirect The URL</b><br>
+          Checking this box will force the user to be redirected instead of just displaying the Replacement content.
         </li>
       </ul>
     <h4>Controls</h4>
       <ul>
         <li><b>Move Up (&uArr;) / Move Down (&dArr;)</b><br>
-          Changes the ordering of URL Remaps. Ordering is important here since the framework will process the list of URL remaps from top to bottom, stopping at the first match. Therefore, your most specific matches should go first and least specific matches last.
+          Changes the ordering of URL routes. Ordering is <b>important</b> here since the framework will process the list of URL remaps from top to bottom, stopping at the first match. Therefore, your most specific matches should go first and least specific matches last.
         </li>
         <li><b>Modify</b><br>
-          Edit the properties of the URL Remap
+          Edit the properties of the URL route
         </li>
         <li><b>Delete</b><br>
-          Remove the URL Remap
+          Remove the URL route
         </li>
       </ul>
 
