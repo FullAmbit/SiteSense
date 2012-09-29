@@ -255,7 +255,7 @@
 
   <h4>Properties</h4>
   <ul>
-    <li><b>Page Name</b><br />
+    <li><b>Name</b><br />
       The page name is the URL entity of a page and therefore is required to be unique.
     </li>
     <li><b>Page Title</b><br />
@@ -265,7 +265,10 @@
       Pages can be associated via a parent/child relationship. If sidebar navigation is enabled this sub-page will appear in a separate menu off the parent.
     </li>
     <li><b>Create Main Menu Link</b><br />
-      When checked, it will generate a main menu item for the page.
+      When checked, it will generate a main menu item for the page. This option only appears when creating a new page.
+    </li>
+    <li><b>Parent Menu Item</b><br />
+      This option lets you choose a parent menu item for the menu item for the page, if you've enabled this option above.
     </li>
     <li><b>Menu Link Text</b><br />
       The menu link text is what will be used as the Text property for the automatically created main menu item (if enabled).
@@ -274,7 +277,7 @@
       Page content is the content that will go inside the automatically generated 'contentBox'. HTML is allowed in here, though any sub-headings you wish to use should start at H3, since 'Page Title' is used as the h2.
     </li>
     <li><b>Live</b><br />
-      Determines if the page will be displayed
+      Determines if the page will be displayed. Check the box if you want the page to be live on the web.
     </li>
   </ul>
 
@@ -284,10 +287,10 @@
       Changes the ordering of pages within their parent page
     </li>
     <li><b>Sidebars</b><br />
-      Manage the sidebars for the selected page
+      Manage the sidebars for the selected page. If no sidebars are chosen specifically, the sidebars selected for the "pages" module as a whole will be used.
     </li>
     <li><b>Add Child</b><br />
-      Adds a new child page to the selected page
+      Brings up the form to add a child form with the selected form as its parent.
     </li>
     <li><b>Delete</b><br />
       Removes the page
@@ -321,10 +324,10 @@
         <li><b>Web Master</b><br />
           Sets the webmaster email that will be displayed on the RSS feed
         </li>
-        <li><b>Require Login to Comment</b><br />
+        <li><b>Comments Require Login</b><br />
           Forces readers to log-in before commenting on a blog
         </li>
-        <li><b>Make Blog a Top-Level Page</b><br />
+        <li><b>Top Level Blog</b><br />
           Automatically generates a URL Route to allow access to the form by /{BlogName} as an alternative to /blogs/{ BlogName}
         </li>
         <li><b>Allow Comments</b><br />
