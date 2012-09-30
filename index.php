@@ -306,7 +306,7 @@ final class sitesense {
 		if ($this->action[0]=='install') {
 			$db=$this->db;
 			$data=$this;
-			common_include('libraries/install.php');
+			require_once 'libraries/install.php';
 			die; // technically install.php should die at end, but to be sure...
 		}
 
@@ -697,7 +697,7 @@ final class sitesense {
 				}
 			}
 		}
-		unset($this->db);
+		$this->db=NULL;
 		
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
