@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 class customFormHandler extends formHandler{
-	function __construct($fields, $dataName, $formName, $data=false, $admin=false, $action=NULL){
+	function __construct($fields, $dataName, $formName, $data=false, $admin=false, $action=NULL, $customFormFields=NULL){
 		if($data !== false){
 			$this->enableAJAX = ($data->currentPage == 'ajax') ? true : false;
 			if($action == NULL){
@@ -37,6 +37,7 @@ class customFormHandler extends formHandler{
 		$this->fields = $fields;
 		$this->submitTitle = 'Submit';
 		$this->caption = $formName;
+		$this->customFormFields=$customFormFields;
 		//And some defaults for the form items.
 		$defaults = array(
 			'params' => array(),
@@ -62,6 +63,7 @@ class formHandler {
 		$enctype = 'application/x-www-form-urlencoded',
 		$formPrefix,
 		$caption,
+		$customFormFields=array(),
 		$submitTitle,
 		$method = 'post',
 		$fromForm,
@@ -739,6 +741,11 @@ class formHandler {
 								}
 								echo implode($tz,"\n");
 							}else{
+								global $data;
+								if(isset($formField['type'])&&isset($this->customFormFields[$formField['type']])){
+									$formField['options']=$this->customFormFields[$formField['type']];
+								}
+								//die(print_r($formField).print_r($data->output['customFormFields']));
 								$optgroup = FALSE;
 								if(!empty($formField['options'])) {
 									foreach ($formField['options'] as $key => $option) {
