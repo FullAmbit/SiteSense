@@ -290,6 +290,10 @@ class formHandler {
                                                 $newWidth = $currentWidth * $resizeRatio;
                                                 $newHeight = $currentHeight * $resizeRatio;
                                                 $newImage = imagecreatetruecolor($newWidth, $newHeight);
+												if($type==='png'||$type==='x-png'){
+													imagealphablending($newImage,false); // alpha fix
+													imagesavealpha($newImage,true);      // alpha fix
+												}
                                                 imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $currentWidth, $currentHeight);
                                             }
                                             break;
@@ -309,6 +313,10 @@ class formHandler {
                                                         break;
                                                 }
                                                 $newImage = imagecreatetruecolor($maxWidth, $maxHeight);
+												if($type==='png'||$type==='x-png'){
+													imagealphablending($newImage,false); // alpha fix
+													imagesavealpha($newImage,true);      // alpha fix
+												}
                                                 imagecopyresampled($newImage, $image, 0, 0, $startX, $startY, $maxWidth, $maxHeight, $currentWidth, $currentHeight);
                                             }
                                             break;
@@ -438,6 +446,8 @@ class formHandler {
                                             imagegif($newImage, $savePath);
                                             break;
                                         case 'png':
+											imagealphablending($newImage,false); // alpha fix
+											imagesavealpha($newImage,true);      // alpha fix
                                             imagepng($newImage, $savePath,9);
                                             //$optimizedName = ($info['customName'] !== NULL) ? $info['customName'] : $basename;
                                             //$optimizedPath = $dir . $optimizedName . '_optimized.'.$extension;
