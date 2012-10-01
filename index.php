@@ -25,14 +25,12 @@
 ob_start(); //This is used to prevent errors causing g-zip compression problems before g-zip is started.
 (@include_once 'dbSettings.php') or die('Unable to load dbSettings.php. Please read the README.md.');
 require_once 'libraries/common.php';
-
 final class dynamicPDO extends PDO {
 	public  $sessionPrefix;
 	public  $lang;
 	private $tablePrefix;
 	private $sqlType;
 	private $queries;
-
 	public static function exceptionHandler($exception) {
 		die('Unable to connect to the database. Please read the README.md and configure your
 			database settings correctly.');
@@ -43,7 +41,6 @@ final class dynamicPDO extends PDO {
 			revealed in the case of failure
 		*/
 		$dbSettings=dbSettings();
-
 		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		parent::__construct(
 			$dbSettings['dsn'],
@@ -51,7 +48,6 @@ final class dynamicPDO extends PDO {
 			$dbSettings['password']
 		);
 		restore_exception_handler();
-
 		$this->sqlType=strstr($dbSettings['dsn'], ':', true);
 		$this->tablePrefix=$dbSettings['tablePrefix'];
 		/* should implement a better session prefix method */
@@ -196,9 +192,7 @@ final class dynamicPDO extends PDO {
 				foreach ($this->languageList as $languageItem) {
 					$lang = $languageItem['shortName'];
 					$fullTableName = $tableName.'_'.$lang;
-
 					if ($verbose) echo '<p>Dropping ', $fullTableName, '</p>';
-
 					if ($this->tableExists($fullTableName)) {
 						$this->exec('dropTable', 'installer', array('!table!' => $fullTableName));
 					} else {
@@ -207,9 +201,7 @@ final class dynamicPDO extends PDO {
 				}
 			}
 		}else {
-			//--Remove Core Table--//
 			if ($verbose) echo '<p>Dropping ', $tableName, ' table</p>';
-
 			if ($this->tableExists($tableName)) {
 				$this->exec('dropTable', 'installer', array('!table!' => $tableName));
 			} else {
@@ -219,24 +211,19 @@ final class dynamicPDO extends PDO {
 	}
 }
 final class sitesense {
-	public
-	$settings, $pageSettings, $text, $version = '0.3.1',
+	public $settings, $pageSettings, $text, $version = '0.3.1',
 	$user, $siteRoot, $domainName, $linkHome, $linkRoot, $action, $currentPage, 
 	$module, $request, $httpHeaders, $metaList, $menuList, $sidebarList = array(),
 	$menuSource = array(), $admin, $compressionType,
 	$compressionStarted=false, $output=array(), $loginResult=false, $plugins = array(),
 	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(), 
 	$banned = false, $language, $languageList, $phrases = array(), $jsEditor;
-
 	private $db;
-
 	public function __construct() {
 		// Database connection
 		$this->db=new dynamicPDO();
-
 		// Set TimeZone To GMT/UTC (0:00)
 		$this->db->query('setTimeZone');
-
 		// Parse URL
 		$this->hostname = $_SERVER['HTTP_HOST'];
 		$url=str_replace(array('\\', '%5C'), '/', $_SERVER['REQUEST_URI']);
@@ -298,7 +285,6 @@ final class sitesense {
 				die();
 			}
 		}
-
 		// Break URL up into action array
 		$queryString = trim($queryString, '/');
 		$this->action=empty($queryString) ? array('default') : explode('/', $queryString);
@@ -309,7 +295,6 @@ final class sitesense {
 			require_once 'libraries/install.php';
 			die; // technically install.php should die at end, but to be sure...
 		}
-
 		// Cookies and Sessions
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
@@ -347,9 +332,6 @@ final class sitesense {
 							}
 							// Load permissions
 							getUserPermissions($this->db, $this->user);
-							if(!$this->user['isSuperAdmin']&&checkPermission('superadmin','core',$this)){
-								$this->user['isSuperAdmin']=TRUE;
-							}
 							$this->user['sessions']=$session;
 							// Push expiration ahead
 							$statement=$this->db->query("userSessionTimeOut");
@@ -378,27 +360,11 @@ final class sitesense {
 							$statement->execute(array(
 									':id' => $user['id']
 								)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-							/**
-							 *
-							 * Why is this code here?....
-							 * -------
-							 //Load profile pictures
-							 $profilePictures = $this->db->prepare('getProfilePictures', 'gallery');
-							 $profilePictures->execute(array(':user' => $this->user['id']));
-							 $this->user['profilePictures'] = $profilePictures->fetchAll();
-
-							 //Load albums
-							 $albums = $this->db->prepare('getAlbumsByUser', 'gallery');
-							 $albums->execute(array(':userId' => $this->user['id']));
-							 $this->user['albums'] = $albums->fetchAll();
-
-							 **/
 							$this->loginResult=true;
 						}
 					}
 				}
 			}
-			
 		// Load hostname
 		$statement = $this->db->prepare('getHostname', 'hostnames');
 		$statement->execute(array(
@@ -407,7 +373,6 @@ final class sitesense {
 		if ($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->language = $hostnameItem['defaultLanguage'];
 		}
-
 		// What Language Will We Be Loading? (Set Language Cookies As Well)
 		if (isset($_GET['language'])) {
 			// Check If Language Exists
@@ -419,7 +384,6 @@ final class sitesense {
 				$this->language = $_GET['language'];
 			}
 		}
-		
 		// If Still No language Set By Get...
 		if(!isset($this->language)){
 			if (isset($_COOKIE["myLanguage"]) && $_COOKIE["myLanguage"]!=='') {
@@ -433,15 +397,12 @@ final class sitesense {
 				$this->language=$languageItem['shortName'];
 			}
 		}
-		
 		// Set New Language Cookie
 		if (!isset($_COOKIE['myLanguage']) || $_COOKIE['myLanguage'] !== $this->language) {
 			setcookie("myLanguage", $this->language, time()+604800, $this->linkHome, '', '', TRUE);
 		}
-		
 		// Pass DB the New Current Language (So It Knows To Pull / Insert All Queries To This One)
-		$this->db->lang = $this->language;
-				
+		$this->db->lang = $this->language;	
 		// Load settings
 		$statement=$this->db->query('getSettings');
 		while ($row=$statement->fetch()) {
@@ -452,12 +413,10 @@ final class sitesense {
 				$this->settings[$row['category']][$row['name']]=$row['value'];
 			}
 		}
-
 		if ($hostnameItem = $statement->fetch(PDO::FETCH_ASSOC)) {
 			$this->settings['theme'] = $hostnameItem['defaultTheme'];
 			$this->settings['homepage'] = $hostnameItem['homepage'];
 		}
-		
 		//Is The URL Trying To Go To The Homepage?
 		if($queryString == $this->settings['homepage']){
 			// Grab Get Parameters
@@ -467,27 +426,22 @@ final class sitesense {
 			header ('Location: '.$this->linkHome.$params);
 			die();
 		}
-		
 		// Set Default TimeZone
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);
 		// Append attributions
 		$attribution='|attribution|';
 		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? common_parseDynamicValues($this, $attribution) : '';
-
 		// Check to see if CDN plugin should be loaded
 		if ($this->settings['useCDN']=='1') {
 			common_loadPlugin($this, $this->settings['cdnPlugin']);
 			$this->cdn =& $this->plugins[$this->settings['cdnPlugin']];
 		}
-
 		// Load the WYISWYG editor plugin
 		common_loadPlugin($this, $this->settings['jsEditor']);
 		$this->jsEditor =& $this->plugins[$this->settings['jsEditor']];
-
 		// When registration gets it's own settings panel, remove this!
 		$this->settings['register']['sender']='noreply@'.$_SERVER['SERVER_NAME'];
-
 		// Check to see if compression is enabled
 		$this->compressionType=false;
 		if ($this->settings['compressionEnabled']) {
@@ -497,18 +451,15 @@ final class sitesense {
 				$this->compressionType='gzip';
 			}
 		}
-
 		// Define server path
 		$this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
 		$this->siteRoot=$_SERVER['PHP_SELF'];
 		$this->themeDir='themes/'.$this->settings['theme'].'/';
 		$this->linkRoot=$this->linkHome;
-
 		// Set up other CDN variables using linkRoot
 		$this->smallStaticLinkRoot=(isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
 		$this->flashLinkRoot=(isset($this->settings['cdnFlash']{2})) ? $this->settings['cdnFlash'] : $this->linkRoot;
-
 		// Direct to Homepage
 		if ($this->linkHome!='/') $url=str_replace($this->linkHome, '', $url);
 		$url=trim($url, '/');
@@ -528,7 +479,6 @@ final class sitesense {
 				$this->action[0] = 'default';
 			}
 		}
-
 		// Direct banned users to page 'banned'
 		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
@@ -566,7 +516,6 @@ final class sitesense {
 				$sidebars = $statement->fetchAll();
 			}
 		}
-
 		$this->action = array_merge($this->action, array_fill(0, 10, false));
 		$this->httpHeaders=array(
 			'Content-Type: text/html; charset='.$this->settings['characterEncoding']
@@ -581,7 +530,6 @@ final class sitesense {
 				'content' => $this->language
 			)
 		);
-		
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
 		if($this->currentPage !== 'admin'){
 			// Get Left and Right Main Menu Order
@@ -671,19 +619,15 @@ final class sitesense {
 				':moduleID' => $this->module['id']
 			));
 		$plugins=$statement->fetchAll();
-
 		foreach ($plugins as $plugin) {
 			common_include('plugins/'.$plugin['name'].'/plugin.php');
 			$objectName='plugin_'.$plugin['name'];
 			$this->plugins[$plugin['name']]=new $objectName;
 		}
-
 	  	// Set Up Modular Build Functions
 		$buildContent= ($this->currentPage == 'admin') ? 'admin_buildContent' : $this->module['name'].'_buildContent';
 		if (function_exists($buildContent)) $buildContent($this, $this->db);
-		
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && @strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') $this->currentPage = 'ajax';
-		
 		// Parse Sidebars Before Display
 		if(count($this->sidebarList)>0){
 			$sidebars=$this->sidebarList;
@@ -701,7 +645,6 @@ final class sitesense {
 			}
 		}
 		$this->db=NULL;
-		
 		if ($this->compressionType) {
 			common_include('libraries/gzip.php');
 			gzip_start();
@@ -726,22 +669,19 @@ final class sitesense {
 				);
 			}
 		}
-
         theme_header($this);
         $content=$this->module['name'].'_content';
         if ($this->currentPage=='admin') {
             $content='admin_content';
         }
         $content($this);
-
         if (!function_exists('theme_leftSidebar')) {
             $this->loadModuleTemplate('sidebars');
         }
         theme_leftSidebar($this);
         theme_rightSidebar($this);
         theme_footer($this);
-	} /* __construct */
-
+	}
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
 		$defaultThemeInclude='themes/default/'.$module.'.template.php';
@@ -765,6 +705,4 @@ final class sitesense {
 		if ($this->compressionStarted) gzip_end($this);
 	}
 }
-// Initialize and run the application
-new sitesense();
-?>
+new sitesense(); // Initialize and run the application
