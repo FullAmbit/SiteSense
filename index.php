@@ -347,6 +347,9 @@ final class sitesense {
 							}
 							// Load permissions
 							getUserPermissions($this->db, $this->user);
+							if(!$this->user['isSuperAdmin']&&checkPermission('superadmin','core',$this)){
+								$this->user['isSuperAdmin']=TRUE;
+							}
 							$this->user['sessions']=$session;
 							// Push expiration ahead
 							$statement=$this->db->query("userSessionTimeOut");
