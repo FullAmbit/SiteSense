@@ -233,7 +233,7 @@ if (
 	    }
 	}
 
-	$moduleFiles=glob('modules/*/*.module.php');
+	$moduleFiles=glob('modules/*/*.install.php');
 	// Build an array of the names of the modules in the filesystem
 	$fileModules=array_map(
 	    function($path) {
@@ -262,7 +262,8 @@ if (
 	        )
 	    );
 	}
-
+	$moduleFiles=glob('modules/*/*.module.php');
+	
 	// Set up default permission groups
 	$defaultPermissionGroups=array(
 		'Writer'    => array(
