@@ -264,16 +264,15 @@ function parsePermissionName($permission){
 }
 
 function checkPermission($permission,$module,$data) {
-    $hasPermission = false;
 	// User is Admin, which is universal access, Return true
-    if(isset($data->user['isSuperAdmin']) && $data->user['isSuperAdmin']===TRUE) {
-        $hasPermission = true;
+    if(isset($data->user['isSuperAdmin'])&&$data->user['isSuperAdmin']===TRUE) {
+        return TRUE;
     } else {
-        if(isset($data->user['permissions'][$module][$permission]) && $data->user['permissions'][$module][$permission] == '1') {
-            $hasPermission = true;
+        if(isset($data->user['permissions'][$module][$permission])&&$data->user['permissions'][$module][$permission] == '1') {
+            return TRUE;
         }
     }
-    return $hasPermission;
+    return FALSE;
 }
 
 function common_populateLanguageTables($data,$db,$tableName,$keyColumn,$keyValue,$includeCurrentLanguage = FALSE){
