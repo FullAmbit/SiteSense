@@ -479,9 +479,9 @@ final class sitesense {
 			}
 		}
 		// Direct banned users to page 'banned'
-		$this->currentPage = ($this->banned) ? 'banned' : $this->action[0];
+		$this->currentPage = $this->action[0];
 		// Does this module exist, and is it enabled? If not, is it a form, blog, or page?
-		if ($this->currentPage != 'admin' && !$this->banned) {
+		if ($this->currentPage != 'admin') {
 			$moduleQuery = $this->db->prepare('getModuleByShortName', 'admin_modules');
 			$moduleQuery->execute(array(':shortName' => $this->currentPage));
 			$this->module = $moduleQuery->fetch();
@@ -583,7 +583,7 @@ final class sitesense {
 				}
 			}
 		}
-		if ($this->currentPage=='admin' && !$this->banned) {
+		if ($this->currentPage=='admin') {
 			common_include('libraries/admin.template.php');
 			common_include('libraries/admin.php');
 		} else {
@@ -596,7 +596,7 @@ final class sitesense {
 					$this->currentPage=$this->settings['hideContentGuests'];
 				}
 			}
-			if ($this->currentPage == 'pageNotFound' || $this->banned) {
+			if ($this->currentPage == 'pageNotFound') {
 				$this->module['name']='pages';
 				common_include('modules/pages/pages.module.php');
 			}else if (file_exists($targetInclude = 'modules/'.$this->module['name'].'/'.$this->module['name'].'.module.php')) {
@@ -652,20 +652,6 @@ final class sitesense {
 		if (is_array($this->httpHeaders)) {
 			foreach ($this->httpHeaders as $header) {
 				header($header);
-			}
-		}
-		if (!empty($this->pageSettings['httpHeaders'])) {
-			foreach ($this->pageSettings['httpHeaders'] as $header) {
-				header($header);
-			}
-		}
-		if (!empty($this->pageSettings['cookies'])) {
-			foreach ($this->pageSettings['cookies'] as $cookie) {
-				setcookie(
-					$cookie['name'],
-					$cookie['value'],
-					$cookie['expires']
-				);
 			}
 		}
         theme_header($this);
