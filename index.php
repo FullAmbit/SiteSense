@@ -215,7 +215,7 @@ final class sitesense {
 	$user, $siteRoot, $domainName, $linkHome, $linkRoot, $action, $currentPage, 
 	$module, $request, $httpHeaders, $metaList, $menuList, $sidebarList = array(),
 	$menuSource = array(), $admin, $compressionType,
-	$compressionStarted=false, $output=array(), $loginResult=false, $plugins = array(),
+	$compressionStarted=false, $output=array(), $plugins = array(),
 	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(), 
 	$banned = false, $language, $languageList, $phrases = array(), $jsEditor;
 	private $db;
@@ -360,7 +360,6 @@ final class sitesense {
 							$statement->execute(array(
 									':id' => $user['id']
 								)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
-							$this->loginResult=true;
 						}
 					}
 				}
