@@ -35,13 +35,11 @@ function dbSettings() {
 		*/
 		'username' => 'root',
 		'password' => '',
-		'tablePrefix' => 'sitesense_'
+		'tablePrefix' => ''
 		/*
-			table prefix is appended before all table names in
+			tablePrefix is appended before all table names in
 			queries automatically. This allows multiple copies of
-			this CMS to be run from a single database
-			Handy when your hosting provider restricts the
-			number of databases you can use.
+			SiteSense to be run from a single database.
 		*/
 	);
 	/* do not edit past this point */
@@ -53,9 +51,6 @@ function dbSettingsSecurity() {
           index.php in the root directory. (or appropriate parent directory) 
      */ 
      $includeList=get_included_files(); 
-     /* 
-          Swap slashes so our check works in winblows 
-     */ 
      $fixedInclude=str_replace('\\','/',$includeList[0]); 
      $fixedFile=str_replace('\\','/',__FILE__); 
      $self=str_replace(dirname($fixedInclude),'',$fixedFile); 
@@ -67,11 +62,6 @@ function dbSettingsSecurity() {
           define('dbInfoDefined',true);
      } else {
           killHacker('Attempt to call dbSettings directly');
-          /*
-               It should NOT drop through to die, unless someone calls this
-               file directly.
-          */
           die('Attempt to call dbSettings directly');
      }
 }
-?>
