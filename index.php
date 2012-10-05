@@ -26,11 +26,8 @@ ob_start(); //This is used to prevent errors causing g-zip compression problems 
 (@include_once 'dbSettings.php') or die('Unable to load dbSettings.php. Please read the README.md.');
 require_once 'libraries/common.php';
 final class dynamicPDO extends PDO {
-	public  $sessionPrefix;
-	public  $lang;
-	private $tablePrefix;
-	private $sqlType;
-	private $queries;
+	public $sessionPrefix,$lang;
+	private $tablePrefix,$sqlType,$queries;
 	public static function exceptionHandler($exception) {
 		die('Unable to connect to the database. Please read the README.md and configure your
 			database settings correctly.');
@@ -449,10 +446,7 @@ final class sitesense {
 		// Direct to Homepage
 		if ($this->linkHome!='/') $url=str_replace($this->linkHome, '', $url);
 		$url=trim($url, '/');
-		if (($url=='') ||
-			($url=='index.php') ||
-			($url=='index.html') ||
-			($url=='index.php?')) {
+		if ($url==''||$url=='index.php'||$url=='index.html'||$url=='index.php?') {
 			// On default, go to homepage
 			if (isset($this->settings['homepage']) && $this->action[0]=='default') {
 				$homeURL = explode('/',$this->settings['homepage']);
@@ -523,7 +517,6 @@ final class sitesense {
 			$this->menuList['left']=$statement->fetchAll();
 			$statement=$this->db->query('getEnabledMainMenuOrderRight');
 			$this->menuList['right']=$statement->fetchAll();
-	
 			// Here we'll load core phrases
 			$statement = $this->db->prepare('getPhrasesByModule', 'common');
 			// Core Phrases
@@ -574,7 +567,6 @@ final class sitesense {
 			common_include('libraries/admin.template.php');
 			common_include('libraries/admin.php');
 		} else {
-
 			if (
 				($this->settings['hideContentGuests']!='no') &&
 				empty($this->user['username'])
