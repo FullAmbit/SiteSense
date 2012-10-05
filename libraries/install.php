@@ -349,4 +349,5 @@ if (
 }
 echo '
 </body></html>';
+die();
 ?>
