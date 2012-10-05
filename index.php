@@ -211,13 +211,13 @@ final class dynamicPDO extends PDO {
 	}
 }
 final class sitesense {
-	public $settings, $pageSettings, $text, $version = '0.3.1',
-	$user, $siteRoot, $domainName, $linkHome, $linkRoot, $action, $currentPage, 
-	$module, $request, $httpHeaders, $metaList, $menuList, $sidebarList = array(),
-	$menuSource = array(), $admin, $compressionType,
-	$compressionStarted=false, $output=array(), $plugins = array(),
-	$cdn, $smallStaticLinkRoot, $largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(), 
-	$banned = false, $language, $languageList, $phrases = array(), $jsEditor;
+	public $settings, $pageSettings, $text, $version = '0.3.1', $user, $siteRoot,
+	$domainName, $linkHome, $linkRoot, $action, $currentPage, $module, $request, 
+	$httpHeaders, $metaList, $menuList, $sidebarList = array(), 
+	$menuSource = array(), $admin, $compressionType, $compressionStarted=false, 
+	$output=array(), $plugins = array(), $cdn, $smallStaticLinkRoot, 
+	$largeStaticLinkRoot, $flashLinkRoot, $cdnLinks = array(), $banned = false, 
+	$language, $languageList, $phrases = array(), $jsEditor;
 	private $db;
 	public function __construct() {
 		// Database connection
