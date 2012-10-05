@@ -213,11 +213,11 @@ function theme_buildForm($formData) {
 			$spanValue='';
 			if(isset($formField['value'])) {
 				if(is_string($formField['value'])) {
-					$spanValue=htmlspecialchars($formField['value']);
+					$spanValue=htmlentities($formField['value'],ENT_QUOTES,'UTF-8');
 				}
 			}
 			if(!empty($formData->sendArray[':'.$formDataKey.'_hidden'])) {
-				$spanValue=htmlspecialchars($formData->sendArray[':'.$formDataKey.'_hidden']);
+				$spanValue=htmlentities($formData->sendArray[':'.$formDataKey.'_hidden'],ENT_QUOTES,'UTF-8');
 			}
 			echo '
 				<tr',($class ? ' class="'.$class.'"' : ''),'>
@@ -251,16 +251,9 @@ function theme_buildForm($formData) {
 			}
 			switch ($formField['tag']) {
 				case 'textarea':
-					echo '>',htmlspecialchars($formField['value']),'</textarea>';
+					echo '>',htmlentities($formField['value'],ENT_QUOTES,'UTF-8'),'</textarea>';
 					if (isset($formField['useEditor'])) {
 						echo $formField['addEditor'];
-						//$data->jsEditor->addEditor($formData->formPrefix.$formDataKey);
-						/*echo '
-<script type="text/javascript">
-	CKEDITOR.replace(\'',$formData->formPrefix,$formDataKey,'\', {
-		customConfig:CMSBasePath+"ckeditor/paladin/config.js"
-	});
-</script>';*/
 					}
 				break;
 				case 'select':
@@ -356,7 +349,7 @@ function theme_buildForm($formData) {
 				default:
 					if (!empty($formField['value'])) {
 						echo '
-						value="',htmlspecialchars($formField['value']),'"';
+						value="',htmlentities($formField['value'],ENT_QUOTES,'UTF-8'),'"';
 					}
 					echo '
 					/>';
@@ -437,7 +430,7 @@ function theme_buildTable($formData) {
 					<th>',$formField['label'],':</th>
 					<td',(
 						empty($fieldClass) ? '' : ' class="'.$fieldClass.'"'
-					),'>',htmlspecialchars($formField['value']),'</td>
+					),'>',htmlentities($formField['value'],ENT_QUOTES,'UTF-8'),'</td>
 				</tr>';
 			}
 		}

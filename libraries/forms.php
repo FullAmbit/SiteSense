@@ -577,7 +577,6 @@ class formHandler {
                         }
                     }
                     if (isset($formField['compareTo'])) {
-                    //	if ($value!=htmlspecialchars($_POST[$this->formPrefix.$formField['compareTo']])) { // why the htmlspecialchars?
                         if ($value != $_POST[$this->formPrefix.$formField['compareTo']]) {
                             $validData = false;
                             $formField['errorList'][] = $formField['compareFailMessage'];
@@ -718,7 +717,7 @@ class formHandler {
 					}
 					switch ($formField['tag']) {
 						case 'textarea':
-							echo '>',htmlspecialchars_decode($formField['value']),'</textarea>';
+							echo '>',html_entity_decode($formField['value'],ENT_QUOTES,'UTF-8'),'</textarea>';
 							if (isset($formField['useEditor'])) {
 								echo '
 		<script type="text/javascript"><!--
@@ -835,12 +834,12 @@ class formHandler {
 								</select>';
 							break;
 						case 'span':
-							echo '>',htmlspecialchars($formField['value']),'</span>';
+							echo '>',htmlentities($formField['value'],ENT_QUOTES,'UTF-8'),'</span>';
 							break;
 						default:
 							if (!empty($formField['value'])) {
 								echo '
-									value="',htmlspecialchars($formField['value']),'"';
+									value="',htmlentities($formField['value'],ENT_QUOTES,'UTF-8'),'"';
 							}
 							echo '
 								/>';
