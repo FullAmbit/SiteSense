@@ -254,7 +254,6 @@ final class sitesense {
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
 			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
-			// Redirect
 			if($row['isRedirect']){
 				header ('HTTP/1.1 301 Moved Permanently');
 				header ('Location: '.$this->linkHome.$queryString);
@@ -287,7 +286,6 @@ final class sitesense {
 		// Break URL up into action array
 		$queryString = trim($queryString, '/');
 		$this->action=empty($queryString) ? array('default') : explode('/', $queryString);
-		// Install
 		if ($this->action[0]=='install') {
 			$db=$this->db;
 			$data=$this;
@@ -407,8 +405,7 @@ final class sitesense {
 			$this->settings['homepage'] = $hostnameItem['homepage'];
 		}
 		//Is The URL Trying To Go To The Homepage?
-		if($queryString == $this->settings['homepage']){
-			// Grab Get Parameters
+		if($queryString===$this->settings['homepage']){
 			$pos = strpos($_SERVER['REQUEST_URI'],'?');	
 			$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],$pos);
 			header ('HTTP/1.1 301 Moved Permanently');
