@@ -262,13 +262,12 @@ final class sitesense {
 			}
 		} else {
 			// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
-			$statement = $this->db->prepare("findReverseReplacementNoRedirect");
+			$statement = $this->db->prepare('findReverseReplacementNoRedirect');
 			$statement->execute(array(
-				':url' => rtrim($queryString,"/"),
+				':url' => rtrim($queryString,'/'),
 				':hostname' => $this->hostname
 			));
-			if($row=$statement->fetch(PDO::FETCH_ASSOC)){				
-				// We Found One. Now Redirect To The "Matched" URL
+			if($row=$statement->fetch(PDO::FETCH_ASSOC)){
 				$replacement = $row['match'];
 				$replacement = str_replace('^','',$replacement);
 				$replacement = str_replace('(/.*)?$','',$replacement);
@@ -332,7 +331,7 @@ final class sitesense {
 					getUserPermissions($this->db, $this->user);
 					$this->user['sessions']=$session;
 					// Push expiration ahead
-					$statement=$this->db->query("userSessionTimeOut");
+					$statement=$this->db->query('userSessionTimeOut');
 					$this->settings['userSessionTimeOut'] = $statement->fetchColumn();
 					$expires=time()+$this->settings['userSessionTimeOut'];
 					$session['expires']=$session['expires'];
@@ -341,7 +340,7 @@ final class sitesense {
 					}
 					setcookie($userCookieName, $userCookieValue, $expires, $this->linkHome, '', '', true);
 					// Update and sync cookie to server values
-					$expires=gmdate("Y-m-d H:i:s", $expires);
+					$expires=gmdate('Y-m-d H:i:s',$expires);
 					$statement=$this->db->prepare('updateSessionExpiration');
 					$statement->execute(array(
 							':expires' => $expires,
@@ -376,20 +375,20 @@ final class sitesense {
 		}
 		// If Still No language Set By Get...
 		if(!isset($this->language)){
-			if (isset($_COOKIE["myLanguage"]) && $_COOKIE["myLanguage"]!=='') {
-				$this->language = $_COOKIE["myLanguage"];
+			if (isset($_COOKIE['myLanguage']) && $_COOKIE['myLanguage']!=='') {
+				$this->language = $_COOKIE['myLanguage'];
 			}elseif (isset($this->user['defaultLanguage']) && $this->user['defaultLanguage']!=='') {
 				$this->language = $this->user['defaultLanguage'];
 			}else{
 				$useDefaultLang = true;
-				$statement=$this->db->query("getDefaultLanguage");
+				$statement=$this->db->query('getDefaultLanguage');
 				$languageItem = $statement->fetch(PDO::FETCH_ASSOC);
 				$this->language=$languageItem['shortName'];
 			}
 		}
 		// Set New Language Cookie
 		if (!isset($_COOKIE['myLanguage']) || $_COOKIE['myLanguage'] !== $this->language) {
-			setcookie("myLanguage", $this->language, time()+604800, $this->linkHome, '', '', TRUE);
+			setcookie('myLanguage', $this->language, time()+604800, $this->linkHome, '', '', TRUE);
 		}
 		// Pass DB the New Current Language (So It Knows To Pull / Insert All Queries To This One)
 		$this->db->lang = $this->language;	
