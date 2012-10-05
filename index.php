@@ -420,7 +420,8 @@ final class sitesense {
 		date_default_timezone_set($this->settings['defaultTimeZone']);
 		ini_set('date.timezone', $this->settings['defaultTimeZone']);
 		// Append attributions
-		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? common_parseDynamicValues($this, '|attribution|') : '';
+		$attribution='|attribution|';
+		$this->settings['parsedFooterContent'] .= ($this->settings['removeAttribution'] == '0') ? common_parseDynamicValues($this, $attribution) : '';
 		// Check to see if CDN plugin should be loaded
 		if ($this->settings['useCDN']=='1') {
 			common_loadPlugin($this, $this->settings['cdnPlugin']);
