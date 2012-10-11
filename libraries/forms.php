@@ -637,7 +637,7 @@ class formHandler {
 					method="post"
 					action="',rtrim($this->action,'/').'/','"
 					id="',$this->formPrefix,'form"
-					enctype="multipart/form-data"';
+					enctype="',$this->enctype,'"';
 					if($commonForm) echo '
 					class="commonForm"';
 					echo '
