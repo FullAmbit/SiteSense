@@ -53,6 +53,8 @@ class customFormHandler extends formHandler{
 			$field = array_merge($defaults, $field);
 			if(!isset($field['params']['type'])){
 				$field['params']['type'] = '';
+			}elseif($field['params']['type']==='file'){
+				$this->enctype='multipart/form-data';
 			}
 		}
 	}
@@ -107,7 +109,7 @@ class formHandler {
 		);
         $hiddenFields=array();
         foreach($this->fields as $field => $fieldData){
-            if(isset($fieldData['tag']) && $fieldData['tag']=='span'){
+            if(isset($fieldData['tag'])&&$fieldData['tag']==='span'){
                 $hiddenFields[$field.'_hidden']= array(
                     'tag' => 'input',
                     'params' => array(
@@ -116,6 +118,9 @@ class formHandler {
                     'value' => $fieldData['value']
                 );
             }
+			if(isset($fieldData['params']['type'])&&$fieldData['params']['type']==='file'){
+				$this->enctype='multipart/form-data';
+			}
         }
         $this->fields=array_merge($this->fields,$hiddenFields);
 		foreach($this->fields as &$field){
