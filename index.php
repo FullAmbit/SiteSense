@@ -309,7 +309,7 @@ final class sitesense {
 			$statement->execute(array(
 				':sessionId' => $userCookieValue
 			));
-			if ($session=$statement->fetch(PDO::FETCH_ASSOC)&&($session['ipAddress']===$_SERVER['REMOTE_ADDR'])&&($session['userAgent']===$_SERVER['HTTP_USER_AGENT'])) {
+			if (($session=$statement->fetch(PDO::FETCH_ASSOC))&&($session['ipAddress']===$_SERVER['REMOTE_ADDR'])&&($session['userAgent']===$_SERVER['HTTP_USER_AGENT'])) {
 				// Pull user info
 				$statement=$this->db->prepare('pullUserInfoById');
 				$statement->execute(array(
