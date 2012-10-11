@@ -667,6 +667,7 @@ final class sitesense {
 	}
 	function __destruct() {
 		if ($this->compressionStarted) gzip_end($this);
+		die(); // prevent appending code
 	}
 }
 new sitesense(); // Initialize and run the application
