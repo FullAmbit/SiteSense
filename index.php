@@ -647,6 +647,8 @@ final class sitesense {
         theme_leftSidebar($this);
         theme_rightSidebar($this);
         theme_footer($this);
+		if ($this->compressionStarted) gzip_end($this);
+		die(); // prevent appending code
 	}
 	public function loadModuleTemplate($module) {
 		$currentThemeInclude=$this->themeDir.$module.'.template.php';
@@ -666,10 +668,6 @@ final class sitesense {
 			return $statement->fetchColumn();
 		}
 		return false;
-	}
-	function __destruct() {
-		if ($this->compressionStarted) gzip_end($this);
-		die(); // prevent appending code
 	}
 }
 new sitesense(); // Initialize and run the application
