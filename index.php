@@ -591,16 +591,18 @@ final class sitesense {
 			$this->loadModuleTemplate('common');
 			$this->loadModuleTemplate($this->module['name']);
 		}
-		// Get the plugins for this module
-		$statement=$this->db->prepare('getEnabledPluginsByModule');
-		$statement->execute(array(
-				':moduleID' => $this->module['id']
-			));
-		$plugins=$statement->fetchAll();
-		foreach ($plugins as $plugin) {
-			common_include('plugins/'.$plugin['name'].'/plugin.php');
-			$objectName='plugin_'.$plugin['name'];
-			$this->plugins[$plugin['name']]=new $objectName;
+		if(isset($this->module['id'])){
+			// Get the plugins for this module
+			$statement=$this->db->prepare('getEnabledPluginsByModule');
+			$statement->execute(array(
+					':moduleID' => $this->module['id']
+				));
+			$plugins=$statement->fetchAll();
+			foreach ($plugins as $plugin) {
+				common_include('plugins/'.$plugin['name'].'/plugin.php');
+				$objectName='plugin_'.$plugin['name'];
+				$this->plugins[$plugin['name']]=new $objectName;
+			}
 		}
 	  	// Set Up Modular Build Functions
 		$buildContent= ($this->currentPage == 'admin') ? 'admin_buildContent' : $this->module['name'].'_buildContent';
