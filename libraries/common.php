@@ -81,7 +81,7 @@ function common_redirect_local($data, $where) {
 }
 function common_redirect($where) {
 	ob_end_clean();
-	header('location: ' . $where);
+	header('Location: ' . $where);
 	exit;
 }
 function common_randomPassword($min=8,$max=12) {
