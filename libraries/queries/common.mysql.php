@@ -436,6 +436,7 @@ function common_addQueries() {
         	WHERE
         		:url RLIKE CONCAT("^",SUBSTR(r.replace,1,LOCATE("\1",r.replace)-2),"(/.*)?$")
         		AND (hostname = :hostname OR hostname = "")
+				AND isRedirect < 2
         	ORDER BY
         		hostname,sortOrder ASC
         ',

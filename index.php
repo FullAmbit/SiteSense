@@ -249,12 +249,20 @@ final class sitesense {
 		// Check For URL Replacement Or A Redirect
 		$statement = $this->db->prepare('findReplacement');
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
-		if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
-			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
-			if($row['isRedirect']==1){
-				header ('HTTP/1.1 301 Moved Permanently');
-				common_redirect_local($this,$queryString);
-			}
+		$row=$statement->fetch(PDO::FETCH_ASSOC);
+		$overrides=array();
+		if ($row) {
+			do {
+				if($row['isRedirect']<2){ // not an override
+					$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
+				}else{
+					$overrides[]=$row;
+				}
+				if($row['isRedirect']==1){
+					header ('HTTP/1.1 301 Moved Permanently');
+					common_redirect_local($this,$queryString);
+				}
+			} while ($row=$statement->fetch(PDO::FETCH_ASSOC));
 		} else {
 			// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
 			$statement = $this->db->prepare('findReverseReplacementNoRedirect');
@@ -623,6 +631,13 @@ final class sitesense {
 		if (is_array($this->httpHeaders)) {
 			foreach ($this->httpHeaders as $header) {
 				header($header);
+			}
+		}
+		foreach($overrides as $override){
+			switch($override['isRedirect']){
+				case 2: $this->output['pageTitle']=$override['replace']; break;
+				case 3: $this->metaList[]=array('name' => 'keywords',    'content' => $override['replace']); break;
+				case 4: $this->metaList[]=array('name' => 'description', 'content' => $override['replace']); break;
 			}
 		}
         theme_header($this);
