@@ -251,7 +251,7 @@ final class sitesense {
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
 			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
-			if($row['isRedirect']){
+			if($row['isRedirect']===1){
 				header ('HTTP/1.1 301 Moved Permanently');
 				header ('Location: '.$this->linkHome.$queryString);
 				die();
@@ -267,14 +267,11 @@ final class sitesense {
 				$replacement = $row['match'];
 				$replacement = str_replace('^','',$replacement);
 				$replacement = str_replace('(/.*)?$','',$replacement);
-				$replacement = $replacement.'\1';
-								
+				$replacement = $replacement.'\1';			
 				$queryString = preg_replace('~'.$row['reverseMatch'].'~',$replacement,$queryString);
-				
 				$pos = strpos($_SERVER['REQUEST_URI'],'?');				
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
 				$url = $queryString.$params;
-
 				header('HTTP/1.1 301 Moved Permanently');
 				header('Location: '.$this->linkHome.$url);
 				die();
@@ -504,10 +501,6 @@ final class sitesense {
 			array(
 				'http-equiv' => 'Content-Type',
 				'content' => 'text/html; charset='.$this->settings['characterEncoding']
-			),
-			array(
-				'http-equiv' => 'Content-Language',
-				'content' => $this->language
 			)
 		);
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
