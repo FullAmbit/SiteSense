@@ -251,10 +251,9 @@ final class sitesense {
 		$statement->execute(array(':url' => $queryString, ':hostname' => $this->hostname));
 		if ($row=$statement->fetch(PDO::FETCH_ASSOC)) {
 			$queryString = preg_replace('~' . $row['match'] . '~', $row['replace'], $queryString); // Our New URL
-			if($row['isRedirect']===1){
+			if($row['isRedirect']==1){
 				header ('HTTP/1.1 301 Moved Permanently');
-				header ('Location: '.$this->linkHome.$queryString);
-				die();
+				common_redirect_local($this,$queryString);
 			}
 		} else {
 			// No Remaps Found...Hmm....Check If This URL Is A Destination Of An Existing Remap
@@ -271,10 +270,8 @@ final class sitesense {
 				$queryString = preg_replace('~'.$row['reverseMatch'].'~',$replacement,$queryString);
 				$pos = strpos($_SERVER['REQUEST_URI'],'?');				
 				$params = (!$pos) ? '' : substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?'));
-				$url = $queryString.$params;
 				header('HTTP/1.1 301 Moved Permanently');
-				header('Location: '.$this->linkHome.$url);
-				die();
+				common_redirect_local($this,$queryString.$params);
 			}
 		}
 		// Break URL up into action array
