@@ -504,10 +504,6 @@ final class sitesense {
 			array(
 				'http-equiv' => 'Content-Type',
 				'content' => 'text/html; charset='.$this->settings['characterEncoding']
-			),
-			array(
-				'http-equiv' => 'Content-Language',
-				'content' => $this->language
 			)
 		);
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
