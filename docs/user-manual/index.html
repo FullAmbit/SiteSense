@@ -60,13 +60,17 @@
         </li>
         <li><a href="#dynamic-forms">Dynamic Forms</a>
           <ul>
-            <li>5.1 <a href="#dynamic-forms-fields">Fields</a></li>
+            <li>6.1 <a href="#dynamic-forms-fields">Fields</a></li>
           </ul>
         </li>
         <li><a href="#sidebars">Sidebars</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#plugins">Plugins</a></li>
-        <li><a href="#url-routing">URL Routing</a></li>
+        <li><a href="#url-routing">URL Routing</a>
+          <ul>
+            <li>10.1 <a href="#url-routing-override">Property Overrides</a></li>
+          </ul>
+		</li>
         <li><a href="#languages">Languages</a></li>
         <li><a href="#hostnames">Hostnames</a></li>
       </ol>
@@ -669,7 +673,23 @@
           Remove the URL route
         </li>
       </ul>
-
+  <h4 id="url-routing-override">10.1. Property Overrides</h4>
+  <p>Property overrides can be used to force custom properties like page titles, meta keywords, and meta descriptions for any URL on your site.</p>
+    <h5>Properties</h5>
+	   <ul>
+        <li><b>Pattern</b><br>
+          The URL pattern to which this property will be applied.
+        </li>
+        <li><b>Override Type</b><br>
+          A dropdown box where you can select what type of property you are creating.
+        </li>
+        <li><b>Value</b><br>
+          The contents of the custom property. For page titles, this is the new title of the page; for keywords, it is a comma-seperated list of keywords; for description, it is a brief description.
+        </li>
+        <li><b>Hostname</b><br>
+          Sets a specific hostname (domain) on which the property will be applied.
+        </li>
+      </ul>
   <hr />
 
   <h3 id="languages">11. Languages</h3>
