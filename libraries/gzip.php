@@ -32,9 +32,9 @@ function gzip_end($data) {
 	ob_end_clean();
 	header('Content-Encoding: '.$data->compressionType);
 	$attributionString='<p id="attribution">Powered by <a href="http://www.sitesense.org">SiteSense</a>&trade; '.$data->version.', a <a href="http://www.fullambit.com">Full Ambit Media</a> product.</p>';
-	if(!$data->settings['removeAttribution']) {
-		if(mb_strpos($contents,$attributionString)===FALSE){
-			if(mb_strpos($contents,'<!-- #footer -->')===FALSE){
+	if(!$data->settings['removeAttribution']){
+		if(strpos($contents,$attributionString)===FALSE){
+			if(strpos($contents,'<!-- #footer -->')===FALSE){
 				$contents=str_replace('</body>',$attributionString.'</body>',$contents);
 			}else{
 				$contents=str_replace('<!-- #footer -->',$attributionString.'<!-- #footer -->',$contents);
