@@ -285,6 +285,7 @@ final class sitesense {
 		// Break URL up into action array
 		$queryString = trim($queryString, '/');
 		$this->action=empty($queryString) ? array('default') : explode('/', $queryString);
+		$this->action=array_merge($this->action,array_fill(0,10,false));
 		if ($this->action[0]=='install') {
 			$db=$this->db;
 			$data=$this;
@@ -492,7 +493,6 @@ final class sitesense {
 				$sidebars = $statement->fetchAll();
 			}
 		}
-		$this->action = array_merge($this->action, array_fill(0, 10, false));
 		$this->httpHeaders=array(
 			'Content-Type: text/html; charset='.$this->settings['characterEncoding']
 		);
