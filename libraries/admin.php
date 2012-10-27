@@ -120,7 +120,7 @@ function admin_buildContent($data,$db){
 function admin_content($data){
 	if (!checkPermission('access','core',$data)){
 		theme_accessDenied(true);
-		common_redirect_local($data,'users/login?from=admin');
+		common_redirect_local($data,'users/login/admin');
 	} else {
 		if (function_exists('admin_content')){
 			$content=$data->currentModule.'_admin_content';
