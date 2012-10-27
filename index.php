@@ -295,13 +295,7 @@ final class sitesense {
 		$this->user['userLevel']=0;
 		$userCookieName=$this->db->sessionPrefix.'SESSID';
 		// If a logged in user who is not banned is trying to logout...
-		if (($this->action[0]=='users') && ($this->action[1] == 'logout') && (!empty($_COOKIE[$userCookieName]))) {
-			setcookie($userCookieName, '', 0, $this->linkHome);
-			$statement=$this->db->prepare('logoutSession');
-			$statement->execute(array(
-				':sessionID' => $_COOKIE[$userCookieName]
-		    ));
-		} else if (!empty($_COOKIE[$userCookieName])) { // User doing anything else besides trying to logout
+		if ($this->action[0]!='users'&&$this->action[1]!='logout'&&!empty($_COOKIE[$userCookieName])) { // User doing anything else besides trying to logout
 			// Check to see if the user's session is expired
 			$userCookieValue=$_COOKIE[$userCookieName];
 			// Purge expired sessions
