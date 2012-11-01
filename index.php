@@ -504,30 +504,12 @@ final class sitesense {
 		);
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
 		if($this->currentPage !== 'admin'){
-			// Get Left and Right Main Menu Order
 			$statement=$this->db->query('getEnabledMainMenuOrderLeft');
 			$this->menuList['left']=$statement->fetchAll();
 			$statement=$this->db->query('getEnabledMainMenuOrderRight');
 			$this->menuList['right']=$statement->fetchAll();
-			// Here we'll load core phrases
-			$statement = $this->db->prepare('getPhrasesByModule', 'common');
-			// Core Phrases
-			$statement->execute(array(
-				':module' => '',
-				':isAdmin' => 0
-			));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-				$this->phrases['core'][$row['phrase']] = $row['text'];
-			}
 			$moduleShortName = $this->currentPage;
-			// Module-Specific Phrases
-			$statement->execute(array(
-					':module' => $moduleShortName,
-					':isAdmin' => 0
-				));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-				$this->phrases[$moduleShortName][$row['phrase']] = $row['text'];
-			}
+			common_loadPhrases($this,$this->db,$moduleShortName);
 		}
 		// Run Modular StartUp Files
 		$moduleQuery = $this->db->query('getEnabledModules');
