@@ -413,7 +413,7 @@ final class sitesense {
 		$attribution='|attribution|';
 		$this->settings['parsedFooterContent'] .= (!$this->settings['removeAttribution']) ? common_parseDynamicValues($this, $attribution) : '';
 		// Check to see if CDN plugin should be loaded
-		if ($this->settings['useCDN']=='1') {
+		if ($this->settings['useCDN']) {
 			common_loadPlugin($this, $this->settings['cdnPlugin']);
 			$this->cdn =& $this->plugins[$this->settings['cdnPlugin']];
 		}

@@ -406,17 +406,19 @@ class formHandler {
                                         $quality = (isset($info['quality'])) ? $info['quality'] : 85;
                                         switch($extension){
                                             case 'jpg': case 'jpeg': default:
-                                                imagejpeg($newImage, sys_get_temp_dir().$basename.'.jpg',100);
+                                                imagejpeg($newImage, sys_get_temp_dir().'/'.$basename.'.jpg',100);
                                                 break;
                                             case 'gif':
-                                                imagegif($newImage, sys_get_temp_dir().$basename.'.gif');
+                                                imagegif($newImage, sys_get_temp_dir().'/'.$basename.'.gif');
                                                 break;
                                             case 'png':
-                                                imagepng($newImage, sys_get_temp_dir().$basename.'.png',9);
+												imagealphablending($newImage,false); // alpha fix
+												imagesavealpha($newImage,true);      // alpha fix
+                                                imagepng($newImage, sys_get_temp_dir().'/'.$basename.'.png',9);
                                         }
-                                        chmod(sys_get_temp_dir().$basename.'.'.$extension,0777);
+                                        chmod(sys_get_temp_dir().'/'.$basename.'.'.$extension,0777);
 
-                                        $data->cdn->newFile(sys_get_temp_dir().$basename.'.'.$extension,$savePath,$data->settings['cdnSmall'].$savePath,8);
+                                        $data->cdn->newFile(sys_get_temp_dir().'/'.$basename.'.'.$extension,$savePath,$data->settings['cdnSmall'].$savePath,8);
 
                                         continue;
                                     }
@@ -456,10 +458,6 @@ class formHandler {
 											imagealphablending($newImage,false); // alpha fix
 											imagesavealpha($newImage,true);      // alpha fix
                                             imagepng($newImage, $savePath,9);
-                                            //$optimizedName = ($info['customName'] !== NULL) ? $info['customName'] : $basename;
-                                            //$optimizedPath = $dir . $optimizedName . '_optimized.'.$extension;
-                                            //system("pngcrush -brute -l 9 ".$savePath." ".$optimizedPath."",$status);
-                                            //link($savePath,$optimizedPath);
                                     }
                                     chmod($savePath,0777);
                                 }
