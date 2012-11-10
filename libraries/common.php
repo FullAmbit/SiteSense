@@ -436,7 +436,7 @@ function common_sendMail($data,$db,$to,$subject,$content,$from=NULL,$headers='')
 	return mail(
 		$to,
 		$subject,
-		wordwrap($content,70,"\n",TRUE),
+		wordwrap($content,70,"\n",FALSE),
 		$headers
 	);
 }
