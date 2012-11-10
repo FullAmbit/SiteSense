@@ -225,7 +225,7 @@ final class sitesense {
 		$this->hostname = $_SERVER['HTTP_HOST'];
 		$url=str_replace(array('\\', '%5C'), '/', $_SERVER['REQUEST_URI']);
 		if (strpos($url, '../')) killHacker('Uptree link in URI');
-		$this->linkHome=str_ireplace('index.php', '', $_SERVER['PHP_SELF']);
+		$this->linkHome=$this->linkRoot=str_ireplace('index.php', '', $_SERVER['PHP_SELF']);
 		$hasIndex=$this->linkHome==$_SERVER['PHP_SELF'];
 		$getDataPos=strpos($url, '?');
 		$getDataLoc=(
@@ -432,10 +432,9 @@ final class sitesense {
 			}
 		}
 		// Define server path
-		$this->domainName = 'http://'.$_SERVER['HTTP_HOST'];
+		$this->domainName = 'http'.(!empty($_SERVER['HTTPS'])?'s':'').'://'.$_SERVER['HTTP_HOST'];
 		$this->siteRoot=$_SERVER['PHP_SELF'];
 		$this->themeDir='themes/'.$this->settings['theme'].'/';
-		$this->linkRoot=$this->linkHome;
 		// Set up other CDN variables using linkRoot
 		$this->smallStaticLinkRoot=(isset($this->settings['cdnSmall']{2})) ? $this->settings['cdnSmall'] : $this->linkRoot;
 		$this->largeStaticLinkRoot=(isset($this->settings['cdnLarge']{2})) ? $this->settings['cdnLarge'] : $this->linkRoot;
@@ -642,13 +641,6 @@ final class sitesense {
 		} elseif (file_exists($moduleThemeInclude)) {
 			common_include($moduleThemeInclude);
 		}
-	}
-	public function getUserIdByName($name) {
-		$statement=$this->db->prepare('getUserIdByName');
-		if ($statement->execute(array(':name' => $name))) {
-			return $statement->fetchColumn();
-		}
-		return false;
 	}
 }
 new sitesense(); // Initialize and run the application
