@@ -417,7 +417,7 @@ function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){
 }
 function common_sendMail($data,$db,$to,$subject,$content,$from=NULL,$headers='') {
 	if ($from===NULL) {
-		$from='no-reply@'.$_SERVER['HTTP_HOST'];
+		$from=$data->settings['siteTitle'].' <no-reply@'.$_SERVER['HTTP_HOST'].'>';
 	}
 	if (is_array($to)) {
 		$to_new='';
