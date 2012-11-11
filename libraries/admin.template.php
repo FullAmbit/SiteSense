@@ -88,6 +88,10 @@ function theme_footer($data) {
 <script type="text/javascript"
 	src="',$data->linkRoot,'themes/default/admin/admin.js"
 ></script>
+';
+$footer='|attribution|';
+common_parseDynamicValues($data,$footer);
+echo $footer,'
 </body></html>';
 }
 function theme_leftSidebar($data) {
