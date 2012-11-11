@@ -733,21 +733,22 @@ class formHandler {
 						case 'select':
 							echo '>';
 							if(isset($formField['type']) && $formField['type']=='timezone'){
-								$tz=DateTimeZone::listIdentifiers();
-								$outputTz=array();
-								foreach($tz as &$t){
-									$tzObject=new DateTimeZone($t);
+								$abbrs=DateTimeZone::listIdentifiers();
+								$abbrsCalc=array();
+								foreach($abbrs as $abbr){
+									$tzObject=new DateTimeZone($abbr);
 									$date=new DateTime(NULL,$tzObject);
-									$date=$date->format('G:i A');
-									$t='<option value="'.$t.'">'.$date.' - '.$t.'</option>';
+									$abbrsCalc[$abbr]=$date->format('G:i A');
 								}
-								echo implode($tz,"\n");
+								natsort($abbrsCalc);
+								foreach($abbrsCalc as $identifier => $time){
+									echo '<option value="',$identifier,'">',$time,' - ',$identifier,'</option>';
+								}
 							}else{
 								global $data;
 								if(isset($formField['type'])&&isset($this->customFormFields[$formField['type']])){
 									$formField['options']=$this->customFormFields[$formField['type']];
 								}
-								//die(print_r($formField).print_r($data->output['customFormFields']));
 								$optgroup = FALSE;
 								if(!empty($formField['options'])) {
 									foreach ($formField['options'] as $key => $option) {
