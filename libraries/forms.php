@@ -745,7 +745,6 @@ class formHandler {
 									echo '<option value="',$identifier,'">',$time,' - ',$identifier,'</option>';
 								}
 							}else{
-								global $data;
 								if(isset($formField['type'])&&isset($this->customFormFields[$formField['type']])){
 									$formField['options']=$this->customFormFields[$formField['type']];
 								}
