@@ -73,6 +73,7 @@
 		</li>
         <li><a href="#languages">Languages</a></li>
         <li><a href="#hostnames">Hostnames</a></li>
+		<li><a href="#users-frontend">Users</a></li>
       </ol>
     </li><br />
     <li><a href="#user-management">User Management</a>
@@ -768,6 +769,27 @@
       </li>
     </ul>
   <hr />
+  
+  <h3 id="users-frontend">13. Users</h3>
+  <p>SiteSense has excellent and easily extensible support for user management. The frontend support for users consists of five different pages:</p>
+    <ul>
+      <li id="register-form"><b>User Registration (/users/register)</b><br>
+       On this page, a user can sign up for an account on your website. You can add and remove fields. Dynamic user fields which you can add in the dynamicForms control panel will be automatically saved to the database, and you can view and edit their contents later via the Users control panel. To disable registration, just delete the form.
+      </li>
+      <li><b>User Login (/users/login)</b><br>
+       This is the location of the user log in form. It is designed to disclose no information to potential attackers. If the user selects the "Keep me logged in?" check box, it will set the cookie to expire in one week, instead of at the end of the user's session.
+      </li>
+      <li id="manage-profile"><b>Manage Profile (/users/edit)</b><br>
+       If a user is logged in, they can manage their profile via this page. This form can be modified in the admin control panel under the "Forms" controls, and as with the registration page, you can add/remove fields and information users enter will be saved in the database.
+	  </li>
+      <li><b>Recover Password (/users/recover)</b><br>
+       By default, the recover password form asks the user for their email address. It searches the database for the email address provided (in either the Public Email or Contact Email fields) and sends the user an email (at their contact email address, if one was found; otherwise, it sends it to their public email) with a link to a secret URL to reset their password with. Once they visit that URL, a new password will be sent to that same email address. The form can be modified to ask the user for a Username instead of an Email Address, although it is not recommended due to ease of use and security reasons. If you still want to make that change, edit the "Email Address" field for this form in the admin control panel to say "Username" as the field name and "username" as the "API Field To Map To". To disable password recovery, simply delete the form.
+	  </li>
+      <li><b>Logout (/users/logout)</b><br>
+       This location will delete the user's session and their local session cookie, logging them out completely from the SiteSense users system.
+	  </li>
+    </ul>
+  <hr />
 
   <h2 id="user-management">User Management</h2>
     <h3 id="users">1. Users</h3>
@@ -784,12 +806,13 @@
             <li>* Password</li>
             <li>* Default Time Zone (Defaults to Global Time Zone in Settings)</li>
           </ul>
+		  Also, any dynamic user fields created in the <a href="#register-form">registration form</a> or <a href="#manage-profile">manage profile form</a> can be edited here, if the user has a value for that field. If the user does not have that dynamic field created for theirself, you cannot modify it.
         </li>
-        <li><b>User Groups</b><br>
-          Users are placed into groups, and groups contain permissions. A user can be assigned to multiple groups or no group at all. Furthermore, a user can be temporarily added to a group for a limited time by setting an expiration time.
+        <li><p><b>User Groups</b><br>
+          Users are placed into groups, and groups contain permissions. A user can be assigned to multiple groups or no group at all. Furthermore, a user can be temporarily added to a group for a limited time by setting an expiration time.</p>
         </li>
-        <li><b>User Specific Permissions</b><br>
-          Each permission defaults to &quot;Inherited&quot;, meaning that the user will only be granted the permission if a group the user is associated with has the permission. You can also set a permission as &quot;Allowed&quot; or &quot;Disallowed&quot; which will grant or deny, respectively, the user the permission regardless of whether or not they have the permission already. 
+        <li><p><b>User Specific Permissions</b><br>
+          Each permission defaults to &quot;Inherited&quot;, meaning that the user will only be granted the permission if a group the user is associated with has the permission. You can also set a permission as &quot;Allowed&quot; or &quot;Disallowed&quot; which will grant or deny, respectively, the user the permission regardless of whether or not they have the permission already.</p> 
         </li>
       </ul>
 
