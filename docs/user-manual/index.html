@@ -307,7 +307,12 @@
   <h3 id="blogs">5. Blogs</h3>
   <p>SiteSense&#39;s core includes a feature-filled blogging solution ready for seamless integration into your site. With the Blogs Module you can host multiple different blogs on a single SiteSense installation.</p>
   <p>Blogs are made up of posts which can be organized into categories. Users add comments to posts, and administrative users can approve or disapprove comments for display.</p>
-  <p>The Blogs Module also generates an RSS feed for every blog entity. <code>http://example.com/blogs/{BlogShortName}/rss</code></p>
+  <p>The Blogs Module also generates syndication feeds for every blog entity.
+	<ul>
+		<li>Atom feed: <code>http://example.com/blogs/{BlogShortName}/atom</code></li>
+		<li>RSS 2.0 feed: <code>http://example.com/blogs/{BlogShortName}/rss</code></li>
+	</ul>
+  </p>
 
     <h4>Properties</h4>
       <ul>
