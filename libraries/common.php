@@ -325,40 +325,21 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	}
 	return FALSE;
 }
-function common_timeDiff($start,$end) {
-	$diff=$end-$start;
-	$hrs=0;
-	$mins=0;
-	$secs=0;
-	if($diff%86400<=0) $days=$diff/86400;
-	if($diff%86400>0) {
-		$rest=($diff%86400);
-		$days=($diff-$rest)/86400;
-	if($rest%3600>0) {
-			$rest1=($rest%3600);
-			$hrs=($rest-$rest1)/3600;
-	if($rest1%60>0) {
-				$rest2=($rest1%60);
-	  $mins=($rest1-$rest2)/60;
-	  $secs=$rest2;
-	} else $mins=$rest1/60;
-	} else $hrs=$rest/3600;
+function common_timeDiff($now,$then,$format=DATE_RSS) {
+	$diff=$now-$then;
+	if($diff<60){
+		return $diff.' seconds';
+	}elseif($diff<60*60){
+		return round($diff/60).' minutes';
+	}elseif($diff<60*60*24){
+		return round($diff/(60*60)).' hours';
+	}elseif($diff<60*60*24*31){
+		return round($diff/(60*60*24)). ' days';
+	}elseif($diff<60*60*24*31*12){
+		return round($diff/(60*60*24*31)).' months';
+	}else{
+		return date($format,$then);
 	}
-	if($days==1) $days=$days.' Day';
-	elseif($days>1) $days=$days.' Days';
-    else $days=false;
-    if($hrs==1) $hrs=$hrs.' Hour';
-		elseif($hrs>1) $hrs=$hrs.' Hours';
-    else $hrs=false;
-		if($mins==1) $mins=$mins.' Minute';
-		elseif($mins>1) $mins=$mins.' Minutes';
-    else $mins=false;
-		if($secs>1) $secs=$secs.' Seconds';
-    else $secs='1 Second!';
-    if($days) return $days;
-    elseif($hrs) return $hrs;
-    elseif($mins) return $mins;
-		else return $secs;
 }
 function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){	
 	$statement = $db->prepare('getPhrasesByModule', 'common');
