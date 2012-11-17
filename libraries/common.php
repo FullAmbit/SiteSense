@@ -22,14 +22,13 @@
 * @copyright  Copyright (c) 2011 Full Ambit Media, LLC (http://www.fullambit.com)
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
-function killHacker($reason) { 
+function killHacker($reason){ 
      echo ' 
           <h1>Aborting Execution</h1> 
           <p>Hacking attempt detected - ',$reason,'</p>'; 
      die; 
 } 
-function common_loadPlugin($data,$name)
-{
+function common_loadPlugin($data,$name){
 	if(isset($data->plugins[$name])) {
 		return true;
 	}
@@ -43,7 +42,6 @@ function common_loadPlugin($data,$name)
 		return false;
 	}
 }
-
 function common_generateLink($data,$link,$text,$id = FALSE,$rel = FALSE,$class = NULL,$return = FALSE) {
 	$data->output['links'][] = array(
 		'link' => $link,
@@ -139,17 +137,14 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 	foreach ($codeReplacements as $key => $value) {
 		$textToParse=str_replace($key,$value,$textToParse);
 	}
-	
 	// Parsing $data->action?
 	preg_match_all('/\|action:([0-9]+)\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
 	$actionList = $matches[0];
 	foreach($actionList as $key => $actionText){
 		$textToParse=str_replace($actionText,$data->action[$matches[1][$key]],$textToParse);
 	}
-		
 	// Any Blocks?
 	preg_match_all('/\|block:([_a-zA-Z0-9\s\-]+)\(?(.*?)\)?\|/',$textToParse,$matches,PREG_PATTERN_ORDER);
-	//$textToParse = preg_replace('/\|loadBlock:([a-zA-Z0-9\s\-]+)\|/','',$textToParse);
 	$blockList = $matches[1];
     foreach($blockList as $key => $originalBlockName) {
     	ob_start();
@@ -160,19 +155,15 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 			$attributes = array(false);
 			$attributesString = $matches[2][$key];
 			$attributes = explode(',',$attributesString);
-			
 			$getUniqueSettings = $blockInfo[1].'_getUniqueSettings';
 			$buildContent = $blockInfo[1].'_buildContent';
 			$content = $blockInfo[1].'_content';
-			
 			if(function_exists($getUniqueSettings))	{
 				$getUniqueSettings($data,$attributes);
 			}
-			
 			if(function_exists($buildContent) && $db !== NULL) {
 				$buildContent($data,$db,$attributes);
-			}
-			
+			}	
 			if(function_exists($content)) {
 				$content($data,$attributes);
 			}
@@ -183,7 +174,6 @@ function common_parseDynamicValues($data,&$textToParse,$db = NULL) {
 	}
 	return $textToParse;
 }
-
 function common_generateShortName($string,$functionSafe=FALSE){
 	$string = preg_replace('/\-+/','-',
 				preg_replace('/[^a-z0-9\-\s]/','',
@@ -193,14 +183,11 @@ function common_generateShortName($string,$functionSafe=FALSE){
 	}
 	return $string;
 }
-
 function common_include($includeName) {
 	require_once($includeName);
 }
-
 function getUserPermissions($db,&$user){
 	if(isset($user['permissions'])) return false;
-	
 	// Finds out if user is SuperAdmin with universal access
 	$superAdmins = array(1);
 	$user['isSuperAdmin'] = FALSE;
@@ -208,12 +195,8 @@ function getUserPermissions($db,&$user){
 		$user['isSuperAdmin']=TRUE;
 		return;
 	}
-	
 	$user['permissions']=array();
-	
 	$db->query('purgeExpiredGroups');
-	
-	
 	// Permissions Per Group
 	$statement = $db->prepare('getGroupsByUserID');
 	$statement->execute(array(
@@ -231,7 +214,6 @@ function getUserPermissions($db,&$user){
         	$user['permissions'][$prefix][$suffix] = $permissionItem['value'];
         }
 	}
-	
 	// Permissions Per User
     $statement=$db->prepare('getUserPermissionsByUserID');
     $statement->execute(array(
@@ -254,20 +236,16 @@ function getUserPermissions($db,&$user){
 		}		
 	}
 }
-
 function parsePermissionName($permission){
 	return explode('_',$permission,2);
 }
-
 function checkPermission($permission,$module,$data) {
     return ((isset($data->user['isSuperAdmin'])&&$data->user['isSuperAdmin']===TRUE) || // User is Admin, which is universal access, Return true
 		(isset($data->user['permissions'][$module][$permission])&&$data->user['permissions'][$module][$permission]=='1')); // User has explicit permissions for this module
 }
-
 function common_populateLanguageTables($data,$db,$tableName,$keyColumn,$keyValue,$includeCurrentLanguage = FALSE){
 	foreach($data->languageList as $languageItem){
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
-
 		$statement=$db->prepare('populateLanguageTable','common',array(
 			'!languageTable!' => $tableName.'_'.$languageItem['shortName'],
 			'!sourceTable!' => $tableName.'_'.$data->language,
@@ -281,7 +259,6 @@ function common_populateLanguageTables($data,$db,$tableName,$keyColumn,$keyValue
 		}
 	}
 }
-
 function common_deleteFromLanguageTables($data,$db,$tableName,$keyColumn,$keyValue,$includeCurrentLanguage = FALSE){
 	foreach($data->languageList as $languageItem){
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
@@ -294,29 +271,24 @@ function common_deleteFromLanguageTables($data,$db,$tableName,$keyColumn,$keyVal
 		));
 	}
 }
-
 function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$values,$includeCurrentLanguage = FALSE){
 	$qString = '';
 	foreach($values as $columnName => $columnValue){
 		$vars[':'.$columnName."Val"] = $columnValue;
-		
 		// Query String
 		$qString .= $columnName." = :".$columnName."Val,";
 	}
 	$qString = trim($qString,",");
-	
 	// Build Condition Where Statement
 	$conditionStatement = '';
 	$max = count($conditions);
 	$i = 0;
 	foreach($conditions as $conditionColumn => $conditionValue){
 		$vars[':'.$conditionColumn] = $conditionValue;
-		
 		// Query String
 		$conditionStatement .= $conditionColumn." = :".$conditionColumn.((($i+1) >= $max) ? "" : " AND ");
 		$i++;
 	}
-	
 	foreach($data->languageList as $languageItem){
 		if($includeCurrentLanguage==FALSE && ($languageItem['shortName']==$data->language)) continue;
 		$statement = $db->prepare("updateLanguageTable",'common',array(
@@ -327,7 +299,6 @@ function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$val
 		$statement->execute($vars);
 	}
 }
-
 function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSelector,$conditions,$includeCurrentLanguage = TRUE){
 	$qString = '';
 	$max = count($conditions);
@@ -354,28 +325,27 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	}
 	return FALSE;
 }
-
 function common_timeDiff($start,$end) {
-		$diff=$end-$start;
-		$hrs=0;
-		$mins=0;
-		$secs=0;
-		if($diff%86400<=0) $days=$diff/86400;
-		if($diff%86400>0) {
-			$rest=($diff%86400);
-			$days=($diff-$rest)/86400;
-     	if($rest%3600>0) {
-				$rest1=($rest%3600);
-				$hrs=($rest-$rest1)/3600;
-        if($rest1%60>0) {
-					$rest2=($rest1%60);
-          $mins=($rest1-$rest2)/60;
-          $secs=$rest2;
-        } else $mins=$rest1/60;
-     	} else $hrs=$rest/3600;
-		}
-		if($days==1) $days=$days.' Day';
-		elseif($days>1) $days=$days.' Days';
+	$diff=$end-$start;
+	$hrs=0;
+	$mins=0;
+	$secs=0;
+	if($diff%86400<=0) $days=$diff/86400;
+	if($diff%86400>0) {
+		$rest=($diff%86400);
+		$days=($diff-$rest)/86400;
+	if($rest%3600>0) {
+			$rest1=($rest%3600);
+			$hrs=($rest-$rest1)/3600;
+	if($rest1%60>0) {
+				$rest2=($rest1%60);
+	  $mins=($rest1-$rest2)/60;
+	  $secs=$rest2;
+	} else $mins=$rest1/60;
+	} else $hrs=$rest/3600;
+	}
+	if($days==1) $days=$days.' Day';
+	elseif($days>1) $days=$days.' Days';
     else $days=false;
     if($hrs==1) $hrs=$hrs.' Hour';
 		elseif($hrs>1) $hrs=$hrs.' Hours';
@@ -390,7 +360,6 @@ function common_timeDiff($start,$end) {
     elseif($mins) return $mins;
 		else return $secs;
 }
-
 function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){	
 	$statement = $db->prepare('getPhrasesByModule', 'common');
 	// Core Phrases
@@ -409,7 +378,6 @@ function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){
 	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$data->phrases[$moduleShortName][$row['phrase']] = $row['text'];
 	}
-
 }
 function common_sendMail($data,$db,$to,$subject,$content,$from=NULL,$headers='') {
 	if ($from===NULL) {
