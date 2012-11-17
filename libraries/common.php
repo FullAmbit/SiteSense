@@ -256,11 +256,7 @@ function getUserPermissions($db,&$user){
 }
 
 function parsePermissionName($permission){
-    $separator = strpos($permission,'_');
-    $prefix = substr($permission,0,$separator);
-    $suffix = substr($permission,$separator+1);
-    
-    return array($prefix,$suffix);
+	return explode('_',$permission,2);
 }
 
 function checkPermission($permission,$module,$data) {
