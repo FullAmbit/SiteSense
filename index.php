@@ -208,7 +208,7 @@ final class dynamicPDO extends PDO {
 	}
 }
 final class sitesense {
-	public $settings, $pageSettings, $text, $version = '0.4', $user, $siteRoot,
+	public $settings, $pageSettings, $text, $version = '0.4.1', $user, $siteRoot,
 	$domainName, $linkHome, $linkRoot, $action, $currentPage, $module, $request, 
 	$httpHeaders, $metaList, $menuList, $sidebarList = array(), 
 	$menuSource = array(), $admin, $compressionType, $compressionStarted=false, 
