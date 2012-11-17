@@ -275,7 +275,6 @@ function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$val
 	$qString = '';
 	foreach($values as $columnName => $columnValue){
 		$vars[':'.$columnName."Val"] = $columnValue;
-		// Query String
 		$qString .= $columnName." = :".$columnName."Val,";
 	}
 	$qString = trim($qString,",");
@@ -285,7 +284,6 @@ function common_updateAcrossLanguageTables($data,$db,$tableName,$conditions,$val
 	$i = 0;
 	foreach($conditions as $conditionColumn => $conditionValue){
 		$vars[':'.$conditionColumn] = $conditionValue;
-		// Query String
 		$conditionStatement .= $conditionColumn." = :".$conditionColumn.((($i+1) >= $max) ? "" : " AND ");
 		$i++;
 	}
@@ -305,7 +303,6 @@ function common_checkUniqueValueAcrossLanguages($data,$db,$tableName,$columnSele
 	$i = 0;
 	foreach($conditions as $conditionColumn => $conditionValue){
 		$vars[':'.$conditionColumn] = $conditionValue;
-		
 		// Query String
 		$qString .= $conditionColumn." = :".$conditionColumn.((($i+1) >= $max) ? "" : " AND ");
 		$i++;
@@ -343,7 +340,6 @@ function common_timeDiff($now,$then,$format=DATE_RSS) {
 }
 function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){	
 	$statement = $db->prepare('getPhrasesByModule', 'common');
-	// Core Phrases
 	$statement->execute(array(
 		':module' => '',
 		':isAdmin' => $isAdmin
@@ -351,7 +347,6 @@ function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){
 	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$data->phrases['core'][$row['phrase']] = $row['text'];
 	}
-	// Module-Specific Phrases
 	$statement->execute(array(
 		':module' => $moduleShortName,
 		':isAdmin' => $isAdmin
