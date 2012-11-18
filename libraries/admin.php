@@ -84,16 +84,7 @@ function admin_buildContent($data,$db){
 			$buildContent($data,$db);
 		}
 	} else {
-		// Get Phrases
-		$statement = $db->prepare('getPhrasesByModule', 'common');
-		// Core Phraes
-		$statement->execute(array(
-			':module' => '',
-			':isAdmin' => 0
-		));
-		while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-			$data->phrases['core'][$row['phrase']] = $row['text'];
-		}
+		common_loadPhrases($data,$db,FALSE);
 	}
 }
 
