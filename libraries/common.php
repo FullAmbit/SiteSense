@@ -23,7 +23,7 @@
 * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 */
 function killHacker($reason){ 
-	die('<h1>Aborting Execution</h1><p>Hacking attempt detected - ',$reason,'</p>');
+	die('<h1>Aborting Execution</h1><p>Hacking attempt detected - '.$reason.'</p>');
 } 
 function common_loadPlugin($data,$name){
 	if(isset($data->plugins[$name])) {
