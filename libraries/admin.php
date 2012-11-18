@@ -54,27 +54,7 @@ function admin_buildContent($data,$db){
 			$objectName='plugin_'.$plugin['name'];
 			$data->plugins[$plugin['name']]=new $objectName;
 		}
-
-		// Get Phrases
-		$statement = $db->prepare('getPhrasesByModule', 'common');
-		// Core Phraes
-		$statement->execute(array(
-				':module' => '',
-				':isAdmin' => 1
-			));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-			$data->phrases['core'][$row['phrase']] = $row['text'];
-		}
-
-		// Module-Specific Phrases
-		$statement->execute(array(
-				':module' => $data->action[1],
-				':isAdmin' => 1
-			));
-			while ($row = $statement->fetch(PDO::FETCH_ASSOC)){
-			$data->phrases[$data->action[1]][$row['phrase']] = $row['text'];
-		}
-				
+		common_loadPhrases($data,$db,$data->action[1],1);
 		$data->currentModule=$module['name'];
 		common_include('modules/'.$module['name'].'/admin/'.$module['name'].'.admin.php');
 		$currentThemeInclude=$data->themeDir.'admin/'.$module['name'].'.admin.template.php';
