@@ -85,17 +85,17 @@ function common_redirect($where) {
 function common_randomPassword($min=8,$max=12) {
 	$result='';
 	if ($max<$min) $max=$min;
-	$count=rand($min,$max);
+	$count=mt_rand($min,$max);
 	while ($count>0) {
-		switch (rand(1,3)) {
+		switch (mt_rand(1,3)) {
 			case 1:
-				$result.=chr(rand(48,57));
+				$result.=chr(mt_rand(48,57));
 			break;
 			case 2:
-				$result.=chr(rand(65,90));
+				$result.=chr(mt_rand(65,90));
 			break;
 			case 3:
-				$result.=chr(rand(97,122));
+				$result.=chr(mt_rand(97,122));
 			break;
 		}
 		$count--;
