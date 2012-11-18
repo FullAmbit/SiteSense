@@ -25,7 +25,7 @@
 define('INSTALLER', true);
 $setupPassword = 'startitup';
 if (file_exists('INSTALL.LOCK')) {
-	die('Installer is locked.');
+	killHacker('Installer is locked.');
 }
 echo '
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -73,12 +73,13 @@ if (
 	  Drop all tables first?<br />
 	</label>
 	<p class="warning">*** WARNING *** Dropping all tables will erase ALL entries in the CMS!</p>
+	<input type="submit" value="Continue &gt;&gt;">
   </fieldset>
 </form>';
 } else {
 	$lang = 'en_us';
 	$drop = false;
-	if( isset($_POST['cbDrop']) && $_POST['cbDrop']=='drop' )
+	if( isset($_POST['cbDrop']) && $_POST['cbDrop']==='drop' )
 	    $drop = true;
 	$db->installErrors=0;
 	$db->loadModuleQueries('installer',true);
@@ -263,55 +264,6 @@ if (
 	    );
 	}
 	$moduleFiles=glob('modules/*/*.module.php');
-	
-	// Set up default permission groups
-	$defaultPermissionGroups=array(
-		'Writer'    => array(
-			'core_access',
-			'dashboard_access',
-
-			'mainMenu_access',
-			'mainMenu_add',
-			'mainMenu_delete',
-			'mainMenu_disable',
-			'mainMenu_edit',
-			'mainMenu_enable',
-			'mainMenu_list',
-
-			'sidebars_access',
-			'sidebars_add',
-			'sidebars_delete',
-			'sidebars_edit',
-			'sidebars_list',
-
-			'urls_access',
-			'urls_add',
-			'urls_delete',
-			'urls_edit',
-			'urls_list'
-		),
-		'Moderator' => array(
-			'core_access',
-			'dashboard_access'
-		),
-		'Blogger'   => array(
-			'core_access',
-			'dashboard_access'
-		),
-		'User'      => array()
-	);
-	foreach($defaultPermissionGroups as $groupName => $permissions) {
-	    foreach($permissions as $permissionName) {
-	        $statement=$db->prepare('addPermissionByGroupName');
-	        $statement->execute(
-	            array(
-	                ':groupName' => $groupName,
-	                ':permissionName' => $permissionName,
-	                ':value' => '0'
-	            )
-	        );
-	    }
-	}
 	if ($db->installErrors==0) {
 	    echo '
 	  <h2 id="done">Complete</h2>
@@ -323,8 +275,8 @@ if (
 	    if (isset($newPassword)) {
 			$touch = touch('INSTALL.LOCK'); // attempt to lock the installer
 			if (!$touch) {
-				echo '<p>
-					The installation is complete, however, <strong>there is one last step you must do.</strong> Create an empty file named "INSTALL.LOCK" (without quotes) in the root of your SiteSense directory. Until you do this, anybody will be able to delete your data using this page.
+				echo '<p class="warning">
+					*** WARNING *** The installation is complete, however, <strong>there is one last step you must do.</strong> Create an empty file named "INSTALL.LOCK" (without quotes) in the root of your SiteSense directory. Until you do this, anybody will be able to delete your data using this page.
 				</p>';
 			}
 	        echo '
