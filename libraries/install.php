@@ -85,8 +85,7 @@ if (
 	$db->loadModuleQueries('installer',true);
 	$db->loadCommonQueryDefines(true);
 	$structures=installer_tableStructures();
-	echo '<p>Connect to Database Successful</p>';
-
+	echo '<p>Successfully connected to database.</p>';
 	if($drop) {
 	    $db->dropTable('settings',$lang);
 	    $db->dropTable('banned');
@@ -105,7 +104,6 @@ if (
 	    $db->dropTable('user_group_permissions');
 	    $db->dropTable('user_permissions');
 	}
-	
 	// Install modules
 	$coreModules = array(
 		'languages',
@@ -133,7 +131,6 @@ if (
 	unset($uninstalledModuleFiles['modules/sidebars/sidebars.install.php'],$uninstalledModuleFiles['modules/languages/languages.install.php'],$uninstalledModuleFiles['modules/settings/settings.install.php']);
 	$uninstalledModuleFiles = array('modules/languages/languages.install.php'=>rand(),'modules/sidebars/sidebars.install.php'=>rand(),'modules/settings/settings.install.php'=>rand()) + $uninstalledModuleFiles;
 	$uninstalledModuleFiles = array_flip($uninstalledModuleFiles);
-	
 	$moduleSettings=array();
 	foreach($uninstalledModuleFiles as $moduleInstallFile) {
 	    // Include the install file for this module
@@ -160,7 +157,6 @@ if (
 	            $targetFunction=$moduleName.'_settings';
 	            if(function_exists($targetFunction)) {
 	                $moduleSettings[$moduleName]=$targetFunction();
-	                
 	                $statement = $db->prepare('addPhraseByLanguage','admin_languages',array("!lang!"=>'en_us'));
 	                // Load The Phrases (Admin End)
 					if (file_exists('modules/'.$moduleName.'/languages/'.$moduleName.'.phrases.en_us.php')) {
@@ -190,7 +186,6 @@ if (
 							}
 						}
 					}
-	                
 	                // Load The Phrases (Admin End)
 					if (file_exists('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php')) {
 						common_include('modules/'.$moduleName.'/admin/languages/'.$moduleName.'.admin.phrases.en_us.php');
@@ -253,13 +248,12 @@ if (
 	            $shortName=$moduleSettings[$fileModule]['shortName'];
 	        }
 	    }
-	    $enabled=in_array($fileModule,$coreModules) ? 1 : 0;
 	    $insert->execute(
 	        array(
 	            ':name'      => $fileModule,
 	            ':shortName' => $shortName,
-	            ':enabled'   => $enabled,
-				':version'   => $moduleSettings[$fileModule]['version'],
+	            ':enabled'   => in_array($fileModule,$coreModules),
+				':version'   => empty($moduleSettings[$fileModule]['version'])?0.0:$moduleSettings[$fileModule]['version'],
 	        )
 	    );
 	}
@@ -288,7 +282,7 @@ if (
 	    <dt>Password:</dt><dd>',$newPassword,'</dd>
 	  </dl>
 	  <p>
-	    Changing the password is recommended. <a href="admin/users/edit/1/" class="error">Click here</a> to login to the admin panel.
+	    Changing your admin password is recommended. <a href="dynamic-forms/login/admin" class="error">Click here</a> to login to the admin panel.
 	  </p>';
 	    }
 	} else {
