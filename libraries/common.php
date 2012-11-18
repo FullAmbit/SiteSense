@@ -347,6 +347,7 @@ function common_loadPhrases($data,$db,$moduleShortName,$isAdmin = 0){
 	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$data->phrases['core'][$row['phrase']] = $row['text'];
 	}
+	if(!$moduleShortName) return;
 	$statement->execute(array(
 		':module' => $moduleShortName,
 		':isAdmin' => $isAdmin
