@@ -649,10 +649,11 @@ class formHandler {
 				echo '
 					<div class="errorBox">',$this->errorText,'</div>';
 			}
+			$fieldKeys=array_keys($this->fields);
 			$priorGroup=NULL;
 			echo '
 					<div class="fieldsetWrapper">';
-			if(empty($this->fields[0]['group'])){
+			if(!isset($this->fields[$fieldKeys[0]]['group'])){
 				$priorGroup=0;
 				echo '<fieldset>',(
 				!empty($this->caption) ? '
@@ -668,6 +669,8 @@ class formHandler {
 					echo '<fieldset>
 							<legend><span>',$formField['group'],'</span></legend>';
 					$priorGroup=$formField['group'];
+				}elseif(empty($formField['group'])&&isset($priorGroup)){
+					$priorGroup=0;
 				}
 				if($formField['params']['type']!='hidden') {
 					$class=array();
