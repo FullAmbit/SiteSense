@@ -649,14 +649,27 @@ class formHandler {
 				echo '
 					<div class="errorBox">',$this->errorText,'</div>';
 			}
+			$priorGroup=NULL;
 			echo '
-					<div class="fieldsetWrapper"><fieldset>',(
-			!empty($this->caption) ? '
-						<legend><span>'.$this->caption.'</span></legend>' :
-				''
-			);
+					<div class="fieldsetWrapper">';
+			if(empty($this->fields[0]['group'])){
+				$priorGroup=0;
+				echo '<fieldset>',(
+				!empty($this->caption) ? '
+							<legend><span>'.$this->caption.'</span></legend>' :
+					''
+				);
+			}
 			foreach ($this->fields as $thisKey => $formField) {
-				if ($formField['params']['type']!='hidden') {
+				if(isset($formField['group'])&&$formField['group']!==$priorGroup){
+					if(isset($priorGroup)){
+						echo '</fieldset>';
+					}
+					echo '<fieldset>
+							<legend><span>',$formField['group'],'</span></legend>';
+					$priorGroup=$formField['group'];
+				}
+				if($formField['params']['type']!='hidden') {
 					$class=array();
 					if ($formField['tag']=='input') {
 						if (!empty($formField['params']['type'])) {
