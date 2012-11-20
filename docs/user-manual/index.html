@@ -488,6 +488,15 @@
       <li><b>Enabled</b><br />
         Determines if the form will be displayed to visitors
       </li>
+      <li id="field-group-docs"><b>Field Group</b><br />
+        Fields can be sorted into groups, which will be displayed as &lt;fieldset&gt;s on the front-end. Field functionality follows the following rules:
+		<ul>
+			<li>Fields do not automatically align to their groups when you sort them up and down.</li>
+			<li>When two fields in the same group have a field with a different group or no group in between them in the listing, the group will be rendered twice on the front-end, once with the first element and once with the second.</li>
+			<li>Ungrouped form fields will align themselves into the first preceding group. If they are the first element in the form, they will be displayed in a &lt;fieldset&gt; based on the caption of the form.</li>
+			<li>As a rule of thumb, when designing a form to use groups, put all elements in groups. It will make it easier to read in the admin control panel.</li>
+		</ul>
+      </li>
     </ul>
     <h4>Controls</h4>
     <ul>
@@ -497,6 +506,9 @@
       <li><b>Manage Fields</b><br />
         Allows you to create, modify, and remove fields from the form (See Fields)
       </li>
+	  <li><b>List Field Groups</b><br />
+		Fields can be grouped into groups for readability and organization. See <a href="#field-group-docs">above</a> for more information.
+	  </li>
       <li><b>View Data</b><br />
         Displays values from form submissions in a table
       </li>
