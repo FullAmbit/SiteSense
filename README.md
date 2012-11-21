@@ -11,6 +11,14 @@ SiteSense is easily extendable making it capable of being the starting point
 for any web application. The framework is constantly scrutinized for security 
 purposes and is written in PHP &amp; MySQL utilizing the latest best practices.
 
+Requirements
+--------
+ - Web server running Apache with mod_rewrite or nginx (see .htaccess)
+ - PHP 5.x with:
+  + PDO (for database access)
+  + cURL (not necessary to function, but *highly recommended*)
+ - MySQL server with an empty MySQL database and user set up for SiteSense
+
 Installation
 --------
 Installing SiteSense is an easy three-step process.
