@@ -492,15 +492,11 @@ final class sitesense {
 				$sidebars = $statement->fetchAll();
 			}
 		}
-		$this->httpHeaders=array(
-			'Content-Type: text/html; charset='.$this->settings['characterEncoding']
-		);
-		$this->metaList=array(
-			array(
+		$this->httpHeaders=array('Content-Type: text/html; charset='.$this->settings['characterEncoding']);
+		$this->metaList=array(array(
 				'http-equiv' => 'Content-Type',
 				'content' => 'text/html; charset='.$this->settings['characterEncoding']
-			)
-		);
+		));
 		// Load The Phrases From The Database IF NOT ADMIN. Administrator-Based Phrase Loading Is Done in admin.php
 		if($this->currentPage !== 'admin'){
 			$statement=$this->db->query('getEnabledMainMenuOrderLeft');
