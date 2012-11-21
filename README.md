@@ -16,7 +16,7 @@ Installation
 Installing SiteSense is an easy three-step process.
  1. Upload the SiteSense files you downloaded from sitesense.org.
  2. Copy and paste dbSettings.php.example to dbSettings.php and
-  change the values in lines 27-47 to the correct values for your
+  change the values in lines 26-45 to the correct values for your
   MySQL database.
  3. Visit yourwebsite.com/install and follow the instructions there.
   (the default install password is "startitup", without quotes)
