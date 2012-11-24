@@ -635,6 +635,12 @@ class formHandler {
 		if(function_exists('theme_buildForm')){
 			theme_buildForm($this);
 		}else{
+			$requiredFields=0;
+			foreach($this->fields as $thisKey => $formField){
+				if($formField['required']){
+					$requiredFields++;
+				}
+			}
 			echo '
 				<form
 					method="post"
@@ -707,7 +713,7 @@ class formHandler {
 						echo '
 								<label for="',$this->formPrefix.$thisKey,'">',$formField['label'],' ',(
 						$formField['error'] ? '<b>X</b>' : (
-						$formField['required'] ? (
+						($formField['required']&&$requiredFields!==count($this->fields)) ? (
 						empty($_POST['fromForm']) ?
 							'<i>&raquo;</i>' :
 							'<span>&radic;</span>'
@@ -894,12 +900,10 @@ class formHandler {
 					/>';
 				}
 			}
-	  if(count($this->fields)){
-				echo '
-					<div class="details">
-							<i>&raquo;</i> Indicates a required field',(
-				$this->error ? ', <b>X</b> indicates a field with errors' : ''
-				),'
+	  if(count($this->fields)&&($this->error||$requiredFields!==count($this->fields))){
+				echo '<div class="details">',
+				($requiredFields!==count($this->fields)?'<i>&raquo;</i> Indicates a required field':''),
+				($this->error ? ' <b>X</b> indicates a field with errors' : ''),'
 					</div>
 				';
       }
