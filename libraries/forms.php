@@ -655,11 +655,13 @@ class formHandler {
 				echo '
 					<div class="errorBox">',$this->errorText,'</div>';
 			}
-			$fieldKeys=array_keys($this->fields);
 			$priorGroup=NULL;
 			echo '
 					<div class="fieldsetWrapper">';
-			if(!isset($this->fields[$fieldKeys[0]]['group'])){
+			$fieldKeys=array_keys($this->fields);
+			if(empty($fieldKeys[0])){
+				echo '<fieldset>';
+			}elseif(!isset($this->fields[$fieldKeys[0]]['group'])){
 				$priorGroup=0;
 				echo '<fieldset>',(
 				!empty($this->caption) ? '
