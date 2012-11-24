@@ -708,7 +708,13 @@ class formHandler {
 						<div',(
 					$class ? ' class="'.$class.'"' : ''
 					),'>';
-					
+					if(isset($formField['params']['type'])&&!empty($formField['inline'])&&$formField['params']['type']==='checkbox'){ // checkboxes 
+						echo '<input
+									id="',$this->formPrefix,$thisKey,'"
+									name="',$this->formPrefix,$thisKey,'"
+								type="checkbox"
+							/>';
+					}
 					if(isset($formField['label'])){
 						echo '
 								<label for="',$this->formPrefix.$thisKey,'">',$formField['label'],' ',(
@@ -721,8 +727,13 @@ class formHandler {
 						)
 						),'</label>';
 					}
+					if(isset($formField['params']['type'])&&!empty($formField['inline'])&&$formField['params']['type']==='checkbox'){
+						echo '</div>';
+						continue;
+					}else{
+						echo '<div>';
+					}
 					echo '
-							<div>
 								<',$formField['tag'],'
 									id="',$this->formPrefix,$thisKey,'"',(
 					($formField['tag']=='span') ? '' : '
