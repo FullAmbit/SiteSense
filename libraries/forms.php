@@ -666,7 +666,7 @@ class formHandler {
 					if(isset($priorGroup)){
 						echo '</fieldset>';
 					}
-					echo '<fieldset class="fg_',common_generateShortName($formfield['group'],TRUE),'">
+					echo '<fieldset class="fg_',common_generateShortName($formField['group'],TRUE),'">
 							<legend><span>',$formField['group'],'</span></legend>';
 					$priorGroup=$formField['group'];
 				}elseif(empty($formField['group'])&&isset($priorGroup)){
