@@ -229,7 +229,7 @@ final class sitesense {
 		$hasIndex=$this->linkHome==$_SERVER['PHP_SELF'];
 		$getDataPos=strpos($url, '?');
 		$getDataLoc=(
-			$hasIndex ?
+			$hasIndex||strpos($url,'=') ?
 			strlen($_SERVER['PHP_SELF']) :
 			strlen($this->linkHome)
 		);
