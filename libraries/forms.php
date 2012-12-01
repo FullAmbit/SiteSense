@@ -773,7 +773,7 @@ class formHandler {
 								foreach($abbrs as $abbr){
 									$tzObject=new DateTimeZone($abbr);
 									$date=new DateTime(NULL,$tzObject);
-									$abbrsCalc[$abbr]=$date->format('G:i A');
+									$abbrsCalc[$abbr]=$date->format('g:i A');
 								}
 								natsort($abbrsCalc);
 								foreach($abbrsCalc as $identifier => $time){
