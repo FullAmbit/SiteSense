@@ -25,6 +25,8 @@
 define('ADMIN_SHOWPERPAGE',16);
 common_include('libraries/admin.common.php');
 function admin_buildContent($data,$db){
+	// remove old "from" cookie
+	setcookie($db->sessionPrefix.'from','',time()-3600,$data->linkHome,'','',true);
 	//Preload default values into $data->output:
 	$defaults = array(
 		'pagesError' => false,
