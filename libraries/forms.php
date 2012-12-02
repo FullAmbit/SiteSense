@@ -777,7 +777,9 @@ class formHandler {
 								}
 								natsort($abbrsCalc);
 								foreach($abbrsCalc as $identifier => $time){
-									echo '<option value="',$identifier,'">',$time,' - ',$identifier,'</option>';
+									echo '<option ',(isset($formField['value'])&&$formField['value']===$identifier?
+										'selected="selected" ':''),
+										'value="',$identifier,'">',$time,' - ',$identifier,'</option>';
 								}
 							}else{
 								if(isset($formField['type'])&&isset($this->customFormFields[$formField['type']])){
