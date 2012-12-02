@@ -341,8 +341,9 @@ final class sitesense {
 					// Update last access
 					$statement=$this->db->prepare('updateLastAccess');
 					$statement->execute(array(
-							':id' => $user['id']
-						)) or die('User Database failed updating LastAccess<pre>'.print_r($statement->errorInfo()).'</pre>');
+							':id' => $user['id'],
+							':lastAccess' => date('Y-m-d H:i:s'),
+					));
 				}
 			}
 		}
