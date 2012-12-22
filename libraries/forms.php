@@ -56,6 +56,11 @@ class customFormHandler extends formHandler{
 			}elseif($field['params']['type']==='file'){
 				$this->enctype='multipart/form-data';
 			}
+      foreach($data->output['fieldParams'] as $param) {
+        if($field['name']==$param['field']) {
+          $field['params'][$param['param']]=$param['value'];
+        }
+      }
 		}
 	}
 }
