@@ -282,7 +282,7 @@ if (
 	    <dt>Password:</dt><dd>',$newPassword,'</dd>
 	  </dl>
 	  <p>
-	    Changing your admin password is recommended. <a href="dynamic-forms/login/admin" class="error">Click here</a> to login to the admin panel.
+	    Changing your admin password is recommended. <a href="admin" class="error">Click here</a> to login to the admin panel.
 	  </p>';
 	    }
 	} else {
